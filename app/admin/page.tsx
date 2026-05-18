@@ -86,6 +86,8 @@ export default function AdminPage() {
       return;
     }
 
+    const data = await res.json();
+
     const imageMarkdown = `\n\n![업로드 이미지](${data.url})\n\n`;
 
 setContent((prev) => {
