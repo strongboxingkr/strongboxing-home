@@ -383,6 +383,99 @@ export default async function BranchPage({
           </div>
         </div>
       </section>
+
+      <section className="px-6 py-24 bg-[#111] text-white">
+        <div className="mx-auto max-w-6xl">
+
+          <div className="mb-16">
+            <h2 className="text-5xl font-black tracking-[-0.05em]">
+              목동 복싱장 스트롱복싱 목동점
+            </h2>
+
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">
+              스트롱복싱 목동점은 복싱을 처음 시작하는 분들도 부담 없이
+              운동할 수 있도록 개인 지도 중심으로 운영되는 목동 복싱장입니다.
+              다이어트, 체력증진, 스트레스 해소, 복싱 입문까지 목적에 맞게
+              운동 방향을 안내해드립니다.
+            </p>
+          </div>
+
+          <div className="grid gap-10 md:grid-cols-2">
+            <img
+              src="/images/mokdong/mokdong-main.jpg"
+              alt="목동 복싱장 스트롱복싱 목동점 내부"
+              className="rounded-[32px] border border-white/10 object-cover"
+            />
+
+            <div className="flex flex-col justify-center">
+              <h3 className="text-3xl font-black">
+                목동역 근처 프리미엄 복싱장
+              </h3>
+
+              <p className="mt-5 leading-8 text-zinc-300">
+                샌드백, 유산소 장비, 웨이트 공간까지 갖춰져 있어
+                복싱과 체력운동을 함께 진행할 수 있습니다.
+              </p>
+
+              <ul className="mt-8 space-y-4 text-zinc-200">
+                <li>🥊 초보자 개인지도</li>
+                <li>🥊 여성 회원 운동 가능</li>
+                <li>🥊 다이어트 복싱</li>
+                <li>🥊 직장인 야간 운동</li>
+              </ul>
+
+              <a
+                href="/#branch"
+                className="mt-10 inline-flex w-fit rounded-full bg-[#FC5230] px-8 py-4 font-black text-white"
+              >
+                상담 문의하기
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-24">
+            <h2 className="text-4xl font-black">
+              자주 묻는 질문
+            </h2>
+
+            <div className="mt-10 space-y-6">
+              <div className="rounded-[24px] border border-white/10 bg-black/40 p-6">
+                <h3 className="text-xl font-black">
+                  복싱 처음인데 가능할까요?
+                </h3>
+
+                <p className="mt-3 leading-7 text-zinc-300">
+                  처음 운동하시는 분들도 많으며,
+                  개인 수준에 맞춰 기초부터 안내해드립니다.
+                </p>
+              </div>
+
+              <div className="rounded-[24px] border border-white/10 bg-black/40 p-6">
+                <h3 className="text-xl font-black">
+                  여성 회원도 운동 가능한가요?
+                </h3>
+
+                <p className="mt-3 leading-7 text-zinc-300">
+                  여성 회원 비율도 높으며,
+                  다이어트와 체력증진 목적으로 많이 등록하고 있습니다.
+                </p>
+              </div>
+
+              <div className="rounded-[24px] border border-white/10 bg-black/40 p-6">
+                <h3 className="text-xl font-black">
+                  운영시간 안에는 자유롭게 방문 가능한가요?
+                </h3>
+
+                <p className="mt-3 leading-7 text-zinc-300">
+                  운영시간 내 자유롭게 방문 가능하며,
+                  운동 목적에 맞춰 지도해드립니다.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
     </main>
   );
 }
