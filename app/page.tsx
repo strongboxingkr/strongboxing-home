@@ -75,9 +75,17 @@ export default async function HomePage() {
     <main className="min-h-screen bg-[#0d0d0f] text-white">
       <header className="fixed top-0 left-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-          <a href="#" className="text-lg font-black tracking-tight">
+          <a href="/" className="flex items-center gap-3">
+          <img
+            src="/icon.png"
+            alt="스트롱복싱 아이콘"
+            className="h-9 w-9 object-contain"
+          />
+
+          <span className="text-lg font-black tracking-tight">
             STRONG<span className="text-[#FC5230]">BOXING</span>
-          </a>
+          </span>
+        </a>
 
           <nav className="hidden items-center gap-7 text-sm font-bold text-zinc-300 md:flex">
             <a href="#program" className="hover:text-white">
