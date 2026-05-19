@@ -340,6 +340,92 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      <footer className="border-t border-white/10 bg-black px-6 py-14 text-white">
+      <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-3">
+
+        <div>
+          <div className="flex items-center gap-3">
+            <img
+              src="/icon.png"
+              alt="스트롱복싱 아이콘"
+              className="h-9 w-9 object-contain"
+            />
+
+            <span className="text-xl font-black tracking-tight">
+              STRONG<span className="text-[#FC5230]">BOXING</span>
+            </span>
+          </div>
+
+          <p className="mt-5 max-w-sm leading-7 text-zinc-400">
+            스트롱복싱은 복싱 PT, 다이어트 복싱,
+            체력증진 프로그램을 운영하는 프리미엄 복싱짐입니다.
+          </p>
+        </div>
+
+        <div>
+          <h3 className="mb-4 text-lg font-black">
+            지점 안내
+          </h3>
+
+          <div className="space-y-3 text-zinc-400">
+            <a href="/branches/mokdong" className="block hover:text-white">
+              목동점
+            </a>
+
+            <a href="/branches/sinjeong" className="block hover:text-white">
+              신정점
+            </a>
+
+            <a href="/branches/gaebong" className="block hover:text-white">
+              개봉점
+            </a>
+
+            <a href="/branches/yeongdeungpo" className="block hover:text-white">
+              영등포점
+            </a>
+
+            <a href="/branches/cheolsan" className="block hover:text-white">
+              철산점
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="mb-4 text-lg font-black">
+            공식 링크
+          </h3>
+
+          <div className="space-y-3 text-zinc-400">
+            <a
+              href="https://www.instagram.com/strongboxing_mokdong"
+              target="_blank"
+              className="block hover:text-white"
+            >
+              인스타그램
+            </a>
+
+            <a
+              href="/blog"
+              className="block hover:text-white"
+            >
+              블로그
+            </a>
+
+            <a
+              href="tel:0226435971"
+              className="block hover:text-white"
+            >
+              전화 문의
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div className="mx-auto mt-14 max-w-6xl border-t border-white/10 pt-6 text-sm text-zinc-500">
+        © 2026 STRONGBOXING. All rights reserved.
+      </div>
+    </footer>
     </main>
   );
 }
