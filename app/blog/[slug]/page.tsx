@@ -1,4 +1,49 @@
 import { db } from "@/lib/db";
+import type { Metadata } from "next";
+
+const siteUrl = "https://strongboxing.kr";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+
+  const [rows]: any = await db.query(
+    `
+    SELECT title, description, slug, branch_name, created_at
+    FROM homepage_posts
+    WHERE slug = ?
+    LIMIT 1
+    `,
+    [slug]
+  );
+
+  const post = rows[0];
+
+  if (!post) {
+    return {
+      title: "스트롱복싱 블로그",
+      description: "스트롱복싱 소식과 운동 정보",
+    };
+  }
+
+  return {
+    title: `${post.title} | 스트롱복싱`,
+    description:
+      post.description || `${post.branch_name} 스트롱복싱 블로그 소식입니다.`,
+    openGraph: {
+      title: `${post.title} | 스트롱복싱`,
+      description:
+        post.description || `${post.branch_name} 스트롱복싱 블로그 소식입니다.`,
+      url: `${siteUrl}/blog/${post.slug}`,
+      siteName: "스트롱복싱",
+      locale: "ko_KR",
+      type: "article",
+    },
+  };
+}
 
 export default async function BlogDetailPage({
   params,
@@ -36,8 +81,40 @@ export default async function BlogDetailPage({
     .split("\n")
     .filter(Boolean);
 
+  const firstImage = paragraphs
+    .map((paragraph: string) => paragraph.match(/^!\[(.*?)\]\((.*?)\)$/))
+    .find(Boolean);
+
+  const imageUrl = firstImage ? `${siteUrl}${firstImage[2]}` : undefined;
+
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.description,
+    author: {
+      "@type": "Organization",
+      name: "스트롱복싱",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "스트롱복싱",
+    },
+    mainEntityOfPage: `${siteUrl}/blog/${post.slug}`,
+    datePublished: post.created_at,
+    dateModified: post.created_at,
+    image: imageUrl ? [imageUrl] : undefined,
+  };
+
   return (
     <main className="min-h-screen bg-[#0d0d0f] text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleJsonLd),
+        }}
+      />
+
       <article>
         <section className="bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.35),transparent_35%),linear-gradient(135deg,#070707,#151515)] px-6 py-24">
           <div className="mx-auto max-w-4xl">
@@ -67,18 +144,18 @@ export default async function BlogDetailPage({
                 const imageMatch = paragraph.match(/^!\[(.*?)\]\((.*?)\)$/);
 
                 if (imageMatch) {
-                    return (
+                  return (
                     <img
-                        key={paragraph}
-                        src={imageMatch[2]}
-                        alt={imageMatch[1]}
-                        className="w-full rounded-[28px] border border-white/10"
+                      key={paragraph}
+                      src={imageMatch[2]}
+                      alt={imageMatch[1]}
+                      className="w-full rounded-[28px] border border-white/10"
                     />
-                    );
+                  );
                 }
 
                 return <p key={paragraph}>{paragraph}</p>;
-                })}
+              })}
             </div>
 
             <div className="mt-14 rounded-[30px] bg-[#FC5230] p-8 text-center">
