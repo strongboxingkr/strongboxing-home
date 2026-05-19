@@ -36,6 +36,13 @@ export const metadata: Metadata = {
     "복싱 체육관",
   ],
 
+  verification: {
+    other: {
+      "naver-site-verification":
+        "12d1716111cc26657b03f8175e9fa67fc6c6f51b",
+    },
+  },
+
   openGraph: {
     title: "스트롱복싱",
     description:
