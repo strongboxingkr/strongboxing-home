@@ -44,6 +44,7 @@ const branches: any = {
     booking: "https://booking.naver.com/booking/13/bizes/1510638",
     naverMap: "https://naver.me/GII8f9Qv",
     kakaoMap: "https://naver.me/GII8f9Qv",
+    googleMap: "https://maps.google.com/?q=스트롱복싱+목동점",
     description:
       "목동에서 복싱 입문, 여성복싱, 다이어트, 직장인 운동을 편하게 시작할 수 있는 스트롱복싱 목동점입니다.",
   },
@@ -258,6 +259,16 @@ export default async function BranchPage({
                   className="rounded-full bg-white px-5 py-3 font-black text-black"
                 >
                   카카오맵
+                </a>
+              )}
+
+              {branch.googleMap && (
+                <a
+                  href={branch.googleMap}
+                  target="_blank"
+                  className="rounded-full bg-white px-5 py-3 font-black text-black"
+                >
+                  구글지도
                 </a>
               )}
 
