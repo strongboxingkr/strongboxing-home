@@ -160,12 +160,50 @@ export default async function BranchPage({
     sameAs: branch.instagram ? [branch.instagram] : [],
   };
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "복싱 처음인데 가능할까요?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "처음 운동하시는 분들도 많으며 개인 수준에 맞춰 기초부터 안내해드립니다.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "여성 회원도 운동 가능한가요?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "여성 회원 비율도 높으며 다이어트와 체력증진 목적으로 많이 등록하고 있습니다.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "학생 회원도 운동 가능한가요?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "학생 회원들도 많이 운동하고 있으며 체력관리와 스트레스 해소 목적으로 등록하고 있습니다.",
+        },
+      },
+    ],
+  };
+
   return (
     <main className="min-h-screen bg-[#0d0d0f] text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(jsonLd),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqJsonLd),
         }}
       />
 
