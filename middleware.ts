@@ -2,18 +2,30 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
-  const savedPassword = request.cookies.get("admin-password")?.value;
+  const isLoggedIn =
+    request.cookies.get("admin-auth")?.value === "true";
 
-  const isAdminPage = request.nextUrl.pathname.startsWith("/admin");
-  const isLoginPage = request.nextUrl.pathname.startsWith("/admin-login");
+  const pathname = request.nextUrl.pathname;
 
-  if (isAdminPage && savedPassword !== password) {
-    return NextResponse.redirect(new URL("/admin-login", request.url));
+  // 로그인 안했는데 관리자 접근
+  if (
+    pathname.startsWith("/admin") &&
+    pathname !== "/admin-login" &&
+    !isLoggedIn
+  ) {
+    return NextResponse.redirect(
+      new URL("/admin-login", request.url)
+    );
   }
 
-  if (isLoginPage && savedPassword === password) {
-    return NextResponse.redirect(new URL("/admin", request.url));
+  // 로그인 했는데 로그인페이지 접근
+  if (
+    pathname === "/admin-login" &&
+    isLoggedIn
+  ) {
+    return NextResponse.redirect(
+      new URL("/admin", request.url)
+    );
   }
 
   return NextResponse.next();
