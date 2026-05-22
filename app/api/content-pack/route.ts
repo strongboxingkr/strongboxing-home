@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { mkdir } from "fs/promises";
 import path from "path";
 import sharp from "sharp";
+import { db } from "@/lib/db";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -140,7 +141,7 @@ export async function POST(request: Request) {
 {
   "instagram": "인스타 캡션",
   "blog": "네이버 블로그 초안",
-  "reels": "릴스 자막 문구 5개"
+  "reels": ["릴스 자막1", "릴스 자막2"]
 }
 
 조건:
@@ -163,6 +164,24 @@ export async function POST(request: Request) {
       reels: [],
     };
   }
+
+  await db.query(
+    `
+    INSERT INTO content_packs (
+      branch,
+      title,
+      results,
+      captions
+    )
+    VALUES (?, ?, ?, ?)
+    `,
+    [
+      branch,
+      title,
+      JSON.stringify(results),
+      JSON.stringify(captions),
+    ]
+  );
 
   return Response.json({
     ok: true,
