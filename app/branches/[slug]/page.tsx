@@ -438,7 +438,7 @@ export default async function BranchPage({
 
           <div className="mb-16">
             <h2 className="text-5xl font-black tracking-[-0.05em]">
-              목동 복싱장 스트롱복싱 목동점
+              {branch.area} 복싱장 {branch.fullName}
             </h2>
 
             <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">
