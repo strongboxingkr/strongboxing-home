@@ -46,9 +46,49 @@ export default async function ContentHistoryPage() {
                     </h2>
                   </div>
 
-                  <p className="text-zinc-500">
-                    {new Date(item.created_at).toLocaleString()}
-                  </p>
+                  <div className="flex flex-col items-end gap-3">
+                    <p className="text-zinc-500">
+                        {new Date(item.created_at).toLocaleString()}
+                    </p>
+
+                    <button
+                        onClick={async () => {
+                        const res = await fetch(
+                            "/api/content-pack-to-post",
+                            {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                contentPackId: item.id,
+                            }),
+                            }
+                        );
+
+                        const data = await res.json();
+
+                        if (!data.ok) {
+                            alert(data.message || "등록 실패");
+                            return;
+                        }
+
+                        alert("홈페이지 블로그 등록 완료!");
+
+                        window.open(`/blog/${data.slug}`, "_blank");
+                        }}
+                        className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black"
+                    >
+                        홈페이지 블로그 등록
+                    </button>
+
+                    <a
+                        href={`/api/download-content-pack?id=${item.id}`}
+                        className="rounded-full border border-white/10 bg-white/10 px-5 py-3 text-sm font-black"
+                    >
+                        ZIP 다운로드
+                    </a>
+                    </div>
                 </div>
 
                 <div className="grid gap-5 md:grid-cols-3">
@@ -74,6 +114,18 @@ export default async function ContentHistoryPage() {
                     </div>
                   ))}
                 </div>
+                
+                {captions.analysis && (
+                <div className="mb-6 rounded-[28px] bg-[#F15A29]/10 p-6">
+                    <h3 className="mb-3 text-xl font-black text-[#F15A29]">
+                    AI 사진 분석
+                    </h3>
+
+                    <p className="leading-8 text-zinc-300">
+                    {captions.analysis}
+                    </p>
+                </div>
+                )}
 
                 <div className="mt-8 grid gap-6 md:grid-cols-2">
                   <div className="rounded-[28px] bg-black/30 p-6">

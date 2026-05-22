@@ -12,7 +12,7 @@ export async function generateMetadata({
 
   const [rows]: any = await db.query(
     `
-    SELECT title, description, slug, branch_name, created_at
+    SELECT *
     FROM homepage_posts
     WHERE slug = ?
     LIMIT 1
@@ -29,6 +29,11 @@ export async function generateMetadata({
     };
   }
 
+  const imageMatch = String(post.content || "").match(/!\[.*?\]\((.*?)\)/);
+  const imageUrl = imageMatch?.[1]
+    ? `${siteUrl}${imageMatch[1]}`
+    : `${siteUrl}/og.png`;
+
   return {
     title: `${post.title} | 스트롱복싱`,
     description:
@@ -41,6 +46,7 @@ export async function generateMetadata({
       siteName: "스트롱복싱",
       locale: "ko_KR",
       type: "article",
+      images: [imageUrl],
     },
   };
 }
@@ -77,9 +83,7 @@ export default async function BlogDetailPage({
     );
   }
 
-  const paragraphs = String(post.content || "")
-    .split("\n")
-    .filter(Boolean);
+  const paragraphs = String(post.content || "").split("\n").filter(Boolean);
 
   const firstImage = paragraphs
     .map((paragraph: string) => paragraph.match(/^!\[(.*?)\]\((.*?)\)$/))

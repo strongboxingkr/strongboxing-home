@@ -9,6 +9,10 @@ export default function ContentPackPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
 
+  const [target, setTarget] = useState("입문자");
+  const [tone, setTone] = useState("감성");
+  const [style, setStyle] = useState("STRONG_CHARCOAL");
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -21,6 +25,10 @@ export default function ContentPackPage() {
 
     formData.append("branch", branch);
     formData.append("title", title || "content");
+
+    formData.append("target", target);
+    formData.append("tone", tone);
+    formData.append("style", style);
 
     Array.from(files).forEach((file) => {
       formData.append("files", file);
@@ -97,6 +105,62 @@ export default function ContentPackPage() {
                 placeholder="예: 다이어트 복싱"
                 className="w-full rounded-2xl border border-white/10 bg-black p-4 outline-none focus:border-[#FC5230]"
               />
+            </div>
+
+            <div>
+              <label className="mb-2 block font-bold">
+                타겟
+              </label>
+
+              <select
+                value={target}
+                onChange={(e) => setTarget(e.target.value)}
+                className="w-full rounded-2xl border border-white/10 bg-black p-4"
+              >
+                <option>입문자</option>
+                <option>다이어트</option>
+                <option>여성회원</option>
+                <option>직장인</option>
+                <option>고강도 운동</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block font-bold">
+                콘텐츠 톤
+              </label>
+
+              <select
+                value={tone}
+                onChange={(e) => setTone(e.target.value)}
+                className="w-full rounded-2xl border border-white/10 bg-black p-4"
+              >
+                <option>감성</option>
+                <option>강렬함</option>
+                <option>친근함</option>
+                <option>프리미엄</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block font-bold">
+                템플릿 스타일
+              </label>
+
+              <select
+                value={style}
+                onChange={(e) => setStyle(e.target.value)}
+                className="w-full rounded-2xl border border-white/10 bg-black p-4"
+              >
+                <option>STRONG_CHARCOAL</option>
+                <option>URBAN_PREMIUM</option>
+                <option>FIGHT_CLUB</option>
+                <option>WOMEN_FIT</option>
+                <option>BLACK</option>
+                <option>ORANGE</option>
+                <option>PREMIUM</option>
+                <option>MINIMAL</option>
+              </select>
             </div>
 
             <div className="md:col-span-2">
@@ -198,6 +262,18 @@ export default function ContentPackPage() {
             {result?.captions && (
               <section className="mt-12 space-y-6">
                 <div className="rounded-[32px] border border-white/10 bg-[#171719] p-7">
+                 {result?.captions?.analysis && (
+                    <div className="rounded-[32px] border border-white/10 bg-[#171719] p-7">
+                      <h2 className="mb-4 text-2xl font-black">
+                        AI 사진 분석
+                      </h2>
+
+                      <p className="leading-8 text-zinc-300">
+                        {result.captions.analysis}
+                      </p>
+                    </div>
+                  )}
+                 
                   <div className="mb-4 flex items-center justify-between">
                     <h2 className="text-2xl font-black">
                       인스타 캡션
