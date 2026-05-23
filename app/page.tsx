@@ -109,82 +109,99 @@ export default async function HomePage() {
         </div>
       </header>
 
-      <section className="relative min-h-screen overflow-hidden px-6 pt-24">
-        <img
-          src="/images/mokdong/mokdong-main.jpg"
-          alt="스트롱복싱 내부"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-[#16171A]/65" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_35%,rgba(252,82,48,.28),transparent_34%)]" />
+      <section className="relative overflow-hidden px-5 pt-28 md:px-6">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.10),transparent_30%)]" />
 
-        <div className="relative z-10 mx-auto grid min-h-[calc(100vh-96px)] max-w-7xl items-center gap-10 lg:grid-cols-[1.05fr_.95fr]">
-          <div>
-            <p className="mb-5 text-sm font-black tracking-[0.4em] text-[#FC5230]">
-              URBAN BOXING CLUB
+        <div className="mx-auto grid min-h-[88vh] max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          {/* LEFT */}
+          <div className="relative z-10">
+            <p className="mb-4 text-xs font-black tracking-[0.32em] text-[#FC5230] md:text-sm">
+              STRONG BOXING
             </p>
 
-            <h1 className="text-[70px] font-black uppercase leading-[0.83] tracking-[-0.09em] md:text-[140px]">
-              START
+            <h1 className="text-[58px] font-black leading-[0.82] tracking-[-0.09em] md:text-[128px]">
+              운동이
               <br />
-              STRONG.
+              재밌어지는
+              <br />
+              복싱짐
             </h1>
 
-            <p className="mt-8 max-w-xl text-lg leading-8 text-zinc-300">
-              복싱이 처음이어도 괜찮습니다. 스트롱복싱은 초보자, 다이어트,
-              체력향상 목적에 맞춰 직접 지도합니다.
+            <p className="mt-7 max-w-xl text-base leading-7 text-zinc-400 md:text-lg md:leading-8">
+              처음이어도 괜찮습니다.
+              <br />
+              스트롱복싱은 운동을 오래 할 수 있는 분위기를 만듭니다.
             </p>
 
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <a href="#branch" className="rounded-full bg-[#FC5230] px-8 py-4 text-center font-black">
-                가까운 지점 찾기
+            <div className="mt-9 flex gap-3 overflow-x-auto pb-1 md:overflow-visible">
+              <a
+                href="#branch"
+                className="shrink-0 rounded-full bg-[#FC5230] px-7 py-4 text-center font-black transition hover:scale-[1.02]"
+              >
+                만원 체험 예약
               </a>
-              <a href="#calculator" className="rounded-full border border-white/20 bg-white/10 px-8 py-4 text-center font-black backdrop-blur">
-                칼로리 계산하기
+
+              <a
+                href="/blog"
+                className="shrink-0 rounded-full border border-white/15 bg-white/5 px-7 py-4 text-center font-black backdrop-blur"
+              >
+                운동 후기 보기
               </a>
             </div>
-          </div>
 
-          <div className="grid gap-4">
-            <div className="border border-white/10 bg-[#202126]/80 p-6 backdrop-blur-xl">
-              <div className="mb-5 flex items-center justify-between">
-                <p className="text-sm font-black tracking-[0.28em] text-zinc-400">BRANCHES</p>
-                <p className="text-sm font-black text-[#FC5230]">5 LOCATIONS</p>
-              </div>
-
-              <div className="grid gap-3">
-                {branches.slice(0, 3).map((branch) => (
-                  <a
-                    key={branch.slug}
-                    href={`/branches/${branch.slug}`}
-                    className="group grid grid-cols-[96px_1fr] overflow-hidden border border-white/10 bg-[#16171A]"
-                  >
-                    <img src={branch.image} alt={branch.name} className="h-24 w-24 object-cover transition duration-500 group-hover:scale-105" />
-                    <div className="p-4">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-black">{branch.name}</h3>
-                        <span className="text-sm font-black text-[#FC5230]">★ {branch.score}</span>
-                      </div>
-                      <p className="mt-1 text-xs font-black tracking-[0.2em] text-zinc-500">{branch.vibe}</p>
-                      <p className="mt-2 line-clamp-1 text-sm text-zinc-300">{branch.review}</p>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3">
+            <div className="mt-10 flex flex-wrap gap-3">
               {[
-                ["1DAY", "10,000원"],
-                ["BEGINNER", "초보 가능"],
-                ["BOXING", "직접 지도"],
-              ].map(([a, b]) => (
-                <div key={a} className="border border-white/10 bg-[#202126]/80 p-5 backdrop-blur-xl">
-                  <p className="text-2xl font-black text-[#FC5230]">{a}</p>
-                  <p className="mt-2 text-sm text-zinc-300">{b}</p>
+                "초보자 가능",
+                "1 DAY PASS",
+                "다이어트 복싱",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="border border-white/10 bg-[#202126] px-5 py-3 text-sm font-bold text-zinc-300"
+                >
+                  {item}
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* RIGHT */}
+          <div className="-mx-5 flex gap-4 overflow-x-auto px-5 pb-4 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0">
+            {branches.slice(0, 5).map((branch, index) => (
+              <a
+                key={branch.slug}
+                href={`/branches/${branch.slug}`}
+                className={`group relative overflow-hidden border border-white/10 bg-[#202126]
+                min-w-[78vw] md:min-w-0
+                ${
+                  index === 0
+                    ? "h-[320px] md:col-span-2"
+                    : "h-[250px]"
+                }`}
+              >
+                <img
+                  src={branch.image}
+                  alt={branch.name}
+                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-[#16171A] via-[#16171A]/15 to-transparent" />
+
+                <div className="absolute bottom-0 left-0 p-6">
+                  <p className="mb-2 text-xs font-black tracking-[0.24em] text-[#FC5230]">
+                    STRONG BOXING
+                  </p>
+
+                  <h3 className="text-4xl font-black tracking-[-0.06em]">
+                    {branch.name}
+                  </h3>
+
+                  <p className="mt-2 line-clamp-1 text-sm text-zinc-300">
+                    ★ {branch.score} · {branch.review}
+                  </p>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
       </section>
