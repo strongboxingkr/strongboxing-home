@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import ConsultationForm from "./components/ConsultationForm";
 import ScrollLink from "./components/ScrollLink";
 import ReservationButton from "./components/ReservationButton";
+import AiCoachChat from "./components/AiCoachChat";
 
 const branches = [
   {
@@ -411,6 +412,8 @@ export default async function HomePage() {
       </section>
 
       <ConsultationForm />
+
+      <AiCoachChat />
     </main>
   );
 }
