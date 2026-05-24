@@ -2,6 +2,7 @@ import BoxingCalculator from "./components/BoxingCalculator";
 import { db } from "@/lib/db";
 import ConsultationForm from "./components/ConsultationForm";
 import ScrollLink from "./components/ScrollLink";
+import ReservationButton from "./components/ReservationButton";
 
 const branches = [
   {
@@ -110,12 +111,9 @@ export default async function HomePage() {
             </ScrollLink>
           </nav>
 
-          <a
-            href="/reservation"
-            className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black"
-          >
+          <ReservationButton className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black">
             만원 체험 예약
-          </a>
+          </ReservationButton>
         </div>
       </header>
 
@@ -147,12 +145,9 @@ export default async function HomePage() {
             </p>
 
             <div className="mt-9 flex gap-3 overflow-x-auto pb-1 md:overflow-visible">
-              <a
-                href="/reservation"
-                className="shrink-0 rounded-full bg-[#FC5230] px-7 py-4 text-center font-black transition hover:scale-[1.02]"
-              >
+              <ReservationButton className="shrink-0 rounded-full bg-[#FC5230] px-7 py-4 text-center font-black transition hover:scale-[1.02]">
                 만원 체험 예약
-              </a>
+              </ReservationButton>
 
               <a
                 href="/blog"
@@ -350,12 +345,9 @@ export default async function HomePage() {
           </p>
 
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-            <a
-              href="/reservation"
-              className="bg-[#FC5230] px-9 py-5 text-lg font-black"
-            >
+            <ReservationButton className="bg-[#FC5230] px-9 py-5 text-lg font-black">
               만원 체험 예약하기
-            </a>
+            </ReservationButton>
             <a
               href="/blog"
               className="border border-white/20 bg-white/10 px-9 py-5 text-lg font-black backdrop-blur"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import ReservationButton from "./ReservationButton";
 
 export default function BoxingCalculator() {
   const [weight, setWeight] = useState(70);
@@ -142,12 +143,9 @@ export default function BoxingCalculator() {
             ))}
           </div>
 
-          <a
-            href="/reservation"
-            className="mt-10 inline-flex w-full justify-center bg-[#FC5230] px-8 py-5 text-lg font-black transition hover:scale-[1.01]"
-          >
+          <ReservationButton className="mt-10 inline-flex w-full justify-center bg-[#FC5230] px-8 py-5 text-lg font-black transition hover:scale-[1.01]">
             가까운 지점에서 시작하기
-          </a>
+          </ReservationButton>
         </div>
       </div>
     </section>
