@@ -143,7 +143,7 @@ export default function BoxingCaloriePage() {
 
             {/* CTA */}
             <a
-              href="/#consultation"
+              href="/reservation"
               className="block w-full rounded-full bg-[#FC5230] px-8 py-5 text-center text-lg font-black transition hover:scale-[1.02]"
             >
               무료 체험 신청하기
