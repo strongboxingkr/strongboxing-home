@@ -122,7 +122,7 @@ export default async function HomePage() {
           </nav>
 
           <a
-            href="/#consultation"
+            href="#consultation"
             className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black"
           >
             만원 체험 예약
@@ -135,12 +135,12 @@ export default async function HomePage() {
         <img
           src="/images/gallery/gallery-1.jpg"
           alt=""
-          className="absolute inset-0 h-full w-full object-cover opacity-20"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20"
         />
 
-        <div className="absolute inset-0 bg-[#16171A]/80" />
+        <div className="pointer-events-none absolute inset-0 bg-[#16171A]/80" />
 
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.10),transparent_30%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.10),transparent_30%)]" />
 
         <div className="relative mx-auto grid min-h-[88vh] max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           {/* LEFT */}
@@ -163,7 +163,7 @@ export default async function HomePage() {
 
             <div className="mt-9 flex gap-3 overflow-x-auto pb-1 md:overflow-visible">
               <a
-                href="/#consultation"
+                href="#consultation"
                 className="shrink-0 rounded-full bg-[#FC5230] px-7 py-4 text-center font-black transition hover:scale-[1.02]"
               >
                 만원 체험 예약
@@ -384,11 +384,10 @@ export default async function HomePage() {
         <img
           src="/images/gallery/gallery-1.jpg"
           alt="체험"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         />
 
-        <div className="absolute inset-0 bg-[#16171A]/80" />
-
+        <div className="pointer-events-none absolute inset-0 bg-[#16171A]/80" />
         <div className="relative z-10 mx-auto max-w-5xl text-center">
           <p className="mb-5 text-sm font-black tracking-[0.35em] text-[#FC5230]">
             STRONG BOXING
@@ -407,7 +406,7 @@ export default async function HomePage() {
 
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
             <a
-              href="/#consultation"
+              href="#consultation"
               className="bg-[#FC5230] px-9 py-5 text-lg font-black"
             >
               만원 체험 예약하기
