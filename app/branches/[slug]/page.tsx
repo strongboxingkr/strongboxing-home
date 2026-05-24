@@ -474,7 +474,7 @@ export default async function BranchPage({
               </ul>
 
               <a
-                href="/#branch"
+                href="/#consultation"
                 className="mt-10 inline-flex w-fit rounded-full bg-[#FC5230] px-8 py-4 font-black text-white"
               >
                 상담 문의하기
