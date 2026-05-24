@@ -1,6 +1,7 @@
 import BoxingCalculator from "./components/BoxingCalculator";
 import { db } from "@/lib/db";
 import ConsultationForm from "./components/ConsultationForm";
+import ScrollLink from "./components/ScrollLink";
 
 const branches = [
   {
@@ -98,15 +99,15 @@ export default async function HomePage() {
           </a>
 
           <nav className="hidden items-center gap-7 text-sm font-bold text-zinc-300 md:flex">
-            <a href="#branch" className="transition hover:text-[#FC5230]">
+            <ScrollLink targetId="branch" className="transition hover:text-[#FC5230]">
               지점
-            </a>
-            <a href="#program" className="transition hover:text-[#FC5230]">
+            </ScrollLink>
+            <ScrollLink targetId="program" className="transition hover:text-[#FC5230]">
               프로그램
-            </a>
-            <a href="#news" className="transition hover:text-[#FC5230]">
+            </ScrollLink>
+            <ScrollLink targetId="news" className="transition hover:text-[#FC5230]">
               후기/소식
-            </a>
+            </ScrollLink>
           </nav>
 
           <a
