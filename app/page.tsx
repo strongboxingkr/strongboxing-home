@@ -101,12 +101,11 @@ export default async function HomePage() {
 
           <nav className="hidden items-center gap-7 text-sm font-bold text-zinc-300 md:flex">
             <a
-              href="#consultation"
+              href="#branch"
               className="transition hover:text-[#FC5230]"
             >
               지점
             </a>
-
             <a
               href="#program"
               className="transition hover:text-[#FC5230]"
@@ -195,7 +194,10 @@ export default async function HomePage() {
           </div>
 
           {/* RIGHT */}
-          <div className="-mx-5 flex gap-4 overflow-x-auto px-5 pb-4 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0">
+          <div
+            id="branch"
+            className="-mx-5 flex gap-4 overflow-x-auto px-5 pb-4 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0"
+          >
             {branches.slice(0, 5).map((branch, index) => (
               <a
                 key={branch.slug}
