@@ -122,7 +122,7 @@ export default async function HomePage() {
           </nav>
 
           <a
-            href="#consultation"
+            href="/#consultation"
             className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black"
           >
             만원 체험 예약
@@ -163,7 +163,7 @@ export default async function HomePage() {
 
             <div className="mt-9 flex gap-3 overflow-x-auto pb-1 md:overflow-visible">
               <a
-                href="#consultation"
+                href="/#consultation"
                 className="shrink-0 rounded-full bg-[#FC5230] px-7 py-4 text-center font-black transition hover:scale-[1.02]"
               >
                 만원 체험 예약
@@ -407,7 +407,7 @@ export default async function HomePage() {
 
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
             <a
-              href="#consultation"
+              href="/#consultation"
               className="bg-[#FC5230] px-9 py-5 text-lg font-black"
             >
               만원 체험 예약하기
@@ -423,9 +423,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="consultation">
-        <ConsultationForm />
-      </section>
+      <ConsultationForm />
     </main>
   );
 }
