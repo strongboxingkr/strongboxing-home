@@ -477,14 +477,31 @@ export async function POST(request: Request) {
 
 {
   "analysis": "사진 분위기 분석 요약",
+
   "instagram": "인스타 캡션",
+
   "blog": "네이버 블로그 초안",
+
   "reels": [
     "릴스 자막1",
     "릴스 자막2",
     "릴스 자막3",
     "릴스 자막4",
     "릴스 자막5"
+  ],
+
+  "thumbnail": "썸네일 문구",
+
+  "seoTitle": "SEO 최적화 제목",
+
+  "hashtags": "#목동복싱 #다이어트복싱",
+
+  "cta": "무료체험으로 시작해보세요 🥊",
+
+  "hooks": [
+    "살 빼려고 런닝머신만 했다면…",
+    "복싱이 다이어트에 좋은 진짜 이유",
+    "운동 처음인데 복싱부터 시작한 이유"
   ]
 }
 
@@ -497,6 +514,11 @@ export async function POST(request: Request) {
 - ${branch} 중심으로 작성
 - 타겟(${target})에게 맞는 표현 사용
 - 콘텐츠 톤(${tone})에 맞게 작성
+- hooks는 릴스 첫 3초 시선 끄는 문구 느낌
+- thumbnail은 짧고 강렬하게
+- seoTitle은 네이버 검색 최적화 느낌
+- hashtags는 실제 인스타 스타일
+- cta는 상담 유도 느낌
 `,
           },
 

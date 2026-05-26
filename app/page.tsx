@@ -4,6 +4,7 @@ import ConsultationForm from "./components/ConsultationForm";
 import ScrollLink from "./components/ScrollLink";
 import ReservationButton from "./components/ReservationButton";
 import AiCoachChat from "./components/AiCoachChat";
+import FaqSection from "./components/FaqSection";
 
 const branches = [
   {
@@ -253,6 +254,8 @@ export default async function HomePage() {
       <section id="calculator" className="bg-[#111214]">
         <BoxingCalculator />
       </section>
+
+      <FaqSection />
 
       <section className="px-6 py-28">
         <div className="mx-auto max-w-7xl">

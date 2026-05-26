@@ -366,6 +366,170 @@ export default function ContentPackPage() {
                     </div>
                   </div>
                 )}
+                {/* 썸네일 문구 */}
+                {result?.captions?.thumbnail && (
+                  <div className="rounded-[32px] border border-white/10 bg-[#171719] p-7">
+                    <div className="mb-4 flex items-center justify-between">
+                      <h2 className="text-2xl font-black">
+                        썸네일 문구
+                      </h2>
+
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            result.captions.thumbnail
+                          );
+
+                          alert("썸네일 문구 복사 완료!");
+                        }}
+                        className="rounded-full bg-[#FC5230] px-5 py-2 text-sm font-black"
+                      >
+                        복사
+                      </button>
+                    </div>
+
+                    <div className="rounded-2xl bg-black/40 p-5">
+                      <p className="text-2xl font-black leading-tight text-white">
+                        {result.captions.thumbnail}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* SEO 제목 */}
+                {result?.captions?.seoTitle && (
+                  <div className="rounded-[32px] border border-white/10 bg-[#171719] p-7">
+                    <div className="mb-4 flex items-center justify-between">
+                      <h2 className="text-2xl font-black">
+                        SEO 제목
+                      </h2>
+
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            result.captions.seoTitle
+                          );
+
+                          alert("SEO 제목 복사 완료!");
+                        }}
+                        className="rounded-full bg-[#FC5230] px-5 py-2 text-sm font-black"
+                      >
+                        복사
+                      </button>
+                    </div>
+
+                    <pre className="whitespace-pre-wrap leading-7 text-zinc-300">
+                      {result.captions.seoTitle}
+                    </pre>
+                  </div>
+                )}
+
+                {/* 해시태그 */}
+                {result?.captions?.hashtags && (
+                  <div className="rounded-[32px] border border-white/10 bg-[#171719] p-7">
+                    <div className="mb-4 flex items-center justify-between">
+                      <h2 className="text-2xl font-black">
+                        해시태그
+                      </h2>
+
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            result.captions.hashtags
+                          );
+
+                          alert("해시태그 복사 완료!");
+                        }}
+                        className="rounded-full bg-[#FC5230] px-5 py-2 text-sm font-black"
+                      >
+                        복사
+                      </button>
+                    </div>
+
+                    <pre className="whitespace-pre-wrap leading-7 text-zinc-300">
+                      {result.captions.hashtags}
+                    </pre>
+                  </div>
+                )}
+
+                {/* CTA */}
+                {result?.captions?.cta && (
+                  <div className="rounded-[32px] border border-white/10 bg-[#171719] p-7">
+                    <div className="mb-4 flex items-center justify-between">
+                      <h2 className="text-2xl font-black">
+                        CTA 문구
+                      </h2>
+
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            result.captions.cta
+                          );
+
+                          alert("CTA 문구 복사 완료!");
+                        }}
+                        className="rounded-full bg-[#FC5230] px-5 py-2 text-sm font-black"
+                      >
+                        복사
+                      </button>
+                    </div>
+
+                    <div className="rounded-2xl bg-black/40 p-5">
+                      <p className="text-xl font-black leading-8 text-white">
+                        {result.captions.cta}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 릴스 훅 */}
+                {result?.captions?.hooks && (
+                  <div className="rounded-[32px] border border-white/10 bg-[#171719] p-7">
+                    <div className="mb-4 flex items-center justify-between">
+                      <h2 className="text-2xl font-black">
+                        릴스 훅 문구
+                      </h2>
+
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            Array.isArray(result.captions.hooks)
+                              ? result.captions.hooks.join("\n")
+                              : result.captions.hooks
+                          );
+
+                          alert("릴스 훅 복사 완료!");
+                        }}
+                        className="rounded-full bg-[#FC5230] px-5 py-2 text-sm font-black"
+                      >
+                        복사
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {Array.isArray(result.captions.hooks) ? (
+                        result.captions.hooks.map(
+                          (hook: string, index: number) => (
+                            <div
+                              key={index}
+                              className="rounded-2xl bg-black/40 p-5"
+                            >
+                              <p className="text-xl font-black leading-8 text-white">
+                                {hook}
+                              </p>
+                            </div>
+                          )
+                        )
+                      ) : (
+                        <div className="rounded-2xl bg-black/40 p-5">
+                          <p className="text-xl font-black leading-8 text-white">
+                            {result.captions.hooks}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </section>
             )}
           </section>
