@@ -37,7 +37,7 @@ const branches = [
   {
     slug: "mokdong",
     name: "목동점",
-    image: "/images/branches/mokdong.jpg",
+    image: "/images/branches/mokdong.png",
     phone: "02-2643-5971",
     address: "서울시 양천구 목동 909-6 우방빌딩 4층",
     hours: ["월-금 14:00~24:00", "토 11:00~16:00"],
