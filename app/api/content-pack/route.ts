@@ -98,8 +98,9 @@ export async function POST(request: Request) {
   const style = String(formData.get("style") || "BLACK");
 
   const files = formData.getAll("files") as File[];
+  const limitedFiles = files.slice(0, 2);
 
-  if (!files.length) {
+  if (!limitedFiles.length) {
     return Response.json(
       {
         ok: false,
@@ -135,8 +136,8 @@ export async function POST(request: Request) {
   const safeTarget = escapeSvgText(target);
   const safeTone = escapeSvgText(tone);
 
-  for (let i = 0; i < files.length; i++) {
-    const buffer = Buffer.from(await files[i].arrayBuffer());
+  for (let i = 0; i < limitedFiles.length; i++) {
+    const buffer = Buffer.from(await limitedFiles[i].arrayBuffer());
 
     const n = String(i + 1).padStart(2, "0");
 
@@ -395,14 +396,18 @@ export async function POST(request: Request) {
 
   const imageInputs: any[] = [];
 
-  for (let i = 0; i < Math.min(files.length, 3); i++) {
-    const imageBuffer = Buffer.from(await files[i].arrayBuffer());
+  for (let i = 0; i < Math.min(limitedFiles.length, 3); i++) {
+    const imageBuffer = Buffer.from(await limitedFiles[i].arrayBuffer());
+    const resized = await sharp(imageBuffer)
+      .resize(700)
+      .jpeg({ quality: 60 })
+      .toBuffer();
 
     const base64Image = imageBuffer.toString("base64");
 
     imageInputs.push({
       type: "input_image",
-      image_url: `data:${files[i].type};base64,${base64Image}`,
+      image_url: `data:${limitedFiles[i].type};base64,${base64Image}`,
     });
   }
 
