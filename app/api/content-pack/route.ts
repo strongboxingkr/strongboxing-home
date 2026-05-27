@@ -403,7 +403,7 @@ export async function POST(request: Request) {
       .jpeg({ quality: 60 })
       .toBuffer();
 
-    const base64Image = imageBuffer.toString("base64");
+    const base64Image = resized.toString("base64");
 
     imageInputs.push({
       type: "input_image",
@@ -445,106 +445,39 @@ export async function POST(request: Request) {
   `;
   }
 
-  const ai = await client.responses.create({
-    model: "gpt-4.1-mini",
+  const captions = {
+  analysis: `${branch} ${title} 콘텐츠팩 테스트 저장입니다.`,
 
-    input: [
-      {
-        role: "user",
+  instagram:
+    `${branch}에서 ${title} 시작해보세요 🥊\n\n` +
+    `1일 체험권 10,000원으로 부담 없이 경험해볼 수 있습니다.`,
 
-        content: [
-          {
-            type: "input_text",
+  blog:
+    `${branch} ${title} 콘텐츠 초안입니다.\n\n` +
+    `처음 운동을 시작하는 분들도 부담 없이 복싱을 경험할 수 있습니다.\n\n` +
+    `스트롱복싱에서 운동 목적에 맞는 수업을 받아보세요.`,
 
-            text: `
-너는 스트롱복싱 콘텐츠 마케터야.
-
-업로드된 체육관 사진을 보고,
-사진에 보이는 분위기와 요소를 반영해서 콘텐츠를 만들어줘.
-
-지점: ${branch}
-콘텐츠 주제: ${title}
-타겟: ${target}
-콘텐츠 톤: ${tone}
-디자인 스타일: ${style}
-스타일 가이드: ${styleGuide}
-
-사진에서 확인할 것:
-- 샌드백
-- 복싱 링
-- 미트 트레이닝
-- 유산소 공간
-- 단체수업 분위기
-- 깔끔한 시설
-- 채광/인테리어
-
-아래 JSON 형식으로만 답해.
-
-{
-  "analysis": "사진 분위기 분석 요약",
-
-  "instagram": "인스타 캡션",
-
-  "blog": "네이버 블로그 초안",
-
-  "reels": [
-    "릴스 자막1",
-    "릴스 자막2",
-    "릴스 자막3",
-    "릴스 자막4",
-    "릴스 자막5"
+  reels: [
+    `${title}, 어렵게 시작하지 않아도 됩니다.`,
+    `${branch}에서 복싱으로 운동 루틴 만들기`,
+    `1일 체험권 10,000원으로 먼저 경험해보세요.`,
   ],
 
-  "thumbnail": "썸네일 문구",
+  thumbnail: `${title} 시작하기`,
 
-  "seoTitle": "SEO 최적화 제목",
+  seoTitle: `${branch} ${title} | 스트롱복싱`,
 
-  "hashtags": "#목동복싱 #다이어트복싱",
+  hashtags:
+    `#스트롱복싱 #${branch.replace("점", "")}복싱 #복싱다이어트 #복싱입문`,
 
-  "cta": "무료체험으로 시작해보세요 🥊",
+  cta: `지금 ${branch} 1일 체험으로 시작해보세요 🥊`,
 
-  "hooks": [
-    "살 빼려고 런닝머신만 했다면…",
-    "복싱이 다이어트에 좋은 진짜 이유",
-    "운동 처음인데 복싱부터 시작한 이유"
-  ]
-}
-
-조건:
-- 사진에 실제로 보이는 요소를 자연스럽게 반영
-- 친근한 체육관 말투
-- 너무 광고 같지 않게
-- 초보자도 부담 없게
-- 1일 체험권 10,000원 자연스럽게 언급
-- ${branch} 중심으로 작성
-- 타겟(${target})에게 맞는 표현 사용
-- 콘텐츠 톤(${tone})에 맞게 작성
-- hooks는 릴스 첫 3초 시선 끄는 문구 느낌
-- thumbnail은 짧고 강렬하게
-- seoTitle은 네이버 검색 최적화 느낌
-- hashtags는 실제 인스타 스타일
-- cta는 상담 유도 느낌
-`,
-          },
-
-          ...imageInputs,
-        ],
-      },
-    ] as any,
-  });
-
-  let captions;
-
-  try {
-    captions = JSON.parse(ai.output_text);
-  } catch {
-    captions = {
-      analysis: "",
-      instagram: ai.output_text,
-      blog: "",
-      reels: [],
-    };
-  }
+  hooks: [
+    `운동 시작이 어렵다면 이거부터`,
+    `${title} 이렇게 시작하면 됩니다`,
+    `복싱 처음이어도 괜찮습니다`,
+  ],
+};
 
   await db.query(
   `

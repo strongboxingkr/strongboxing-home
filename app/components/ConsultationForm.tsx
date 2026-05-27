@@ -9,6 +9,8 @@ export default function ConsultationForm() {
     name: "",
     phone: "",
     branch: "목동점",
+    reservation_date: "",
+    reservation_time: "",
     goal: "",
     message: "",
   });
@@ -40,6 +42,8 @@ export default function ConsultationForm() {
         name: "",
         phone: "",
         branch: "목동점",
+        reservation_date: "",
+        reservation_time: "",
         goal: "",
         message: "",
       });
@@ -52,7 +56,7 @@ export default function ConsultationForm() {
   }
 
   return (
-    <section className="bg-[#0d0d0f] px-6 py-28 text-white">
+    <section id="consultation" className="bg-[#0d0d0f] px-6 py-28 text-white">
       <div className="mx-auto max-w-3xl">
         <div className="mb-12 text-center">
           <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
@@ -80,9 +84,7 @@ export default function ConsultationForm() {
             <input
               required
               value={form.name}
-              onChange={(e) =>
-                setForm({ ...form, name: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="이름 입력"
               className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
             />
@@ -96,9 +98,7 @@ export default function ConsultationForm() {
             <input
               required
               value={form.phone}
-              onChange={(e) =>
-                setForm({ ...form, phone: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
               placeholder="010-0000-0000"
               className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
             />
@@ -111,9 +111,7 @@ export default function ConsultationForm() {
 
             <select
               value={form.branch}
-              onChange={(e) =>
-                setForm({ ...form, branch: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, branch: e.target.value })}
               className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
             >
               <option>목동점</option>
@@ -124,6 +122,54 @@ export default function ConsultationForm() {
             </select>
           </div>
 
+          <div className="grid gap-5 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-bold text-zinc-400">
+                희망 날짜
+              </label>
+
+              <input
+                required
+                type="date"
+                value={form.reservation_date}
+                onChange={(e) =>
+                  setForm({ ...form, reservation_date: e.target.value })
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-bold text-zinc-400">
+                희망 시간
+              </label>
+
+              <select
+                required
+                value={form.reservation_time}
+                onChange={(e) =>
+                  setForm({ ...form, reservation_time: e.target.value })
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
+              >
+                <option value="">시간 선택</option>
+                <option>10:00</option>
+                <option>11:00</option>
+                <option>12:00</option>
+                <option>13:00</option>
+                <option>14:00</option>
+                <option>15:00</option>
+                <option>16:00</option>
+                <option>17:00</option>
+                <option>18:00</option>
+                <option>19:00</option>
+                <option>20:00</option>
+                <option>21:00</option>
+                <option>22:00</option>
+              </select>
+            </div>
+          </div>
+
           <div>
             <label className="mb-2 block text-sm font-bold text-zinc-400">
               운동 목적
@@ -131,9 +177,7 @@ export default function ConsultationForm() {
 
             <input
               value={form.goal}
-              onChange={(e) =>
-                setForm({ ...form, goal: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, goal: e.target.value })}
               placeholder="다이어트 / 체력증진 / 복싱입문"
               className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
             />
@@ -147,9 +191,7 @@ export default function ConsultationForm() {
             <textarea
               rows={5}
               value={form.message}
-              onChange={(e) =>
-                setForm({ ...form, message: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
               placeholder="궁금한 점을 자유롭게 남겨주세요."
               className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
             />
@@ -157,7 +199,7 @@ export default function ConsultationForm() {
 
           <button
             disabled={loading}
-            className="w-full rounded-full bg-[#FC5230] px-8 py-5 text-lg font-black transition hover:scale-[1.02]"
+            className="w-full rounded-full bg-[#FC5230] px-8 py-5 text-lg font-black transition hover:scale-[1.02] disabled:opacity-50"
           >
             {loading ? "예약 접수중..." : "1일 체험 예약하기"}
           </button>
