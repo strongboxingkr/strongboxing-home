@@ -1,6 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+
+const branchTimes: Record<string, string[]> = {
+  목동점: ["14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+  신정점: ["10:00", "11:00", "12:00", "13:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
+  개봉점: ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
+  철산점: ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
+  영등포점: ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
+};
+
+function getToday() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function isWeekend(dateString: string) {
+  const day = new Date(dateString).getDay();
+  return day === 0 || day === 6;
+}
 
 export default function ConsultationForm() {
   const [loading, setLoading] = useState(false);
@@ -15,17 +32,24 @@ export default function ConsultationForm() {
     message: "",
   });
 
+  const times = useMemo(() => {
+    return branchTimes[form.branch] || [];
+  }, [form.branch]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (isWeekend(form.reservation_date)) {
+      alert("예약은 평일만 가능합니다.");
+      return;
+    }
 
     try {
       setLoading(true);
 
       const res = await fetch("/api/consultation", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
@@ -68,7 +92,7 @@ export default function ConsultationForm() {
           </h2>
 
           <p className="mt-5 text-lg leading-8 text-zinc-400">
-            가까운 지점을 선택하고 스트롱복싱의 실제 수업을 경험해보세요.
+            평일 운영시간 내 희망 날짜와 시간을 선택해주세요.
           </p>
         </div>
 
@@ -76,126 +100,88 @@ export default function ConsultationForm() {
           onSubmit={handleSubmit}
           className="space-y-5 rounded-[34px] border border-white/10 bg-[#171719] p-8 md:p-10"
         >
-          <div>
-            <label className="mb-2 block text-sm font-bold text-zinc-400">
-              이름
-            </label>
+          <input
+            required
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            placeholder="이름"
+            className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
+          />
 
+          <input
+            required
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            placeholder="전화번호"
+            className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
+          />
+
+          <select
+            value={form.branch}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                branch: e.target.value,
+                reservation_time: "",
+              })
+            }
+            className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
+          >
+            <option>목동점</option>
+            <option>신정점</option>
+            <option>개봉점</option>
+            <option>철산점</option>
+            <option>영등포점</option>
+          </select>
+
+          <div className="grid gap-5 md:grid-cols-2">
             <input
               required
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="이름 입력"
-              className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
+              type="date"
+              min={getToday()}
+              value={form.reservation_date}
+              onChange={(e) => {
+                if (isWeekend(e.target.value)) {
+                  alert("토요일/일요일은 선택할 수 없습니다. 평일을 선택해주세요.");
+                  setForm({ ...form, reservation_date: "" });
+                  return;
+                }
+
+                setForm({ ...form, reservation_date: e.target.value });
+              }}
+              style={{ colorScheme: "dark" }}
+              className="w-full cursor-pointer rounded-2xl border border-white/10 bg-black px-5 py-4 text-white outline-none focus:border-[#FC5230]"
             />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-bold text-zinc-400">
-              전화번호
-            </label>
-
-            <input
-              required
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              placeholder="010-0000-0000"
-              className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-bold text-zinc-400">
-              지점 선택
-            </label>
 
             <select
-              value={form.branch}
-              onChange={(e) => setForm({ ...form, branch: e.target.value })}
+              required
+              value={form.reservation_time}
+              onChange={(e) =>
+                setForm({ ...form, reservation_time: e.target.value })
+              }
               className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
             >
-              <option>목동점</option>
-              <option>신정점</option>
-              <option>개봉점</option>
-              <option>철산점</option>
-              <option>영등포점</option>
+              <option value="">희망 시간 선택</option>
+              {times.map((time) => (
+                <option key={time}>{time}</option>
+              ))}
             </select>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-bold text-zinc-400">
-                희망 날짜
-              </label>
+          <input
+            value={form.goal}
+            onChange={(e) => setForm({ ...form, goal: e.target.value })}
+            placeholder="운동 목적"
+            className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
+          />
 
-              <input
-                required
-                type="date"
-                value={form.reservation_date}
-                onChange={(e) =>
-                  setForm({ ...form, reservation_date: e.target.value })
-                }
-                className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-bold text-zinc-400">
-                희망 시간
-              </label>
-
-              <select
-                required
-                value={form.reservation_time}
-                onChange={(e) =>
-                  setForm({ ...form, reservation_time: e.target.value })
-                }
-                className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
-              >
-                <option value="">시간 선택</option>
-                <option>10:00</option>
-                <option>11:00</option>
-                <option>12:00</option>
-                <option>13:00</option>
-                <option>14:00</option>
-                <option>15:00</option>
-                <option>16:00</option>
-                <option>17:00</option>
-                <option>18:00</option>
-                <option>19:00</option>
-                <option>20:00</option>
-                <option>21:00</option>
-                <option>22:00</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-bold text-zinc-400">
-              운동 목적
-            </label>
-
-            <input
-              value={form.goal}
-              onChange={(e) => setForm({ ...form, goal: e.target.value })}
-              placeholder="다이어트 / 체력증진 / 복싱입문"
-              className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-bold text-zinc-400">
-              문의사항
-            </label>
-
-            <textarea
-              rows={5}
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-              placeholder="궁금한 점을 자유롭게 남겨주세요."
-              className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
-            />
-          </div>
+          <textarea
+            rows={5}
+            value={form.message}
+            onChange={(e) => setForm({ ...form, message: e.target.value })}
+            placeholder="문의사항"
+            className="w-full rounded-2xl border border-white/10 bg-black px-5 py-4 outline-none focus:border-[#FC5230]"
+          />
 
           <button
             disabled={loading}
