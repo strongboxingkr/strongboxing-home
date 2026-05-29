@@ -162,6 +162,30 @@ export default async function BlogDetailPage({
               })}
             </div>
 
+            <section className="mt-16 border-t border-white/10 pt-12">
+            <h2 className="mb-6 text-3xl font-black">
+              스트롱복싱 지점 둘러보기
+            </h2>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                ["철산 복싱장", "/branches/cheolsan"],
+                ["개봉 복싱장", "/branches/gaebong"],
+                ["목동 복싱장", "/branches/mokdong"],
+                ["신정 복싱장", "/branches/sinjeong"],
+                ["영등포 복싱장", "/branches/yeongdeungpo"],
+              ].map(([label, href]) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="rounded-2xl border border-white/10 bg-[#171719] px-5 py-4 font-black transition hover:border-[#FC5230]"
+                >
+                  {label} 바로가기 →
+                </a>
+              ))}
+            </div>
+          </section>
+
             <div className="mt-14 rounded-[30px] bg-[#FC5230] p-8 text-center">
               <h2 className="mb-4 text-3xl font-black">
                 가까운 지점에서 상담 받아보세요
@@ -170,7 +194,7 @@ export default async function BlogDetailPage({
                 처음이어도 괜찮습니다. 목적에 맞는 운동 방향을 안내해드립니다.
               </p>
               <a
-                href="/#branch"
+                href="/#consultation"
                 className="inline-flex rounded-full bg-black px-7 py-4 font-black text-white"
               >
                 지점 확인하기

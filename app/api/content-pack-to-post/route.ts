@@ -53,15 +53,25 @@ export async function POST(request: Request) {
       ? `\n\n![${title}](${firstImages.blog})\n\n`
       : "";
 
-    const content = `
-${captions.blog || ""}
+    const seoText = `
+${pack.branch} 스트롱복싱은 복싱을 처음 시작하는 분들도 부담 없이 운동할 수 있는 복싱 체육관입니다.
 
-${imageMarkdown}
+${pack.branch} 복싱, ${pack.branch} 복싱장, ${pack.branch} 다이어트 운동을 찾는 분들께 복싱 입문부터 체력 향상, 다이어트 복싱까지 개인 목적에 맞춰 안내해드립니다.
 
-📍 ${pack.branch}
-🥊 1일 체험권 10,000원
-궁금하신 점은 편하게 문의주세요.
+운동이 처음이어도 괜찮습니다. 스트롱복싱에서 기초부터 차근차근 시작해보세요.
 `.trim();
+
+const content = `
+  ${captions.blog || ""}
+
+  ${imageMarkdown}
+
+  ${seoText}
+
+  📍 ${pack.branch}
+  🥊 1일 체험권 10,000원
+  궁금하신 점은 편하게 문의주세요.
+  `.trim();
 
     await db.query(
       `

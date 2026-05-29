@@ -6,6 +6,7 @@ const branches: any = {
     name: "개봉점",
     fullName: "스트롱복싱 개봉점",
     area: "개봉",
+    image: "/images/branches/gaebong.jpg",
     phone: "02-2060-1279",
     address: "서울시 구로구 개봉동 166-5번지 유원빌딩 지하 1층",
     hours: ["월-금 13:00~23:00"],
@@ -22,6 +23,7 @@ const branches: any = {
     name: "신정점",
     fullName: "스트롱복싱 신정점",
     area: "신정",
+    image: "/images/branches/sinjeong.jpg",
     phone: "02-2647-3373",
     address: "서울시 양천구 신정동 1021-7 태화상가 2층",
     hours: ["월-금 10:00~24:00", "14:00~15:00 휴게", "토 10:00~16:00"],
@@ -37,6 +39,7 @@ const branches: any = {
     name: "목동점",
     fullName: "스트롱복싱 목동점",
     area: "목동",
+    image: "/images/branches/mokdong.png",
     phone: "02-2643-5971",
     address: "서울시 양천구 목동 909-6 우방빌딩 4층",
     hours: ["월-금 14:00~24:00", "토 11:00~16:00"],
@@ -53,6 +56,7 @@ const branches: any = {
     name: "철산점",
     fullName: "스트롱복싱 철산점",
     area: "철산",
+    image: "/images/branches/cheolsan.jpg",
     phone: "02-2066-0406",
     address: "경기도 광명시 철산동 56-14 3층",
     hours: ["월-금 13:00~23:00", "토 11:00~16:00"],
@@ -68,6 +72,7 @@ const branches: any = {
     name: "영등포점",
     fullName: "스트롱복싱 영등포점",
     area: "영등포",
+    image: "/images/branches/yeongdeungpo.jpg",
     phone: "02-831-9312",
     address: "서울시 영등포구 도림로 313 건영상가 2층",
     hours: ["월-금 13:00~23:00"],
@@ -96,16 +101,55 @@ export async function generateMetadata({
     };
   }
 
+  const title = `${branch.area} 복싱장 | ${branch.fullName}`;
+  const url = `https://strongboxing.kr/branches/${slug}`;
+
   return {
-    title: `${branch.area} 복싱장 | ${branch.fullName}`,
+    metadataBase: new URL("https://strongboxing.kr"),
+    title,
     description: branch.description,
+    keywords: [
+      `${branch.area} 복싱`,
+      `${branch.area} 복싱장`,
+      `${branch.area} 복싱 체육관`,
+      `${branch.area} 다이어트`,
+      `${branch.fullName}`,
+      "스트롱복싱",
+      "복싱 입문",
+      "다이어트 복싱",
+      "여성 복싱",
+      "직장인 운동",
+    ],
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
-      title: `${branch.area} 복싱장 | ${branch.fullName}`,
-      description: branch.description,
-      url: `https://strongboxing.kr/branches/${slug}`,
-      siteName: "스트롱복싱",
-      locale: "ko_KR",
-      type: "website",
+        title,
+        description: branch.description,
+        url,
+        siteName: "스트롱복싱",
+        locale: "ko_KR",
+        type: "website",
+        images: [
+          {
+            url: "/og-image.jpg",
+            width: 1200,
+            height: 630,
+            alt: branch.fullName,
+          },
+        ],
+      },
+
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description: branch.description,
+        images: ["/og-image.jpg"],
+      },
+
+      robots: {
+      index: true,
+      follow: true,
     },
   };
 }
@@ -363,12 +407,39 @@ export default async function BranchPage({
       </section>
 
       <section className="px-6 pb-24">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="mb-8 text-4xl font-black tracking-[-0.05em]">
-            {branch.name} 소식 & 후기
-          </h2>
+      <div className="mx-auto max-w-6xl">
 
-          {relatedPosts.length > 0 ? (
+        <h2 className="mb-8 text-4xl font-black tracking-[-0.05em]">
+          {branch.name} 소식 & 후기
+        </h2>
+
+        {branch.reviewCount > 0 && (
+          <div className="mb-10 rounded-[24px] border border-[#FC5230]/20 bg-[#171719] p-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
+              <div>
+                <div className="text-2xl font-black">
+                  네이버 방문자 리뷰 {branch.reviewCount}건
+                </div>
+
+                <div className="mt-2 text-zinc-400">
+                  실제 회원님들의 후기를 확인해보세요.
+                </div>
+              </div>
+
+              <a
+                href={branch.naverMap}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-[#03C75A] px-6 py-3 font-black text-white"
+              >
+                네이버 리뷰 보기
+              </a>
+            </div>
+          </div>
+        )}
+
+        {relatedPosts.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-3">
               {relatedPosts.map((post: any) => (
                 <a
@@ -442,8 +513,8 @@ export default async function BranchPage({
             </h2>
 
             <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">
-              스트롱복싱 목동점은 복싱을 처음 시작하는 분들도 부담 없이
-              운동할 수 있도록 개인 지도 중심으로 운영되는 목동 복싱장입니다.
+              {branch.fullName}은 복싱을 처음 시작하는 분들도 부담 없이
+              운동할 수 있도록 개인 지도 중심으로 운영되는 스트롱복싱입니다.
               다이어트, 체력증진, 스트레스 해소, 복싱 입문까지 목적에 맞게
               운동 방향을 안내해드립니다.
             </p>
@@ -451,19 +522,19 @@ export default async function BranchPage({
 
           <div className="grid gap-10 md:grid-cols-2">
             <img
-              src="/images/mokdong/mokdong-main.jpg"
-              alt="목동 복싱장 스트롱복싱 목동점 내부"
+              src={branch.image}
+              alt={`${branch.area} 복싱장 ${branch.fullName} 내부`}
               className="rounded-[32px] border border-white/10 object-cover"
             />
 
             <div className="flex flex-col justify-center">
               <h3 className="text-3xl font-black">
-                목동역 근처 프리미엄 복싱장
+                {branch.area} 복싱 입문 전문 체육관
               </h3>
 
               <p className="mt-5 leading-8 text-zinc-300">
-                샌드백, 유산소 장비, 웨이트 공간까지 갖춰져 있어
-                복싱과 체력운동을 함께 진행할 수 있습니다.
+                복싱 입문부터 다이어트, 체력 향상까지
+                운동 목적에 맞춰 지도해드립니다.
               </p>
 
               <ul className="mt-8 space-y-4 text-zinc-200">

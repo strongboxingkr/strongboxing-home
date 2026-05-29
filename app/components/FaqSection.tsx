@@ -2,34 +2,54 @@ import ReservationButton from "./ReservationButton";
 
 const faqs = [
   {
-    q: "운동 처음인데 가능할까요?",
-    a: "가능합니다. 스트롱복싱은 기본 자세, 스텝, 펀치부터 단계별로 진행해서 초보자도 부담 없이 시작할 수 있습니다.",
+    q: "운동이 처음인데 가능할까요?",
+    a: "네, 가능합니다. 스트롱복싱 회원님들 중 상당수가 운동을 처음 시작하신 분들입니다. 기초 자세, 스텝, 펀치부터 차근차근 알려드리며 개인의 체력과 운동 경험에 맞춰 진도를 진행하고 있습니다.",
+  },
+  {
+    q: "수업은 어떻게 진행되나요?",
+    a: "정해진 시간에 모두가 같은 운동만 하는 방식이 아닙니다. 회원님이 방문하시는 시간에 맞춰 운동이 시작되며, 현재 수준과 목표에 맞는 운동을 진행합니다. 비슷한 수준의 회원님들이 계시면 함께 운동하기도 하고 개인 운동으로 진행하기도 합니다.",
   },
   {
     q: "여자 혼자 가도 괜찮나요?",
-    a: "네. 혼자 오시는 여성 회원님들도 많습니다. 처음 오셔도 코치가 수업 흐름을 안내해드립니다.",
+    a: "물론입니다. 실제로 여성 회원님들도 많이 운동하고 계시며 혼자 등록하시는 분들도 많습니다. 다이어트, 체력 향상, 스트레스 해소를 목적으로 편하게 운동하시는 분들이 많습니다.",
   },
   {
-    q: "다이어트 효과가 있나요?",
-    a: "복싱은 유산소와 근력운동이 같이 들어가서 체력 향상과 다이어트에 도움이 됩니다. 꾸준히 주 3회 이상 추천드립니다.",
+    q: "준비물은 무엇이 필요한가요?",
+    a: "실내용 운동화와 편한 운동복만 준비해주시면 됩니다. 처음 체험하시는 분들은 별도 장비 없이 방문 가능하며 운동에 필요한 기본 장비는 체육관에서 안내해드립니다.",
   },
   {
-    q: "준비물은 뭐가 필요한가요?",
-    a: "편한 운동복과 실내용 운동화면 충분합니다. 체험 시 필요한 기본 장비는 지점에서 안내받으실 수 있습니다.",
+    q: "복싱 시작할 때 장비는 꼭 구매해야 하나요?",
+    a: "운동을 시작하시면 핸드랩과 글러브가 필요합니다. 글러브는 개인적으로 준비하셔도 되고 체육관에서 구매하실 수도 있습니다. 처음 방문하시면 목적에 맞게 안내해드립니다.",
   },
   {
-    q: "키즈반도 있나요?",
-    a: "키즈 수업은 지점별 운영 여부가 다를 수 있습니다. 원하는 지점으로 체험 상담을 남겨주시면 안내해드립니다.",
-  },
-  {
-    q: "회원권 가격은 어디서 확인하나요?",
-    a: "회원권은 지점별 이벤트와 할인 내용이 달라 무료체험 상담에서 정확히 안내드리고 있습니다.",
+    q: "어린 아이도 운동할 수 있나요?",
+    a: "네, 가능합니다. 어린 아이부터 성인, 중장년층까지 다양한 연령대의 회원님들이 운동하고 있습니다. 연령과 체력에 맞춰 운동 강도를 조절하기 때문에 누구나 안전하게 운동하실 수 있습니다.",
   },
 ];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.a,
+    },
+  })),
+};
 
 export default function FaqSection() {
   return (
     <section className="bg-[#111214] px-5 py-28 text-white md:px-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqJsonLd),
+        }}
+      />
+
       <div className="mx-auto max-w-7xl">
         <div className="mb-12">
           <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
@@ -53,24 +73,22 @@ export default function FaqSection() {
                 {item.q}
               </h3>
 
-              <p className="leading-7 text-zinc-400">
-                {item.a}
-              </p>
+              <p className="leading-7 text-zinc-400">{item.a}</p>
             </div>
           ))}
         </div>
 
         <div className="mt-10 border border-white/10 bg-[#16171A] p-8 text-center">
           <h3 className="mb-4 text-3xl font-black">
-            아직 고민 중이라면?
+            아직 고민 중이신가요?
           </h3>
 
           <p className="mb-7 text-zinc-400">
-            만원 체험으로 스트롱복싱 분위기를 먼저 경험해보세요.
+            직접 와서 분위기와 운동 방식을 경험해보세요.
           </p>
 
           <ReservationButton className="inline-flex rounded-full bg-[#FC5230] px-8 py-4 font-black">
-            무료체험으로 시작하기
+            무료체험 신청하기
           </ReservationButton>
         </div>
       </div>
