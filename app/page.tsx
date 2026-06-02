@@ -63,7 +63,7 @@ const branches = [
   {
     slug: "yeongdeungpo",
     name: "영등포점",
-    image: "/images/gallery/gallery-1.jpg",
+    image: "/images/gallery/yeongdeungpo.jpg",
     phone: "02-831-9312",
     address: "서울시 영등포구 도림로 313 건영상가 2층",
     hours: ["월-금 13:00~23:00"],
@@ -114,7 +114,7 @@ export default async function HomePage() {
           </nav>
 
           <ReservationButton className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black">
-            만원 체험 예약
+            무료 체험 예약
           </ReservationButton>
         </div>
       </header>
@@ -148,7 +148,7 @@ export default async function HomePage() {
 
             <div className="mt-9 flex gap-3 overflow-x-auto pb-1 md:overflow-visible">
               <ReservationButton className="shrink-0 rounded-full bg-[#FC5230] px-7 py-4 text-center font-black transition hover:scale-[1.02]">
-                만원 체험 예약
+                무료 체험 예약
               </ReservationButton>
 
               <a
@@ -310,7 +310,7 @@ export default async function HomePage() {
           {[
             ["4.9", "평균 리뷰 만족도"],
             ["5", "운영 지점"],
-            ["1DAY", "만원 체험권"],
+            ["1DAY", "무료 체험권"],
             ["BEGINNER", "초보자 가능"],
           ].map(([num, text]) => (
             <div
@@ -344,13 +344,13 @@ export default async function HomePage() {
             첫 운동을 시작해보세요.
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-zinc-300">
-            홈페이지 예약 전용 만원 체험권으로 가까운 지점에서 편하게
+            홈페이지 예약 전용 무료 체험권으로 가까운 지점에서 편하게
             시작할 수 있습니다.
           </p>
 
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
             <ReservationButton className="bg-[#FC5230] px-9 py-5 text-lg font-black">
-              만원 체험 예약하기
+            무료 체험 예약하기
             </ReservationButton>
             <a
               href="/blog"
