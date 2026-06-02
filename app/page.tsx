@@ -63,7 +63,7 @@ const branches = [
   {
     slug: "yeongdeungpo",
     name: "영등포점",
-    image: "/images/gallery/yeongdeungpo.jpg",
+    image: "/images/branches/yeongdeungpo.jpg",
     phone: "02-831-9312",
     address: "서울시 영등포구 도림로 313 건영상가 2층",
     hours: ["월-금 13:00~23:00"],
