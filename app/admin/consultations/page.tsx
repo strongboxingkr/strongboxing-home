@@ -1,5 +1,7 @@
+export const dynamic = "force-dynamic";
+
+import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { revalidatePath } from "next/cache";
 
 async function updateStatus(formData: FormData) {
   "use server";
@@ -20,11 +22,21 @@ async function updateStatus(formData: FormData) {
 }
 
 export default async function ConsultationsPage() {
-  const [rows]: any = await db.query(`
-    SELECT *
-    FROM consultations
-    ORDER BY created_at DESC
-  `);
+  noStore();
+  
+  let rows: any[] = [];
+
+  try {
+    const [result]: any = await db.query(`
+      SELECT *
+      FROM consultations
+      ORDER BY created_at DESC
+    `);
+
+    rows = result;
+  } catch (error) {
+    rows = [];
+  }
 
   return (
     <main className="min-h-screen bg-[#0d0d0f] px-6 py-24 text-white">

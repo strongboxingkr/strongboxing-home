@@ -59,14 +59,14 @@ const branches: any = {
     image: "/images/branches/cheolsan.jpg",
     phone: "02-2066-0406",
     address: "경기도 광명시 철산동 56-14 3층",
-    hours: ["월-금 13:00~23:00", "토 11:00~16:00"],
+    hours: ["월-금 14:00~23:00", "토, 일 14:00~18:00"],
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
     booking: "",
     naverMap: "",
     kakaoMap: "",
     description:
-      "광명 철산동에서 오픈 예정인 스트롱복싱 철산점입니다. 복싱 입문, 다이어트, 체력 향상을 부담 없이 시작할 수 있습니다.",
-  },
+      "광명 철산동 복싱장 스트롱복싱 철산점입니다. 복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동을 편하게 시작할 수 있습니다."
+    },
 
   yeongdeungpo: {
     name: "영등포점",
@@ -84,6 +84,28 @@ const branches: any = {
     description:
       "영등포에서 복싱 입문, 다이어트, 직장인 운동을 시작할 수 있는 스트롱복싱 영등포점입니다.",
   },
+};
+
+const branchKeywords: Record<string, string[]> = {
+  gaebong: [
+    "개봉 복싱", "개봉동 복싱", "개봉역 복싱", "개봉 복싱장",
+    "구로구 복싱", "구로 복싱", "오류동 복싱", "고척동 복싱",
+  ],
+  sinjeong: [
+    "신정 복싱", "신정동 복싱", "신정네거리 복싱", "신정 복싱장",
+    "양천구 복싱", "신월동 복싱", "목동 복싱",
+  ],
+  mokdong: [
+    "목동 복싱", "목동 복싱장", "오목교 복싱", "오목교역 복싱",
+    "양천구 복싱", "목동 다이어트", "목동 여성 복싱",
+  ],
+  cheolsan: [
+    "철산 복싱", "철산동 복싱", "철산역 복싱", "철산 복싱장",
+    "광명 복싱", "광명 복싱장", "광명 다이어트", "광명 운동",
+  ],
+  yeongdeungpo: [
+    "영등포 복싱", "영등포 복싱장", "도림동 복싱", "신길동 복싱",
+  ],
 };
 
 export async function generateMetadata({
@@ -109,16 +131,14 @@ export async function generateMetadata({
     title,
     description: branch.description,
     keywords: [
-      `${branch.area} 복싱`,
-      `${branch.area} 복싱장`,
-      `${branch.area} 복싱 체육관`,
-      `${branch.area} 다이어트`,
+      ...(branchKeywords[slug] || []),
       `${branch.fullName}`,
       "스트롱복싱",
       "복싱 입문",
       "다이어트 복싱",
       "여성 복싱",
       "직장인 운동",
+      "초보자 복싱",
     ],
     alternates: {
       canonical: url,
@@ -191,17 +211,116 @@ export default async function BranchPage({
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "ExerciseGym",
+    "@type": ["ExerciseGym", "SportsActivityLocation", "LocalBusiness"],
+    "@id": `https://strongboxing.kr/branches/${slug}#localbusiness`,
     name: branch.fullName,
+    alternateName: [
+      `${branch.area} 복싱장`,
+      `${branch.area} 복싱`,
+      `스트롱복싱 ${branch.name}`,
+    ],
     description: branch.description,
+    url: `https://strongboxing.kr/branches/${slug}`,
+    telephone: branch.phone,
+    image: `https://strongboxing.kr${branch.image}`,
+    logo: "https://strongboxing.kr/icon.png",
+    priceRange: "₩₩",
     address: {
       "@type": "PostalAddress",
       streetAddress: branch.address,
       addressCountry: "KR",
     },
-    telephone: branch.phone,
-    url: `https://strongboxing.kr/branches/${slug}`,
-    sameAs: branch.instagram ? [branch.instagram] : [],
+    openingHoursSpecification: branch.hours.map((h: string) => ({
+      "@type": "OpeningHoursSpecification",
+      description: h,
+    })),
+    sameAs: [
+      branch.instagram,
+      branch.naverMap,
+      branch.kakaoMap,
+      branch.googleMap,
+      branch.booking,
+    ].filter(Boolean),
+    brand: {
+      "@type": "Brand",
+      name: "STRONG BOXING",
+      alternateName: "스트롱복싱",
+      url: "https://strongboxing.kr",
+      logo: "https://strongboxing.kr/icon.png",
+    },
+    parentOrganization: {
+      "@type": "Organization",
+      name: "STRONG BOXING",
+      url: "https://strongboxing.kr",
+    },
+    areaServed: [
+      branch.area,
+      slug === "cheolsan" ? "광명" : "",
+      slug === "gaebong" ? "구로구" : "",
+      slug === "sinjeong" || slug === "mokdong" ? "양천구" : "",
+      slug === "yeongdeungpo" ? "영등포구" : "",
+    ].filter(Boolean),
+    knowsAbout: [
+      ...(branchKeywords[slug] || []),
+      "복싱 입문",
+      "초보자 복싱",
+      "다이어트 복싱",
+      "여성 복싱",
+      "직장인 운동",
+      "체력 향상",
+      "스트레스 해소",
+    ],
+    makesOffer: [
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "복싱 입문 수업",
+          description: "처음 시작하는 회원을 위한 기초 자세, 스텝, 펀치 지도",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "다이어트 복싱",
+          description: "체력 향상과 체중 관리를 위한 복싱 트레이닝",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "개인별 복싱 지도",
+          description: "회원 운동 목적과 실력에 맞춘 코치 직접 지도",
+        },
+      },
+    ],
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "스트롱복싱",
+        item: "https://strongboxing.kr",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "지점 안내",
+        item: "https://strongboxing.kr/branches",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: branch.fullName,
+        item: `https://strongboxing.kr/branches/${slug}`,
+      },
+    ],
   };
 
   const faqJsonLd = {
@@ -210,26 +329,34 @@ export default async function BranchPage({
     mainEntity: [
       {
         "@type": "Question",
-        name: "복싱 처음인데 가능할까요?",
+        name: `${branch.area} 복싱 처음인데 가능할까요?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: "처음 운동하시는 분들도 많으며 개인 수준에 맞춰 기초부터 안내해드립니다.",
+          text: `${branch.fullName}은 복싱을 처음 시작하는 분들도 기초 자세, 스텝, 펀치부터 개인 수준에 맞춰 안내합니다.`,
         },
       },
       {
         "@type": "Question",
-        name: "여성 회원도 운동 가능한가요?",
+        name: `${branch.name}은 여성 회원도 운동 가능한가요?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: "여성 회원 비율도 높으며 다이어트와 체력증진 목적으로 많이 등록하고 있습니다.",
+          text: "여성 회원도 많이 이용하며 다이어트, 체력 향상, 스트레스 해소 목적으로 복싱을 시작하는 분들이 많습니다.",
         },
       },
       {
         "@type": "Question",
-        name: "학생 회원도 운동 가능한가요?",
+        name: `${branch.area}에서 다이어트 복싱 가능한가요?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: "학생 회원들도 많이 운동하고 있으며 체력관리와 스트레스 해소 목적으로 등록하고 있습니다.",
+          text: `${branch.fullName}에서는 복싱 입문, 다이어트 복싱, 체력 향상 운동을 목적에 맞게 진행할 수 있습니다.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: "운영시간 안에 자유롭게 방문 가능한가요?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "운영시간 내 편한 시간에 방문 가능하며, 회원 운동 목적과 진도에 맞춰 지도합니다.",
         },
       },
     ],
@@ -237,19 +364,26 @@ export default async function BranchPage({
 
   return (
     <main className="min-h-screen bg-[#0d0d0f] text-white">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd),
-        }}
-      />
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(jsonLd),
+              }}
+            />
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqJsonLd),
-        }}
-      />
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(breadcrumbJsonLd),
+              }}
+            />
+
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(faqJsonLd),
+              }}
+            />
 
       <section className="bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.35),transparent_35%),linear-gradient(135deg,#070707,#151515)] px-6 py-24">
         <div className="mx-auto max-w-6xl">
