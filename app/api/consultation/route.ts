@@ -66,22 +66,25 @@ export async function POST(req: Request) {
       },
     });
 
-    await transporter.sendMail({
-      from: `"스트롱복싱 홈페이지" <${process.env.SMTP_USER}>`,
-      to: process.env.CONSULT_EMAIL,
-      subject: `[홈페이지예약][${branch}] ${name} / ${reservation_date} ${reservation_time}`,
-      html: `
-        <h2>새 홈페이지 체험 예약</h2>
-        <p><b>이름:</b> ${name}</p>
-        <p><b>전화번호:</b> ${phone}</p>
-        <p><b>지점:</b> ${branch}</p>
-        <p><b>예약일:</b> ${reservation_date}</p>
-        <p><b>예약시간:</b> ${reservation_time}</p>
-        <p><b>운동목적:</b> ${goal || "-"}</p>
-        <p><b>문의사항:</b> ${message || "-"}</p>
-      `,
-    });
-
+    try {
+      await transporter.sendMail({
+        from: `"스트롱복싱 홈페이지" <${process.env.SMTP_USER}>`,
+        to: process.env.CONSULT_EMAIL,
+        subject: `[홈페이지예약][${branch}] ${name} / ${reservation_date} ${reservation_time}`,
+        html: `
+          <h2>새 홈페이지 체험 예약</h2>
+          <p><b>이름:</b> ${name}</p>
+          <p><b>전화번호:</b> ${phone}</p>
+          <p><b>지점:</b> ${branch}</p>
+          <p><b>예약일:</b> ${reservation_date}</p>
+          <p><b>예약시간:</b> ${reservation_time}</p>
+          <p><b>운동목적:</b> ${goal || "-"}</p>
+          <p><b>문의사항:</b> ${message || "-"}</p>
+        `,
+      });
+    }catch (mailError) {
+      console.error("메일 발송 실패:", mailError);
+    }
     return Response.json({
       ok: true,
     });
