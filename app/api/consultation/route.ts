@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
   try {
@@ -12,20 +13,13 @@ export async function POST(req: Request) {
       message,
     } = await req.json();
 
-    if (
-      !name ||
-      !phone ||
-      !branch ||
-      !reservation_date ||
-      !reservation_time
-    ) {
+    if (!name || !phone || !branch || !reservation_date || !reservation_time) {
       return Response.json({
         ok: false,
         message: "필수 항목을 입력해주세요.",
       });
     }
 
-    // 중복 예약 체크
     const [exists]: any = await db.query(
       `
       SELECT id
@@ -45,17 +39,11 @@ export async function POST(req: Request) {
       });
     }
 
-    // 예약 저장
     await db.query(
       `
       INSERT INTO consultations (
-        name,
-        phone,
-        branch,
-        reservation_date,
-        reservation_time,
-        goal,
-        message
+        name, phone, branch, reservation_date,
+        reservation_time, goal, message
       )
       VALUES (?, ?, ?, ?, ?, ?, ?)
       `,
@@ -69,6 +57,30 @@ export async function POST(req: Request) {
         message || "",
       ]
     );
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"스트롱복싱 홈페이지" <${process.env.SMTP_USER}>`,
+      to: process.env.CONSULT_EMAIL,
+      subject: `[홈페이지예약][${branch}] ${name} / ${reservation_date} ${reservation_time}`,
+      html: `
+        <h2>새 홈페이지 체험 예약</h2>
+        <p><b>이름:</b> ${name}</p>
+        <p><b>전화번호:</b> ${phone}</p>
+        <p><b>지점:</b> ${branch}</p>
+        <p><b>예약일:</b> ${reservation_date}</p>
+        <p><b>예약시간:</b> ${reservation_time}</p>
+        <p><b>운동목적:</b> ${goal || "-"}</p>
+        <p><b>문의사항:</b> ${message || "-"}</p>
+      `,
+    });
 
     return Response.json({
       ok: true,
