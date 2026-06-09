@@ -9,6 +9,7 @@ export default function ReelsPage() {
   const [reels, setReels] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [videoFileName, setVideoFileName] = useState("");
 
   useEffect(() => {
     loadReels();
@@ -44,7 +45,10 @@ export default function ReelsPage() {
   }
 
   async function saveReel() {
-    if (!title || !videoUrl) {
+    const finalVideoUrl =
+    videoUrl || `/videos/${videoFileName}`;
+
+    if (!title || !finalVideoUrl) {
       alert("제목과 영상을 넣어줘.");
       return;
     }
@@ -59,7 +63,7 @@ export default function ReelsPage() {
       body: JSON.stringify({
         branch_name: branchName,
         title,
-        video_url: videoUrl,
+        video_url: finalVideoUrl,
       }),
     });
 
@@ -124,9 +128,31 @@ export default function ReelsPage() {
             className="w-full rounded-2xl border border-white/10 bg-black p-4"
           />
 
+          <input
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            placeholder="/videos/cheolsan-001.mp4"
+            className="w-full rounded-2xl border border-white/10 bg-black p-4"
+            />
+
+            <p className="text-sm text-zinc-500">
+            또는 public/videos 폴더에 넣은 영상 경로를 직접 입력할 수 있습니다.
+            </p>
+
           {uploading && (
             <p className="font-bold text-[#FC5230]">영상 업로드 중...</p>
           )}
+
+          <input
+            value={videoFileName}
+            onChange={(e) => setVideoFileName(e.target.value)}
+            placeholder="cheolsan-001.mp4"
+            className="w-full rounded-2xl border border-white/10 bg-black p-4"
+            />
+
+            <p className="text-sm text-zinc-500">
+            public/videos 폴더에 넣은 영상 파일명만 입력하세요.
+            </p>
 
           {videoUrl && (
             <video src={videoUrl} controls className="max-h-[400px] w-full rounded-2xl" />
