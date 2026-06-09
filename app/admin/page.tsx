@@ -263,6 +263,13 @@ export default function AdminPage() {
           ← 메인으로
         </a>
 
+        <a
+          href="/admin/naver-blog"
+          className="inline-block rounded-full bg-white px-6 py-3 font-black text-black"
+        >
+          네이버 블로그 작성 AI
+        </a>
+
         <h1 className="mb-8 text-5xl font-black tracking-[-0.06em]">
           {editingId ? "블로그 글 수정" : "블로그 글 작성"}
         </h1>

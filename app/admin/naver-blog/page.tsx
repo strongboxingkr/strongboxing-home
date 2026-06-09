@@ -28,6 +28,9 @@ export default function NaverBlogPage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
+  const [adminPassword, setAdminPassword] = useState("");
+  const [isAuthed, setIsAuthed] = useState(false);
+
   useEffect(() => {
     loadPosts();
   }, []);
