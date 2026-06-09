@@ -70,36 +70,42 @@ export default function NaverBlogPage() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+        const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+        });
 
-    setUploading(false);
+        const data = await res.json();
 
-    if (!res.ok) {
-      alert("업로드 실패");
-      return;
+        if (!res.ok || !data.ok) {
+        console.error("업로드 실패 응답:", data);
+        alert(data.message || "업로드 실패");
+        return;
+        }
+
+        const type = file.type.startsWith("video") ? "video" : "image";
+
+        const item: MediaItem = {
+        type,
+        url: data.url,
+        name: file.name,
+        };
+
+        setMedia((prev) => [...prev, item]);
+
+        if (type === "image") {
+        insertText(`\n\n[사진] ${data.url}\n\n`);
+        } else {
+        insertText(`\n\n[영상] ${data.url}\n\n`);
+        }
+        } catch (error) {
+            console.error("업로드 요청 오류:", error);
+            alert("업로드 실패");
+        } finally {
+            setUploading(false);
+        }
     }
-
-    const data = await res.json();
-
-    const type = file.type.startsWith("video") ? "video" : "image";
-
-    const item: MediaItem = {
-      type,
-      url: data.url,
-      name: file.name,
-    };
-
-    setMedia((prev) => [...prev, item]);
-
-    if (type === "image") {
-      insertText(`\n\n[사진] ${data.url}\n\n`);
-    } else {
-      insertText(`\n\n[영상] ${data.url}\n\n`);
-    }
-  }
 
   async function handleAI() {
     if (!keyword) {
@@ -234,6 +240,46 @@ export default function NaverBlogPage() {
     navigator.clipboard.writeText(text);
     alert("복사 완료!");
   }
+
+  if (!isAuthed) {
+    return (
+        <main className="flex min-h-screen items-center justify-center bg-[#0d0d0f] px-6 text-white">
+        <div className="w-full max-w-md rounded-[30px] border border-white/10 bg-[#171719] p-8">
+            <h1 className="mb-6 text-4xl font-black">관리자 로그인</h1>
+
+            <input
+            type="password"
+            value={adminPassword}
+            onChange={(e) => setAdminPassword(e.target.value)}
+            onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                if (adminPassword === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+                    setIsAuthed(true);
+                } else {
+                    alert("비밀번호가 틀렸어.");
+                }
+                }
+            }}
+            className="mb-4 w-full rounded-2xl border border-white/10 bg-black p-4 outline-none focus:border-[#FC5230]"
+            placeholder="관리자 비밀번호"
+            />
+
+            <button
+            onClick={() => {
+                if (adminPassword === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+                setIsAuthed(true);
+                } else {
+                alert("비밀번호가 틀렸어.");
+                }
+            }}
+            className="w-full rounded-full bg-[#FC5230] px-8 py-4 font-black"
+            >
+            들어가기
+            </button>
+        </div>
+        </main>
+    );
+    }
 
   return (
     <main className="min-h-screen bg-[#0d0d0f] px-6 py-16 text-white">
