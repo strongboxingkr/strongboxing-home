@@ -7,6 +7,8 @@ import AiCoachChat from "./components/AiCoachChat";
 import FaqSection from "./components/FaqSection";
 import ReelsSection from "./components/ReelsSection";
 
+export const dynamic = "force-dynamic";
+
 const branches = [
   {
     slug: "gaebong",
