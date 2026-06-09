@@ -10,6 +10,7 @@ export default function ReelsPage() {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [videoFileName, setVideoFileName] = useState("");
+  
 
   useEffect(() => {
     loadReels();
@@ -45,41 +46,52 @@ export default function ReelsPage() {
   }
 
   async function saveReel() {
+    const branchFolderMap: any = {
+        철산점: "cheolsan",
+        목동점: "mokdong",
+        신정점: "sinjeong",
+        개봉점: "gaebong",
+        영등포점: "yeongdeungpo",
+    };
+
+    const folder = branchFolderMap[branchName];
+
     const finalVideoUrl =
-    videoUrl || `/videos/${videoFileName}`;
+        videoUrl || (videoFileName ? `/videos/${folder}/${videoFileName}` : "");
 
     if (!title || !finalVideoUrl) {
-      alert("제목과 영상을 넣어줘.");
-      return;
+        alert("제목과 영상을 넣어줘.");
+        return;
     }
 
     setSaving(true);
 
     const res = await fetch("/api/reels", {
-      method: "POST",
-      headers: {
+        method: "POST",
+        headers: {
         "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+        },
+        body: JSON.stringify({
         branch_name: branchName,
         title,
         video_url: finalVideoUrl,
-      }),
+        }),
     });
 
     const data = await res.json();
     setSaving(false);
 
     if (!data.ok) {
-      alert("저장 실패");
-      return;
+        alert("저장 실패");
+        return;
     }
 
     alert("저장 완료!");
     setTitle("");
     setVideoUrl("");
+    setVideoFileName("");
     loadReels();
-  }
+    }
 
   return (
     <main className="min-h-screen bg-[#0d0d0f] px-6 py-16 text-white">
