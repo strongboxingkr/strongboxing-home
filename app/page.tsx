@@ -5,6 +5,7 @@ import ScrollLink from "./components/ScrollLink";
 import ReservationButton from "./components/ReservationButton";
 import AiCoachChat from "./components/AiCoachChat";
 import FaqSection from "./components/FaqSection";
+import ReelsSection from "./components/ReelsSection";
 
 const branches = [
   {
@@ -251,6 +252,8 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <ReelsSection />
+
       <section id="calculator" className="bg-[#111214]">
         <BoxingCalculator />
       </section>
@@ -412,6 +415,26 @@ export default async function HomePage() {
             </div>
           )}
         </div>
+      </section>
+
+      <section className="sr-only">
+        <h2>스트롱복싱 지점 안내</h2>
+
+        <p>
+          개봉동 복싱장, 신정동 복싱장,
+          목동 복싱장, 철산동 복싱장,
+          광명 복싱장, 키즈 복싱,
+          여성 복싱을 찾는 분들이
+          많이 방문하고 있습니다.
+        </p>
+
+        <p>
+          초보자 복싱, 여성 복싱,
+          다이어트 복싱, 직장인 운동,
+          키즈 복싱, 어린이 복싱,
+          체력 향상 운동을 목적으로
+          편하게 시작할 수 있습니다.
+        </p>
       </section>
 
       <ConsultationForm />
