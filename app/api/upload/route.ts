@@ -17,6 +17,7 @@ export async function POST(req: Request) {
     const buffer = Buffer.from(bytes);
 
     const uploadDir = path.join(process.cwd(), "public", "uploads");
+
     await mkdir(uploadDir, { recursive: true });
 
     const safeName = file.name
@@ -36,7 +37,10 @@ export async function POST(req: Request) {
     console.error("업로드 실패:", error);
 
     return Response.json(
-      { ok: false, message: "업로드 실패" },
+      {
+        ok: false,
+        message: "업로드 실패",
+      },
       { status: 500 }
     );
   }

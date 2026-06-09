@@ -59,7 +59,7 @@ const branches: any = {
     image: "/images/branches/cheolsan.jpg",
     phone: "02-2066-0406",
     address: "경기도 광명시 철산동 56-14 3층",
-    hours: ["월-금 14:00~23:00", "토, 일 14:00~18:00"],
+    hours: ["월-금 14:00~23:00", "토·일 14:00~18:00", "공휴일 휴무",],
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
     booking: "",
     naverMap: "",
@@ -296,6 +296,11 @@ export default async function BranchPage({
         },
       },
     ],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: branch.reviewCount || 1,
+    },
   };
 
   const breadcrumbJsonLd = {
