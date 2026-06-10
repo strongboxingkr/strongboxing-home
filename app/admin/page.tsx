@@ -279,30 +279,45 @@ export default function AdminPage() {
 
           <a
             href="/admin/naver-blog"
-            className="rounded-full border border-[#FC5230]/30 bg-[#FC5230]/10 px-5 py-3 font-black text-[#FC5230]"
+            className="rounded-full border border-[#FC5230]/30 bg-[#FC5230]/10 px-6 py-3 font-black text-[#FC5230]"
           >
             NAVER BLOG
           </a>
 
           <a
             href="/admin/reels"
-            className="rounded-full border border-[#FC5230]/30 bg-[#FC5230]/10 px-5 py-3 font-black text-[#FC5230]"
+            className="rounded-full border border-[#FC5230]/30 bg-[#FC5230]/10 px-6 py-3 font-black text-[#FC5230]"
           >
             STRONG CLIP
           </a>
 
           <a
             href="/admin/replies"
-            className="rounded-full border border-[#14B8A6]/30 bg-[#14B8A6]/10 px-5 py-3 font-black text-[#2DD4BF]"
+            className="rounded-full border border-[#14B8A6]/30 bg-[#14B8A6]/10 px-6 py-3 font-black text-[#2DD4BF]"
           >
             CRM REPLIES
           </a>
 
-          <a href="/admin/branch-info">BRANCH INFO</a>
+          <a 
+            href="/admin/branch-info"
+            className="rounded-full border border-[#60A5FA]/30 bg-[#60A5FA]/10 px-6 py-3 font-black text-[#60A5FA]"
+            >
+            BRANCH INFO
+          </a>
 
-          <a href="/admin/accounts">ACCOUNT INFO</a>
-          
-          <a href="/admin/marketing">MARKETING</a>
+          <a 
+            href="/admin/accounts"
+            className="rounded-full border border-[#C084FC]/30 bg-[#C084FC]/10 px-6 py-3 font-black text-[#C084FC]"
+          >
+            ACCOUNT INFO
+          </a>
+
+          <a 
+            href="/admin/marketing"
+            className="rounded-full border border-[#FACC15]/30 bg-[#FACC15]/10 px-6 py-3 font-black text-[#FACC15]"
+          >
+            MARKETING
+          </a>
 
         </div>
         

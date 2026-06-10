@@ -11,6 +11,7 @@ export default function RepliesPage() {
   const [branchName, setBranchName] = useState("공통");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [isPinned, setIsPinned] = useState(false);
 
   async function loadReplies() {
     const res = await fetch("/api/replies");
@@ -37,11 +38,12 @@ export default function RepliesPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: editingId,
-        category,
-        branch_name: branchName,
-        title,
-        content,
+      id: editingId,
+      category,
+      branch_name: branchName,
+      title,
+      content,
+      is_pinned: isPinned ? 1 : 0,
       }),
     });
 
@@ -57,6 +59,7 @@ export default function RepliesPage() {
     setEditingId(null);
     setTitle("");
     setContent("");
+    setIsPinned(false);
 
     loadReplies();
   }
@@ -81,6 +84,7 @@ export default function RepliesPage() {
     setBranchName(reply.branch_name);
     setTitle(reply.title);
     setContent(reply.content);
+    setIsPinned(reply.is_pinned === 1);
 
     window.scrollTo({
       top: 0,
@@ -129,6 +133,15 @@ export default function RepliesPage() {
             className="h-60 w-full rounded-2xl border border-white/10 bg-black p-4"
           />
 
+          <label className="flex items-center gap-3 text-sm font-bold text-zinc-300">
+            <input
+                type="checkbox"
+                checked={isPinned}
+                onChange={(e) => setIsPinned(e.target.checked)}
+            />
+            ⭐ 즐겨찾기 상단 고정
+          </label>
+
           <button
             onClick={saveReply}
             className="w-full rounded-full bg-[#FC5230] px-8 py-5 font-black"
@@ -143,6 +156,10 @@ export default function RepliesPage() {
               key={reply.id}
               className="rounded-[30px] border border-white/10 bg-[#171719] p-6"
             >
+               {reply.is_pinned === 1 && (
+               <p className="mb-3 text-sm font-black text-[#2DD4BF]">⭐ 고정 답장</p>
+               )}
+
               <h2 className="text-2xl font-black">
                 {reply.title}
               </h2>

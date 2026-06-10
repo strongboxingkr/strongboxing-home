@@ -20,18 +20,20 @@ export async function POST(request: Request) {
     `
     INSERT INTO reply_templates
     (
-      category,
-      branch_name,
-      title,
-      content
+    category,
+    branch_name,
+    title,
+    content,
+    is_pinned
     )
-    VALUES (?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?)
     `,
     [
-      body.category,
-      body.branch_name,
-      body.title,
-      body.content,
+    body.category,
+    body.branch_name,
+    body.title,
+    body.content,
+    body.is_pinned || 0,
     ]
   );
 
@@ -45,18 +47,20 @@ export async function PUT(request: Request) {
     `
     UPDATE reply_templates
     SET
-      category = ?,
-      branch_name = ?,
-      title = ?,
-      content = ?
+    category = ?,
+    branch_name = ?,
+    title = ?,
+    content = ?,
+    is_pinned = ?
     WHERE id = ?
     `,
     [
-      body.category,
-      body.branch_name,
-      body.title,
-      body.content,
-      body.id,
+    body.category,
+    body.branch_name,
+    body.title,
+    body.content,
+    body.is_pinned || 0,
+    body.id,
     ]
   );
 

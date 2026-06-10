@@ -14,6 +14,7 @@ export default function MarketingPage() {
   const [items, setItems] = useState<any[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     loadItems();
@@ -156,8 +157,31 @@ export default function MarketingPage() {
           </button>
         </section>
 
-        <section className="mt-14 grid gap-5 md:grid-cols-2">
-          {items.map((item) => (
+        <div className="mt-10">
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="검색: 철산, 해시태그, 이벤트, 릴스..."
+            className="w-full rounded-2xl border border-white/10 bg-black p-4 outline-none focus:border-[#FACC15]"
+          />
+        </div>
+
+        <section className="mt-6 grid gap-5 md:grid-cols-2">
+          {items
+            .filter((item) => {
+                const q = search.trim().toLowerCase();
+
+                if (!q) return true;
+
+                return (
+                item.category?.toLowerCase().includes(q) ||
+                item.branch_name?.toLowerCase().includes(q) ||
+                item.title?.toLowerCase().includes(q) ||
+                item.content?.toLowerCase().includes(q) ||
+                item.memo?.toLowerCase().includes(q)
+                );
+            })
+            .map((item) => (
             <div
               key={item.id}
               className="rounded-[30px] border border-white/10 bg-[#171719] p-6"

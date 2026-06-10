@@ -20,6 +20,7 @@ export default function BranchInfoPage() {
   const [items, setItems] = useState<any[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     loadItems();
@@ -209,66 +210,104 @@ export default function BranchInfoPage() {
           </button>
         </section>
 
+        <div className="mt-10">
+        <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="검색: 철산, 인스타, 전화번호..."
+            className="w-full rounded-2xl border border-white/10 bg-black p-4"
+        />
+        </div>
+
         <section className="mt-14 grid gap-5 md:grid-cols-2">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className="rounded-[30px] border border-white/10 bg-[#171719] p-6"
-            >
-              <p className="text-sm font-black text-[#60A5FA]">
-                {item.branch_name}
-              </p>
+            {items
+                .filter((item) => {
+                    const q = search.toLowerCase();
 
-              <h2 className="mt-1 text-3xl font-black">{item.phone}</h2>
+                    if (!q) return true;
 
-              <pre className="mt-4 whitespace-pre-wrap text-zinc-300">
-                {item.address}
-              </pre>
-
-              <pre className="mt-4 whitespace-pre-wrap text-sm text-zinc-400">
-                {item.business_hours}
-              </pre>
-
-              <div className="mt-5 flex flex-wrap gap-3">
-                <button
-                  onClick={() => copy(item.phone)}
-                  className="rounded-full bg-white px-4 py-2 text-sm font-black text-black"
+                    return (
+                    item.branch_name?.toLowerCase().includes(q) ||
+                    item.phone?.toLowerCase().includes(q) ||
+                    item.address?.toLowerCase().includes(q) ||
+                    item.instagram_url?.toLowerCase().includes(q) ||
+                    item.hashtags?.toLowerCase().includes(q)
+                    );
+                })
+                .map((item) => (
+                <div
+                key={item.id}
+                className="rounded-[30px] border border-white/10 bg-[#171719] p-6"
                 >
-                  전화 복사
-                </button>
+                <p className="text-sm font-black tracking-[0.25em] text-[#60A5FA]">
+                    BRANCH INFO
+                </p>
 
-                <button
-                  onClick={() => copy(item.address)}
-                  className="rounded-full bg-white px-4 py-2 text-sm font-black text-black"
-                >
-                  주소 복사
-                </button>
+                <h2 className="mt-2 text-4xl font-black">{item.branch_name}</h2>
 
-                <button
-                  onClick={() => copy(item.hashtags)}
-                  className="rounded-full bg-[#60A5FA] px-4 py-2 text-sm font-black text-black"
-                >
-                  해시태그 복사
-                </button>
+                <div className="mt-6 space-y-4">
+                    <InfoRow label="전화번호" value={item.phone} onCopy={copy} />
+                    <InfoRow label="주소" value={item.address} onCopy={copy} />
+                    <InfoRow label="인스타" value={item.instagram_url} onCopy={copy} />
+                    <InfoRow label="네이버예약" value={item.naver_booking_url} onCopy={copy} />
+                    <InfoRow label="네이버지도" value={item.naver_map_url} onCopy={copy} />
+                    <InfoRow label="네이버블로그" value={item.naver_blog_url} onCopy={copy} />
+                    <InfoRow label="카카오맵" value={item.kakao_map_url} onCopy={copy} />
+                    <InfoRow label="운영시간" value={item.business_hours} onCopy={copy} />
+                    <InfoRow label="해시태그" value={item.hashtags} onCopy={copy} />
+                    <InfoRow label="메모" value={item.memo} onCopy={copy} />
+                </div>
 
-                <button
-                  onClick={() => editItem(item)}
-                  className="rounded-full border border-white/10 px-4 py-2 text-sm font-black"
-                >
-                  수정
-                </button>
+                <div className="mt-6 flex flex-wrap gap-3">
+                    <button
+                    onClick={() => editItem(item)}
+                    className="rounded-full border border-white/10 px-4 py-2 text-sm font-black"
+                    >
+                    수정
+                    </button>
 
-                <button
-                  onClick={() => deleteItem(item.id)}
-                  className="rounded-full border border-red-500 px-4 py-2 text-sm font-black text-red-400"
-                >
-                  삭제
-                </button>
-              </div>
-            </div>
-          ))}
-        </section>
+                    <button
+                    onClick={() => deleteItem(item.id)}
+                    className="rounded-full border border-red-500 px-4 py-2 text-sm font-black text-red-400"
+                    >
+                    삭제
+                    </button>
+                </div>
+                </div>
+            ))}
+            </section>
       </div>
     </main>
+  );
+}
+
+function InfoRow({
+  label,
+  value,
+  onCopy,
+}: {
+  label: string;
+  value: string;
+  onCopy: (text: string) => void;
+}) {
+  if (!value) return null;
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-black/40 p-4">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <p className="text-sm font-black text-[#60A5FA]">{label}</p>
+
+        <button
+          onClick={() => onCopy(value)}
+          className="shrink-0 rounded-full bg-white px-3 py-1.5 text-xs font-black text-black"
+        >
+          복사
+        </button>
+      </div>
+
+      <pre className="whitespace-pre-wrap break-words text-sm leading-6 text-zinc-300">
+        {value}
+      </pre>
+    </div>
   );
 }

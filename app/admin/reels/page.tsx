@@ -23,6 +23,20 @@ export default function ReelsPage() {
     if (data.ok) setReels(data.reels);
   }
 
+  async function deleteReel(id: number) {
+    if (!confirm("삭제할까요?")) return;
+
+    await fetch("/api/reels", {
+        method: "DELETE",
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+    });
+
+    loadReels();
+    }
+
   async function loadVideoFiles(branch: string) {
     const res = await fetch(`/api/reels-files?branch=${encodeURIComponent(branch)}`);
     const data = await res.json();

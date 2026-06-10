@@ -50,3 +50,19 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export async function DELETE(req: Request) {
+  const { id } = await req.json();
+
+  await db.query(
+    `
+    DELETE FROM homepage_reels
+    WHERE id = ?
+    `,
+    [id]
+  );
+
+  return Response.json({
+    ok: true,
+  });
+}

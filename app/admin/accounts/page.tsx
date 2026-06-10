@@ -15,6 +15,7 @@ export default function AccountsPage() {
   const [items, setItems] = useState<any[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
 
   useEffect(() => {
     loadItems();
@@ -184,9 +185,34 @@ export default function AccountsPage() {
                 {item.account_id || "아이디 없음"}
               </h2>
 
-              <p className="mt-3 break-all text-zinc-300">
-                {item.account_password || "비밀번호 없음"}
-              </p>
+              <div className="mt-4">
+                <p className="mb-2 text-sm font-black text-[#C084FC]">
+                    PASSWORD
+                </p>
+
+                <div className="flex flex-wrap items-center gap-3">
+                    <p className="break-all text-zinc-300">
+                    {visiblePasswords.includes(item.id)
+                        ? item.account_password || "비밀번호 없음"
+                        : "••••••••••"}
+                    </p>
+
+                    <button
+                    onClick={() => {
+                        if (visiblePasswords.includes(item.id)) {
+                        setVisiblePasswords(
+                            visiblePasswords.filter((v) => v !== item.id)
+                        );
+                        } else {
+                        setVisiblePasswords([...visiblePasswords, item.id]);
+                        }
+                    }}
+                    className="rounded-full border border-white/10 px-3 py-1 text-xs font-black"
+                    >
+                    {visiblePasswords.includes(item.id) ? "숨기기" : "보기"}
+                    </button>
+                </div>
+                </div>
 
               {item.login_url && (
                 <p className="mt-3 break-all text-sm text-zinc-500">
