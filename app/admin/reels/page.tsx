@@ -10,16 +10,26 @@ export default function ReelsPage() {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [videoFileName, setVideoFileName] = useState("");
-  
+  const [videoFiles, setVideoFiles] = useState<string[]>([]);
 
   useEffect(() => {
     loadReels();
+    loadVideoFiles(branchName);
   }, []);
 
   async function loadReels() {
     const res = await fetch("/api/reels");
     const data = await res.json();
     if (data.ok) setReels(data.reels);
+  }
+
+  async function loadVideoFiles(branch: string) {
+    const res = await fetch(`/api/reels-files?branch=${encodeURIComponent(branch)}`);
+    const data = await res.json();
+
+    if (data.ok) {
+        setVideoFiles(data.files);
+    }
   }
 
   async function uploadVideo(file: File) {
@@ -111,7 +121,12 @@ export default function ReelsPage() {
         <section className="space-y-5 rounded-[30px] border border-white/10 bg-[#171719] p-6">
           <select
             value={branchName}
-            onChange={(e) => setBranchName(e.target.value)}
+            onChange={(e) => {
+                setBranchName(e.target.value);
+                loadVideoFiles(e.target.value);
+                setVideoFileName("");
+                setVideoUrl("");
+            }}
             className="w-full rounded-2xl border border-white/10 bg-black p-4"
           >
             <option>철산점</option>
@@ -140,31 +155,29 @@ export default function ReelsPage() {
             className="w-full rounded-2xl border border-white/10 bg-black p-4"
           />
 
-          <input
-            value={videoUrl}
-            onChange={(e) => setVideoUrl(e.target.value)}
-            placeholder="/videos/cheolsan-001.mp4"
+          <select
+            value={videoFileName}
+            onChange={(e) => {
+                setVideoFileName(e.target.value);
+                setVideoUrl("");
+            }}
             className="w-full rounded-2xl border border-white/10 bg-black p-4"
-            />
+            >
+            <option value="">서버에 넣어둔 영상 선택</option>
+            {videoFiles.map((file) => (
+                <option key={file} value={file}>
+                {file}
+                </option>
+            ))}
+            </select>
 
             <p className="text-sm text-zinc-500">
-            또는 public/videos 폴더에 넣은 영상 경로를 직접 입력할 수 있습니다.
+            선택한 지점의 public/videos 폴더에 있는 영상 목록입니다.
             </p>
 
           {uploading && (
             <p className="font-bold text-[#FC5230]">영상 업로드 중...</p>
           )}
-
-          <input
-            value={videoFileName}
-            onChange={(e) => setVideoFileName(e.target.value)}
-            placeholder="cheolsan-001.mp4"
-            className="w-full rounded-2xl border border-white/10 bg-black p-4"
-            />
-
-            <p className="text-sm text-zinc-500">
-            public/videos 폴더에 넣은 영상 파일명만 입력하세요.
-            </p>
 
           {videoUrl && (
             <video src={videoUrl} controls className="max-h-[400px] w-full rounded-2xl" />
