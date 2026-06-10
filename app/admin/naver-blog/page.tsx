@@ -285,15 +285,19 @@ export default function NaverBlogPage() {
     <main className="min-h-screen bg-[#0d0d0f] px-6 py-16 text-white">
       <div className="mx-auto max-w-6xl">
         <a href="/admin" className="mb-8 inline-block text-zinc-400">
-          ← 관리자 메인으로
+        ← 관리자 메인
         </a>
 
-        <h1 className="mb-3 text-5xl font-black tracking-[-0.06em]">
-          네이버 블로그 작성
+        <p className="mb-3 text-sm font-black tracking-[0.3em] text-[#FC5230]">
+        NAVER BLOG
+        </p>
+
+        <h1 className="mb-3 text-6xl font-black tracking-[-0.06em]">
+        네이버 블로그 작성
         </h1>
 
         <p className="mb-10 text-zinc-400">
-          네이버 블로그용 글을 직접 작성하거나 AI로 생성하고, 사진/영상 위치까지 정리할 수 있어.
+        AI 생성 · 직접 작성 · 사진 · 영상 첨부
         </p>
 
         <div className="grid gap-8 lg:grid-cols-[380px_1fr]">
@@ -314,7 +318,7 @@ export default function NaverBlogPage() {
             </div>
 
             <div>
-              <label className="mb-2 block font-bold">키워드</label>
+              <label className="mb-2 block font-bold">ai 키워드</label>
               <input
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}

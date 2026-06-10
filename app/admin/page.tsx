@@ -263,17 +263,49 @@ export default function AdminPage() {
           ← 메인으로
         </a>
 
-        <a
-          href="/admin/naver-blog"
-          className="inline-block rounded-full bg-white px-6 py-3 font-black text-black"
-        >
-          네이버 블로그 작성 AI
-        </a>
+        <p className="mb-3 text-sm font-black tracking-[0.3em] text-[#FC5230]">
+          BLOG
+        </p>
 
-        <h1 className="mb-8 text-5xl font-black tracking-[-0.06em]">
-          {editingId ? "블로그 글 수정" : "블로그 글 작성"}
+        <h1 className="mb-3 text-6xl font-black tracking-[-0.06em]">
+          {editingId ? "블로그 수정" : "블로그 작성"}
         </h1>
 
+        <p className="mb-10 text-zinc-400">
+          AI 생성 · 직접 작성 · 사진 첨부
+        </p>
+
+        <div className="mb-10 flex flex-wrap gap-3">
+
+          <a
+            href="/admin/naver-blog"
+            className="rounded-full border border-[#FC5230]/30 bg-[#FC5230]/10 px-5 py-3 font-black text-[#FC5230]"
+          >
+            NAVER BLOG
+          </a>
+
+          <a
+            href="/admin/reels"
+            className="rounded-full border border-[#FC5230]/30 bg-[#FC5230]/10 px-5 py-3 font-black text-[#FC5230]"
+          >
+            STRONG CLIP
+          </a>
+
+          <a
+            href="/admin/replies"
+            className="rounded-full border border-[#14B8A6]/30 bg-[#14B8A6]/10 px-5 py-3 font-black text-[#2DD4BF]"
+          >
+            CRM REPLIES
+          </a>
+
+          <a href="/admin/branch-info">BRANCH INFO</a>
+
+          <a href="/admin/accounts">ACCOUNT INFO</a>
+          
+          <a href="/admin/marketing">MARKETING</a>
+
+        </div>
+        
         <div className="space-y-5">
           <div className="rounded-[28px] border border-[#FC5230]/30 bg-[#171719] p-5">
             <label className="mb-2 block font-bold">AI 키워드</label>

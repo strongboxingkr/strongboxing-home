@@ -110,12 +110,16 @@ export default function ReelsPage() {
           ← 관리자 메인으로
         </a>
 
-        <h1 className="mb-3 text-5xl font-black tracking-[-0.06em]">
-          STRONG CLIP 관리
+        <p className="mb-3 text-sm font-black tracking-[0.3em] text-[#FC5230]">
+        STRONG CLIP
+        </p>
+
+        <h1 className="mb-3 text-6xl font-black tracking-[-0.06em]">
+        STRONG CLIP
         </h1>
 
         <p className="mb-10 text-zinc-400">
-          지점별 운동 영상을 업로드하면 홈페이지 메인에 노출됩니다.
+        홈페이지 메인 영상 관리
         </p>
 
         <section className="space-y-5 rounded-[30px] border border-white/10 bg-[#171719] p-6">
