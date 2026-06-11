@@ -40,8 +40,8 @@ export default async function ReelsSection() {
             >
               <video
                 src={reel.video_url}
-                controls={reel.is_muted !== 1}
-                muted={reel.is_muted === 1}
+                controls={Number(reel.is_muted) !== 1}
+                muted={Number(reel.is_muted) === 1}
                 preload="metadata"
                 className="aspect-video w-full bg-black object-cover"
               />
