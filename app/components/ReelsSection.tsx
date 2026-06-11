@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ReelsSection() {
   const [rows]: any = await db.query(`
-    SELECT id, branch_name, title, video_url
+    SELECT id, branch_name, title, video_url, is_muted
     FROM homepage_reels
     WHERE is_active = 1
     ORDER BY sort_order ASC, id DESC
@@ -40,7 +40,8 @@ export default async function ReelsSection() {
             >
               <video
                 src={reel.video_url}
-                controls
+                controls={reel.is_muted !== 1}
+                muted={reel.is_muted === 1}
                 preload="metadata"
                 className="aspect-video w-full bg-black object-cover"
               />
