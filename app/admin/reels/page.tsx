@@ -39,6 +39,31 @@ export default function ReelsPage() {
     loadReels();
     }
 
+    async function muteReel(reel: any) {
+      if (!confirm("이 영상을 무음 파일로 만들까요?")) return;
+
+      const res = await fetch("/api/reels-mute", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: reel.id,
+          video_url: reel.video_url,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!data.ok) {
+        alert(data.message || "음소거 실패");
+        return;
+      }
+
+      alert("무음 영상으로 변경 완료!");
+      loadReels();
+    }
+
   async function loadVideoFiles(branch: string) {
     const res = await fetch(`/api/reels-files?branch=${encodeURIComponent(branch)}`);
     const data = await res.json();
@@ -261,6 +286,14 @@ export default function ReelsPage() {
                   >
                     홈페이지 노출 삭제
                   </button>
+
+                  <button
+                    onClick={() => muteReel(reel)}
+                    className="mt-4 rounded-full border border-[#FC5230] px-4 py-2 text-sm font-black text-[#FC5230]"
+                  >
+                    무음 파일 만들기
+                  </button>
+                  
                 </div>
               </div>
             ))}

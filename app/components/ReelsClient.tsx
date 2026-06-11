@@ -38,8 +38,11 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
           >
             <video
               src={reel.video_url}
-              controls
-              muted={Number(reel.is_muted) === 1}
+              controls={Number(reel.is_muted) !== 1}
+              muted
+              autoPlay={Number(reel.is_muted) === 1}
+              loop={Number(reel.is_muted) === 1}
+              playsInline
               preload="metadata"
               className="aspect-video w-full bg-black object-cover"
             />
