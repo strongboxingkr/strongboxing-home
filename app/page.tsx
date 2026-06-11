@@ -6,6 +6,7 @@ import ReservationButton from "./components/ReservationButton";
 import AiCoachChat from "./components/AiCoachChat";
 import FaqSection from "./components/FaqSection";
 import ReelsSection from "./components/ReelsSection";
+import SplashScreen from "./components/SplashScreen";
 
 export const dynamic = "force-dynamic";
 
@@ -90,6 +91,10 @@ export default async function HomePage() {
   const latestPosts = rows;
 
   return (
+
+     <>
+    <SplashScreen />
+
     <main className="min-h-screen bg-[#16171A] text-white">
       <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-[#16171A]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
@@ -442,6 +447,7 @@ export default async function HomePage() {
       <ConsultationForm />
 
       <AiCoachChat />
-    </main>
-  );
+       </main>
+  </>
+);
 }
