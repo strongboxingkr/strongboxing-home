@@ -276,6 +276,13 @@ export default function AdminPage() {
             MARKETING
           </a>
 
+          <a
+            href="/admin/ads"
+            className="rounded-full border border-[#FB7185]/30 bg-[#FB7185]/10 px-6 py-3 font-black text-[#FB7185]"
+          >
+            ADS LIBRARY
+          </a>
+
         </div>
         
         <div className="space-y-5">
