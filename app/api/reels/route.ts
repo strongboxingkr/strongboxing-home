@@ -25,7 +25,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { branch_name, title, video_url } = await req.json();
+    const { branch_name, title, video_url, is_muted } = await req.json();
 
     await db.query(
       `
@@ -33,11 +33,12 @@ export async function POST(req: Request) {
       (
         branch_name,
         title,
-        video_url
+        video_url,
+        is_muted
       )
-      VALUES (?, ?, ?)
+      VALUES (?, ?, ?, ?)
       `,
-      [branch_name, title, video_url]
+      [branch_name, title, video_url, is_muted || 0]
     );
 
     return Response.json({ ok: true });
@@ -49,6 +50,25 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+export async function PUT(req: Request) {
+  const { id, branch_name, title, video_url, is_muted } = await req.json();
+
+  await db.query(
+    `
+    UPDATE homepage_reels
+    SET
+      branch_name = ?,
+      title = ?,
+      video_url = ?,
+      is_muted = ?
+    WHERE id = ?
+    `,
+    [branch_name, title, video_url, is_muted || 0, id]
+  );
+
+  return Response.json({ ok: true });
 }
 
 export async function DELETE(req: Request) {

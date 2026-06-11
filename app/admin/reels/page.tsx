@@ -11,6 +11,8 @@ export default function ReelsPage() {
   const [saving, setSaving] = useState(false);
   const [videoFileName, setVideoFileName] = useState("");
   const [videoFiles, setVideoFiles] = useState<string[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
     loadReels();
@@ -91,14 +93,16 @@ export default function ReelsPage() {
     setSaving(true);
 
     const res = await fetch("/api/reels", {
-        method: "POST",
+        method: editingId ? "PUT" : "POST",
         headers: {
         "Content-Type": "application/json",
         },
         body: JSON.stringify({
-        branch_name: branchName,
-        title,
-        video_url: finalVideoUrl,
+          id: editingId,
+          is_muted: isMuted ? 1 : 0,
+          branch_name: branchName,
+          title,
+          video_url: finalVideoUrl,
         }),
     });
 
@@ -111,6 +115,8 @@ export default function ReelsPage() {
     }
 
     alert("저장 완료!");
+    setEditingId(null);
+    setIsMuted(false);
     setTitle("");
     setVideoUrl("");
     setVideoFileName("");
@@ -193,6 +199,15 @@ export default function ReelsPage() {
             선택한 지점의 public/videos 폴더에 있는 영상 목록입니다.
             </p>
 
+            <label className="flex items-center gap-3 text-sm font-bold text-zinc-300">
+              <input
+                type="checkbox"
+                checked={isMuted}
+                onChange={(e) => setIsMuted(e.target.checked)}
+              />
+              홈페이지에서 음소거 재생
+            </label>
+
           {uploading && (
             <p className="font-bold text-[#FC5230]">영상 업로드 중...</p>
           )}
@@ -206,7 +221,7 @@ export default function ReelsPage() {
             disabled={saving}
             className="w-full rounded-full bg-[#FC5230] px-8 py-5 text-lg font-black disabled:opacity-50"
           >
-            {saving ? "저장 중..." : "홈페이지에 추가"}
+            {saving ? "저장 중..." : editingId ? "수정 저장" : "홈페이지에 추가"}
           </button>
         </section>
 
@@ -225,6 +240,21 @@ export default function ReelsPage() {
                   <p className="text-sm text-[#FC5230]">{reel.branch_name}</p>
                   <p className="mt-1 font-bold">{reel.title}</p>
 
+                  <button
+                    onClick={() => {
+                      setEditingId(reel.id);
+                      setBranchName(reel.branch_name);
+                      setTitle(reel.title);
+                      setVideoUrl(reel.video_url);
+                      setVideoFileName("");
+                      setIsMuted(reel.is_muted === 1);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="mt-4 rounded-full border border-white/10 px-4 py-2 text-sm font-black"
+                  >
+                    수정
+                  </button>
+                  
                   <button
                     onClick={() => deleteReel(reel.id)}
                     className="mt-4 rounded-full border border-red-500 px-4 py-2 text-sm font-black text-red-400"
