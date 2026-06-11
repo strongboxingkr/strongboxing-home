@@ -60,99 +60,97 @@ export default async function ConsultationsPage() {
             예약 내역이 없습니다.
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-[30px] border border-white/10">
-            <table className="w-full min-w-[1200px] border-collapse">
-              <thead className="bg-[#171719]">
-                <tr className="text-left">
-                  <th className="px-6 py-5">상태</th>
-                  <th className="px-6 py-5">이름</th>
-                  <th className="px-6 py-5">전화번호</th>
-                  <th className="px-6 py-5">지점</th>
-                  <th className="px-6 py-5">예약날짜</th>
-                  <th className="px-6 py-5">예약시간</th>
-                  <th className="px-6 py-5">운동목적</th>
-                  <th className="px-6 py-5">문의사항</th>
-                  <th className="px-6 py-5">신청일</th>
-                  <th className="px-6 py-5">관리</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {rows.map((item: any) => {
-                  const nextStatus =
-                    item.status === "상담완료" ? "미처리" : "상담완료";
-
-                  return (
-                    <tr
-                      key={item.id}
-                      className="border-t border-white/10 bg-[#101010]"
+          <div className="grid gap-5 md:grid-cols-2">
+            {rows.map((item: any) => {
+          
+              return (
+                <div
+                  key={item.id}
+                  className="rounded-[30px] border border-white/10 bg-[#171719] p-6"
+                >
+                  <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                    <span
+                      className={`rounded-full px-4 py-2 text-sm font-black ${
+                        item.status === "상담완료"
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-yellow-500/20 text-yellow-300"
+                      }`}
                     >
-                      <td className="px-6 py-5">
-                        <span
-                          className={`rounded-full px-4 py-2 text-sm font-black ${
-                            item.status === "상담완료"
-                              ? "bg-green-500/20 text-green-400"
-                              : "bg-yellow-500/20 text-yellow-300"
-                          }`}
-                        >
-                          {item.status || "미처리"}
-                        </span>
-                      </td>
+                      {item.status || "미처리"}
+                    </span>
 
-                      <td className="px-6 py-5 font-bold">{item.name}</td>
+                    <span className="text-sm text-zinc-500">
+                      {item.created_at
+                        ? new Date(item.created_at).toLocaleString()
+                        : "-"}
+                    </span>
+                  </div>
 
-                      <td className="px-6 py-5">
-                        <a
-                          href={`tel:${item.phone}`}
-                          className="text-[#FC5230]"
-                        >
-                          {item.phone}
-                        </a>
-                      </td>
+                  <h2 className="text-3xl font-black">{item.name}</h2>
 
-                      <td className="px-6 py-5">{item.branch}</td>
+                  <a
+                    href={`tel:${item.phone}`}
+                    className="mt-2 inline-block text-lg font-black text-[#FC5230]"
+                  >
+                    {item.phone}
+                  </a>
 
-                      <td className="px-6 py-5">
-                        {item.reservation_date
-                          ? new Date(item.reservation_date).toLocaleDateString()
-                          : "-"}
-                      </td>
+                  <div className="mt-6 grid gap-3 text-sm text-zinc-300">
+                    <p>
+                      <span className="font-black text-white">지점</span> ·{" "}
+                      {item.branch || "-"}
+                    </p>
 
-                      <td className="px-6 py-5">
-                        {item.reservation_time || "-"}
-                      </td>
+                    <p>
+                      <span className="font-black text-white">예약일</span> ·{" "}
+                      {item.reservation_date
+                        ? new Date(item.reservation_date).toLocaleDateString()
+                        : "-"}
+                    </p>
 
-                      <td className="px-6 py-5">{item.goal || "-"}</td>
+                    <p>
+                      <span className="font-black text-white">예약시간</span> ·{" "}
+                      {item.reservation_time || "-"}
+                    </p>
 
-                      <td className="max-w-[280px] px-6 py-5 text-zinc-300">
-                        {item.message || "-"}
-                      </td>
+                    <p>
+                      <span className="font-black text-white">운동목적</span> ·{" "}
+                      {item.goal || "-"}
+                    </p>
 
-                      <td className="px-6 py-5 text-zinc-400">
-                        {item.created_at
-                          ? new Date(item.created_at).toLocaleString()
-                          : "-"}
-                      </td>
+                    {item.message && (
+                      <div className="mt-3 rounded-2xl border border-white/10 bg-black/30 p-4">
+                        <p className="mb-2 text-sm font-black text-white">문의사항</p>
+                        <p className="whitespace-pre-wrap leading-7 text-zinc-300">
+                          {item.message}
+                        </p>
+                      </div>
+                    )}
+                  </div>
 
-                      <td className="px-6 py-5">
-                        <form action={updateStatus}>
-                          <input type="hidden" name="id" value={item.id} />
-                          <input
-                            type="hidden"
-                            name="status"
-                            value={nextStatus}
-                          />
+                  <form action={updateStatus} className="mt-6 space-y-3">
+                    <input type="hidden" name="id" value={item.id} />
 
-                          <button className="rounded-full bg-[#FC5230] px-5 py-2 text-sm font-black">
-                            {nextStatus}로 변경
-                          </button>
-                        </form>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    <select
+                      name="status"
+                      defaultValue={item.status || "예약접수"}
+                      className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4"
+                    >
+                      <option>예약접수</option>
+                      <option>확인완료</option>
+                      <option>상담완료</option>
+                      <option>등록완료</option>
+                      <option>노쇼</option>
+                      <option>취소</option>
+                    </select>
+
+                    <button className="w-full rounded-full bg-[#FC5230] px-5 py-4 text-sm font-black">
+                      상태 저장
+                    </button>
+                  </form>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
