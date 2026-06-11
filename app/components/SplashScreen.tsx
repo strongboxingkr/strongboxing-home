@@ -14,7 +14,7 @@ export default function SplashScreen() {
       const timer = setTimeout(() => {
         setVisible(false);
         sessionStorage.setItem("splashShown", "Y");
-      }, 2500);
+      }, 4200);
 
       return () => clearTimeout(timer);
     }
@@ -28,7 +28,7 @@ export default function SplashScreen() {
         autoPlay
         muted
         playsInline
-        className="w-[320px]"
+       className="w-[520px] max-w-[86vw]"
       >
         <source
           src="/videos/brand/logo-intro.mp4"
