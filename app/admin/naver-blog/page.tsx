@@ -69,6 +69,7 @@ export default function NaverBlogPage() {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("type", "naver-blog");
 
     try {
         const res = await fetch("/api/upload", {
