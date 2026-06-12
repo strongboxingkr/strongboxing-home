@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 export async function GET() {
   try {
     const [rows]: any = await db.query(`
-      SELECT id, title, slug, description, content, branch_name, created_at
+      SELECT id, title, slug, description, content, branch_name, category, created_at
       FROM homepage_posts
       ORDER BY created_at DESC
     `);
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { title, slug, description, content, branch_name } = body;
+    const { title, slug, description, content, branch_name, category } = body;
 
     if (!title || !slug || !content) {
       return Response.json(
@@ -38,10 +38,17 @@ export async function POST(request: Request) {
     await db.query(
       `
       INSERT INTO homepage_posts
-      (title, slug, description, content, branch_name)
-      VALUES (?, ?, ?, ?, ?)
+      (title, slug, description, content, branch_name, category)
+      VALUES (?, ?, ?, ?, ?, ?)
       `,
-      [title, slug, description, content, branch_name]
+      [
+        title,
+        slug,
+        description,
+        content,
+        branch_name,
+        category || "소식",
+      ]
     );
 
     return Response.json({ ok: true });
@@ -59,7 +66,7 @@ export async function PUT(request: Request) {
   try {
     const body = await request.json();
 
-    const { id, title, slug, description, content, branch_name } = body;
+    const { id, title, slug, description, content, branch_name, category } = body;
 
     if (!id || !title || !slug || !content) {
       return Response.json(
@@ -75,10 +82,19 @@ export async function PUT(request: Request) {
           slug = ?,
           description = ?,
           content = ?,
-          branch_name = ?
+          branch_name = ?,
+          category = ?
       WHERE id = ?
       `,
-      [title, slug, description, content, branch_name, id]
+      [
+        title,
+        slug,
+        description,
+        content,
+        branch_name,
+        category || "소식",
+        id,
+      ]
     );
 
     return Response.json({ ok: true });

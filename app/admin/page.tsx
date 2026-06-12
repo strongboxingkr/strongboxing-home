@@ -15,6 +15,7 @@ export default function AdminPage() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [branchName, setBranchName] = useState("철산점");
+  const [category, setCategory] = useState("소식");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
 
@@ -140,13 +141,14 @@ export default function AdminPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: editingId,
-        title,
-        slug,
-        branch_name: branchName,
-        description,
-        content,
-      }),
+      id: editingId,
+      title,
+      slug,
+      branch_name: branchName,
+      category,
+      description,
+      content,
+    }),
     });
 
     setSaving(false);
@@ -175,6 +177,7 @@ export default function AdminPage() {
     setDescription(post.description || "");
     setContent(post.content || "");
     setBranchName(post.branch_name || "철산점");
+    setCategory(post.category || "소식");
 
     window.scrollTo({
       top: 0,
@@ -374,6 +377,20 @@ export default function AdminPage() {
           </div>
 
           <div>
+              <label className="mb-2 block font-bold">카테고리</label>
+
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full rounded-2xl border border-white/10 bg-[#171719] p-4 outline-none focus:border-[#FC5230]"
+              >
+                <option>소식</option>
+                <option>이벤트</option>
+                <option>공지</option>
+              </select>
+            </div>
+
+          <div>
             <label className="mb-2 block font-bold">설명</label>
             <textarea
               value={description}
@@ -440,6 +457,7 @@ export default function AdminPage() {
                   setTitle("");
                   setSlug("");
                   setDescription("");
+                  setContent("");
                   setContent("");
                 }}
                 className="rounded-full border border-white/10 px-8 py-5 text-lg font-black"

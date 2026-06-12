@@ -24,10 +24,14 @@ function getFirstImage(content: string) {
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ branch?: string }>;
+  searchParams?: Promise<{
+  branch?: string;
+  category?: string;
+}>;
 }) {
   const params = searchParams ? await searchParams : {};
   const selectedBranch = params.branch || "전체";
+  const selectedCategory = params.category || "전체";
 
   const [rows]: any = await db.query(`
     SELECT *
@@ -37,12 +41,33 @@ export default async function BlogPage({
 
   const posts = rows;
 
-  const branches = ["전체", "목동점", "신정점", "개봉점", "철산점", "영등포점"];
+  const branches = [
+    "전체",
+    "개봉점",
+    "신정점",
+    "목동점",
+    "철산점",
+    "영등포점",
+  ];
 
-  const filteredPosts =
-    selectedBranch === "전체"
-      ? posts
-      : posts.filter((post: any) => post.branch_name === selectedBranch);
+  const categories = [
+    "전체",
+    "소식",
+    "이벤트",
+    "공지",
+  ];
+
+  const filteredPosts = posts.filter((post: any) => {
+  const branchMatch =
+    selectedBranch === "전체" ||
+    post.branch_name === selectedBranch;
+
+  const categoryMatch =
+    selectedCategory === "전체" ||
+    post.category === selectedCategory;
+
+  return branchMatch && categoryMatch;
+});
 
   return (
     <main className="min-h-screen bg-[#0d0d0f] text-white">
@@ -86,6 +111,30 @@ export default async function BlogPage({
         </div>
       </section>
 
+      <section className="px-6 pb-8">
+        <div className="mx-auto flex max-w-6xl flex-wrap gap-2">
+          {categories.map((category) => (
+            <a
+              key={category}
+              href={
+                category === "전체"
+                  ? selectedBranch === "전체"
+                    ? "/blog"
+                    : `/blog?branch=${selectedBranch}`
+                  : `/blog?branch=${selectedBranch}&category=${category}`
+              }
+              className={`rounded-full border px-5 py-3 text-sm font-black transition ${
+                selectedCategory === category
+                  ? "border-[#FC5230] bg-[#FC5230] text-white"
+                  : "border-white/10 bg-[#171719] text-zinc-300 hover:border-[#FC5230]"
+              }`}
+            >
+              {category}
+            </a>
+          ))}
+        </div>
+      </section>
+
       <section className="px-6 pb-24">
         <div className="mx-auto max-w-6xl">
           {filteredPosts.length === 0 ? (
@@ -120,6 +169,10 @@ export default async function BlogPage({
                       <div className="mb-4 flex flex-wrap items-center gap-3">
                         <span className="rounded-full bg-[#FC5230] px-4 py-2 text-sm font-black">
                           {post.branch_name}
+                        </span>
+
+                        <span className="rounded-full border border-white/10 px-3 py-2 text-sm text-zinc-300">
+                          {post.category}
                         </span>
 
                         <span className="text-sm text-zinc-400">
