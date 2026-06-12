@@ -235,6 +235,13 @@ export default function AdminPage() {
         <div className="mb-10 flex flex-wrap gap-3">
 
           <a
+            href="/admin/consultations"
+            className="rounded-full border border-[#38BDF8]/30 bg-[#38BDF8]/10 px-6 py-3 font-black text-[#38BDF8]"
+          >
+            CONSULTATIONS
+          </a>
+
+          <a
             href="/admin/naver-blog"
             className="rounded-full border border-[#FC5230]/30 bg-[#FC5230]/10 px-6 py-3 font-black text-[#FC5230]"
           >
