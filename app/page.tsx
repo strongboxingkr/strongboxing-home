@@ -21,6 +21,8 @@ const branches = [
     hours: ["월-금 13:00~23:00"],
     review: "초보자도 분위기 좋게 시작하기 좋은 지점",
     score: "4.9",
+    reviewCount: 229,
+    badges: ["초보자 환영", "구로구 복싱"],
     instagram: "https://www.instagram.com/strongboxing_gaebong",
     booking:
       "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
@@ -35,6 +37,8 @@ const branches = [
     hours: ["월-금 10:00~24:00", "토 10:00~16:00"],
     review: "운동 루틴 만들기 좋은 밸런스형 복싱짐",
     score: "4.9",
+    reviewCount: 277,
+    badges: ["여성 회원 다수", "양천구 복싱"],
     instagram: "https://www.instagram.com/strongboxing_sinjeong",
     booking: "https://booking.naver.com/booking/13/bizes/1367177",
     naverMap: "https://naver.me/5nhXvzXH",
@@ -48,6 +52,8 @@ const branches = [
     hours: ["월-금 14:00~24:00", "토 11:00~16:00"],
     review: "깔끔한 공간에서 다이어트 복싱 시작하기 좋음",
     score: "4.9",
+    reviewCount: 106,
+    badges: ["다이어트 복싱", "직장인 운동"],
     instagram: "https://www.instagram.com/strongboxing_mokdong",
     booking: "https://booking.naver.com/booking/13/bizes/1510638",
     naverMap: "https://naver.me/GII8f9Qv",
@@ -58,9 +64,11 @@ const branches = [
     image: "/images/branches/cheolsan.jpg",
     phone: "02-2066-0406",
     address: "경기도 광명시 철산동 56-14 3층",
-    hours: ["월-금 13:00~23:00", "토 11:00~16:00"],
+    hours: ["월-금 14:00~23:00", "토일 14:00~18:00"],
     review: "새롭게 준비된 스트롱복싱 지점",
     score: "NEW",
+    reviewCount: 8,
+    badges: ["신규 지점", "광명 복싱"],
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
     booking: "",
     naverMap: "",
@@ -74,6 +82,8 @@ const branches = [
     hours: ["월-금 13:00~23:00"],
     review: "퇴근 후 운동하기 좋은 도심형 복싱짐",
     score: "4.8",
+    reviewCount: 77,
+    badges: ["퇴근 후 운동", "영등포 복싱"],
     instagram: "https://www.instagram.com/stron_gboxinggym",
     booking:
       "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll",
@@ -208,9 +218,29 @@ export default async function HomePage() {
                   <h3 className="text-4xl font-black tracking-[-0.06em]">
                     {branch.name}
                   </h3>
-                  <p className="mt-2 line-clamp-1 text-sm text-zinc-300">
-                    ★ {branch.score} · {branch.review}
+                  <p className="mt-2 text-sm font-bold text-zinc-100">
+                    ★ {branch.score} · 네이버 리뷰 {branch.reviewCount}개
                   </p>
+
+                  <p className="mt-1 line-clamp-1 text-sm text-zinc-300">
+                    {branch.review}
+                  </p>
+
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {branch.badges?.map((badge) => (
+                      <span
+                        key={badge}
+                        className="rounded-full bg-white/10 px-3 py-1 text-xs font-black text-white"
+                      >
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="mt-3 inline-flex rounded-full bg-[#FC5230] px-4 py-2 text-xs font-black text-white">
+                    지점 자세히 보기 →
+                  </p>
+
                 </div>
               </a>
             ))}
