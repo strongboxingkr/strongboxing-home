@@ -2,6 +2,18 @@
 
 import { useEffect, useState } from "react";
 
+function maskReviewerName(name: string) {
+  const value = String(name || "").trim();
+
+  if (!value) return "";
+
+  if (value.length <= 2) {
+    return value[0] + "○";
+  }
+
+  return value[0] + "○".repeat(value.length - 2) + value[value.length - 1];
+}
+
 const emptyForm = {
   branch_name: "철산점",
   reviewer_name: "",

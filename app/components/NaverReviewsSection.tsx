@@ -48,8 +48,8 @@ export default async function NaverReviewsSection() {
                 </p>
               </div>
 
-              <p className="text-xl font-black text-[#22C55E]">
-                {"★".repeat(review.rating || 5)}
+              <p className="text-sm font-black tracking-[0.2em] text-[#22C55E]">
+                NAVER REVIEW
               </p>
 
               <p className="mt-3 text-sm text-zinc-400">
