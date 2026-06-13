@@ -7,6 +7,7 @@ import AiCoachChat from "./components/AiCoachChat";
 import FaqSection from "./components/FaqSection";
 import ReelsSection from "./components/ReelsSection";
 import SplashScreen from "./components/SplashScreen";
+import NaverReviewsSection from "./components/NaverReviewsSection";
 
 export const dynamic = "force-dynamic";
 
@@ -260,6 +261,8 @@ export default async function HomePage() {
       </section>
 
       <ReelsSection />
+
+      <NaverReviewsSection />
 
       <section id="calculator" className="bg-[#111214]">
         <BoxingCalculator />

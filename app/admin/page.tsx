@@ -293,6 +293,13 @@ export default function AdminPage() {
             ADS LIBRARY
           </a>
 
+          <a
+            href="/admin/naver-reviews"
+            className="rounded-full border border-[#22C55E]/30 bg-[#22C55E]/10 px-6 py-3 font-black text-[#22C55E]"
+          >
+            NAVER REVIEWS
+          </a>
+
         </div>
         
         <div className="space-y-5">
