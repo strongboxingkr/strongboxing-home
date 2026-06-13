@@ -138,7 +138,7 @@ export default async function HomePage() {
         </div>
       </header>
 
-      <section className="relative overflow-hidden px-5 pt-28 md:px-6">
+      <section className="relative overflow-hidden px-5 pt-24 pb-16 md:px-6">
         <img
           src="/images/gallery/gallery-1.jpg"
           alt=""
@@ -147,7 +147,7 @@ export default async function HomePage() {
         <div className="pointer-events-none absolute inset-0 bg-[#16171A]/80" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.10),transparent_30%)]" />
 
-        <div className="relative z-10 mx-auto grid min-h-[88vh] max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div className="relative z-10 mx-auto grid min-h-[76vh] max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
             <p className="mb-4 text-xs font-black tracking-[0.32em] text-[#FC5230] md:text-sm">
               STRONG BOXING
