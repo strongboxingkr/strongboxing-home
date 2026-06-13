@@ -21,7 +21,7 @@ const emptyForm = {
   content: "",
   image_url: "",
   review_date: "",
-  is_active: false,
+  is_active: true,
 };
 
 export default function NaverReviewsPage() {
@@ -98,8 +98,13 @@ export default function NaverReviewsPage() {
 
     alert(editingId ? "수정 완료" : "저장 완료");
 
+    const lastBranch = form.branch_name;
+
     setEditingId(null);
-    setForm(emptyForm);
+    setForm({
+    ...emptyForm,
+    branch_name: lastBranch,
+    });
     loadReviews();
   }
 
