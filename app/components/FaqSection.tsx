@@ -88,7 +88,7 @@ export default function FaqSection() {
           </p>
 
           <ReservationButton className="inline-flex rounded-full bg-[#FC5230] px-8 py-4 font-black">
-            무료체험 신청하기
+            만원체험 신청하기
           </ReservationButton>
         </div>
       </div>
