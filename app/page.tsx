@@ -154,9 +154,9 @@ export default async function HomePage() {
             </p>
 
             <h1 className="text-[52px] font-black leading-[0.9] tracking-[-0.08em] md:text-[92px]">
-              처음 복싱은
+              누구나 시작할 수 있는
               <br />
-              스트롱복싱
+              복싱
             </h1>
 
             <p className="mt-7 max-w-xl text-base leading-7 text-zinc-400 md:text-lg md:leading-8">
