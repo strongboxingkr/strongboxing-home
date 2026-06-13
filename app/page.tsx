@@ -147,16 +147,16 @@ export default async function HomePage() {
         <div className="pointer-events-none absolute inset-0 bg-[#16171A]/80" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.10),transparent_30%)]" />
 
-        <div className="relative z-10 mx-auto grid min-h-[88vh] max-w-7xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <div className="relative z-10 mx-auto grid min-h-[88vh] max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
             <p className="mb-4 text-xs font-black tracking-[0.32em] text-[#FC5230] md:text-sm">
               STRONG BOXING
             </p>
 
-            <h1 className="text-[52px] font-black leading-[0.9] tracking-[-0.08em] md:text-[96px]">
+            <h1 className="text-[52px] font-black leading-[0.9] tracking-[-0.08em] md:text-[92px]">
               처음 복싱은
               <br />
-              스트롱복싱에서
+              스트롱복싱
             </h1>
 
             <p className="mt-7 max-w-xl text-base leading-7 text-zinc-400 md:text-lg md:leading-8">
