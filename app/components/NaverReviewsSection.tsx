@@ -7,7 +7,7 @@ export default async function NaverReviewsSection() {
     SELECT *
     FROM homepage_naver_reviews
     WHERE is_active = 1
-    ORDER BY sort_order ASC, id DESC
+    ORDER BY id DESC
     LIMIT 6
   `);
 

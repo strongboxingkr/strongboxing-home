@@ -22,7 +22,6 @@ const emptyForm = {
   image_url: "",
   review_date: "",
   is_active: false,
-  sort_order: 0,
 };
 
 export default function NaverReviewsPage() {
@@ -114,7 +113,6 @@ export default function NaverReviewsPage() {
       image_url: review.image_url || "",
       review_date: review.review_date || "",
       is_active: review.is_active === 1,
-      sort_order: review.sort_order || 0,
     });
 
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -216,16 +214,6 @@ export default function NaverReviewsPage() {
               className="max-h-[300px] rounded-2xl border border-white/10 object-contain md:col-span-2"
             />
           )}
-
-          <input
-            type="number"
-            value={form.sort_order}
-            onChange={(e) =>
-              setForm({ ...form, sort_order: Number(e.target.value) })
-            }
-            placeholder="노출 순서"
-            className="rounded-2xl border border-white/10 bg-black p-4"
-          />
 
           <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black p-4 font-bold">
             <input
