@@ -153,7 +153,7 @@ export default async function HomePage() {
               STRONG BOXING
             </p>
 
-            <h1 className="text-[58px] font-black leading-[0.82] tracking-[-0.09em] md:text-[128px]">
+            <h1 className="text-[52px] font-black leading-[0.9] tracking-[-0.08em] md:text-[96px]">
               처음 복싱은
               <br />
               스트롱복싱에서
