@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const branches = ["전체", "개봉점", "신정점", "목동점", "철산점", "영등포점"];
+const branches = ["전체", "개봉점", "신정점", "목동점", "철산점"];
 
 export default function NaverReviewsClient({ reviews }: { reviews: any[] }) {
   const [selectedBranch, setSelectedBranch] = useState("전체");

@@ -8,7 +8,7 @@ export default async function NaverReviewsSection() {
     SELECT *
     FROM homepage_naver_reviews
     WHERE is_active = 1
-    ORDER BY id DESC
+    ORDER BY review_date DESC, id DESC
   `);
 
   const reviews = rows;
