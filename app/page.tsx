@@ -154,9 +154,9 @@ export default async function HomePage() {
             </p>
 
             <h1 className="text-[58px] font-black leading-[0.82] tracking-[-0.09em] md:text-[128px]">
-              복싱이
+              처음 복싱은
               <br />
-              일상이 되는 곳
+              스트롱복싱에서
             </h1>
 
             <p className="mt-7 max-w-xl text-base leading-7 text-zinc-400 md:text-lg md:leading-8">
