@@ -86,7 +86,8 @@ export default function NaverReviewsPage() {
       body: JSON.stringify({
         id: editingId,
         ...form,
-      }),
+        reviewer_name: maskReviewerName(form.reviewer_name),
+        }),
     });
 
     const data = await res.json();
@@ -176,17 +177,7 @@ export default function NaverReviewsPage() {
             className="rounded-2xl border border-white/10 bg-black p-4"
           />
 
-          <select
-            value={form.rating}
-            onChange={(e) =>
-              setForm({ ...form, rating: Number(e.target.value) })
-            }
-            className="rounded-2xl border border-white/10 bg-black p-4"
-          >
-            <option value={5}>★★★★★ 5점</option>
-            <option value={4}>★★★★ 4점</option>
-            <option value={3}>★★★ 3점</option>
-          </select>
+          
 
           <input
             value={form.review_date}
@@ -277,8 +268,8 @@ export default function NaverReviewsPage() {
                 </span>
               </div>
 
-              <p className="text-lg font-black">
-                {"★".repeat(review.rating || 5)}
+              <p className="text-sm font-black text-[#22C55E]">
+                NAVER REVIEW
               </p>
 
               <p className="mt-2 text-sm text-zinc-400">
