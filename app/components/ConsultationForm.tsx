@@ -35,13 +35,6 @@ const branchTimes: Record<string, Record<number, string[]>> = {
     6: ["14:00", "15:00", "16:00", "17:00"],
     0: ["14:00", "15:00", "16:00", "17:00"],
   },
-  영등포점: {
-    1: ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
-    2: ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
-    3: ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
-    4: ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
-    5: ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
-  },
 };
 
 function getAvailableTimes(branch: string, dateString: string) {
@@ -95,7 +88,7 @@ export default function ConsultationForm() {
         return;
       }
 
-      alert("1일 체험 예약이 완료되었습니다!");
+      alert("방문 상담 예약이 완료되었습니다!");
 
       setForm({
         name: "",
@@ -123,7 +116,7 @@ export default function ConsultationForm() {
           </p>
 
           <h2 className="text-5xl font-black tracking-[-0.06em] md:text-6xl">
-            1일 체험 예약
+            방문 상담 예약
           </h2>
 
           <p className="mt-5 text-lg leading-8 text-zinc-400">
@@ -166,7 +159,6 @@ export default function ConsultationForm() {
             <option>신정점</option>
             <option>개봉점</option>
             <option>철산점</option>
-            <option>영등포점</option>
           </select>
 
           <div className="grid gap-5 md:grid-cols-2">
@@ -238,7 +230,7 @@ export default function ConsultationForm() {
             disabled={loading}
             className="w-full rounded-full bg-[#FC5230] px-8 py-5 text-lg font-black transition hover:scale-[1.02] disabled:opacity-50"
           >
-            {loading ? "예약 접수중..." : "1일 체험 예약하기"}
+            {loading ? "예약 접수중..." : "방문 상담 예약하기"}
           </button>
         </form>
       </div>

@@ -44,7 +44,7 @@ export default function AiCoachChat() {
       q.includes("비용") ||
       q.includes("얼마")
     ) {
-      return "회원권/가격은 지점별 이벤트와 할인 내용이 달라서 만원체험 상담에서 정확히 안내드리고 있습니다 🙂\n아래 버튼으로 신청 남겨주시면 빠르게 도와드릴게요!";
+      return "회원권/가격은 지점별 이벤트와 할인 내용이 달라 정확한 안내를 위해 방문 상담을 도와드리고 있습니다🙂\n아래 버튼으로 신청 남겨주시면 빠르게 도와드릴게요!";
     }
 
     if (q.includes("여자") || q.includes("혼자")) {
@@ -60,7 +60,7 @@ export default function AiCoachChat() {
     }
 
     if (q.includes("키즈") || q.includes("아이") || q.includes("초등")) {
-      return "키즈 수업은 지점별 운영 여부가 다를 수 있어요 🙂\n원하시는 지점으로 만원체험 상담을 남겨주시면 가능 시간과 수업 안내를 도와드릴게요.";
+      return "키즈 수업은 지점별 운영 여부가 다를 수 있어요 🙂\n원하시는 지점으로 무료체험 상담을 남겨주시면 가능 시간과 수업 안내를 도와드릴게요.";
     }
 
     if (q.includes("무릎") || q.includes("허리") || q.includes("아파")) {
@@ -79,10 +79,10 @@ export default function AiCoachChat() {
       q.includes("철산") ||
       q.includes("영등포")
     ) {
-      return "스트롱복싱은 목동점, 신정점, 개봉점, 철산점, 영등포점이 있습니다 🥊\n가까운 지점을 선택해서 만원체험 상담을 남겨주세요.";
+      return "스트롱복싱은 목동점, 신정점, 개봉점, 철산점, 영등포점이 있습니다 🥊\n가까운 지점을 선택해서 무료체험 상담을 남겨주세요.";
     }
 
-    return "좋은 질문이에요 🙂\n복싱 입문, 다이어트, 수업 방식, 지점 상담 모두 도와드릴 수 있습니다.\n더 자세한 안내는 만원체험 상담으로 연결해드릴게요!";
+    return "좋은 질문이에요 🙂\n복싱 입문, 다이어트, 수업 방식, 지점 상담 모두 도와드릴 수 있습니다.\n더 자세한 안내는 무료체험 상담으로 연결해드릴게요!";
   }
 
   function sendMessage(text?: string) {
@@ -187,7 +187,7 @@ export default function AiCoachChat() {
               }}
               className="mt-3 w-full bg-white px-4 py-3 text-sm font-black text-black"
             >
-              🥊 만원체험 신청하기
+              🥊 무료체험 신청하기
             </button>
           </div>
         </div>
