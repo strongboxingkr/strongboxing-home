@@ -15,7 +15,7 @@ const faqs = [
   },
   {
     q: "준비물은 무엇이 필요한가요?",
-    a: "실내용 운동화와 편한 운동복만 준비해주시면 됩니다. 처음 체험하시는 분들은 별도 장비 없이 방문 가능하며 운동에 필요한 기본 장비는 체육관에서 안내해드립니다.",
+   a: "실내용 운동화와 편한 운동복만 준비해주시면 됩니다. 처음 방문하시는 분들도 별도 장비 없이 운동 가능하며 필요한 기본 장비는 체육관에서 안내해드립니다.",
   },
   {
     q: "복싱 시작할 때 장비는 꼭 구매해야 하나요?",
@@ -88,7 +88,7 @@ export default function FaqSection() {
           </p>
 
           <ReservationButton className="inline-flex rounded-full bg-[#FC5230] px-8 py-4 font-black">
-            만원체험 신청하기
+            방문상담 신청하기
           </ReservationButton>
         </div>
       </div>

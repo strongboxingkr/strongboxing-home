@@ -92,7 +92,7 @@ export async function POST(request: Request) {
   const formData = await request.formData();
 
   const branch = String(formData.get("branch") || "스트롱복싱");
-  const title = String(formData.get("title") || "복싱 체험");
+  const title = String(formData.get("title") || "복싱 입문");
   const target = String(formData.get("target") || "입문자");
   const tone = String(formData.get("tone") || "감성");
   const style = String(formData.get("style") || "BLACK");
@@ -450,7 +450,7 @@ export async function POST(request: Request) {
 
   instagram:
     `${branch}에서 ${title} 시작해보세요 🥊\n\n` +
-    `1일 체험권 10,000원으로 부담 없이 경험해볼 수 있습니다.`,
+      `처음이신 분들도 부담 없이 방문 상담을 받아보세요.`,
 
   blog:
     `${branch} ${title} 콘텐츠 초안입니다.\n\n` +
@@ -460,7 +460,7 @@ export async function POST(request: Request) {
   reels: [
     `${title}, 어렵게 시작하지 않아도 됩니다.`,
     `${branch}에서 복싱으로 운동 루틴 만들기`,
-    `1일 체험권 10,000원으로 먼저 경험해보세요.`,
+    `처음이신 분들도 기초부터 차근차근 지도해드립니다.`,
   ],
 
   thumbnail: `${title} 시작하기`,
@@ -470,7 +470,7 @@ export async function POST(request: Request) {
   hashtags:
     `#스트롱복싱 #${branch.replace("점", "")}복싱 #복싱다이어트 #복싱입문`,
 
-  cta: `지금 ${branch} 1일 체험으로 시작해보세요 🥊`,
+  cta: `지금 ${branch}에서 복싱을 시작해보세요 🥊`,
 
   hooks: [
     `운동 시작이 어렵다면 이거부터`,

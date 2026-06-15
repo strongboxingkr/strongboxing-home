@@ -355,7 +355,7 @@ export default async function HomePage() {
           {[
             ["4.9", "평균 리뷰 만족도"],
             ["5", "운영 지점"],
-            ["1DAY", "무료 체험권"],
+            ["VISIT", "방문 상담 예약"],
             ["BEGINNER", "초보자 가능"],
           ].map(([num, text]) => (
             <div
@@ -374,7 +374,7 @@ export default async function HomePage() {
       <section className="relative overflow-hidden px-6 py-32">
         <img
           src="/images/gallery/gallery-1.jpg"
-          alt="체험"
+          alt="스트롱복싱"
           className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-[#16171A]/80" />

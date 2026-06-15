@@ -90,7 +90,7 @@ export async function POST(req: Request) {
         to: process.env.CONSULT_EMAIL,
         subject: `[홈페이지예약][${reservationNo}][${branch}] ${name} / ${reservation_date} ${reservation_time}`,
         html: `
-          <h2>새 홈페이지 체험 예약</h2>
+          <h2>새 홈페이지 방문 상담 예약</h2>
           <p><b>예약번호:</b> ${reservationNo}</p>
           <p><b>이름:</b> ${name}</p>
           <p><b>전화번호:</b> ${phone}</p>

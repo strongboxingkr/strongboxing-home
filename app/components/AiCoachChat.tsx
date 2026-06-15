@@ -23,7 +23,7 @@ export default function AiCoachChat() {
     {
       role: "bot",
       text:
-        "안녕하세요 🥊 스트롱복싱 AI 상담입니다!\n복싱 입문, 다이어트, 체험 문의를 편하게 물어보세요.",
+      "안녕하세요 🥊 스트롱복싱 AI 상담입니다!\n복싱 입문, 다이어트, 운동 방식, 회원권 관련 내용을 편하게 물어보세요.",
     },
   ]);
 
@@ -60,15 +60,15 @@ export default function AiCoachChat() {
     }
 
     if (q.includes("키즈") || q.includes("아이") || q.includes("초등")) {
-      return "키즈 수업은 지점별 운영 여부가 다를 수 있어요 🙂\n원하시는 지점으로 무료체험 상담을 남겨주시면 가능 시간과 수업 안내를 도와드릴게요.";
+      return "키즈 수업은 지점별 운영 여부가 다를 수 있어요 🙂\n원하시는 지점으로 방문 상담 예약을 남겨주시면 가능 시간과 수업 안내를 도와드릴게요.";
     }
 
     if (q.includes("무릎") || q.includes("허리") || q.includes("아파")) {
-      return "무릎이나 허리가 불편하신 경우에는 무리한 동작을 줄이고 가능한 범위에서 안내드릴 수 있어요.\n다만 상태에 따라 다르니 체험 상담 때 꼭 말씀해주세요 🙂";
+      return "무릎이나 허리가 불편하신 경우에는 무리한 동작을 줄이고 가능한 범위에서 안내드릴 수 있어요.\n다만 상태에 따라 다르니 방문 상담 때 꼭 말씀해주세요 🙂";
     }
 
     if (q.includes("준비물") || q.includes("복장") || q.includes("뭐 입")) {
-      return "편한 운동복과 실내용 운동화면 충분합니다 🙂\n체험 때 필요한 기본 장비는 지점에서 안내받으실 수 있어요.";
+      return "편한 운동복과 실내용 운동화면 충분합니다 🙂\n 필요한 기본 장비는 지점에서 안내받으실 수 있어요.";
     }
 
     if (
@@ -79,10 +79,10 @@ export default function AiCoachChat() {
       q.includes("철산") ||
       q.includes("영등포")
     ) {
-      return "스트롱복싱은 목동점, 신정점, 개봉점, 철산점, 영등포점이 있습니다 🥊\n가까운 지점을 선택해서 무료체험 상담을 남겨주세요.";
+      return "스트롱복싱은 목동점, 신정점, 개봉점, 철산점, 영등포점이 있습니다 🥊\n가까운 지점을 선택해서 방문 상담 예약을 남겨주세요.";
     }
 
-    return "좋은 질문이에요 🙂\n복싱 입문, 다이어트, 수업 방식, 지점 상담 모두 도와드릴 수 있습니다.\n더 자세한 안내는 무료체험 상담으로 연결해드릴게요!";
+    return "좋은 질문이에요 🙂\n복싱 입문, 다이어트, 수업 방식, 지점 상담 모두 도와드릴 수 있습니다.\n더 자세한 안내는 방문 상담으로 연결해드릴게요!";
   }
 
   function sendMessage(text?: string) {
@@ -120,7 +120,7 @@ export default function AiCoachChat() {
               🥊 스트롱 AI 상담
             </p>
             <p className="mt-1 text-sm text-zinc-400">
-              복싱 입문 · 다이어트 · 체험 문의
+              복싱 입문 · 다이어트 · 상담 문의
             </p>
           </div>
 
@@ -187,7 +187,7 @@ export default function AiCoachChat() {
               }}
               className="mt-3 w-full bg-white px-4 py-3 text-sm font-black text-black"
             >
-              🥊 무료체험 신청하기
+              🥊 방문 상담 예약하기
             </button>
           </div>
         </div>
