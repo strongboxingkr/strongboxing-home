@@ -89,23 +89,61 @@ const branches: any = {
 const branchKeywords: Record<string, string[]> = {
   gaebong: [
     "개봉 복싱", "개봉동 복싱", "개봉역 복싱", "개봉 복싱장",
-    "구로구 복싱", "구로 복싱", "오류동 복싱", "고척동 복싱",
+    "고척 복싱", "고척동 복싱", "구로구 복싱", "구로 복싱",
+    "오류동 복싱", "천왕동 복싱", "구로 다이어트 복싱",
   ],
   sinjeong: [
     "신정 복싱", "신정동 복싱", "신정네거리 복싱", "신정 복싱장",
-    "양천구 복싱", "신월동 복싱", "목동 복싱",
+    "양천구 복싱", "신월동 복싱", "까치산 복싱", "화곡동 복싱",
+    "양천구 다이어트 복싱",
   ],
   mokdong: [
-    "목동 복싱", "목동 복싱장", "오목교 복싱", "오목교역 복싱",
-    "양천구 복싱", "목동 다이어트", "목동 여성 복싱",
+    "목동 복싱", "목동 복싱장", "목동역 복싱", "오목교 복싱",
+    "오목교역 복싱", "양천구 복싱", "신정동 복싱",
+    "목동 다이어트", "목동 여성 복싱",
   ],
   cheolsan: [
     "철산 복싱", "철산동 복싱", "철산역 복싱", "철산 복싱장",
-    "광명 복싱", "광명 복싱장", "광명 다이어트", "광명 운동",
+    "광명 복싱", "광명 복싱장", "광명사거리 복싱",
+    "하안동 복싱", "소하동 복싱", "광명 다이어트 복싱",
   ],
   yeongdeungpo: [
     "영등포 복싱", "영등포 복싱장", "도림동 복싱", "신길동 복싱",
+    "대림동 복싱", "영등포 다이어트 복싱",
   ],
+};
+
+const branchSeoContent: Record<string, any> = {
+  cheolsan: {
+    title: "철산복싱 · 광명복싱을 찾는 분들을 위한 스트롱복싱 철산점",
+    description:
+      "스트롱복싱 철산점은 철산동, 철산역, 광명사거리, 하안동, 소하동 인근에서 복싱을 시작하려는 분들이 편하게 방문할 수 있는 복싱 체육관입니다.",
+    nearby: ["철산동", "철산역", "광명사거리", "하안동", "소하동", "광명"],
+  },
+  mokdong: {
+    title: "목동복싱 · 오목교복싱을 찾는 분들을 위한 스트롱복싱 목동점",
+    description:
+      "스트롱복싱 목동점은 목동, 오목교역, 목동역, 양천구, 신정동 인근에서 복싱 입문과 다이어트 복싱을 시작하기 좋은 복싱 체육관입니다.",
+    nearby: ["목동", "오목교", "오목교역", "목동역", "양천구", "신정동"],
+  },
+  gaebong: {
+    title: "개봉복싱 · 고척복싱 · 구로구복싱을 찾는 분들을 위한 스트롱복싱 개봉점",
+    description:
+      "스트롱복싱 개봉점은 개봉동, 개봉역, 고척동, 오류동, 천왕동, 구로구 인근에서 복싱을 시작하려는 분들이 편하게 운동할 수 있는 복싱 체육관입니다.",
+    nearby: ["개봉동", "개봉역", "고척동", "오류동", "천왕동", "구로구"],
+  },
+  sinjeong: {
+    title: "신정복싱 · 신정동복싱 · 양천구복싱을 찾는 분들을 위한 스트롱복싱 신정점",
+    description:
+      "스트롱복싱 신정점은 신정동, 신정네거리, 신월동, 까치산, 화곡동, 양천구 인근에서 복싱을 시작하기 좋은 복싱 체육관입니다.",
+    nearby: ["신정동", "신정네거리", "신월동", "까치산", "화곡동", "양천구"],
+  },
+  yeongdeungpo: {
+    title: "영등포복싱 · 신길동복싱을 찾는 분들을 위한 스트롱복싱 영등포점",
+    description:
+      "스트롱복싱 영등포점은 영등포, 신길동, 도림동, 대림동 인근에서 복싱 입문과 다이어트 복싱을 시작하기 좋은 복싱 체육관입니다.",
+    nearby: ["영등포", "신길동", "도림동", "대림동"],
+  },
 };
 
 export async function generateMetadata({
@@ -208,6 +246,7 @@ export default async function BranchPage({
   );
 
   const relatedPosts = rows;
+  const seoContent = branchSeoContent[slug];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -400,15 +439,29 @@ export default async function BranchPage({
             STRONG BOXING BRANCH
           </p>
 
-          <h1 className="mb-6 text-5xl font-black tracking-[-0.06em] md:text-8xl">
-            {branch.area} 복싱장
-            <br />
-            {branch.fullName}
-          </h1>
+          <h2 className="text-5xl font-black tracking-[-0.05em]">
+            {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
+          </h2>
 
-          <p className="max-w-2xl text-lg leading-8 text-zinc-300">
-            {branch.description}
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">
+            {seoContent?.description || branch.description}
+            <br />
+            복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동, 체력 향상까지
+            목적에 맞춰 운동 방향을 안내해드립니다.
           </p>
+
+          {seoContent?.nearby && (
+            <div className="mt-8 flex flex-wrap gap-2">
+              {seoContent.nearby.map((area: string) => (
+                <span
+                  key={area}
+                  className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm font-black text-zinc-200"
+                >
+                  {area} 인근 복싱
+                </span>
+              ))}
+            </div>
+          )}
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a
@@ -647,16 +700,29 @@ export default async function BranchPage({
         <div className="mx-auto max-w-6xl">
 
           <div className="mb-16">
-            <h2 className="text-5xl font-black tracking-[-0.05em]">
-              {branch.area} 복싱장 {branch.fullName}
-            </h2>
+           <h2 className="text-5xl font-black tracking-[-0.05em]">
+            {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
+          </h2>
 
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">
-              {branch.fullName}은 복싱을 처음 시작하는 분들도 부담 없이
-              운동할 수 있도록 개인 지도 중심으로 운영되는 스트롱복싱입니다.
-              다이어트, 체력증진, 스트레스 해소, 복싱 입문까지 목적에 맞게
-              운동 방향을 안내해드립니다.
-            </p>
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">
+            {seoContent?.description || branch.description}
+            <br />
+            복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동, 체력 향상까지
+            목적에 맞춰 운동 방향을 안내해드립니다.
+          </p>
+
+          {seoContent?.nearby && (
+            <div className="mt-8 flex flex-wrap gap-2">
+              {seoContent.nearby.map((area: string) => (
+                <span
+                  key={area}
+                  className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm font-black text-zinc-200"
+                >
+                  {area} 인근 복싱
+                </span>
+              ))}
+            </div>
+          )}
           </div>
 
           <div className="grid gap-10 md:grid-cols-2">
