@@ -169,12 +169,12 @@ export default async function BlogDetailPage({
 
             <div className="grid gap-3 sm:grid-cols-2">
               {[
-                ["철산 복싱장", "/branches/cheolsan"],
-                ["개봉 복싱장", "/branches/gaebong"],
-                ["목동 복싱장", "/branches/mokdong"],
-                ["신정 복싱장", "/branches/sinjeong"],
-                ["영등포 복싱장", "/branches/yeongdeungpo"],
-              ].map(([label, href]) => (
+                  ["철산복싱 · 철산동복싱 · 광명복싱", "/branches/cheolsan"],
+                  ["개봉복싱 · 고척복싱 · 구로구복싱", "/branches/gaebong"],
+                  ["목동복싱 · 오목교복싱 · 양천구복싱", "/branches/mokdong"],
+                  ["신정복싱 · 신정동복싱 · 양천구복싱", "/branches/sinjeong"],
+                  ["영등포복싱 · 신길동복싱", "/branches/yeongdeungpo"],
+                ].map(([label, href]) => (
                 <a
                   key={href}
                   href={href}
@@ -194,7 +194,7 @@ export default async function BlogDetailPage({
                 처음이어도 괜찮습니다. 목적에 맞는 운동 방향을 안내해드립니다.
               </p>
               <a
-                href="/#consultation"
+                href="/reservation"
                 className="inline-flex rounded-full bg-black px-7 py-4 font-black text-white"
               >
                 지점 확인하기

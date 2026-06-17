@@ -2,18 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 
-function maskReviewerName(name: string) {
-  const value = String(name || "").trim();
-
-  if (!value) return "";
-
-  if (value.length <= 2) {
-    return value[0] + "○";
-  }
-
-  return value[0] + "○".repeat(value.length - 2) + value[value.length - 1];
-}
-
 function makeSlug(text: string) {
   return text
     .trim()
@@ -310,6 +298,13 @@ export default function AdminPage() {
             className="rounded-full border border-[#22C55E]/30 bg-[#22C55E]/10 px-6 py-3 font-black text-[#22C55E]"
           >
             NAVER REVIEWS
+          </a>
+
+          <a
+            href="/admin/review-replies"
+            className="rounded-full border border-[#A78BFA]/30 bg-[#A78BFA]/10 px-6 py-3 font-black text-[#A78BFA]"
+          >
+            REVIEW REPLIES
           </a>
 
         </div>

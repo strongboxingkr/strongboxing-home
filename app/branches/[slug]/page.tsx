@@ -177,6 +177,9 @@ export async function generateMetadata({
       "여성 복싱",
       "직장인 운동",
       "초보자 복싱",
+      "체력 증진",
+      "키즈 복싱",
+      "복싱 PT",
     ],
     alternates: {
       canonical: url,
@@ -750,7 +753,7 @@ export default async function BranchPage({
               </ul>
 
               <a
-                href="/#consultation"
+                href="/reservation"
                 className="mt-10 inline-flex w-fit rounded-full bg-[#FC5230] px-8 py-4 font-black text-white"
               >
                 상담 문의하기
