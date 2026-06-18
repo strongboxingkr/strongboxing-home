@@ -149,7 +149,7 @@ export default function ReelsPage() {
     }
 
   return (
-    <main className="min-h-screen bg-[#F5F7FA] px-6 py-16 text-white">
+    <main className="min-h-screen bg-[#F5F7FA] px-6 py-16 text-zinc-900">
       <div className="mx-auto max-w-5xl">
         <a href="/admin" className="mb-8 inline-block text-zinc-500">
           ← 관리자 메인으로
@@ -224,7 +224,7 @@ export default function ReelsPage() {
             선택한 지점의 public/videos 폴더에 있는 영상 목록입니다.
             </p>
 
-            <label className="flex items-center gap-3 text-sm font-bold text-zinc-300">
+            <label className="flex items-center gap-3 text-sm font-bold text-zinc-700">
               <input
                 type="checkbox"
                 checked={isMuted}
@@ -257,7 +257,7 @@ export default function ReelsPage() {
             {reels.map((reel) => (
               <div
                 key={reel.id}
-                className="overflow-hidden rounded-3xl border border-zinc-200 bg-[#202126]"
+                className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm"
               >
                 <video src={reel.video_url} controls className="w-full" />
 
@@ -275,7 +275,7 @@ export default function ReelsPage() {
                       setIsMuted(reel.is_muted === 1);
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="mt-4 rounded-full border border-zinc-200 px-4 py-2 text-sm font-black"
+                    className="mt-4 rounded-full border border-zinc-200 px-4 py-2 text-sm font-black text-zinc-900"
                   >
                     수정
                   </button>

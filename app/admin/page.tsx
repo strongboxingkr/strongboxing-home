@@ -317,7 +317,7 @@ export default function AdminPage() {
               <input
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                className="flex-1 rounded-2xl border border-zinc-200 bg-black p-4 outline-none focus:border-[#FC5230]"
+                className="flex-1 rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
                 placeholder="예: 철산 복싱 다이어트"
               />
 
@@ -380,7 +380,7 @@ export default function AdminPage() {
             <select
               value={branchName}
               onChange={(e) => setBranchName(e.target.value)}
-              className="w-full rounded-2xl border border-zinc-200 bbg-white p-4 outline-none focus:border-[#FC5230]"
+              className="w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
             >
               <option>철산점</option>
               <option>목동점</option>
@@ -414,7 +414,7 @@ export default function AdminPage() {
             />
           </div>
 
-          <div className="rounded-[28px] border border-zinc-200 bg-whitep-5">
+          <div className="rounded-[28px] border border-zinc-200 bg-white p-5">
             <label className="mb-2 block font-bold">본문 중간 이미지</label>
 
             <input
@@ -426,7 +426,7 @@ export default function AdminPage() {
                 if (file) handleImageUpload(file);
                 e.target.value = "";
               }}
-              className="w-full rounded-2xl border border-zinc-200 bg-black p-4 disabled:opacity-50"
+              className="w-full rounded-2xl border border-zinc-200 bg-white p-4 disabled:opacity-50"
             />
 
             <p className="mt-2 text-sm text-zinc-500">
@@ -446,7 +446,7 @@ export default function AdminPage() {
               ref={contentRef}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="h-80 w-full rounded-2xl border border-zinc-200 bg-whitep-4 leading-8 outline-none focus:border-[#FC5230]"
+              className="h-80 w-full rounded-2xl border border-zinc-200 bg-white p-4 leading-8 outline-none focus:border-[#FC5230]"
               placeholder={`본문을 입력해줘.\n줄바꿈하면 상세페이지에서 문단으로 나와.`}
             />
           </div>
@@ -489,7 +489,7 @@ export default function AdminPage() {
             {posts.map((post) => (
               <div
                 key={post.id}
-                className="flex flex-col gap-4 rounded-[24px] border border-zinc-200bg-white p-5 md:flex-row md:items-center md:justify-between"
+                className="flex flex-col gap-4 rounded-[24px] border border-zinc-200 bg-white p-5 md:flex-row md:items-center md:justify-between"
               >
                 <div>
                   <p className="text-sm text-zinc-500">{post.branch_name}</p>
