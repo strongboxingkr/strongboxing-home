@@ -149,9 +149,9 @@ export default function ReelsPage() {
     }
 
   return (
-    <main className="min-h-screen bg-[#0d0d0f] px-6 py-16 text-white">
+    <main className="min-h-screen bg-[#F5F7FA] px-6 py-16 text-white">
       <div className="mx-auto max-w-5xl">
-        <a href="/admin" className="mb-8 inline-block text-zinc-400">
+        <a href="/admin" className="mb-8 inline-block text-zinc-500">
           ← 관리자 메인으로
         </a>
 
@@ -163,11 +163,11 @@ export default function ReelsPage() {
         STRONG CLIP
         </h1>
 
-        <p className="mb-10 text-zinc-400">
+        <p className="mb-10 text-zinc-500">
         홈페이지 메인 영상 관리
         </p>
 
-        <section className="space-y-5 rounded-[30px] border border-white/10 bg-[#171719] p-6">
+        <section className="space-y-5 rounded-[30px] border border-zinc-200 bg-white p-6">
           <select
             value={branchName}
             onChange={(e) => {
@@ -176,7 +176,7 @@ export default function ReelsPage() {
                 setVideoFileName("");
                 setVideoUrl("");
             }}
-            className="w-full rounded-2xl border border-white/10 bg-black p-4"
+            className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
           >
             <option>철산점</option>
             <option>목동점</option>
@@ -189,7 +189,7 @@ export default function ReelsPage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="짧은 제목 예: 철산점 체력운동 시간"
-            className="w-full rounded-2xl border border-white/10 bg-black p-4"
+            className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
           />
 
           <input
@@ -201,7 +201,7 @@ export default function ReelsPage() {
               if (file) uploadVideo(file);
               e.target.value = "";
             }}
-            className="w-full rounded-2xl border border-white/10 bg-black p-4"
+            className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
           />
 
           <select
@@ -210,7 +210,7 @@ export default function ReelsPage() {
                 setVideoFileName(e.target.value);
                 setVideoUrl("");
             }}
-            className="w-full rounded-2xl border border-white/10 bg-black p-4"
+            className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
             >
             <option value="">서버에 넣어둔 영상 선택</option>
             {videoFiles.map((file) => (
@@ -257,7 +257,7 @@ export default function ReelsPage() {
             {reels.map((reel) => (
               <div
                 key={reel.id}
-                className="overflow-hidden rounded-3xl border border-white/10 bg-[#202126]"
+                className="overflow-hidden rounded-3xl border border-zinc-200 bg-[#202126]"
               >
                 <video src={reel.video_url} controls className="w-full" />
 
@@ -275,7 +275,7 @@ export default function ReelsPage() {
                       setIsMuted(reel.is_muted === 1);
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="mt-4 rounded-full border border-white/10 px-4 py-2 text-sm font-black"
+                    className="mt-4 rounded-full border border-zinc-200 px-4 py-2 text-sm font-black"
                   >
                     수정
                   </button>
@@ -293,7 +293,7 @@ export default function ReelsPage() {
                   >
                     무음 파일 만들기
                   </button>
-                  
+
                 </div>
               </div>
             ))}

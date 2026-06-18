@@ -244,9 +244,9 @@ export default function NaverBlogPage() {
 
   if (!isAuthed) {
     return (
-        <main className="flex min-h-screen items-center justify-center bg-[#0d0d0f] px-6 text-white">
-        <div className="w-full max-w-md rounded-[30px] border border-white/10 bg-[#171719] p-8">
-            <h1 className="mb-6 text-4xl font-black">관리자 로그인</h1>
+        <main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] px-6 text-zinc-900">
+        <div className="w-full max-w-md rounded-[30px] border border-zinc-200 bg-white p-8">
+            <h1 className="mb-6 text-4xl font-black text-white">관리자 로그인</h1>
 
             <input
             type="password"
@@ -261,7 +261,7 @@ export default function NaverBlogPage() {
                 }
                 }
             }}
-            className="mb-4 w-full rounded-2xl border border-white/10 bg-black p-4 outline-none focus:border-[#FC5230]"
+            className="mb-4 w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
             placeholder="관리자 비밀번호"
             />
 
@@ -273,7 +273,7 @@ export default function NaverBlogPage() {
                 alert("비밀번호가 틀렸어.");
                 }
             }}
-            className="w-full rounded-full bg-[#FC5230] px-8 py-4 font-black"
+            className="w-full rounded-full bg-[#FC5230] px-8 py-4 font-black text-white"
             >
             들어가기
             </button>
@@ -283,32 +283,32 @@ export default function NaverBlogPage() {
     }
 
   return (
-    <main className="min-h-screen bg-[#0d0d0f] px-6 py-16 text-white">
+    <main className="min-h-screen bg-[#F5F7FA] px-6 py-16 text-zinc-900">
       <div className="mx-auto max-w-6xl">
-        <a href="/admin" className="mb-8 inline-block text-zinc-400">
+        <a href="/admin" className="mb-8 inline-block text-zinc-500">
         ← 관리자 메인
         </a>
 
-        <p className="mb-3 text-sm font-black tracking-[0.3em] text-[#FC5230]">
+        <p className="mb-3 text-sm font-black text-white tracking-[0.3em] text-[#FC5230]">
         NAVER BLOG
         </p>
 
-        <h1 className="mb-3 text-6xl font-black tracking-[-0.06em]">
+        <h1 className="mb-3 text-6xl font-black text-white tracking-[-0.06em]">
         네이버 블로그 작성
         </h1>
 
-        <p className="mb-10 text-zinc-400">
+        <p className="mb-10 text-zinc-500">
         AI 생성 · 직접 작성 · 사진 · 영상 첨부
         </p>
 
         <div className="grid gap-8 lg:grid-cols-[380px_1fr]">
-          <aside className="space-y-5 rounded-[30px] border border-white/10 bg-[#171719] p-6">
+          <aside className="space-y-5 rounded-[30px] border border-zinc-200 bg-white p-6">
             <div>
               <label className="mb-2 block font-bold">지점</label>
               <select
                 value={branchName}
                 onChange={(e) => setBranchName(e.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-black p-4"
+                className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
               >
                 <option>철산점</option>
                 <option>목동점</option>
@@ -324,7 +324,7 @@ export default function NaverBlogPage() {
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 placeholder="예: 철산 복싱"
-                className="w-full rounded-2xl border border-white/10 bg-black p-4"
+                className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
               />
             </div>
 
@@ -334,7 +334,7 @@ export default function NaverBlogPage() {
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="예: 초보자 복싱 입문"
-                className="w-full rounded-2xl border border-white/10 bg-black p-4"
+                className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
               />
             </div>
 
@@ -344,19 +344,19 @@ export default function NaverBlogPage() {
                 value={memo}
                 onChange={(e) => setMemo(e.target.value)}
                 placeholder="예: 목동점 블로그 말투처럼 자연스럽게"
-                className="h-28 w-full rounded-2xl border border-white/10 bg-black p-4"
+                className="h-28 w-full rounded-2xl border border-zinc-200 bg-white p-4"
               />
             </div>
 
             <button
               onClick={handleAI}
               disabled={loading}
-              className="w-full rounded-full bg-[#FC5230] px-6 py-4 font-black disabled:opacity-50"
+              className="w-full rounded-full bg-[#FC5230] px-6 py-4 font-black text-white disabled:opacity-50"
             >
               {loading ? "AI 작성 중..." : "AI로 글 생성"}
             </button>
 
-            <div className="border-t border-white/10 pt-5">
+            <div className="border-t border-zinc-200 pt-5">
               <label className="mb-2 block font-bold">사진/영상 삽입</label>
               <input
                 type="file"
@@ -368,7 +368,7 @@ export default function NaverBlogPage() {
                   selected.forEach(handleUpload);
                   e.target.value = "";
                 }}
-                className="w-full rounded-2xl border border-white/10 bg-black p-4"
+                className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
               />
 
               {uploading && (
@@ -380,36 +380,36 @@ export default function NaverBlogPage() {
 
             <button
               onClick={() => insertText("\n\n[사진]\n\n")}
-              className="w-full rounded-full border border-white/10 px-6 py-3 font-bold"
+              className="w-full rounded-full border border-zinc-200 px-6 py-3 font-bold"
             >
               [사진] 자리 넣기
             </button>
 
             <button
               onClick={() => insertText("\n\n[영상]\n\n")}
-              className="w-full rounded-full border border-white/10 px-6 py-3 font-bold"
+              className="w-full rounded-full border border-zinc-200 px-6 py-3 font-bold"
             >
               [영상] 자리 넣기
             </button>
           </aside>
 
           <section className="space-y-5">
-            <div className="rounded-[30px] border border-white/10 bg-[#171719] p-6">
+            <div className="rounded-[30px] border border-zinc-200 bg-white p-6">
               <label className="mb-2 block font-bold">제목</label>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="네이버 블로그 제목"
-                className="w-full rounded-2xl border border-white/10 bg-black p-4"
+                className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
               />
             </div>
 
-            <div className="rounded-[30px] border border-white/10 bg-[#171719] p-6">
+            <div className="rounded-[30px] border border-zinc-200 bg-white p-6">
               <div className="mb-3 flex justify-between">
                 <label className="font-bold">본문</label>
                 <button
                   onClick={() => copy(content)}
-                  className="rounded-full bg-white px-4 py-2 text-sm font-black text-black"
+                  className="rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-black text-white"
                 >
                   본문 복사
                 </button>
@@ -420,16 +420,16 @@ export default function NaverBlogPage() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="여기에 네이버 블로그 글을 직접 작성하거나 AI 생성 결과를 수정해."
-                className="h-[560px] w-full rounded-2xl border border-white/10 bg-black p-5 leading-8"
+                className="h-[560px] w-full rounded-2xl border border-zinc-200 bg-white p-5 leading-8"
               />
             </div>
 
-            <div className="rounded-[30px] border border-white/10 bg-[#171719] p-6">
+            <div className="rounded-[30px] border border-zinc-200 bg-white p-6">
               <div className="mb-3 flex justify-between">
                 <label className="font-bold">해시태그</label>
                 <button
                   onClick={() => copy(hashtags)}
-                  className="rounded-full bg-white px-4 py-2 text-sm font-black text-black"
+                  className="rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-black text-white"
                 >
                   태그 복사
                 </button>
@@ -439,31 +439,31 @@ export default function NaverBlogPage() {
                 value={hashtags}
                 onChange={(e) => setHashtags(e.target.value)}
                 placeholder="#철산복싱 #광명복싱 #스트롱복싱"
-                className="h-24 w-full rounded-2xl border border-white/10 bg-black p-4"
+                className="h-24 w-full rounded-2xl border border-zinc-200 bg-white p-4"
               />
             </div>
 
             {media.length > 0 && (
-              <div className="rounded-[30px] border border-white/10 bg-[#171719] p-6">
-                <h2 className="mb-4 text-2xl font-black">첨부 미디어</h2>
+              <div className="rounded-[30px] border border-zinc-200 bg-white p-6">
+                <h2 className="mb-4 text-2xl font-black text-white">첨부 미디어</h2>
 
                 <div className="grid gap-3 md:grid-cols-2">
                   {media.map((item, i) => (
                     <div
                       key={`${item.url}-${i}`}
-                      className="rounded-2xl border border-white/10 bg-black p-4"
+                      className="rounded-2xl border border-zinc-200 bg-white p-4"
                     >
-                      <p className="mb-2 text-sm text-zinc-400">
+                      <p className="mb-2 text-sm text-zinc-500">
                         {item.type === "image" ? "사진" : "영상"} {i + 1}
                       </p>
 
-                      <p className="break-all text-sm text-zinc-300">
+                      <p className="break-all text-sm text-zinc-600">
                         {item.url}
                       </p>
 
                       <button
                         onClick={() => copy(item.url)}
-                        className="mt-3 rounded-full bg-white px-4 py-2 text-sm font-black text-black"
+                        className="mt-3 rounded-full bg-white px-4 py-2 text-sm font-black text-white text-black"
                       >
                         URL 복사
                       </button>
@@ -477,14 +477,14 @@ export default function NaverBlogPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 rounded-full bg-[#FC5230] px-8 py-5 text-lg font-black disabled:opacity-50"
+                className="flex-1 rounded-full bg-[#FC5230] px-8 py-5 text-lg font-black text-white disabled:opacity-50"
               >
                 {saving ? "저장 중..." : editingId ? "수정 저장" : "저장"}
               </button>
 
               <button
                 onClick={resetForm}
-                className="rounded-full border border-white/10 px-8 py-5 text-lg font-black"
+                className="rounded-full border border-zinc-200 px-8 py-5 text-lg font-black text-white"
               >
                 새 글
               </button>
@@ -493,38 +493,38 @@ export default function NaverBlogPage() {
         </div>
 
         <section className="mt-16">
-          <h2 className="mb-6 text-3xl font-black">저장된 네이버 블로그 글</h2>
+          <h2 className="mb-6 text-3xl font-black text-white">저장된 네이버 블로그 글</h2>
 
           <div className="space-y-4">
             {posts.map((post) => (
               <div
                 key={post.id}
-                className="rounded-[24px] border border-white/10 bg-[#171719] p-5"
+                className="rounded-[24px] border border-zinc-200 bg-white p-5"
               >
                 <p className="text-sm text-zinc-500">
                   {post.branch_name} · {post.keyword}
                 </p>
 
-                <h3 className="mt-1 text-2xl font-black">{post.title}</h3>
+                <h3 className="mt-1 text-2xl font-black text-white">{post.title}</h3>
 
                 <div className="mt-4 flex flex-wrap gap-3">
                   <button
                     onClick={() => handleEdit(post)}
-                    className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black"
+                    className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black text-white"
                   >
                     수정
                   </button>
 
                   <button
                     onClick={() => copy(post.content)}
-                    className="rounded-full border border-white/10 px-5 py-3 text-sm font-black"
+                    className="rounded-full border border-zinc-200 px-5 py-3 text-sm font-black text-white"
                   >
                     본문 복사
                   </button>
 
                   <button
                     onClick={() => handleDelete(post.id)}
-                    className="rounded-full border border-red-500 px-5 py-3 text-sm font-black text-red-400"
+                    className="rounded-full border border-red-500 px-5 py-3 text-sm font-black text-white text-red-400"
                   >
                     삭제
                   </button>

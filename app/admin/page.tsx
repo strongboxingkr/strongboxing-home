@@ -217,9 +217,9 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0d0d0f] px-6 py-16 text-white">
+    <main className="min-h-screen bg-[#F5F7FA] text-zinc-900 px-6 py-16">
       <div className="mx-auto max-w-4xl">
-        <a href="/" className="mb-8 inline-block text-zinc-400">
+        <a href="/" className="mb-8 inline-block text-zinc-500">
           ← 메인으로
         </a>
 
@@ -231,7 +231,7 @@ export default function AdminPage() {
           {editingId ? "블로그 수정" : "블로그 작성"}
         </h1>
 
-        <p className="mb-10 text-zinc-400">
+        <p className="mb-10 text-zinc-500">
           AI 생성 · 직접 작성 · 사진 첨부
         </p>
 
@@ -310,14 +310,14 @@ export default function AdminPage() {
         </div>
         
         <div className="space-y-5">
-          <div className="rounded-[28px] border border-[#FC5230]/30 bg-[#171719] p-5">
+          <div className="rounded-[28px] border border-[#FC5230]/30 bg-white p-5">
             <label className="mb-2 block font-bold">AI 키워드</label>
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <input
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                className="flex-1 rounded-2xl border border-white/10 bg-black p-4 outline-none focus:border-[#FC5230]"
+                className="flex-1 rounded-2xl border border-zinc-200 bg-black p-4 outline-none focus:border-[#FC5230]"
                 placeholder="예: 철산 복싱 다이어트"
               />
 
@@ -339,7 +339,7 @@ export default function AdminPage() {
                 setTitle(e.target.value);
                 setSlug(makeSlug(e.target.value));
               }}
-              className="w-full rounded-2xl border border-white/10 bg-[#171719] p-4 outline-none focus:border-[#FC5230]"
+              className="w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
               placeholder="예: 철산 복싱 다이어트, 초보자도 가능할까요?"
             />
           </div>
@@ -349,7 +349,7 @@ export default function AdminPage() {
             <input
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-[#171719] p-4 outline-none focus:border-[#FC5230]"
+              className="w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
               placeholder="cheolsan-boxing-diet"
             />
 
@@ -366,7 +366,7 @@ export default function AdminPage() {
                   className={`rounded-full border px-4 py-2 text-sm font-bold transition ${
                     slug === item
                       ? "border-[#FC5230] bg-[#FC5230] text-white"
-                      : "border-white/10 bg-[#171719] text-zinc-300 hover:border-[#FC5230]"
+                      : "border-zinc-200 bg-white text-zinc-300 hover:border-[#FC5230]"
                   }`}
                 >
                   {item}
@@ -380,7 +380,7 @@ export default function AdminPage() {
             <select
               value={branchName}
               onChange={(e) => setBranchName(e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-[#171719] p-4 outline-none focus:border-[#FC5230]"
+              className="w-full rounded-2xl border border-zinc-200 bbg-white p-4 outline-none focus:border-[#FC5230]"
             >
               <option>철산점</option>
               <option>목동점</option>
@@ -396,7 +396,7 @@ export default function AdminPage() {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-[#171719] p-4 outline-none focus:border-[#FC5230]"
+                className="w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
               >
                 <option>소식</option>
                 <option>이벤트</option>
@@ -409,12 +409,12 @@ export default function AdminPage() {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="h-28 w-full rounded-2xl border border-white/10 bg-[#171719] p-4 outline-none focus:border-[#FC5230]"
+              className="h-28 w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
               placeholder="블로그 목록에 보일 짧은 설명"
             />
           </div>
 
-          <div className="rounded-[28px] border border-white/10 bg-[#171719] p-5">
+          <div className="rounded-[28px] border border-zinc-200 bg-whitep-5">
             <label className="mb-2 block font-bold">본문 중간 이미지</label>
 
             <input
@@ -426,7 +426,7 @@ export default function AdminPage() {
                 if (file) handleImageUpload(file);
                 e.target.value = "";
               }}
-              className="w-full rounded-2xl border border-white/10 bg-black p-4 disabled:opacity-50"
+              className="w-full rounded-2xl border border-zinc-200 bg-black p-4 disabled:opacity-50"
             />
 
             <p className="mt-2 text-sm text-zinc-500">
@@ -446,7 +446,7 @@ export default function AdminPage() {
               ref={contentRef}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="h-80 w-full rounded-2xl border border-white/10 bg-[#171719] p-4 leading-8 outline-none focus:border-[#FC5230]"
+              className="h-80 w-full rounded-2xl border border-zinc-200 bg-whitep-4 leading-8 outline-none focus:border-[#FC5230]"
               placeholder={`본문을 입력해줘.\n줄바꿈하면 상세페이지에서 문단으로 나와.`}
             />
           </div>
@@ -474,7 +474,7 @@ export default function AdminPage() {
                   setContent("");
                   setContent("");
                 }}
-                className="rounded-full border border-white/10 px-8 py-5 text-lg font-black"
+                className="rounded-full border border-zinc-200 px-8 py-5 text-lg font-black"
               >
                 새 글 작성
               </button>
@@ -489,14 +489,14 @@ export default function AdminPage() {
             {posts.map((post) => (
               <div
                 key={post.id}
-                className="flex flex-col gap-4 rounded-[24px] border border-white/10 bg-[#171719] p-5 md:flex-row md:items-center md:justify-between"
+                className="flex flex-col gap-4 rounded-[24px] border border-zinc-200bg-white p-5 md:flex-row md:items-center md:justify-between"
               >
                 <div>
                   <p className="text-sm text-zinc-500">{post.branch_name}</p>
 
                   <h3 className="text-2xl font-black">{post.title}</h3>
 
-                  <p className="mt-2 text-sm text-zinc-400">
+                  <p className="mt-2 text-sm text-zinc-500">
                     /blog/{post.slug}
                   </p>
                 </div>
@@ -505,7 +505,7 @@ export default function AdminPage() {
                   <a
                     href={`/blog/${post.slug}`}
                     target="_blank"
-                    className="rounded-full border border-white/10 px-5 py-3 text-sm font-black"
+                    className="rounded-full border border-zinc-200 px-5 py-3 text-sm font-black"
                   >
                     보기
                   </a>

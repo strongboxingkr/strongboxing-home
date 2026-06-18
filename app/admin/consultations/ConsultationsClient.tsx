@@ -51,9 +51,9 @@ export default function ConsultationsClient({ rows }: { rows: any[] }) {
   }
 
   return (
-    <main className="min-h-screen bg-[#0d0d0f] px-6 py-24 text-white">
+    <main className="min-h-screen bg-[#F5F7FA] px-6 py-24 text-zinc-900">
       <div className="mx-auto max-w-7xl">
-        <a href="/admin" className="mb-8 inline-block text-zinc-400">
+        <a href="/admin" className="mb-8 inline-block text-zinc-500">
           ← 관리자 메인
         </a>
 
@@ -66,14 +66,14 @@ export default function ConsultationsClient({ rows }: { rows: any[] }) {
         </h1>
 
         {items.length === 0 ? (
-          <div className="rounded-[30px] border border-white/10 bg-[#171719] p-10 text-center">
+          <div className="rounded-[30px] border border-zinc-200 bg-white p-10 text-center">
             예약 내역이 없습니다.
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-[30px] border border-white/10">
+          <div className="overflow-x-auto rounded-[30px] border border-zinc-200">
             <table className="w-full min-w-[900px] border-collapse">
-              <thead className="bg-[#171719]">
-                <tr className="text-left text-sm text-zinc-400">
+              <thead className="bg-white">
+                <tr className="text-left text-sm text-zinc-500">
                   <th className="px-5 py-4">상태</th>
                   <th className="px-5 py-4">이름</th>
                   <th className="px-5 py-4">전화번호</th>
@@ -88,14 +88,14 @@ export default function ConsultationsClient({ rows }: { rows: any[] }) {
                 {items.map((item) => (
                   <tr
                     key={item.id}
-                    className="cursor-pointer border-t border-white/10 bg-[#101010] transition hover:bg-[#171719]"
+                    className="cursor-pointer border-t border-zinc-200 bg-white transition hover:bg-white"
                     onClick={() => openDetail(item)}
                   >
                     <td className="px-5 py-4">
                       <StatusBadge status={item.status || "예약접수"} />
                     </td>
 
-                    <td className="px-5 py-4 font-black text-white">
+                    <td className="px-5 py-4 font-black text-zinc-900">
                       {item.name}
                     </td>
 
@@ -129,7 +129,7 @@ export default function ConsultationsClient({ rows }: { rows: any[] }) {
 
         {selected && (
           <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 px-6">
-            <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[34px] border border-white/10 bg-[#171719] p-7">
+            <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[34px] border border-zinc-200 bg-white p-7">
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                   <p className="mb-2 text-sm font-black text-[#38BDF8]">
@@ -141,7 +141,7 @@ export default function ConsultationsClient({ rows }: { rows: any[] }) {
 
                 <button
                   onClick={() => setSelected(null)}
-                  className="rounded-full border border-white/10 px-4 py-2 font-black"
+                  className="rounded-full border border-zinc-200 px-4 py-2 font-black"
                 >
                   닫기
                 </button>
@@ -163,15 +163,15 @@ export default function ConsultationsClient({ rows }: { rows: any[] }) {
                 <Info label="문의사항" value={selected.message || "-"} />
               </div>
 
-              <div className="mt-7 rounded-2xl border border-white/10 bg-black/30 p-5">
-                <label className="mb-3 block text-sm font-black text-white">
+              <div className="mt-7 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+                <label className="mb-3 block text-sm font-black text-zinc-900">
                   상태 변경
                 </label>
 
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="mb-4 w-full rounded-2xl border border-white/10 bg-black p-4"
+                  className="mb-4 w-full rounded-2xl border border-zinc-200 bg-black p-4"
                 >
                   {statuses.map((item) => (
                     <option key={item}>{item}</option>
@@ -200,7 +200,7 @@ export default function ConsultationsClient({ rows }: { rows: any[] }) {
                       `${selected.name}\n${selected.phone}\n${selected.branch}\n${selected.reservation_date || ""} ${selected.reservation_time || ""}`
                     )
                   }
-                  className="rounded-full border border-white/10 px-5 py-3 text-sm font-black"
+                  className="rounded-full border border-zinc-200 px-5 py-3 text-sm font-black"
                 >
                   예약정보 복사
                 </button>
@@ -242,7 +242,7 @@ function Info({
   onCopy?: (text: string) => void;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+    <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
       <div className="mb-2 flex items-center justify-between gap-3">
         <p className="text-sm font-black text-[#38BDF8]">{label}</p>
 

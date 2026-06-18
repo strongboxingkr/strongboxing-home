@@ -138,9 +138,9 @@ export default function NaverReviewsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0d0d0f] px-6 py-16 text-white">
+    <main className="min-h-screen bg-[#F5F7FA] px-6 py-16 text-zinc-900">
       <div className="mx-auto max-w-6xl">
-        <a href="/admin" className="mb-8 inline-block text-zinc-400">
+        <a href="/admin" className="mb-8 inline-block text-zinc-500">
           ← 관리자 메인
         </a>
 
@@ -152,17 +152,17 @@ export default function NaverReviewsPage() {
           네이버 리뷰 관리
         </h1>
 
-        <p className="mb-10 text-zinc-400">
+        <p className="mb-10 text-zinc-500">
           네이버 리뷰 캡처와 내용을 저장하고 홈페이지 노출 여부를 관리합니다.
         </p>
 
-        <section className="grid gap-5 rounded-[30px] border border-white/10 bg-[#171719] p-6 md:grid-cols-2">
+        <section className="grid gap-5 rounded-[30px] border border-zinc-200 bg-white p-6 md:grid-cols-2">
           <select
             value={form.branch_name}
             onChange={(e) =>
               setForm({ ...form, branch_name: e.target.value })
             }
-            className="rounded-2xl border border-white/10 bg-black p-4"
+            className="rounded-2xl border border-zinc-200 bg-white p-4"
           >
             <option>철산점</option>
             <option>목동점</option>
@@ -177,7 +177,7 @@ export default function NaverReviewsPage() {
               setForm({ ...form, reviewer_name: e.target.value })
             }
             placeholder="리뷰어 이름 예: 김○○"
-            className="rounded-2xl border border-white/10 bg-black p-4"
+            className="rounded-2xl border border-zinc-200 bg-white p-4"
           />
 
           
@@ -188,7 +188,7 @@ export default function NaverReviewsPage() {
               setForm({ ...form, review_date: e.target.value })
             }
             placeholder="리뷰 날짜 예: 2026.06"
-            className="rounded-2xl border border-white/10 bg-black p-4"
+            className="rounded-2xl border border-zinc-200 bg-white p-4"
           />
 
           <textarea
@@ -197,7 +197,7 @@ export default function NaverReviewsPage() {
               setForm({ ...form, content: e.target.value })
             }
             placeholder="네이버 리뷰 내용을 복붙"
-            className="h-40 rounded-2xl border border-white/10 bg-black p-4 md:col-span-2"
+            className="h-40 rounded-2xl border border-zinc-200 bg-white p-4 md:col-span-2"
           />
 
           <input
@@ -209,18 +209,18 @@ export default function NaverReviewsPage() {
               if (file) uploadImage(file);
               e.target.value = "";
             }}
-            className="rounded-2xl border border-white/10 bg-black p-4 md:col-span-2"
+            className="rounded-2xl border border-zinc-200 bg-white p-4 md:col-span-2"
           />
 
           {form.image_url && (
             <img
               src={form.image_url}
               alt="리뷰 캡처"
-              className="max-h-[300px] rounded-2xl border border-white/10 object-contain md:col-span-2"
+              className="max-h-[300px] rounded-2xl border border-zinc-200 object-contain md:col-span-2"
             />
           )}
 
-          <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black p-4 font-bold">
+          <label className="flex items-center gap-3 rounded-2xl border border-zinc-200 bg-white p-4 font-bold">
             <input
               type="checkbox"
               checked={form.is_active}
@@ -243,7 +243,7 @@ export default function NaverReviewsPage() {
           {reviews.map((review) => (
             <div
               key={review.id}
-              className="rounded-[30px] border border-white/10 bg-[#171719] p-5"
+              className="rounded-[30px] border border-zinc-200 bg-white p-5"
             >
               <div className="mb-3 flex items-center justify-between gap-3">
                 <p className="text-sm font-black text-[#22C55E]">
@@ -254,7 +254,7 @@ export default function NaverReviewsPage() {
                   className={`rounded-full px-3 py-1 text-xs font-black ${
                     review.is_active === 1
                       ? "bg-green-500/20 text-green-400"
-                      : "bg-zinc-500/20 text-zinc-400"
+                      : "bg-zinc-500/20 text-zinc-500"
                   }`}
                 >
                   {review.is_active === 1 ? "노출중" : "비노출"}
@@ -265,7 +265,7 @@ export default function NaverReviewsPage() {
                 NAVER REVIEW
               </p>
 
-              <p className="mt-2 text-sm text-zinc-400">
+              <p className="mt-2 text-sm text-zinc-500">
                 {review.reviewer_name || "익명"} · {review.review_date || "-"}
               </p>
 
@@ -277,14 +277,14 @@ export default function NaverReviewsPage() {
                 <img
                   src={review.image_url}
                   alt="네이버 리뷰 캡처"
-                  className="mt-4 h-40 w-full rounded-2xl border border-white/10 object-cover"
+                  className="mt-4 h-40 w-full rounded-2xl border border-zinc-200 object-cover"
                 />
               )}
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <button
                   onClick={() => editReview(review)}
-                  className="rounded-full border border-white/10 px-4 py-2 text-sm font-black"
+                  className="rounded-full border border-zinc-200 px-4 py-2 text-sm font-black"
                 >
                   수정
                 </button>

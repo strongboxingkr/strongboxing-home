@@ -5,5 +5,11 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AdminGuard>{children}</AdminGuard>;
+  return (
+    <AdminGuard>
+      <div className="min-h-screen bg-[#F5F7FA] text-zinc-900">
+        {children}
+      </div>
+    </AdminGuard>
+  );
 }
