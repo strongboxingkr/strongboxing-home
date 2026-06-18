@@ -98,6 +98,34 @@ export default function ReviewRepliesPage() {
             </div>
         </>
         )}
+        <div className="mt-14 rounded-[30px] border border-zinc-200 bg-white p-8">
+        <h2 className="text-3xl font-black">
+            홈페이지 리뷰 등록
+        </h2>
+
+        <p className="mt-2 text-zinc-500">
+            답글 작성 후 홈페이지 리뷰로 바로 등록할 수 있습니다.
+        </p>
+
+        <div className="mt-6 flex gap-3">
+            <a
+            href="/admin/naver-reviews"
+            className="rounded-full bg-[#FC5230] px-6 py-4 font-black text-white"
+            >
+            리뷰 등록하러 가기
+            </a>
+
+            <button
+            onClick={() => {
+                navigator.clipboard.writeText(review);
+                alert("리뷰 내용 복사 완료!");
+            }}
+            className="rounded-full border border-zinc-200 px-6 py-4 font-black"
+            >
+            리뷰 내용 복사
+            </button>
+        </div>
+        </div>
       </div>
     </main>
   );
