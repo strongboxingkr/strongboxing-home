@@ -295,8 +295,6 @@ export default async function HomePage() {
 
       <ReelsSection />
 
-      <GallerySection />
-
       <NaverReviewsSection />
 
       <section id="calculator" className="bg-[#111214]">
@@ -528,6 +526,8 @@ export default async function HomePage() {
           초보자 복싱, 다이어트 복싱, 체력 향상 운동 모습을 담고 있습니다.
         </p>
       </section>
+
+      <GallerySection />
 
       <ConsultationForm />
 
