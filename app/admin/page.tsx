@@ -98,12 +98,12 @@ export default function AdminPage() {
 
     setUploading(false);
 
-    if (!res.ok) {
-      alert("이미지 업로드 실패 ㅠ");
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      alert(data.message || "이미지 업로드 실패 ㅠ");
       return;
     }
-
-    const data = await res.json();
 
     const imageMarkdown = `\n\n![업로드 이미지](${data.url})\n\n`;
 

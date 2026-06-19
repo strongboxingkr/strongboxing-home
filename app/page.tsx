@@ -8,6 +8,7 @@ import FaqSection from "./components/FaqSection";
 import ReelsSection from "./components/ReelsSection";
 import SplashScreen from "./components/SplashScreen";
 import NaverReviewsSection from "./components/NaverReviewsSection";
+import GallerySection from "./components/GallerySection";
 
 export const dynamic = "force-dynamic";
 
@@ -293,6 +294,8 @@ export default async function HomePage() {
       </section>
 
       <ReelsSection />
+
+      <GallerySection />
 
       <NaverReviewsSection />
 
