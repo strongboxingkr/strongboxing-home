@@ -88,43 +88,49 @@ export default function AdminPage() {
   async function handleImageUpload(file: File) {
     setUploading(true);
 
-    const formData = new FormData();
-    formData.append("file", file);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", "blog");
 
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-    setUploading(false);
+      const data = await res.json();
 
-    const data = await res.json();
-
-    if (!res.ok || !data.ok) {
-      alert(data.message || "이미지 업로드 실패 ㅠ");
-      return;
-    }
-
-    const imageMarkdown = `\n\n![업로드 이미지](${data.url})\n\n`;
-
-    setContent((prev) => {
-      const textarea = contentRef.current;
-
-      if (!textarea) {
-        return prev + imageMarkdown;
+      if (!res.ok || !data.ok) {
+        alert(data.message || "이미지 업로드 실패 ㅠ");
+        return;
       }
 
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
+      const imageMarkdown = `\n\n![업로드 이미지](${data.url})\n\n`;
 
-      return prev.slice(0, start) + imageMarkdown + prev.slice(end);
-    });
+      setContent((prev) => {
+        const textarea = contentRef.current;
 
-    setTimeout(() => {
-      contentRef.current?.focus();
-    }, 0);
+        if (!textarea) {
+          return prev + imageMarkdown;
+        }
 
-    alert("이미지가 본문에 추가됐어!");
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+
+        return prev.slice(0, start) + imageMarkdown + prev.slice(end);
+      });
+
+      setTimeout(() => {
+        contentRef.current?.focus();
+      }, 0);
+
+      alert("이미지가 본문에 추가됐어!");
+    } catch (error) {
+      console.error(error);
+      alert("이미지 업로드 실패 ㅠ");
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function handleSave() {
