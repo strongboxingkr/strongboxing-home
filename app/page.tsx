@@ -6,7 +6,7 @@ import ReservationButton from "./components/ReservationButton";
 import AiCoachChat from "./components/AiCoachChat";
 import FaqSection from "./components/FaqSection";
 import ReelsSection from "./components/ReelsSection";
-import SplashScreen from "./components/SplashScreen";
+//import SplashScreen from "./components/SplashScreen";
 import NaverReviewsSection from "./components/NaverReviewsSection";
 import GallerySection from "./components/GallerySection";
 
@@ -105,7 +105,7 @@ export default async function HomePage() {
   return (
 
      <>
-    <SplashScreen />
+    {/*<SplashScreen />*/}
 
     <main className="min-h-screen bg-[#16171A] text-white">
       <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-[#16171A]/80 backdrop-blur-xl">
