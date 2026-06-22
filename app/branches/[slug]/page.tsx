@@ -15,6 +15,7 @@ const branches: any = {
       "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
     naverMap: "https://naver.me/5aFquqcz",
     kakaoMap: "https://kko.to/RmPQ1W8t8g",
+    kakaoChat: "https://pf.kakao.com/_uyxbnX/chat",
     description:
       "개봉동에서 복싱 입문, 다이어트, 체력 향상을 부담 없이 시작할 수 있는 스트롱복싱 개봉점입니다.",
   },
@@ -48,6 +49,7 @@ const branches: any = {
     naverMap: "https://naver.me/GII8f9Qv",
     kakaoMap: "https://naver.me/GII8f9Qv",
     googleMap: "https://maps.google.com/?q=스트롱복싱+목동점",
+    kakaoChat: "https://pf.kakao.com/_xfGZnX/chat",
     description:
       "목동에서 복싱 입문, 여성복싱, 다이어트, 직장인 운동을 편하게 시작할 수 있는 스트롱복싱 목동점입니다.",
   },
@@ -61,9 +63,10 @@ const branches: any = {
     address: "경기도 광명시 철산동 56-14 3층",
     hours: ["월-금 14:00~23:00", "토·일 14:00~18:00", "공휴일 휴무",],
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
-    booking: "",
-    naverMap: "",
-    kakaoMap: "",
+    booking: "https://booking.naver.com/booking/12/bizes/1673598",
+    naverMap: "https://naver.me/F8lwn3Te",
+    kakaoMap: "https://place.map.kakao.com/1182676078",
+    kakaoChat: "https://pf.kakao.com/_MAKnX/chat",
     description:
       "광명 철산동 복싱장 스트롱복싱 철산점입니다. 복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동을 편하게 시작할 수 있습니다."
     },
@@ -557,6 +560,16 @@ export default async function BranchPage({
                 인스타
               </a>
 
+              {branch.kakaoChat && (
+                <a
+                  href={branch.kakaoChat}
+                  target="_blank"
+                  className="rounded-full bg-[#FEE500] px-5 py-3 font-black text-black"
+                >
+                  카카오톡 문의
+                </a>
+              )}
+
               <a
                 href={`tel:${branch.phone.replaceAll("-", "")}`}
                 className="rounded-full bg-[#FC5230] px-5 py-3 font-black"
@@ -693,6 +706,16 @@ export default async function BranchPage({
                 className="rounded-full bg-white px-8 py-4 font-black text-black"
               >
                 네이버 예약
+              </a>
+            )}
+
+            {branch.kakaoChat && (
+              <a
+                href={branch.kakaoChat}
+                target="_blank"
+                className="rounded-full bg-[#FEE500] px-8 py-4 font-black text-black"
+              >
+                카카오톡 문의
               </a>
             )}
           </div>
