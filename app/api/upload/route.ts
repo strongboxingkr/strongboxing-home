@@ -3,8 +3,8 @@ import path from "path";
 
 export const runtime = "nodejs";
 
-const IMAGE_MAX_SIZE = 20 * 1024 * 1024; // 20MB
-const VIDEO_MAX_SIZE = 200 * 1024 * 1024; // 200MB
+const IMAGE_MAX_SIZE = 100 * 1024 * 1024; // 100MB
+const VIDEO_MAX_SIZE = 500 * 1024 * 1024; // 500MB
 
 export async function POST(req: Request) {
   try {
