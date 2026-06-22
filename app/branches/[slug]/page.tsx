@@ -89,6 +89,60 @@ const branches: any = {
   },
 };
 
+const branchFaqs: Record<string, { question: string; answer: string }[]> = {
+  gaebong: [
+    { question: "개봉 복싱 처음인데 가능할까요?", answer: "처음이신 분들도 기초 자세와 스텝부터 개인 수준에 맞춰 안내해드립니다." },
+    { question: "개봉동 복싱장 찾는데 초보자도 괜찮나요?", answer: "운동 경험이 없어도 회원별 진도에 맞춰 진행되기 때문에 부담 없이 시작할 수 있습니다." },
+    { question: "여성 회원도 많이 다니나요?", answer: "여성 회원분들도 다이어트와 체력 향상 목적으로 편하게 운동하고 계십니다." },
+    { question: "개인별 운동으로 진행되나요?", answer: "운영시간 내 방문하면 회원별 목적과 진도에 맞춰 운동이 진행됩니다." },
+    { question: "다이어트 복싱도 가능한가요?", answer: "복싱은 전신 운동이라 체중 관리와 체력 향상에 도움이 됩니다." },
+    { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 체력 향상과 운동 습관을 만들기 좋습니다." },
+    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
+    { question: "운영시간은 어떻게 되나요?", answer: "개봉점은 월~금 13:00~23:00 운영합니다." },
+    { question: "직장인 회원도 많이 다니나요?", answer: "퇴근 후 운동하시는 직장인 회원분들도 많이 이용하고 있습니다." },
+    { question: "상담 예약은 어떻게 하나요?", answer: "홈페이지 방문 상담 예약, 전화, 카카오톡 문의로 신청하실 수 있습니다." },
+  ],
+
+  sinjeong: [
+    { question: "신정 복싱 처음인데 가능할까요?", answer: "처음이신 분들도 기초 자세, 스텝, 펀치부터 차근차근 안내해드립니다." },
+    { question: "신정동 복싱장 찾는데 초보자도 괜찮나요?", answer: "회원별 수준과 목적에 맞춰 진행되기 때문에 초보자도 부담 없이 시작할 수 있습니다." },
+    { question: "여성 회원도 운동 가능한가요?", answer: "여성 회원분들도 다이어트, 체력 향상, 스트레스 해소 목적으로 많이 운동하고 계십니다." },
+    { question: "직장인도 다니기 괜찮나요?", answer: "평일 저녁 시간대에 퇴근 후 운동하시는 직장인 회원도 많습니다." },
+    { question: "다이어트 복싱도 가능한가요?", answer: "복싱은 유산소와 근력 운동이 함께 들어가 다이어트와 체력 향상에 도움이 됩니다." },
+    { question: "개인별 운동으로 진행되나요?", answer: "운영시간 내 방문하면 회원별 진도와 운동 목적에 맞춰 진행됩니다." },
+    { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 기초 체력과 운동 습관을 만들기 좋습니다." },
+    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
+    { question: "운영시간은 어떻게 되나요?", answer: "신정점은 월~금 10:00~24:00, 토요일 10:00~16:00 운영합니다. 14:00~15:00는 휴게시간입니다." },
+    { question: "상담은 어떻게 신청하나요?", answer: "홈페이지 방문 상담 예약 또는 전화 문의로 상담 신청이 가능합니다." },
+  ],
+
+  mokdong: [
+    { question: "목동 복싱 처음인데 가능할까요?", answer: "처음이신 분들도 기초 자세와 스텝부터 개인 수준에 맞춰 안내해드립니다." },
+    { question: "목동 복싱장 찾는데 초보자도 괜찮나요?", answer: "운동 경험이 없어도 회원별 진도에 맞춰 진행되기 때문에 부담 없이 시작할 수 있습니다." },
+    { question: "여성 회원도 많이 다니나요?", answer: "여성 회원분들도 다이어트, 체력 향상, 스트레스 해소 목적으로 많이 운동하고 계십니다." },
+    { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 체력 향상과 기초 운동 습관을 만들기 좋습니다." },
+    { question: "개인별 운동으로 진행되나요?", answer: "운영시간 내 방문하면 회원별 운동 목적과 진도에 맞춰 운동이 진행됩니다." },
+    { question: "다이어트 효과가 있나요?", answer: "복싱은 전신 운동이라 꾸준히 하면 체중 관리와 체력 향상에 도움이 됩니다." },
+    { question: "준비물은 무엇이 필요한가요?", answer: "편한 운동복과 실내용 운동화만 준비해주시면 됩니다. 장비는 체육관에서 안내드립니다." },
+    { question: "운영시간은 어떻게 되나요?", answer: "목동점은 월~금 14:00~24:00, 토요일 11:00~16:00 운영합니다." },
+    { question: "직장인도 운동하기 괜찮나요?", answer: "평일 늦은 시간까지 운영해 퇴근 후 운동하시는 직장인 회원도 많습니다." },
+    { question: "상담은 어떻게 신청하나요?", answer: "홈페이지 방문 상담 예약, 전화, 카카오톡 문의로 상담 신청이 가능합니다." },
+  ],
+
+  cheolsan: [
+    { question: "철산 복싱 처음인데 가능할까요?", answer: "처음 시작하는 분들도 기초 자세와 스텝부터 개인 수준에 맞춰 안내해드립니다." },
+    { question: "철산동 복싱장 찾는데 초보자도 괜찮나요?", answer: "회원별 운동 목적과 진도에 맞춰 진행되기 때문에 초보자도 부담 없이 시작할 수 있습니다." },
+    { question: "광명 지역 주민들도 많이 다니나요?", answer: "철산동, 하안동, 소하동, 광명사거리 인근에서 방문하시는 분들이 많습니다." },
+    { question: "여성 회원도 운동 가능한가요?", answer: "여성 회원분들도 다이어트, 체력 향상, 스트레스 해소 목적으로 편하게 운동하실 수 있습니다." },
+    { question: "주말에도 운영하나요?", answer: "철산점은 토요일과 일요일도 운영합니다. 방문 전 운영시간을 확인해주세요." },
+    { question: "개인별 운동으로 진행되나요?", answer: "회원별 운동 목적과 진도에 맞춰 개인별로 운동이 진행됩니다." },
+    { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 체력 향상과 운동 습관 형성에 좋습니다." },
+    { question: "다이어트 목적으로 등록해도 되나요?", answer: "복싱은 전신 운동이라 다이어트와 체력 향상 목적으로 시작하는 분들이 많습니다." },
+    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
+    { question: "상담은 어떻게 신청하나요?", answer: "홈페이지 방문 상담 예약, 전화, 카카오톡 문의로 상담 신청이 가능합니다." },
+  ],
+};
+
 const branchKeywords: Record<string, string[]> = {
   gaebong: [
     "개봉 복싱", "개봉동 복싱", "개봉역 복싱", "개봉 복싱장",
@@ -373,44 +427,33 @@ export default async function BranchPage({
     ],
   };
 
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `${branch.area} 복싱 처음인데 가능할까요?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `${branch.fullName}은 복싱을 처음 시작하는 분들도 기초 자세, 스텝, 펀치부터 개인 수준에 맞춰 안내합니다.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `${branch.name}은 여성 회원도 운동 가능한가요?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "여성 회원도 많이 이용하며 다이어트, 체력 향상, 스트레스 해소 목적으로 복싱을 시작하는 분들이 많습니다.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: `${branch.area}에서 다이어트 복싱 가능한가요?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `${branch.fullName}에서는 복싱 입문, 다이어트 복싱, 체력 향상 운동을 목적에 맞게 진행할 수 있습니다.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: "운영시간 안에 자유롭게 방문 가능한가요?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "운영시간 내 편한 시간에 방문 가능하며, 회원 운동 목적과 진도에 맞춰 지도합니다.",
-        },
-      },
-    ],
-  };
+  const faqItems = branchFaqs[slug] || [
+  {
+    question: `${branch.area} 복싱 처음인데 가능할까요?`,
+    answer: `${branch.fullName}은 처음 시작하는 분들도 기초부터 개인 수준에 맞춰 안내합니다.`,
+  },
+  {
+    question: `${branch.name}은 여성 회원도 운동 가능한가요?`,
+    answer: "여성 회원도 편하게 운동할 수 있으며 다이어트와 체력 향상 목적으로 많이 시작합니다.",
+  },
+  {
+    question: "운영시간 안에 자유롭게 방문 가능한가요?",
+    answer: "운영시간 내 방문 가능하며 운동 목적과 진도에 맞춰 지도합니다.",
+  },
+];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqItems.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+};
 
   return (
     <main className="min-h-screen bg-[#0d0d0f] text-white">
@@ -790,38 +833,20 @@ export default async function BranchPage({
             </h2>
 
             <div className="mt-10 space-y-6">
-              <div className="rounded-[24px] border border-white/10 bg-black/40 p-6">
-                <h3 className="text-xl font-black">
-                  복싱 처음인데 가능할까요?
-                </h3>
+              {faqItems.map((item, index) => (
+                <div
+                  key={index}
+                  className="rounded-[24px] border border-white/10 bg-black/40 p-6"
+                >
+                  <h3 className="text-xl font-black">
+                    {item.question}
+                  </h3>
 
-                <p className="mt-3 leading-7 text-zinc-300">
-                  처음 운동하시는 분들도 많으며,
-                  개인 수준에 맞춰 기초부터 안내해드립니다.
-                </p>
-              </div>
-
-              <div className="rounded-[24px] border border-white/10 bg-black/40 p-6">
-                <h3 className="text-xl font-black">
-                  여성 회원도 운동 가능한가요?
-                </h3>
-
-                <p className="mt-3 leading-7 text-zinc-300">
-                  여성 회원 비율도 높으며,
-                  다이어트와 체력증진 목적으로 많이 등록하고 있습니다.
-                </p>
-              </div>
-
-              <div className="rounded-[24px] border border-white/10 bg-black/40 p-6">
-                <h3 className="text-xl font-black">
-                  운영시간 안에는 자유롭게 방문 가능한가요?
-                </h3>
-
-                <p className="mt-3 leading-7 text-zinc-300">
-                  운영시간 내 자유롭게 방문 가능하며,
-                  운동 목적에 맞춰 지도해드립니다.
-                </p>
-              </div>
+                  <p className="mt-3 leading-7 text-zinc-300">
+                    {item.answer}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
