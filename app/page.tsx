@@ -360,23 +360,23 @@ export default async function HomePage() {
                   ["샌드백", "파워 & 지구력"],
                   ["체력운동", "코어 마무리"],
                 ].map(([step, desc], i) => (
-                  <div key={step} className="flex items-center gap-4">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FC5230] text-xs font-black text-white">
-                      {i + 1}
+                  <div key={step} className="flex items-center gap-4 border-b border-white/5 pb-4 last:border-0 last:pb-0">
+                    <span className="w-5 shrink-0 text-xs font-black text-[#FC5230]">
+                      {String(i + 1).padStart(2, "0")}
                     </span>
                     <span className="font-black">{step}</span>
-                    <span className="text-sm text-zinc-500">{desc}</span>
+                    <span className="ml-auto text-sm text-zinc-500">{desc}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="mt-5 flex flex-col items-center justify-between gap-6 bg-[#FC5230] p-8 sm:flex-row">
+          <div className="mt-5 flex flex-col items-center justify-between gap-6 border border-white/10 bg-[#202126] p-8 sm:flex-row">
             <p className="text-xl font-black">운영시간 내 언제든 시작 가능!</p>
             <a
               href="/#branch"
-              className="shrink-0 rounded-full bg-black px-7 py-4 text-sm font-black text-white"
+              className="shrink-0 border border-[#FC5230] px-7 py-4 text-sm font-black text-[#FC5230]"
             >
               지점 운영시간 확인 →
             </a>
