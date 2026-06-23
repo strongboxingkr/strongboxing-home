@@ -12,6 +12,11 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
       ? reels
       : reels.filter((reel) => reel.branch_name === selectedBranch);
 
+  const rows = [
+    filteredReels.filter((_, i) => i % 2 === 0),
+    filteredReels.filter((_, i) => i % 2 === 1),
+  ];
+
   return (
     <>
       <div className="mb-8 flex gap-3 overflow-x-auto pb-2">
@@ -30,10 +35,16 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
         ))}
       </div>
 
-      <div className="flex gap-4 overflow-x-auto pb-4">
-        {filteredReels.map((reel) => (
-          <ReelCard key={reel.id} reel={reel} />
-        ))}
+      <div className="overflow-x-auto pb-4">
+        <div className="flex flex-col gap-4">
+          {rows.map((row, ri) => (
+            <div key={ri} className="flex gap-4">
+              {row.map((reel) => (
+                <ReelCard key={reel.id} reel={reel} />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
@@ -43,31 +54,25 @@ function ReelCard({ reel }: { reel: any }) {
   const [isPortrait, setIsPortrait] = useState(false);
 
   return (
-          <div
-            className={`shrink-0 overflow-hidden rounded-3xl border border-[#FC5230]/20 bg-[#202126] ${isPortrait ? "w-[200px] md:w-[240px]" : "w-[300px] md:w-[340px]"}`}
-          >
-            <video
-              src={reel.video_url}
-              controls={Number(reel.is_muted) !== 1}
-              muted
-              autoPlay={Number(reel.is_muted) === 1}
-              loop={Number(reel.is_muted) === 1}
-              playsInline
-              preload="metadata"
-              onLoadedMetadata={(e) => {
-                const v = e.currentTarget;
-                setIsPortrait(v.videoHeight > v.videoWidth);
-              }}
-              className={`w-full bg-black object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
-            />
-
-            <div className="p-5">
-              <p className="mb-1 text-xs font-black tracking-[0.2em] text-[#FC5230]">
-                {reel.branch_name}
-              </p>
-
-              <p className="font-bold text-white">{reel.title}</p>
-            </div>
-          </div>
+    <div className={`shrink-0 overflow-hidden rounded-2xl border border-[#FC5230]/20 bg-[#202126] ${isPortrait ? "w-[160px]" : "w-[240px]"}`}>
+      <video
+        src={reel.video_url}
+        controls={Number(reel.is_muted) !== 1}
+        muted
+        autoPlay={Number(reel.is_muted) === 1}
+        loop={Number(reel.is_muted) === 1}
+        playsInline
+        preload="metadata"
+        onLoadedMetadata={(e) => {
+          const v = e.currentTarget;
+          setIsPortrait(v.videoHeight > v.videoWidth);
+        }}
+        className={`w-full bg-black object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
+      />
+      <div className="px-3 py-2">
+        <p className="text-[10px] font-black tracking-[0.2em] text-[#FC5230]">{reel.branch_name}</p>
+        <p className="text-xs font-bold text-white">{reel.title}</p>
+      </div>
+    </div>
   );
 }
