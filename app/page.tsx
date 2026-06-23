@@ -277,48 +277,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="program" className="px-6 py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <div>
-              <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
-                PROGRAM
-              </p>
-              <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
-                복싱은 어렵지 않게,
-                <br />
-                운동은 확실하게.
-              </h2>
-            </div>
-            <p className="max-w-md leading-8 text-zinc-400">
-              처음 배우는 자세부터 다이어트, 체력향상, 스트레스 해소까지
-              목적에 맞는 수업으로 진행합니다.
-            </p>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {[
-              ["01", "복싱 입문", "기본자세, 스텝, 펀치부터 차근차근"],
-              ["02", "다이어트 복싱", "재밌게 땀나는 그룹 복싱 수업"],
-              ["03", "코치 직접 지도", "목적에 맞춘 밀착 트레이닝"],
-            ].map(([num, title, desc]) => (
-              <div
-                key={num}
-                className="border border-white/10 bg-[#202126] p-8 transition hover:border-[#FC5230]"
-              >
-                <p className="mb-10 text-sm font-black text-[#FC5230]">
-                  {num}
-                </p>
-                <h3 className="mb-4 text-3xl font-black tracking-[-0.05em]">
-                  {title}
-                </h3>
-                <p className="leading-7 text-zinc-400">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* HOW WE TRAIN 섹션 */}
       <section className="px-6 py-28 bg-[#111214]">
         <div className="mx-auto max-w-7xl">
@@ -436,6 +394,48 @@ export default async function HomePage() {
                 <h3 className="mb-1 text-xl font-black tracking-[-0.03em]">{coach.name} {coach.role}</h3>
                 <p className="text-xs text-zinc-500">@{coach.instagram}</p>
               </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="program" className="px-6 py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
+                PROGRAM
+              </p>
+              <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
+                복싱은 어렵지 않게,
+                <br />
+                운동은 확실하게.
+              </h2>
+            </div>
+            <p className="max-w-md leading-8 text-zinc-400">
+              처음 배우는 자세부터 다이어트, 체력향상, 스트레스 해소까지
+              목적에 맞는 수업으로 진행합니다.
+            </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              ["01", "복싱 입문", "기본자세, 스텝, 펀치부터 차근차근"],
+              ["02", "다이어트 복싱", "재밌게 땀나는 그룹 복싱 수업"],
+              ["03", "코치 직접 지도", "목적에 맞춘 밀착 트레이닝"],
+            ].map(([num, title, desc]) => (
+              <div
+                key={num}
+                className="border border-white/10 bg-[#202126] p-8 transition hover:border-[#FC5230]"
+              >
+                <p className="mb-10 text-sm font-black text-[#FC5230]">
+                  {num}
+                </p>
+                <h3 className="mb-4 text-3xl font-black tracking-[-0.05em]">
+                  {title}
+                </h3>
+                <p className="leading-7 text-zinc-400">{desc}</p>
+              </div>
             ))}
           </div>
         </div>
