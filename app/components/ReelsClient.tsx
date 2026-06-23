@@ -30,7 +30,7 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
         ))}
       </div>
 
-      <div className="grid grid-flow-col grid-rows-2 gap-4 overflow-x-auto pb-4">
+      <div className="flex gap-4 overflow-x-auto pb-4">
         {filteredReels.map((reel) => (
           <ReelCard key={reel.id} reel={reel} />
         ))}
@@ -44,7 +44,7 @@ function ReelCard({ reel }: { reel: any }) {
 
   return (
           <div
-            className={`shrink-0 overflow-hidden rounded-3xl border border-[#FC5230]/20 bg-[#202126] ${isPortrait ? "w-[180px] md:w-[200px]" : "w-[240px] md:w-[280px]"}`}
+            className={`shrink-0 overflow-hidden rounded-3xl border border-[#FC5230]/20 bg-[#202126] ${isPortrait ? "w-[200px] md:w-[240px]" : "w-[300px] md:w-[340px]"}`}
           >
             <video
               src={reel.video_url}
