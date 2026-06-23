@@ -545,6 +545,31 @@ const faqJsonLd = {
         </div>
       </section>
 
+      {relatedPosts.length > 0 && (
+        <section className="px-6 pt-20 pb-4">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="mb-8 text-4xl font-black tracking-[-0.05em]">
+              {branch.name} 소식 & 후기
+            </h2>
+            <div className="grid gap-5 md:grid-cols-3">
+              {relatedPosts.map((post: any) => (
+                <a
+                  key={post.id}
+                  href={`/blog/${post.slug}`}
+                  className="rounded-[28px] border border-white/10 bg-[#171719] p-7 transition hover:border-[#FC5230]"
+                >
+                  <div className="mb-4 inline-flex rounded-full bg-[#FC5230] px-4 py-2 text-sm font-black">
+                    {post.branch_name}
+                  </div>
+                  <h3 className="mb-4 text-2xl font-black leading-tight">{post.title}</h3>
+                  <p className="line-clamp-3 leading-7 text-zinc-400">{post.description}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="px-6 py-20">
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
           <div className="rounded-[30px] border border-white/10 bg-[#171719] p-8">
@@ -664,72 +689,6 @@ const faqJsonLd = {
         </div>
       </section>
 
-      <section className="px-6 pb-24">
-      <div className="mx-auto max-w-6xl">
-
-        <h2 className="mb-8 text-4xl font-black tracking-[-0.05em]">
-          {branch.name} 소식 & 후기
-        </h2>
-
-        {branch.reviewCount > 0 && (
-          <div className="mb-10 rounded-[24px] border border-[#FC5230]/20 bg-[#171719] p-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-
-              <div>
-                <div className="text-2xl font-black">
-                  네이버 방문자 리뷰 {branch.reviewCount}건
-                </div>
-
-                <div className="mt-2 text-zinc-400">
-                  실제 회원님들의 후기를 확인해보세요.
-                </div>
-              </div>
-
-              <a
-                href={branch.naverMap}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full bg-[#03C75A] px-6 py-3 font-black text-white"
-              >
-                네이버 리뷰 보기
-              </a>
-            </div>
-          </div>
-        )}
-
-        {relatedPosts.length > 0 ? (
-            <div className="grid gap-5 md:grid-cols-3">
-              {relatedPosts.map((post: any) => (
-                <a
-                  key={post.id}
-                  href={`/blog/${post.slug}`}
-                  className="rounded-[28px] border border-white/10 bg-[#171719] p-7 transition hover:border-[#FC5230]"
-                >
-                  <div className="mb-4 inline-flex rounded-full bg-[#FC5230] px-4 py-2 text-sm font-black">
-                    {post.branch_name}
-                  </div>
-
-                  <h3 className="mb-4 text-2xl font-black leading-tight">
-                    {post.title}
-                  </h3>
-
-                  <p className="line-clamp-3 leading-7 text-zinc-400">
-                    {post.description}
-                  </p>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-[30px] border border-white/10 bg-[#171719] p-8 text-center">
-              <h3 className="mb-3 text-2xl font-black">아직 소식 준비중</h3>
-
-              <p className="text-zinc-400">
-                곧 {branch.name}의 운동 소식과 후기를 업데이트할 예정입니다.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
 
       <section className="px-6 pb-24">
         <div className="mx-auto max-w-6xl rounded-[34px] bg-[#FC5230] p-10 text-center md:p-14">
