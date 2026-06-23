@@ -58,7 +58,7 @@ function ReelCard({ reel }: { reel: any }) {
                 const v = e.currentTarget;
                 setIsPortrait(v.videoHeight > v.videoWidth);
               }}
-              className={`w-full bg-black object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-video"}`}
+              className={`w-full bg-black object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
             />
 
             <div className="p-5">
