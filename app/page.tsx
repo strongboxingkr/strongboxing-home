@@ -375,7 +375,7 @@ export default async function HomePage() {
           <div className="mt-5 flex flex-col items-center justify-between gap-6 bg-[#FC5230] p-8 sm:flex-row">
             <p className="text-xl font-black">운영시간 내 언제든 시작 가능!</p>
             <a
-              href="/branches/cheolsan"
+              href="/#branch"
               className="shrink-0 rounded-full bg-black px-7 py-4 text-sm font-black text-white"
             >
               지점 운영시간 확인 →
