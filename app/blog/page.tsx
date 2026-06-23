@@ -170,7 +170,7 @@ export default async function BlogPage({
                         <img
                           src={image}
                           alt={post.title}
-                          className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105"
+                          className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-105"
                         />
                       </div>
                     )}
