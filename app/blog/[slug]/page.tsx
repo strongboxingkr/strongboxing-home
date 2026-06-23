@@ -1,7 +1,6 @@
 import { db } from "@/lib/db";
 import type { Metadata } from "next";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
+import MarkdownContent from "./MarkdownContent";
 
 const siteUrl = "https://strongboxing.kr";
 
@@ -149,9 +148,7 @@ export default async function BlogDetailPage({
 
         <section className="px-6 py-20">
           <div className="mx-auto max-w-4xl">
-            <div className="prose prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4 prose-h3:text-2xl prose-p:leading-9 prose-p:text-zinc-200 prose-img:rounded-[28px] prose-img:border prose-img:border-white/10 prose-img:w-full">
-              <ReactMarkdown rehypePlugins={[rehypeRaw]}>{String(post.content || "")}</ReactMarkdown>
-            </div>
+            <MarkdownContent content={String(post.content || "")} />
 
             <section className="mt-16 border-t border-white/10 pt-12">
             <h2 className="mb-6 text-3xl font-black">
