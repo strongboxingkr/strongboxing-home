@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.20",
     "archiver": "^8.0.0",
     "mysql2": "^3.22.3",
     "next": "16.2.6",
@@ -16,6 +17,7 @@
     "openai": "^6.38.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
     "sharp": "^0.34.5"
   },
   "devDependencies": {

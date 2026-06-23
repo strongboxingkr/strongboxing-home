@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import type { Metadata } from "next";
+import ReactMarkdown from "react-markdown";
 
 const siteUrl = "https://strongboxing.kr";
 
@@ -92,13 +93,8 @@ export default async function BlogDetailPage({
     );
   }
 
-  const paragraphs = String(post.content || "").split("\n").filter(Boolean);
-
-  const firstImage = paragraphs
-    .map((paragraph: string) => paragraph.match(/^!\[(.*?)\]\((.*?)\)$/))
-    .find(Boolean);
-
-  const imageUrl = firstImage ? `${siteUrl}${firstImage[2]}` : undefined;
+  const imageMatch = String(post.content || "").match(/!\[.*?\]\((.*?)\)/);
+  const imageUrl = imageMatch?.[1] ? `${siteUrl}${imageMatch[1]}` : undefined;
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -152,23 +148,8 @@ export default async function BlogDetailPage({
 
         <section className="px-6 py-20">
           <div className="mx-auto max-w-4xl">
-            <div className="space-y-7 text-lg leading-9 text-zinc-200">
-              {paragraphs.map((paragraph: string) => {
-                const imageMatch = paragraph.match(/^!\[(.*?)\]\((.*?)\)$/);
-
-                if (imageMatch) {
-                  return (
-                    <img
-                      key={paragraph}
-                      src={imageMatch[2]}
-                      alt={imageMatch[1]}
-                      className="w-full rounded-[28px] border border-white/10"
-                    />
-                  );
-                }
-
-                return <p key={paragraph}>{paragraph}</p>;
-              })}
+            <div className="prose prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4 prose-h3:text-2xl prose-p:leading-9 prose-p:text-zinc-200 prose-img:rounded-[28px] prose-img:border prose-img:border-white/10 prose-img:w-full">
+              <ReactMarkdown>{String(post.content || "")}</ReactMarkdown>
             </div>
 
             <section className="mt-16 border-t border-white/10 pt-12">
