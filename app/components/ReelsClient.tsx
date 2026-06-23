@@ -44,7 +44,7 @@ function ReelCard({ reel }: { reel: any }) {
 
   return (
           <div
-            className={`shrink-0 overflow-hidden rounded-3xl border border-[#FC5230]/20 bg-[#202126] ${isPortrait ? "w-[220px] md:w-[260px]" : "w-[280px] md:w-[360px]"}`}
+            className={`shrink-0 overflow-hidden rounded-3xl border border-[#FC5230]/20 bg-[#202126] ${isPortrait ? "w-[180px] md:w-[200px]" : "w-[240px] md:w-[280px]"}`}
           >
             <video
               src={reel.video_url}
