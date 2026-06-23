@@ -722,7 +722,7 @@ export default async function HomePage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className="rounded-full bg-[#FC5230] px-4 py-1.5 text-sm font-black">승단 심사 체육관</span>
+              <span className="border border-[#FC5230] px-4 py-2 text-sm font-black text-[#FC5230]">승단 심사 체육관</span>
             </div>
             <div className="flex flex-col gap-2 text-sm text-zinc-300">
               <span>✔ 체육관 자체 승단 심사 가능</span>
