@@ -319,59 +319,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 공인 단체 섹션 */}
-      <section className="border-t border-white/10 bg-[#111214] px-6 py-20">
-        <div className="mx-auto max-w-7xl">
-          {/* 프로복싱 4개 단체 */}
-          <div className="mb-12 text-center">
-            <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">CERTIFIED GYM</p>
-            <h2 className="mb-4 text-3xl font-black tracking-[-0.05em] md:text-4xl">
-              프로복싱 <span className="text-[#FC5230]">4개 단체</span> 가입 체육관
-            </h2>
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-zinc-400">
-              <span>✔ 프로테스트 참가 가능</span>
-              <span>✔ 각종 대회 참가 가능</span>
-              <span>✔ 선수 등록 및 활동 가능</span>
-            </div>
-          </div>
-
-          <div className="mb-14 grid grid-cols-2 gap-6 md:grid-cols-4">
-            {[
-              { src: "/images/boxing-orgs/kbf.jpg", name: "KBF", full: "한국권투연맹" },
-              { src: "/images/boxing-orgs/kbm.jpg", name: "KBM", full: "한국복싱커미션" },
-              { src: "/images/boxing-orgs/kbc.jpg", name: "KBC", full: "한국권투위원회" },
-              { src: "/images/boxing-orgs/kba.jpg", name: "KBA", full: "한국권투협회" },
-            ].map((org) => (
-              <div key={org.name} className="flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-6">
-                <img src={org.src} alt={org.full} className="h-20 w-20 object-contain" />
-                <div className="text-center">
-                  <p className="text-lg font-black">{org.name}</p>
-                  <p className="text-xs text-zinc-400">{org.full}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* 대한생활체육복싱협회 */}
-          <div className="flex flex-col items-center gap-6 rounded-2xl border border-[#FC5230]/30 bg-[#FC5230]/5 p-8 md:flex-row md:justify-between">
-            <div className="flex items-center gap-5">
-              <img src="/images/boxing-orgs/kaba.jpg" alt="대한생활체육복싱협회" className="h-20 w-20 object-contain" />
-              <div>
-                <p className="text-xs text-zinc-400">KOREA AMATEUR BOXING ASSOCIATION</p>
-                <p className="text-xl font-black">대한생활체육복싱협회</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="rounded-full bg-[#FC5230] px-4 py-1.5 text-sm font-black">승단 심사 체육관</span>
-            </div>
-            <div className="flex flex-col gap-2 text-sm text-zinc-300">
-              <span>✔ 체육관 자체 승단 심사 가능</span>
-              <span>✔ 공인 단증 취득 가능</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* 코치 소개 섹션 */}
       <section className="px-6 py-28">
         <div className="mx-auto max-w-7xl">
@@ -389,18 +336,11 @@ export default async function HomePage() {
           {/* 대표 */}
           <div className="mb-6 flex flex-col gap-6 border border-white/10 bg-[#202126] p-8 md:flex-row md:items-center">
             <div className="h-24 w-24 shrink-0 overflow-hidden">
-              <img src="/images/coaches/hansol.png" alt="한솔 대표" className="h-full w-full object-cover object-top" />
+              <img src="/images/coaches/hansol.jpg" alt="한솔 대표" className="h-full w-full object-cover object-top" />
             </div>
             <div className="flex-1">
               <p className="mb-1 text-sm font-black tracking-[0.2em] text-[#FC5230]">REPRESENTATIVE</p>
-              <h3 className="mb-2 text-3xl font-black tracking-[-0.05em]">한솔 대표</h3>
-              <p className="leading-7 text-zinc-400">신길권투 · 하이복싱 소속 현역 선수 출신 · 스트롱복싱 전 지점 총괄</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <span className="border border-white/20 px-3 py-1 text-xs font-bold text-zinc-300">KBF</span>
-              <span className="border border-white/20 px-3 py-1 text-xs font-bold text-zinc-300">KBM</span>
-              <span className="border border-white/20 px-3 py-1 text-xs font-bold text-zinc-300">KBC</span>
-              <span className="border border-white/20 px-3 py-1 text-xs font-bold text-zinc-300">KBA</span>
+              <h3 className="text-3xl font-black tracking-[-0.05em]">한솔 대표</h3>
             </div>
           </div>
 
@@ -418,11 +358,8 @@ export default async function HomePage() {
                 key={coach.name}
                 className="border border-white/10 bg-[#202126] p-6 transition hover:border-[#FC5230]"
               >
-                <div className="mb-4 flex h-14 w-14 items-center justify-center bg-zinc-800 text-lg font-black text-white">
-                  {coach.name[0]}
-                </div>
                 <p className="mb-1 text-xs font-black tracking-[0.2em] text-[#FC5230]">{coach.branch}</p>
-                <h3 className="mb-1 text-xl font-black tracking-[-0.03em]">{coach.name} {coach.role}</h3>
+                <h3 className="mb-2 text-xl font-black tracking-[-0.03em]">{coach.name} {coach.role}</h3>
                 <a
                   href={`https://www.instagram.com/${coach.instagram}`}
                   target="_blank"
@@ -672,6 +609,57 @@ export default async function HomePage() {
       </section>
 
       <GallerySection />
+
+      {/* 공인 단체 섹션 */}
+      <section className="border-t border-white/10 bg-[#111214] px-6 py-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 text-center">
+            <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">CERTIFIED GYM</p>
+            <h2 className="mb-4 text-3xl font-black tracking-[-0.05em] md:text-4xl">
+              프로복싱 <span className="text-[#FC5230]">4개 단체</span> 가입 체육관
+            </h2>
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-zinc-400">
+              <span>✔ 프로테스트 참가 가능</span>
+              <span>✔ 각종 대회 참가 가능</span>
+              <span>✔ 선수 등록 및 활동 가능</span>
+            </div>
+          </div>
+
+          <div className="mb-14 grid grid-cols-2 gap-6 md:grid-cols-4">
+            {[
+              { src: "/images/boxing-orgs/kbf.jpg", name: "KBF", full: "한국권투연맹" },
+              { src: "/images/boxing-orgs/kbm.jpg", name: "KBM", full: "한국복싱커미션" },
+              { src: "/images/boxing-orgs/kbc.jpg", name: "KBC", full: "한국권투위원회" },
+              { src: "/images/boxing-orgs/kba.jpg", name: "KBA", full: "한국권투협회" },
+            ].map((org) => (
+              <div key={org.name} className="flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-6">
+                <img src={org.src} alt={org.full} className="h-20 w-20 object-contain" />
+                <div className="text-center">
+                  <p className="text-lg font-black">{org.name}</p>
+                  <p className="text-xs text-zinc-400">{org.full}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col items-center gap-6 rounded-2xl border border-[#FC5230]/30 bg-[#FC5230]/5 p-8 md:flex-row md:justify-between">
+            <div className="flex items-center gap-5">
+              <img src="/images/boxing-orgs/kaba.jpg" alt="대한생활체육복싱협회" className="h-20 w-20 object-contain" />
+              <div>
+                <p className="text-xs text-zinc-400">KOREA AMATEUR BOXING ASSOCIATION</p>
+                <p className="text-xl font-black">대한생활체육복싱협회</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="rounded-full bg-[#FC5230] px-4 py-1.5 text-sm font-black">승단 심사 체육관</span>
+            </div>
+            <div className="flex flex-col gap-2 text-sm text-zinc-300">
+              <span>✔ 체육관 자체 승단 심사 가능</span>
+              <span>✔ 공인 단증 취득 가능</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <ConsultationForm />
 
