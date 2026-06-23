@@ -713,7 +713,7 @@ export default async function HomePage() {
               { src: "/images/boxing-orgs/kba.jpg", name: "KBA", full: "한국권투협회" },
             ].map((org) => (
               <div key={org.name} className="flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-6">
-                <img src={org.src} alt={org.full} className="h-20 w-20 object-contain" />
+                <img src={org.src} alt={org.full} className="h-20 w-20 rounded-full object-cover" />
                 <div className="text-center">
                   <p className="text-lg font-black">{org.name}</p>
                   <p className="text-xs text-zinc-400">{org.full}</p>
