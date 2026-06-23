@@ -397,6 +397,14 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <ReelsSection />
+
+      <NaverReviewsSection />
+
+      <section id="calculator" className="bg-[#111214]">
+        <BoxingCalculator />
+      </section>
+
       <section id="program" className="px-6 py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
@@ -437,14 +445,6 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
-      </section>
-
-      <ReelsSection />
-
-      <NaverReviewsSection />
-
-      <section id="calculator" className="bg-[#111214]">
-        <BoxingCalculator />
       </section>
 
       <FaqSection />
