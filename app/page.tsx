@@ -357,18 +357,10 @@ export default async function HomePage() {
                 hq@strongboxing.kr
               </a>
             </div>
-            <div className="flex flex-col justify-center gap-2 border-t border-white/10 p-8 md:border-l md:border-t-0">
-              <p className="mb-2 text-xs font-black tracking-[0.2em] text-zinc-500">CERTIFIED</p>
-              {["KBF", "KBM", "KBC", "KBA"].map((org) => (
-                <span key={org} className="border border-white/20 px-4 py-2 text-center text-sm font-black text-zinc-300">
-                  {org}
-                </span>
-              ))}
-            </div>
           </div>
 
           {/* 지점별 코치 */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-3">
             {[
               { branch: "개봉점", name: "안진호", role: "관장", instagram: "dkswkd3" },
               { branch: "신정점", name: "유상혁", role: "관장", instagram: "robuste_hyeok" },
