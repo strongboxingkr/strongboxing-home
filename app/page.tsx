@@ -423,7 +423,7 @@ export default async function HomePage() {
               { branch: "신정점", name: "정동주", role: "코치", instagram: "jdj_00_" },
               { branch: "목동점", name: "송재용", role: "관장", instagram: "nan_yong_" },
               { branch: "목동점", name: "양승호", role: "코치", instagram: "qortor0_0" },
-              { branch: "철산점", name: "안도연", role: "코치", instagram: "andxyexn" },
+              { branch: "철산점", name: "안도연", role: "코치", instagram: "strongboxing_andy" },
             ].map((coach) => (
               <a
                 key={coach.name}
