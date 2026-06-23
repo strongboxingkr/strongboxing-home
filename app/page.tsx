@@ -277,6 +277,63 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* 코치 소개 섹션 */}
+      <section className="px-6 py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-14">
+            <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
+              COACH
+            </p>
+            <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
+              직접 가르치는
+              <br />
+              전문 코치진.
+            </h2>
+          </div>
+
+          {/* 대표 */}
+          <a
+            href="https://www.instagram.com/strongboxing_official"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-8 flex flex-col overflow-hidden border border-[#FC5230]/40 bg-[#1a1a1c] transition hover:border-[#FC5230] md:flex-row"
+          >
+            <div className="h-64 w-full shrink-0 md:h-auto md:w-64">
+              <img src="/images/coaches/hansol.jpg" alt="한솔 대표" className="h-full w-full object-cover object-top" />
+            </div>
+            <div className="flex flex-1 flex-col justify-center gap-4 p-10">
+              <p className="text-sm font-black tracking-[0.35em] text-[#FC5230]">REPRESENTATIVE</p>
+              <h3 className="text-5xl font-black tracking-[-0.05em]">한솔 대표</h3>
+              <p className="text-zinc-400">스트롱복싱 대표 · 전 지점 총괄</p>
+            </div>
+          </a>
+
+          {/* 지점별 코치 */}
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              { branch: "개봉점", name: "안진호", role: "관장", instagram: "dkswkd3" },
+              { branch: "신정점", name: "유상혁", role: "관장", instagram: "robuste_hyeok" },
+              { branch: "신정점", name: "정동주", role: "코치", instagram: "jdj_00_" },
+              { branch: "목동점", name: "송재용", role: "관장", instagram: "nan_yong_" },
+              { branch: "목동점", name: "양승호", role: "코치", instagram: "qortor0_0" },
+              { branch: "철산점", name: "안도연", role: "코치", instagram: "strongboxing_andy" },
+            ].map((coach) => (
+              <a
+                key={coach.name}
+                href={`https://www.instagram.com/${coach.instagram}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-white/10 bg-[#202126] p-6 transition hover:border-[#FC5230]"
+              >
+                <p className="mb-1 text-xs font-black tracking-[0.2em] text-[#FC5230]">{coach.branch}</p>
+                <h3 className="mb-1 text-xl font-black tracking-[-0.03em]">{coach.name} {coach.role}</h3>
+                <p className="text-xs text-zinc-500">@{coach.instagram}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* HOW WE TRAIN 섹션 */}
       <section className="px-6 py-28 bg-[#111214]">
         <div className="mx-auto max-w-7xl">
@@ -338,63 +395,6 @@ export default async function HomePage() {
             >
               지점 운영시간 확인 →
             </a>
-          </div>
-        </div>
-      </section>
-
-      {/* 코치 소개 섹션 */}
-      <section className="px-6 py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-14">
-            <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
-              COACH
-            </p>
-            <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
-              직접 가르치는
-              <br />
-              전문 코치진.
-            </h2>
-          </div>
-
-          {/* 대표 */}
-          <a
-            href="https://www.instagram.com/strongboxing_official"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mb-8 flex flex-col overflow-hidden border border-[#FC5230]/40 bg-[#1a1a1c] transition hover:border-[#FC5230] md:flex-row"
-          >
-            <div className="h-64 w-full shrink-0 md:h-auto md:w-64">
-              <img src="/images/coaches/hansol.jpg" alt="한솔 대표" className="h-full w-full object-cover object-top" />
-            </div>
-            <div className="flex flex-1 flex-col justify-center gap-4 p-10">
-              <p className="text-sm font-black tracking-[0.35em] text-[#FC5230]">REPRESENTATIVE</p>
-              <h3 className="text-5xl font-black tracking-[-0.05em]">한솔 대표</h3>
-              <p className="text-zinc-400">스트롱복싱 대표 · 전 지점 총괄</p>
-            </div>
-          </a>
-
-          {/* 지점별 코치 */}
-          <div className="grid gap-4 md:grid-cols-3">
-            {[
-              { branch: "개봉점", name: "안진호", role: "관장", instagram: "dkswkd3" },
-              { branch: "신정점", name: "유상혁", role: "관장", instagram: "robuste_hyeok" },
-              { branch: "신정점", name: "정동주", role: "코치", instagram: "jdj_00_" },
-              { branch: "목동점", name: "송재용", role: "관장", instagram: "nan_yong_" },
-              { branch: "목동점", name: "양승호", role: "코치", instagram: "qortor0_0" },
-              { branch: "철산점", name: "안도연", role: "코치", instagram: "strongboxing_andy" },
-            ].map((coach) => (
-              <a
-                key={coach.name}
-                href={`https://www.instagram.com/${coach.instagram}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-white/10 bg-[#202126] p-6 transition hover:border-[#FC5230]"
-              >
-                <p className="mb-1 text-xs font-black tracking-[0.2em] text-[#FC5230]">{coach.branch}</p>
-                <h3 className="mb-1 text-xl font-black tracking-[-0.03em]">{coach.name} {coach.role}</h3>
-                <p className="text-xs text-zinc-500">@{coach.instagram}</p>
-              </a>
-            ))}
           </div>
         </div>
       </section>
