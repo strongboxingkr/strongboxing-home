@@ -433,7 +433,8 @@ export default async function HomePage() {
                 className="border border-white/10 bg-[#202126] p-6 transition hover:border-[#FC5230]"
               >
                 <p className="mb-1 text-xs font-black tracking-[0.2em] text-[#FC5230]">{coach.branch}</p>
-                <h3 className="mb-2 text-xl font-black tracking-[-0.03em]">{coach.name} {coach.role}</h3>
+                <h3 className="mb-1 text-xl font-black tracking-[-0.03em]">{coach.name} {coach.role}</h3>
+                <p className="text-xs text-zinc-500">@{coach.instagram}</p>
               </a>
             ))}
           </div>
