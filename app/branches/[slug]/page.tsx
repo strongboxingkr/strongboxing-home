@@ -18,7 +18,7 @@ const branches: any = {
     kakaoMap: "https://kko.to/RmPQ1W8t8g",
     kakaoChat: "https://pf.kakao.com/_uyxbnX/chat",
     description:
-      "개봉동에서 복싱 입문, 다이어트, 체력 향상을 부담 없이 시작할 수 있는 스트롱복싱 개봉점입니다.",
+      "개봉 복싱장 스트롱복싱 개봉점. 복싱 입문, 다이어트 복싱, 초보자 환영. 개봉역 근처. 월-금 13:00~23:00 운영.",
   },
 
   sinjeong: {
@@ -35,7 +35,7 @@ const branches: any = {
     naverMap: "https://naver.me/5nhXvzXH",
     kakaoMap: "https://kko.to/NlN6yV0aK3",
     description:
-      "신정동에서 복싱 입문, 다이어트, 체력 향상을 시작하기 좋은 스트롱복싱 신정점입니다.",
+      "신정 복싱장 스트롱복싱 신정점. 복싱 입문, 다이어트 복싱, 여성 복싱. 신정네거리역 근처. 월-금 10:00~24:00, 토 10:00~16:00 운영.",
   },
 
   mokdong: {
@@ -54,7 +54,7 @@ const branches: any = {
     googleMap: "https://maps.google.com/?q=스트롱복싱+목동점",
     kakaoChat: "https://pf.kakao.com/_xfGZnX/chat",
     description:
-      "목동에서 복싱 입문, 여성복싱, 다이어트, 직장인 운동을 편하게 시작할 수 있는 스트롱복싱 목동점입니다.",
+      "목동 복싱장 스트롱복싱 목동점. 복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동. 오목교역 5분 거리. 월-금 14:00~24:00, 토 11:00~16:00 운영.",
   },
 
   cheolsan: {
@@ -72,7 +72,7 @@ const branches: any = {
     kakaoMap: "https://place.map.kakao.com/1182676078",
     kakaoChat: "https://pf.kakao.com/_MAKnX/chat",
     description:
-      "광명 철산동 복싱장 스트롱복싱 철산점입니다. 복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동을 편하게 시작할 수 있습니다."
+      "철산 복싱장 스트롱복싱 철산점. 복싱 입문, 다이어트 복싱, 여성 복싱. 철산역 근처 광명 복싱장. 월-금 14:00~23:00, 토·일 14:00~18:00 운영."
     },
 
   yeongdeungpo: {
@@ -89,7 +89,7 @@ const branches: any = {
     naverMap: "https://naver.me/G4yQwkR0",
     kakaoMap: "https://naver.me/G4yQwkR0",
     description:
-      "영등포에서 복싱 입문, 다이어트, 직장인 운동을 시작할 수 있는 스트롱복싱 영등포점입니다.",
+      "영등포 복싱장 스트롱복싱 영등포점. 복싱 입문, 다이어트 복싱, 직장인 운동. 도림동 위치. 월-금 13:00~23:00 운영.",
   },
 };
 
