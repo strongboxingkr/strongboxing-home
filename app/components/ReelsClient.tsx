@@ -30,7 +30,7 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
         ))}
       </div>
 
-      <div className="flex gap-5 overflow-x-auto pb-4">
+      <div className="grid grid-flow-col grid-rows-2 gap-4 overflow-x-auto pb-4">
         {filteredReels.map((reel) => (
           <ReelCard key={reel.id} reel={reel} />
         ))}
