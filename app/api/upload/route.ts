@@ -43,7 +43,20 @@ export async function POST(req: Request) {
       );
     }
 
-    const folder = type === "naver-blog" ? "naver-blog" : "blog";
+    const branch = String(data.get("branch") || "");
+    const postNo = String(data.get("postNo") || "").replace(/[^\w]/g, "");
+    const branchSlug: Record<string, string> = {
+      개봉점: "gaebong",
+      신정점: "sinjeong",
+      목동점: "mokdong",
+      철산점: "cheolsan",
+      영등포점: "yeongdeungpo",
+    };
+    const branchFolder = branchSlug[branch] || "";
+
+    const baseFolder = type === "naver-blog" ? "naver-blog" : "blog";
+    const parts = [baseFolder, branchFolder, postNo].filter(Boolean);
+    const folder = parts.join("/");
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);

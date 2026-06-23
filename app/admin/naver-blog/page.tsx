@@ -15,6 +15,7 @@ export default function NaverBlogPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
 
   const [branchName, setBranchName] = useState("철산점");
+  const [postNo, setPostNo] = useState("");
   const [keyword, setKeyword] = useState("");
   const [topic, setTopic] = useState("");
   const [memo, setMemo] = useState("");
@@ -67,6 +68,8 @@ export default function NaverBlogPage() {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("type", "naver-blog");
+    formData.append("branch", branchName);
+    formData.append("postNo", postNo);
 
     try {
         const res = await fetch("/api/upload", {
@@ -225,6 +228,7 @@ export default function NaverBlogPage() {
   function resetForm() {
     setEditingId(null);
     setBranchName("철산점");
+    setPostNo("");
     setKeyword("");
     setTopic("");
     setMemo("");
@@ -273,6 +277,17 @@ export default function NaverBlogPage() {
                 <option>개봉점</option>
                 <option>영등포점</option>
               </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block font-bold">글 번호</label>
+              <input
+                value={postNo}
+                onChange={(e) => setPostNo(e.target.value)}
+                placeholder="예: 001"
+                className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
+              />
+              <p className="mt-1 text-xs text-zinc-400">사진이 naver-blog/지점/글번호/ 폴더에 저장됩니다</p>
             </div>
 
             <div>
