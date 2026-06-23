@@ -713,7 +713,7 @@ export default async function HomePage() {
             ))}
           </div>
 
-          <div className="flex flex-col items-center gap-6 overflow-hidden border border-[#FC5230] bg-[#1a1a1c] p-8 md:flex-row md:justify-between">
+          <div className="flex flex-col items-center gap-6 overflow-hidden border border-white/10 bg-[#1a1a1c] p-8 md:flex-row md:justify-between">
             <div className="flex items-center gap-5">
               <img src="/images/boxing-orgs/kaba.jpg" alt="대한생활체육복싱협회" className="h-20 w-20 object-contain" />
               <div>
