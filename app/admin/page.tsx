@@ -20,6 +20,9 @@ export default function AdminPage() {
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
 
+  const [layoutMode, setLayoutMode] = useState<"1열" | "2열" | "3열">("1열");
+  const [pendingImages, setPendingImages] = useState<string[]>([]);
+
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -108,32 +111,41 @@ export default function AdminPage() {
         return;
       }
 
-      const imageMarkdown = `\n\n![업로드 이미지](${data.url})\n\n`;
-
-      setContent((prev) => {
-        const textarea = contentRef.current;
-
-        if (!textarea) {
-          return prev + imageMarkdown;
-        }
-
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-
-        return prev.slice(0, start) + imageMarkdown + prev.slice(end);
-      });
-
-      setTimeout(() => {
-        contentRef.current?.focus();
-      }, 0);
-
-      alert("이미지가 본문에 추가됐어!");
+      if (layoutMode === "1열") {
+        const imageMarkdown = `\n\n![이미지](${data.url})\n\n`;
+        setContent((prev) => {
+          const textarea = contentRef.current;
+          if (!textarea) return prev + imageMarkdown;
+          const start = textarea.selectionStart;
+          const end = textarea.selectionEnd;
+          return prev.slice(0, start) + imageMarkdown + prev.slice(end);
+        });
+        setTimeout(() => contentRef.current?.focus(), 0);
+        alert("이미지가 본문에 추가됐어!");
+      } else {
+        setPendingImages((prev) => [...prev, data.url]);
+      }
     } catch (error) {
       console.error(error);
       alert("이미지 업로드 실패 ㅠ");
     } finally {
       setUploading(false);
     }
+  }
+
+  function insertGallery() {
+    if (pendingImages.length === 0) {
+      alert("사진을 먼저 업로드해줘.");
+      return;
+    }
+    const cols = layoutMode === "2열" ? 2 : 3;
+    const imgs = pendingImages
+      .map((url) => `<img src="${url}" style="width:100%;border-radius:16px;object-fit:cover" />`)
+      .join("\n");
+    const gallery = `\n\n<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:12px">\n${imgs}\n</div>\n\n`;
+    setContent((prev) => prev + gallery);
+    setPendingImages([]);
+    alert(`${layoutMode} 갤러리가 본문에 추가됐어!`);
   }
 
   async function handleSave() {
@@ -434,29 +446,78 @@ export default function AdminPage() {
             />
           </div>
 
-          <div className="rounded-[28px] border border-zinc-200 bg-white p-5">
-            <label className="mb-2 block font-bold">본문 중간 이미지</label>
+          <div className="rounded-[28px] border border-zinc-200 bg-white p-5 space-y-4">
+            <label className="block font-bold">사진 삽입</label>
+
+            <div>
+              <p className="mb-2 text-sm text-zinc-500">레이아웃 선택</p>
+              <div className="flex gap-2">
+                {(["1열", "2열", "3열"] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => { setLayoutMode(mode); setPendingImages([]); }}
+                    className={`rounded-full px-5 py-2 text-sm font-black transition ${
+                      layoutMode === mode
+                        ? "bg-[#FC5230] text-white"
+                        : "border border-zinc-200 text-zinc-500"
+                    }`}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <input
               type="file"
               accept="image/*"
+              multiple={layoutMode !== "1열"}
               disabled={uploading}
               onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleImageUpload(file);
+                const files = Array.from(e.target.files || []);
+                files.forEach(handleImageUpload);
                 e.target.value = "";
               }}
               className="w-full rounded-2xl border border-zinc-200 bg-white p-4 disabled:opacity-50"
             />
 
-            <p className="mt-2 text-sm text-zinc-500">
-              이미지를 선택하면 커서 위치에 자동으로 삽입돼.
-            </p>
+            {layoutMode === "1열" ? (
+              <p className="text-sm text-zinc-400">사진 선택하면 바로 본문에 삽입돼요</p>
+            ) : (
+              <div>
+                <p className="text-sm text-zinc-400 mb-3">
+                  사진 {pendingImages.length}장 선택됨 — 다 올리면 아래 버튼 눌러요
+                </p>
+                {pendingImages.length > 0 && (
+                  <div className={`grid gap-2 mb-3 ${layoutMode === "2열" ? "grid-cols-2" : "grid-cols-3"}`}>
+                    {pendingImages.map((url, i) => (
+                      <img key={i} src={url} className="w-full rounded-xl object-cover aspect-square" />
+                    ))}
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={insertGallery}
+                    disabled={pendingImages.length === 0}
+                    className="flex-1 rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black text-white disabled:opacity-40"
+                  >
+                    {layoutMode} 갤러리 본문에 삽입
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPendingImages([])}
+                    className="rounded-full border border-zinc-200 px-5 py-3 text-sm font-black"
+                  >
+                    초기화
+                  </button>
+                </div>
+              </div>
+            )}
 
             {uploading && (
-              <p className="mt-2 text-sm font-bold text-[#FC5230]">
-                이미지 업로드 중...
-              </p>
+              <p className="text-sm font-bold text-[#FC5230]">업로드 중...</p>
             )}
           </div>
 
