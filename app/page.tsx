@@ -319,6 +319,71 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* HOW WE TRAIN 섹션 */}
+      <section className="px-6 py-28 bg-[#111214]">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-14">
+            <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">HOW WE TRAIN</p>
+            <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
+              정해진 수업 시간이
+              <br />
+              없습니다
+            </h2>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-zinc-400">
+              운영시간 내 편하신 시간에 방문하시면 바로 운동을 시작할 수 있어요.
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="border border-white/10 bg-[#202126] p-8">
+              <p className="mb-4 text-xs font-black tracking-[0.2em] text-[#FC5230]">MY SCHEDULE</p>
+              <h3 className="mb-4 text-3xl font-black tracking-[-0.05em]">내 시간에 맞게</h3>
+              <p className="mb-7 leading-8 text-zinc-400">
+                수업 예약 없이, 운영시간 내 언제든 방문하면 바로 운동 시작.
+                직장인, 주부, 학생 모두 가능합니다.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <span className="rounded-full border border-[#FC5230]/40 bg-[#FC5230]/10 px-4 py-2 text-sm font-black text-[#FC5230]">BEGINNER FRIENDLY</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-black text-zinc-300">개인별 진행</span>
+              </div>
+            </div>
+
+            <div className="border border-white/10 bg-[#202126] p-8">
+              <p className="mb-4 text-xs font-black tracking-[0.2em] text-[#FC5230]">PROGRAM</p>
+              <h3 className="mb-6 text-3xl font-black tracking-[-0.05em]">1회 운동 구성</h3>
+              <div className="flex flex-col gap-4">
+                {[
+                  ["몸풀기", "스트레칭 & 워밍업"],
+                  ["줄넘기 3R", "기초 체력 훈련"],
+                  ["기초자세 & 스텝", "복싱 기본기"],
+                  ["미트트레이닝", "코치와 1:1 실전"],
+                  ["샌드백", "파워 & 지구력"],
+                  ["체력운동", "코어 마무리"],
+                ].map(([step, desc], i) => (
+                  <div key={step} className="flex items-center gap-4">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FC5230] text-xs font-black text-white">
+                      {i + 1}
+                    </span>
+                    <span className="font-black">{step}</span>
+                    <span className="text-sm text-zinc-500">{desc}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-5 flex flex-col items-center justify-between gap-6 bg-[#FC5230] p-8 sm:flex-row">
+            <p className="text-xl font-black">운영시간 내 언제든 시작 가능!</p>
+            <a
+              href="/branches/cheolsan"
+              className="shrink-0 rounded-full bg-black px-7 py-4 text-sm font-black text-white"
+            >
+              지점 운영시간 확인 →
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* 코치 소개 섹션 */}
       <section className="px-6 py-28">
         <div className="mx-auto max-w-7xl">
