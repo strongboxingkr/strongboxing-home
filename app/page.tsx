@@ -319,6 +319,71 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* 코치 소개 섹션 */}
+      <section className="px-6 py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-14">
+            <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
+              COACH
+            </p>
+            <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
+              직접 가르치는
+              <br />
+              전문 코치진.
+            </h2>
+          </div>
+
+          {/* 대표 */}
+          <div className="mb-6 flex flex-col gap-6 border border-white/10 bg-[#202126] p-8 md:flex-row md:items-center">
+            <div className="h-24 w-24 shrink-0 overflow-hidden">
+              <img src="/images/coaches/hansol.png" alt="한솔 대표" className="h-full w-full object-cover object-top" />
+            </div>
+            <div className="flex-1">
+              <p className="mb-1 text-sm font-black tracking-[0.2em] text-[#FC5230]">REPRESENTATIVE</p>
+              <h3 className="mb-2 text-3xl font-black tracking-[-0.05em]">한솔 대표</h3>
+              <p className="leading-7 text-zinc-400">신길권투 · 하이복싱 소속 현역 선수 출신 · 스트롱복싱 전 지점 총괄</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <span className="border border-white/20 px-3 py-1 text-xs font-bold text-zinc-300">KBF</span>
+              <span className="border border-white/20 px-3 py-1 text-xs font-bold text-zinc-300">KBM</span>
+              <span className="border border-white/20 px-3 py-1 text-xs font-bold text-zinc-300">KBC</span>
+              <span className="border border-white/20 px-3 py-1 text-xs font-bold text-zinc-300">KBA</span>
+            </div>
+          </div>
+
+          {/* 지점별 코치 */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              { branch: "개봉점", name: "안진호", role: "관장", instagram: "dkswkd3" },
+              { branch: "신정점", name: "유상혁", role: "관장", instagram: "robuste_hyeok" },
+              { branch: "신정점", name: "정동주", role: "코치", instagram: "jdj_00_" },
+              { branch: "목동점", name: "송재용", role: "관장", instagram: "nan_yong_" },
+              { branch: "목동점", name: "양승호", role: "코치", instagram: "qortor0_0" },
+              { branch: "철산점", name: "안도연", role: "코치", instagram: "andxyexn" },
+            ].map((coach) => (
+              <div
+                key={coach.name}
+                className="border border-white/10 bg-[#202126] p-6 transition hover:border-[#FC5230]"
+              >
+                <div className="mb-4 flex h-14 w-14 items-center justify-center bg-zinc-800 text-lg font-black text-white">
+                  {coach.name[0]}
+                </div>
+                <p className="mb-1 text-xs font-black tracking-[0.2em] text-[#FC5230]">{coach.branch}</p>
+                <h3 className="mb-1 text-xl font-black tracking-[-0.03em]">{coach.name} {coach.role}</h3>
+                <a
+                  href={`https://www.instagram.com/${coach.instagram}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-zinc-500 hover:text-white"
+                >
+                  @{coach.instagram}
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <ReelsSection />
 
       <NaverReviewsSection />
