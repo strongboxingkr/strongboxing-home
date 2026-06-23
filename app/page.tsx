@@ -9,8 +9,34 @@ import ReelsSection from "./components/ReelsSection";
 //import SplashScreen from "./components/SplashScreen";
 import NaverReviewsSection from "./components/NaverReviewsSection";
 import GallerySection from "./components/GallerySection";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "스트롱복싱 | 복싱 PT · 다이어트 복싱 · 체력증진",
+  description:
+    "서울 복싱장 스트롱복싱. 철산·개봉·목동·신정·영등포 5개 지점 운영. 초보자 환영, 복싱 PT, 다이어트 복싱, 체력증진 프로그램. 네이버 평점 4.9.",
+  alternates: {
+    canonical: "https://strongboxing.kr",
+  },
+  openGraph: {
+    title: "스트롱복싱 | 복싱 PT · 다이어트 복싱 · 체력증진",
+    description:
+      "서울 5개 지점 운영 복싱짐. 초보자부터 다이어트, PT까지. 네이버 평점 4.9.",
+    url: "https://strongboxing.kr",
+    siteName: "스트롱복싱",
+    locale: "ko_KR",
+    type: "website",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "스트롱복싱" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "스트롱복싱 | 복싱 PT · 다이어트 복싱 · 체력증진",
+    description: "서울 5개 지점 운영 복싱짐. 초보자부터 다이어트, PT까지.",
+    images: ["/og.png"],
+  },
+};
 
 const branches = [
   {

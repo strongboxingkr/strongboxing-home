@@ -38,6 +38,9 @@ export async function generateMetadata({
     title: `${post.title} | 스트롱복싱`,
     description:
       post.description || `${post.branch_name} 스트롱복싱 블로그 소식입니다.`,
+    alternates: {
+      canonical: `${siteUrl}/blog/${post.slug}`,
+    },
     openGraph: {
       title: `${post.title} | 스트롱복싱`,
       description:
@@ -46,6 +49,12 @@ export async function generateMetadata({
       siteName: "스트롱복싱",
       locale: "ko_KR",
       type: "article",
+      images: [{ url: imageUrl, width: 1200, height: 630, alt: post.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${post.title} | 스트롱복싱`,
+      description: post.description || `${post.branch_name} 스트롱복싱 블로그 소식입니다.`,
       images: [imageUrl],
     },
   };

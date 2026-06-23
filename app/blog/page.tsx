@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "스트롱복싱 소식 & 후기 | 복싱 다이어트 정보",
   description:
     "스트롱복싱 지점별 소식, 복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동 정보를 확인해보세요.",
+  alternates: {
+    canonical: "https://strongboxing.kr/blog",
+  },
   openGraph: {
     title: "스트롱복싱 소식 & 후기",
     description:
@@ -13,6 +16,13 @@ export const metadata: Metadata = {
     siteName: "스트롱복싱",
     locale: "ko_KR",
     type: "website",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "스트롱복싱 소식" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "스트롱복싱 소식 & 후기",
+    description: "복싱 입문부터 다이어트 복싱까지 스트롱복싱의 지점별 소식과 운동 정보를 확인해보세요.",
+    images: ["/og.png"],
   },
 };
 
