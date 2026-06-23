@@ -11,7 +11,7 @@ export default function MarkdownContent({ content }: { content: string }) {
         components={{
           img: ({ src, alt, ...props }) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={src ? encodeURI(src) : src} alt={alt || ""} {...props} />
+            <img src={typeof src === "string" ? encodeURI(src) : undefined} alt={alt || ""} {...props} />
           ),
         }}
       >
