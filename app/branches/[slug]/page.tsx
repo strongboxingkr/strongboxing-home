@@ -8,6 +8,7 @@ const branches: any = {
     area: "개봉",
     image: "/images/branches/gaebong.jpg",
     phone: "02-2060-1279",
+    email: "gaebong@strongboxing.kr",
     address: "서울시 구로구 개봉동 166-5번지 유원빌딩 지하 1층",
     hours: ["월-금 13:00~23:00"],
     instagram: "https://www.instagram.com/strongboxing_gaebong",
@@ -26,6 +27,7 @@ const branches: any = {
     area: "신정",
     image: "/images/branches/sinjeong.jpg",
     phone: "02-2647-3373",
+    email: "sinjeong@strongboxing.kr",
     address: "서울시 양천구 신정동 1021-7 태화상가 2층",
     hours: ["월-금 10:00~24:00", "14:00~15:00 휴게", "토 10:00~16:00"],
     instagram: "https://www.instagram.com/strongboxing_sinjeong",
@@ -42,6 +44,7 @@ const branches: any = {
     area: "목동",
     image: "/images/branches/mokdong.png",
     phone: "02-2643-5971",
+    email: "mokdong@strongboxing.kr",
     address: "서울시 양천구 목동 909-6 우방빌딩 4층",
     hours: ["월-금 14:00~24:00", "토 11:00~16:00"],
     instagram: "https://www.instagram.com/strongboxing_mokdong",
@@ -60,6 +63,7 @@ const branches: any = {
     area: "철산",
     image: "/images/branches/cheolsan.jpg",
     phone: "02-2066-0406",
+    email: "cheolsan@strongboxing.kr",
     address: "경기도 광명시 철산동 56-14 3층",
     hours: ["월-금 14:00~23:00", "토·일 14:00~18:00", "공휴일 휴무",],
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
@@ -548,6 +552,9 @@ const faqJsonLd = {
 
             <div className="space-y-3 leading-8 text-zinc-300">
               <p>📞 {branch.phone}</p>
+              {branch.email && (
+                <p>✉️ <a href={`mailto:${branch.email}`} className="hover:text-white">{branch.email}</a></p>
+              )}
               <p>📍 {branch.address}</p>
 
               <div>

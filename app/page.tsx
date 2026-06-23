@@ -334,14 +334,36 @@ export default async function HomePage() {
           </div>
 
           {/* 대표 */}
-          <div className="mb-6 flex flex-col gap-6 border border-white/10 bg-[#202126] p-8 md:flex-row md:items-center">
-            <div className="h-24 w-24 shrink-0 overflow-hidden">
+          <div className="mb-8 flex flex-col overflow-hidden border border-[#FC5230]/40 bg-[#1a1a1c] md:flex-row">
+            <div className="h-64 w-full shrink-0 md:h-auto md:w-64">
               <img src="/images/coaches/hansol.jpg" alt="한솔 대표" className="h-full w-full object-cover object-top" />
             </div>
-            <div className="flex-1">
-              <p className="mb-1 text-sm font-black tracking-[0.2em] text-[#FC5230]">REPRESENTATIVE</p>
-              <h3 className="mb-1 text-3xl font-black tracking-[-0.05em]">한솔 대표</h3>
-              <p className="text-sm text-zinc-400">스트롱복싱 전 지점 총괄</p>
+            <div className="flex flex-1 flex-col justify-center gap-4 p-10">
+              <p className="text-sm font-black tracking-[0.35em] text-[#FC5230]">REPRESENTATIVE</p>
+              <h3 className="text-5xl font-black tracking-[-0.05em]">한솔 대표</h3>
+              <p className="text-zinc-400">스트롱복싱 전 지점 총괄</p>
+              <a
+                href="https://www.instagram.com/strongboxing_official"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-fit text-sm text-zinc-500 hover:text-white"
+              >
+                @strongboxing_official
+              </a>
+              <a
+                href="mailto:hq@strongboxing.kr"
+                className="w-fit text-sm text-zinc-500 hover:text-white"
+              >
+                hq@strongboxing.kr
+              </a>
+            </div>
+            <div className="flex flex-col justify-center gap-2 border-t border-white/10 p-8 md:border-l md:border-t-0">
+              <p className="mb-2 text-xs font-black tracking-[0.2em] text-zinc-500">CERTIFIED</p>
+              {["KBF", "KBM", "KBC", "KBA"].map((org) => (
+                <span key={org} className="border border-white/20 px-4 py-2 text-center text-sm font-black text-zinc-300">
+                  {org}
+                </span>
+              ))}
             </div>
           </div>
 
