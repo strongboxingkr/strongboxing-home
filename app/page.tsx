@@ -425,21 +425,16 @@ export default async function HomePage() {
               { branch: "목동점", name: "양승호", role: "코치", instagram: "qortor0_0" },
               { branch: "철산점", name: "안도연", role: "코치", instagram: "andxyexn" },
             ].map((coach) => (
-              <div
+              <a
                 key={coach.name}
+                href={`https://www.instagram.com/${coach.instagram}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="border border-white/10 bg-[#202126] p-6 transition hover:border-[#FC5230]"
               >
                 <p className="mb-1 text-xs font-black tracking-[0.2em] text-[#FC5230]">{coach.branch}</p>
                 <h3 className="mb-2 text-xl font-black tracking-[-0.03em]">{coach.name} {coach.role}</h3>
-                <a
-                  href={`https://www.instagram.com/${coach.instagram}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-zinc-500 hover:text-white"
-                >
-                  @{coach.instagram}
-                </a>
-              </div>
+              </a>
             ))}
           </div>
         </div>
