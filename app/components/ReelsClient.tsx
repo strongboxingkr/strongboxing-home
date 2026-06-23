@@ -32,9 +32,19 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
 
       <div className="flex gap-5 overflow-x-auto pb-4">
         {filteredReels.map((reel) => (
+          <ReelCard key={reel.id} reel={reel} />
+        ))}
+      </div>
+    </>
+  );
+}
+
+function ReelCard({ reel }: { reel: any }) {
+  const [isPortrait, setIsPortrait] = useState(false);
+
+  return (
           <div
-            key={reel.id}
-            className="w-[280px] shrink-0 overflow-hidden rounded-3xl border border-[#FC5230]/20 bg-[#202126] md:w-[360px]"
+            className={`shrink-0 overflow-hidden rounded-3xl border border-[#FC5230]/20 bg-[#202126] ${isPortrait ? "w-[220px] md:w-[260px]" : "w-[280px] md:w-[360px]"}`}
           >
             <video
               src={reel.video_url}
@@ -44,7 +54,11 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
               loop={Number(reel.is_muted) === 1}
               playsInline
               preload="metadata"
-              className="aspect-video w-full bg-black object-cover"
+              onLoadedMetadata={(e) => {
+                const v = e.currentTarget;
+                setIsPortrait(v.videoHeight > v.videoWidth);
+              }}
+              className={`w-full bg-black object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-video"}`}
             />
 
             <div className="p-5">
@@ -55,8 +69,5 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
               <p className="font-bold text-white">{reel.title}</p>
             </div>
           </div>
-        ))}
-      </div>
-    </>
   );
 }
