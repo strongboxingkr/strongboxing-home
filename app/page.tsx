@@ -744,6 +744,38 @@ export default async function HomePage() {
       <ConsultationForm />
 
       <AiCoachChat />
+
+      <footer className="border-t border-white/10 bg-[#0d0d0f] px-6 py-16">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10">
+            <span className="text-xl font-black tracking-tight">
+              STRONG<span className="text-[#FC5230]">BOXING</span>
+            </span>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            {branches.map((b) => (
+              <a
+                key={b.slug}
+                href={`/branches/${b.slug}`}
+                className="group rounded-2xl border border-white/10 p-5 transition hover:border-[#FC5230]"
+              >
+                <p className="mb-2 text-xs font-black tracking-[0.2em] text-[#FC5230]">
+                  {b.name}
+                </p>
+                <p className="mb-3 text-sm leading-6 text-zinc-400">{b.address}</p>
+                <p className="text-sm font-bold text-white">{b.phone}</p>
+                <p className="mt-1 text-xs text-zinc-500">{b.hours.join(" / ")}</p>
+              </a>
+            ))}
+          </div>
+
+          <div className="mt-10 border-t border-white/10 pt-8 text-xs text-zinc-600">
+            © 2025 STRONG BOXING. All rights reserved.
+          </div>
+        </div>
+      </footer>
+
        </main>
   </>
 );
