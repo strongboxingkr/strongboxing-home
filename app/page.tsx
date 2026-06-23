@@ -154,9 +154,9 @@ export default async function HomePage() {
             <ScrollLink targetId="program" className="transition hover:text-[#FC5230]">
               프로그램
             </ScrollLink>
-            <ScrollLink targetId="news" className="transition hover:text-[#FC5230]">
+            <a href="/blog" className="transition hover:text-[#FC5230]">
               후기/소식
-            </ScrollLink>
+            </a>
           </nav>
 
           <ReservationButton className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black">
