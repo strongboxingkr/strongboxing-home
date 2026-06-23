@@ -342,6 +342,8 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <ReelsSection />
+
       {/* 코치 소개 섹션 */}
       <section className="px-6 py-28">
         <div className="mx-auto max-w-7xl">
@@ -396,8 +398,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      <ReelsSection />
 
       <NaverReviewsSection />
 
