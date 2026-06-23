@@ -340,7 +340,8 @@ export default async function HomePage() {
             </div>
             <div className="flex-1">
               <p className="mb-1 text-sm font-black tracking-[0.2em] text-[#FC5230]">REPRESENTATIVE</p>
-              <h3 className="text-3xl font-black tracking-[-0.05em]">한솔 대표</h3>
+              <h3 className="mb-1 text-3xl font-black tracking-[-0.05em]">한솔 대표</h3>
+              <p className="text-sm text-zinc-400">스트롱복싱 전 지점 총괄</p>
             </div>
           </div>
 
