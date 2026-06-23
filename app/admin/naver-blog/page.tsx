@@ -28,9 +28,6 @@ export default function NaverBlogPage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const [adminPassword, setAdminPassword] = useState("");
-  const [isAuthed, setIsAuthed] = useState(false);
-
   useEffect(() => {
     loadPosts();
   }, []);
@@ -242,46 +239,6 @@ export default function NaverBlogPage() {
     alert("복사 완료!");
   }
 
-  if (!isAuthed) {
-    return (
-        <main className="flex min-h-screen items-center justify-center bg-[#F5F7FA] px-6 text-zinc-900">
-        <div className="w-full max-w-md rounded-[30px] border border-zinc-200 bg-white p-8">
-            <h1 className="mb-6 text-4xl font-black text-white">관리자 로그인</h1>
-
-            <input
-            type="password"
-            value={adminPassword}
-            onChange={(e) => setAdminPassword(e.target.value)}
-            onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                if (adminPassword === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-                    setIsAuthed(true);
-                } else {
-                    alert("비밀번호가 틀렸어.");
-                }
-                }
-            }}
-            className="mb-4 w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
-            placeholder="관리자 비밀번호"
-            />
-
-            <button
-            onClick={() => {
-                if (adminPassword === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-                setIsAuthed(true);
-                } else {
-                alert("비밀번호가 틀렸어.");
-                }
-            }}
-            className="w-full rounded-full bg-[#FC5230] px-8 py-4 font-black text-white"
-            >
-            들어가기
-            </button>
-        </div>
-        </main>
-    );
-    }
-
   return (
     <main className="min-h-screen bg-[#F5F7FA] px-6 py-16 text-zinc-900">
       <div className="mx-auto max-w-6xl">
@@ -289,11 +246,11 @@ export default function NaverBlogPage() {
         ← 관리자 메인
         </a>
 
-        <p className="mb-3 text-sm font-black text-white tracking-[0.3em] text-[#FC5230]">
+        <p className="mb-3 text-sm font-black tracking-[0.3em] text-[#FC5230]">
         NAVER BLOG
         </p>
 
-        <h1 className="mb-3 text-6xl font-black text-white tracking-[-0.06em]">
+        <h1 className="mb-3 text-6xl font-black text-zinc-900 tracking-[-0.06em]">
         네이버 블로그 작성
         </h1>
 
