@@ -753,20 +753,14 @@ export default async function HomePage() {
             </span>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {branches.map((b) => (
-              <a
-                key={b.slug}
-                href={`/branches/${b.slug}`}
-                className="group rounded-2xl border border-white/10 p-5 transition hover:border-[#FC5230]"
-              >
-                <p className="mb-2 text-xs font-black tracking-[0.2em] text-[#FC5230]">
-                  {b.name}
-                </p>
-                <p className="mb-3 text-sm leading-6 text-zinc-400">{b.address}</p>
-                <p className="text-sm font-bold text-white">{b.phone}</p>
-                <p className="mt-1 text-xs text-zinc-500">{b.hours.join(" / ")}</p>
-              </a>
+              <div key={b.slug}>
+                <p className="mb-1 text-xs font-black text-[#FC5230]">{b.name}</p>
+                <p className="text-xs text-zinc-500">{b.address}</p>
+                <p className="text-xs text-zinc-400">{b.phone}</p>
+                <p className="text-xs text-zinc-600">{b.hours.join(" / ")}</p>
+              </div>
             ))}
           </div>
 
