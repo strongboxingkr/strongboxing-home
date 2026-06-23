@@ -411,7 +411,7 @@ export default async function HomePage() {
             <div className="flex flex-1 flex-col justify-center gap-4 p-10">
               <p className="text-sm font-black tracking-[0.35em] text-[#FC5230]">REPRESENTATIVE</p>
               <h3 className="text-5xl font-black tracking-[-0.05em]">한솔 대표</h3>
-              <p className="text-zinc-400">스트롱복싱 전 지점 총괄</p>
+              <p className="text-zinc-400">스트롱복싱 대표 · 전 지점 총괄</p>
             </div>
           </a>
 
