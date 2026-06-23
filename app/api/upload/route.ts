@@ -45,6 +45,7 @@ export async function POST(req: Request) {
 
     const branch = String(data.get("branch") || "");
     const postNo = String(data.get("postNo") || "").replace(/[^\w]/g, "");
+    const category = String(data.get("category") || "");
     const branchSlug: Record<string, string> = {
       개봉점: "gaebong",
       신정점: "sinjeong",
@@ -53,9 +54,15 @@ export async function POST(req: Request) {
       영등포점: "yeongdeungpo",
     };
     const branchFolder = branchSlug[branch] || "";
+    const categorySlug: Record<string, string> = {
+      소식: "news",
+      이벤트: "event",
+      공지: "notice",
+    };
+    const categoryFolder = categorySlug[category] || "";
 
     const baseFolder = type === "naver-blog" ? "naver-blog" : "blog";
-    const parts = [baseFolder, branchFolder, postNo].filter(Boolean);
+    const parts = [baseFolder, branchFolder, categoryFolder, postNo].filter(Boolean);
     const folder = parts.join("/");
 
     const bytes = await file.arrayBuffer();

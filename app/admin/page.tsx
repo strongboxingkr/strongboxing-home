@@ -97,6 +97,7 @@ export default function AdminPage() {
       formData.append("file", file);
       formData.append("type", "blog");
       formData.append("branch", branchName);
+      formData.append("category", category);
       formData.append("postNo", postNo);
 
       const res = await fetch("/api/upload", {
