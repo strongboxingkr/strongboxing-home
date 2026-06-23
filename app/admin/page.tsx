@@ -12,6 +12,7 @@ function makeSlug(text: string) {
 
 export default function AdminPage() {
   const [keyword, setKeyword] = useState("");
+  const [postNo, setPostNo] = useState("");
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [branchName, setBranchName] = useState("철산점");
@@ -92,6 +93,8 @@ export default function AdminPage() {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("type", "blog");
+      formData.append("branch", branchName);
+      formData.append("postNo", postNo);
 
       const res = await fetch("/api/upload", {
         method: "POST",
@@ -379,6 +382,17 @@ export default function AdminPage() {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block font-bold">글 번호</label>
+            <input
+              value={postNo}
+              onChange={(e) => setPostNo(e.target.value)}
+              placeholder="예: 001"
+              className="w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
+            />
+            <p className="mt-1 text-xs text-zinc-400">사진이 blog/지점/글번호/ 폴더에 저장돼요</p>
           </div>
 
           <div>
