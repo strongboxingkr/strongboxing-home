@@ -70,11 +70,8 @@ export async function POST(req: Request) {
 
     await mkdir(uploadDir, { recursive: true });
 
-    const safeName = file.name
-      .replaceAll(" ", "-")
-      .replace(/[^\w가-힣.\-]/g, "");
-
-    const fileName = `${Date.now()}-${safeName}`;
+    const ext = (file.name.split(".").pop() || "jpg").replace(/[^\w]/g, "");
+    const fileName = `${Date.now()}.${ext}`;
     const uploadPath = path.join(uploadDir, fileName);
 
     await writeFile(uploadPath, buffer);
