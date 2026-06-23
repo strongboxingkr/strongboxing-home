@@ -372,7 +372,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="mt-5 flex flex-col items-center justify-between gap-6 border border-white/10 bg-[#202126] p-8 sm:flex-row">
+          <div className="mt-5 flex flex-col items-center justify-between gap-6 border border-[#FC5230] bg-[#202126] p-8 sm:flex-row">
             <p className="text-xl font-black">운영시간 내 언제든 시작 가능!</p>
             <a
               href="/#branch"
