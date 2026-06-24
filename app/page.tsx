@@ -342,7 +342,30 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <ReelsSection />
+      {/* 처음 오면 어떻게 되나요 */}
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 text-center">
+            <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">FIRST VISIT</p>
+            <h2 className="text-4xl font-black tracking-[-0.05em] md:text-5xl">처음 오면 어떻게 되나요?</h2>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-4">
+            {[
+              ["01", "방문 상담 예약", "홈페이지나 네이버로 간단히 예약"],
+              ["02", "체육관 방문", "편한 복장으로 방문하시면 돼요"],
+              ["03", "코치와 1:1 상담", "목적·체력·일정 맞춤 안내"],
+              ["04", "바로 운동 시작", "당일 체험도 가능합니다"],
+            ].map(([step, title, desc]) => (
+              <div key={step} className="border border-white/10 bg-[#202126] p-7">
+                <p className="mb-6 text-3xl font-black text-[#FC5230]">{step}</p>
+                <h3 className="mb-2 text-lg font-black">{title}</h3>
+                <p className="text-sm leading-7 text-zinc-400">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* 코치 소개 섹션 */}
       <section className="px-6 py-28">
@@ -398,6 +421,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <ReelsSection />
 
       <NaverReviewsSection />
 
@@ -722,6 +747,28 @@ export default async function HomePage() {
               <span>✔ 체육관 자체 승단 심사 가능</span>
               <span>✔ 공인 단증 취득 가능</span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 가격 안내 */}
+      <section className="px-6 py-20 bg-[#111214]">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col items-center gap-6 border border-white/10 bg-[#202126] p-10 text-center md:flex-row md:text-left">
+            <div className="flex-1">
+              <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">PRICING</p>
+              <h2 className="mb-3 text-3xl font-black tracking-[-0.05em]">수강료가 궁금하신가요?</h2>
+              <p className="leading-8 text-zinc-400">
+                수강료는 지점별·프로그램별로 다르게 운영됩니다.<br />
+                방문 상담 시 목적에 맞는 플랜을 안내해드립니다.
+              </p>
+            </div>
+            <a
+              href="/reservation"
+              className="shrink-0 bg-[#FC5230] px-8 py-5 font-black text-white"
+            >
+              상담 예약하고 문의하기 →
+            </a>
           </div>
         </div>
       </section>
