@@ -342,31 +342,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 처음 오면 어떻게 되나요 */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">FIRST VISIT</p>
-            <h2 className="text-4xl font-black tracking-[-0.05em] md:text-5xl">처음 오면 어떻게 되나요?</h2>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-4">
-            {[
-              ["01", "방문 상담 예약", "홈페이지나 네이버로 간단히 예약"],
-              ["02", "체육관 방문", "편한 복장으로 방문하시면 돼요"],
-              ["03", "코치와 1:1 상담", "목적·체력·일정 맞춤 안내"],
-              ["04", "바로 운동 시작", "당일 체험도 가능합니다"],
-            ].map(([step, title, desc]) => (
-              <div key={step} className="border border-white/10 bg-[#202126] p-7">
-                <p className="mb-6 text-3xl font-black text-[#FC5230]">{step}</p>
-                <h3 className="mb-2 text-lg font-black">{title}</h3>
-                <p className="text-sm leading-7 text-zinc-400">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* 코치 소개 섹션 */}
       <section className="px-6 py-28">
         <div className="mx-auto max-w-7xl">
@@ -428,6 +403,31 @@ export default async function HomePage() {
 
       <section id="calculator" className="bg-[#111214]">
         <BoxingCalculator />
+      </section>
+
+      {/* 처음 오면 어떻게 되나요 */}
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 text-center">
+            <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">FIRST VISIT</p>
+            <h2 className="text-4xl font-black tracking-[-0.05em] md:text-5xl">처음 오면 어떻게 되나요?</h2>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-4">
+            {[
+              ["01", "방문 상담 예약", "홈페이지나 네이버로 간단히 예약"],
+              ["02", "체육관 방문", "편한 복장으로 방문하시면 돼요"],
+              ["03", "코치와 1:1 상담", "목적·체력·일정 맞춤 안내"],
+              ["04", "바로 운동 시작", "당일 체험도 가능합니다"],
+            ].map(([step, title, desc]) => (
+              <div key={step} className="border border-white/10 bg-[#202126] p-7">
+                <p className="mb-6 text-3xl font-black text-[#FC5230]">{step}</p>
+                <h3 className="mb-2 text-lg font-black">{title}</h3>
+                <p className="text-sm leading-7 text-zinc-400">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section id="program" className="px-6 py-28">
