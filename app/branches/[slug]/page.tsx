@@ -482,65 +482,78 @@ const faqJsonLd = {
               }}
             />
 
-      <section className="bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.35),transparent_35%),linear-gradient(135deg,#070707,#151515)] px-6 py-24">
-        <div className="mx-auto max-w-6xl">
-          <a href="/" className="mb-10 inline-block text-zinc-400">
-            ← 메인으로
-          </a>
-
-          <p className="mb-5 text-sm font-black tracking-[0.32em] text-[#FC5230]">
-            STRONG BOXING BRANCH
-          </p>
-
-          <h2 className="text-5xl font-black tracking-[-0.05em]">
-            {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
-          </h2>
-
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">
-            {seoContent?.description || branch.description}
-            <br />
-            복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동, 체력 향상까지
-            목적에 맞춰 운동 방향을 안내해드립니다.
-          </p>
-
-          {seoContent?.nearby && (
-            <div className="mt-8 flex flex-wrap gap-2">
-              {seoContent.nearby.map((area: string) => (
-                <span
-                  key={area}
-                  className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm font-black text-zinc-200"
-                >
-                  {area} 인근 복싱
-                </span>
-              ))}
-            </div>
-          )}
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href={`tel:${branch.phone.replaceAll("-", "")}`}
-              className="rounded-full bg-[#FC5230] px-7 py-4 font-black"
-            >
-              전화 문의
+      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#070707,#151515)] px-6 py-24">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(252,82,48,.25),transparent_50%)]" />
+        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+          <div>
+            <a href="/" className="mb-10 inline-block text-zinc-400">
+              ← 메인으로
             </a>
 
-            {branch.booking && (
+            <p className="mb-5 text-sm font-black tracking-[0.32em] text-[#FC5230]">
+              STRONG BOXING BRANCH
+            </p>
+
+            <h2 className="text-4xl font-black leading-tight tracking-[-0.05em] md:text-5xl">
+              {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
+            </h2>
+
+            <p className="mt-6 text-lg leading-8 text-zinc-300">
+              {seoContent?.description || branch.description}
+              <br />
+              복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동, 체력 향상까지
+              목적에 맞춰 운동 방향을 안내해드립니다.
+            </p>
+
+            {seoContent?.nearby && (
+              <div className="mt-8 flex flex-wrap gap-2">
+                {seoContent.nearby.map((area: string) => (
+                  <span
+                    key={area}
+                    className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm font-black text-zinc-200"
+                  >
+                    {area} 인근 복싱
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-8 flex flex-wrap gap-3">
               <a
-                href={branch.booking}
+                href={`tel:${branch.phone.replaceAll("-", "")}`}
+                className="rounded-full bg-[#FC5230] px-7 py-4 font-black"
+              >
+                전화 문의
+              </a>
+
+              {branch.booking && (
+                <a
+                  href={branch.booking}
+                  target="_blank"
+                  className="rounded-full bg-white px-7 py-4 font-black text-black"
+                >
+                  네이버 예약
+                </a>
+              )}
+
+              <a
+                href={branch.instagram}
                 target="_blank"
                 className="rounded-full bg-white px-7 py-4 font-black text-black"
               >
-                네이버 예약
+                인스타그램
               </a>
-            )}
+            </div>
+          </div>
 
-            <a
-              href={branch.instagram}
-              target="_blank"
-              className="rounded-full bg-white px-7 py-4 font-black text-black"
-            >
-              인스타그램
-            </a>
+          <div className="relative hidden md:block">
+            <div className="overflow-hidden rounded-[32px] border border-white/10 shadow-2xl">
+              <img
+                src={branch.image}
+                alt={branch.fullName}
+                className="h-[500px] w-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
