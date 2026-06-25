@@ -310,6 +310,19 @@ export default async function BranchPage({
   );
 
   const relatedPosts = rows;
+
+  const [reelRows]: any = await db.query(
+    `
+    SELECT id, branch_name, title, video_url, is_muted
+    FROM homepage_reels
+    WHERE is_active = 1 AND branch_name = ?
+    ORDER BY sort_order ASC, id DESC
+    LIMIT 8
+    `,
+    [branch.name]
+  );
+
+  const branchReels = reelRows;
   const seoContent = branchSeoContent[slug];
 
   const jsonLd = {
@@ -482,11 +495,20 @@ const faqJsonLd = {
               }}
             />
 
-      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#070707,#151515)] px-6 py-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(252,82,48,.25),transparent_50%)]" />
-        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+      <section className="relative min-h-[90vh] overflow-hidden bg-[#080808]">
+        {/* Background image with overlay */}
+        <div className="absolute inset-0 hidden md:block">
+          <img
+            src={branch.image}
+            alt={branch.fullName}
+            className="h-full w-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#080808] via-[#080808]/80 to-transparent" />
+        </div>
+
+        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 md:grid-cols-[1fr_420px]">
           <div>
-            <a href="/" className="mb-10 inline-block text-zinc-400">
+            <a href="/" className="mb-10 inline-block text-zinc-500 transition hover:text-white">
               ← 메인으로
             </a>
 
@@ -494,15 +516,12 @@ const faqJsonLd = {
               STRONG BOXING BRANCH
             </p>
 
-            <h2 className="text-4xl font-black leading-tight tracking-[-0.05em] md:text-5xl">
+            <h1 className="text-4xl font-black leading-tight tracking-[-0.05em] text-white md:text-6xl">
               {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
-            </h2>
+            </h1>
 
-            <p className="mt-6 text-lg leading-8 text-zinc-300">
+            <p className="mt-6 max-w-xl text-lg leading-8 text-zinc-400">
               {seoContent?.description || branch.description}
-              <br />
-              복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동, 체력 향상까지
-              목적에 맞춰 운동 방향을 안내해드립니다.
             </p>
 
             {seoContent?.nearby && (
@@ -510,27 +529,27 @@ const faqJsonLd = {
                 {seoContent.nearby.map((area: string) => (
                   <span
                     key={area}
-                    className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm font-black text-zinc-200"
+                    className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-zinc-300"
                   >
-                    {area} 인근 복싱
+                    {area} 인근
                   </span>
                 ))}
               </div>
             )}
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-10 flex flex-wrap gap-3">
               <a
                 href={`tel:${branch.phone.replaceAll("-", "")}`}
-                className="rounded-full bg-[#FC5230] px-7 py-4 font-black"
+                className="rounded-full bg-[#FC5230] px-7 py-4 text-sm font-black text-white shadow-lg shadow-[#FC5230]/30 transition hover:bg-[#e04828]"
               >
-                전화 문의
+                📞 전화 문의
               </a>
 
               {branch.booking && (
                 <a
                   href={branch.booking}
                   target="_blank"
-                  className="rounded-full bg-white px-7 py-4 font-black text-black"
+                  className="rounded-full border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
                 >
                   네이버 예약
                 </a>
@@ -539,19 +558,19 @@ const faqJsonLd = {
               <a
                 href={branch.instagram}
                 target="_blank"
-                className="rounded-full bg-white px-7 py-4 font-black text-black"
+                className="rounded-full border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
               >
                 인스타그램
               </a>
             </div>
           </div>
 
-          <div className="relative hidden md:block">
-            <div className="overflow-hidden rounded-[32px] border border-white/10 shadow-2xl">
+          <div className="hidden md:block">
+            <div className="overflow-hidden rounded-[28px] shadow-2xl ring-1 ring-white/10">
               <img
                 src={branch.image}
                 alt={branch.fullName}
-                className="h-[500px] w-full object-cover"
+                className="h-[520px] w-full object-cover"
               />
             </div>
           </div>
@@ -668,6 +687,40 @@ const faqJsonLd = {
           </div>
         </div>
       </section>
+
+      {branchReels.length > 0 && (
+        <section className="bg-[#16171A] px-6 py-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-10">
+              <p className="mb-2 text-sm font-black tracking-[0.32em] text-[#FC5230]">STRONG CLIP</p>
+              <h2 className="text-4xl font-black tracking-[-0.05em] text-white">
+                {branch.name} 클립
+              </h2>
+            </div>
+            <div className="overflow-x-auto pb-4">
+              <div className="flex gap-4">
+                {branchReels.map((reel: any) => (
+                  <div key={reel.id} className="shrink-0 w-[200px] overflow-hidden rounded-2xl border border-[#FC5230]/20 bg-[#202126]">
+                    <video
+                      src={reel.video_url}
+                      controls={Number(reel.is_muted) !== 1}
+                      muted
+                      autoPlay={Number(reel.is_muted) === 1}
+                      loop={Number(reel.is_muted) === 1}
+                      playsInline
+                      preload="metadata"
+                      className="w-full bg-black object-cover aspect-[9/16]"
+                    />
+                    <div className="px-3 py-2">
+                      <p className="text-xs font-bold text-white">{reel.title}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="px-6 py-20">
         <div className="mx-auto max-w-6xl">
