@@ -545,6 +545,16 @@ const faqJsonLd = {
                 📞 전화 문의
               </a>
 
+              {branch.kakaoChat && (
+                <a
+                  href={branch.kakaoChat}
+                  target="_blank"
+                  className="rounded-full bg-[#FEE500] px-7 py-4 text-sm font-black text-black transition hover:brightness-95"
+                >
+                  카카오톡 문의
+                </a>
+              )}
+
               {branch.booking && (
                 <a
                   href={branch.booking}
@@ -552,6 +562,16 @@ const faqJsonLd = {
                   className="rounded-full border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
                 >
                   네이버 예약
+                </a>
+              )}
+
+              {branch.naverMap && (
+                <a
+                  href={branch.naverMap}
+                  target="_blank"
+                  className="rounded-full border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
+                >
+                  네이버지도
                 </a>
               )}
 
@@ -597,6 +617,40 @@ const faqJsonLd = {
                   <p className="line-clamp-3 leading-7 text-zinc-400">{post.description}</p>
                 </a>
               ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {branchReels.length > 0 && (
+        <section className="bg-[#16171A] px-6 py-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-10">
+              <p className="mb-2 text-sm font-black tracking-[0.32em] text-[#FC5230]">STRONG CLIP</p>
+              <h2 className="text-4xl font-black tracking-[-0.05em] text-white">
+                {branch.name} 클립
+              </h2>
+            </div>
+            <div className="overflow-x-auto pb-4">
+              <div className="flex gap-4">
+                {branchReels.map((reel: any) => (
+                  <div key={reel.id} className="shrink-0 w-[200px] overflow-hidden rounded-2xl border border-[#FC5230]/20 bg-[#202126]">
+                    <video
+                      src={reel.video_url}
+                      controls={Number(reel.is_muted) !== 1}
+                      muted
+                      autoPlay={Number(reel.is_muted) === 1}
+                      loop={Number(reel.is_muted) === 1}
+                      playsInline
+                      preload="metadata"
+                      className="w-full bg-black object-cover aspect-[9/16]"
+                    />
+                    <div className="px-3 py-2">
+                      <p className="text-xs font-bold text-white">{reel.title}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -687,40 +741,6 @@ const faqJsonLd = {
           </div>
         </div>
       </section>
-
-      {branchReels.length > 0 && (
-        <section className="bg-[#16171A] px-6 py-20">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-10">
-              <p className="mb-2 text-sm font-black tracking-[0.32em] text-[#FC5230]">STRONG CLIP</p>
-              <h2 className="text-4xl font-black tracking-[-0.05em] text-white">
-                {branch.name} 클립
-              </h2>
-            </div>
-            <div className="overflow-x-auto pb-4">
-              <div className="flex gap-4">
-                {branchReels.map((reel: any) => (
-                  <div key={reel.id} className="shrink-0 w-[200px] overflow-hidden rounded-2xl border border-[#FC5230]/20 bg-[#202126]">
-                    <video
-                      src={reel.video_url}
-                      controls={Number(reel.is_muted) !== 1}
-                      muted
-                      autoPlay={Number(reel.is_muted) === 1}
-                      loop={Number(reel.is_muted) === 1}
-                      playsInline
-                      preload="metadata"
-                      className="w-full bg-black object-cover aspect-[9/16]"
-                    />
-                    <div className="px-3 py-2">
-                      <p className="text-xs font-bold text-white">{reel.title}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       <section className="px-6 py-20">
         <div className="mx-auto max-w-6xl">
