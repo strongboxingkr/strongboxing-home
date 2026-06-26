@@ -821,15 +821,12 @@ const faqJsonLd = {
         <div className="mx-auto max-w-6xl">
 
           <div className="mb-16">
-           <h2 className="text-5xl font-black tracking-[-0.05em]">
+           <h2 className="break-keep text-5xl font-black tracking-[-0.05em]">
             {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
           </h2>
 
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">
+          <p className="mt-6 max-w-3xl break-keep text-lg leading-8 text-zinc-300">
             {seoContent?.description || branch.description}
-            <br />
-            복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동, 체력 향상까지
-            목적에 맞춰 운동 방향을 안내해드립니다.
           </p>
 
           {seoContent?.nearby && (
