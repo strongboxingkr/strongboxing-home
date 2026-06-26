@@ -516,7 +516,7 @@ const faqJsonLd = {
               STRONG BOXING BRANCH
             </p>
 
-            <h1 className="text-4xl font-black leading-tight tracking-[-0.05em] text-white md:text-6xl">
+            <h1 className="break-keep text-4xl font-black leading-tight tracking-[-0.05em] text-white md:text-6xl">
               {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
             </h1>
 
