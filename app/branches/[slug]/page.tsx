@@ -300,7 +300,7 @@ export default async function BranchPage({
 
   const [rows]: any = await db.query(
     `
-    SELECT id, title, slug, description, branch_name, created_at
+    SELECT id, title, slug, description, content, branch_name, created_at
     FROM homepage_posts
     WHERE branch_name = ?
     ORDER BY created_at DESC
@@ -310,6 +310,11 @@ export default async function BranchPage({
   );
 
   const relatedPosts = rows;
+
+  function getFirstImage(content: string) {
+    const match = String(content || "").match(/!\[.*?\]\((.*?)\)/);
+    return match?.[1] || null;
+  }
 
   const [reelRows]: any = await db.query(
     `
@@ -604,19 +609,33 @@ const faqJsonLd = {
               {branch.name} 소식 & 후기
             </h2>
             <div className="grid gap-5 md:grid-cols-3">
-              {relatedPosts.map((post: any) => (
+              {relatedPosts.map((post: any) => {
+                const image = getFirstImage(post.content);
+                return (
                 <a
                   key={post.id}
                   href={`/blog/${post.slug}`}
-                  className="rounded-[28px] border border-white/10 bg-[#171719] p-7 transition hover:border-[#FC5230]"
+                  className="group overflow-hidden rounded-[28px] border border-white/10 bg-[#171719] transition hover:border-[#FC5230]"
                 >
-                  <div className="mb-4 inline-flex rounded-full bg-[#FC5230] px-4 py-2 text-sm font-black">
-                    {post.branch_name}
+                  {image && (
+                    <div className="h-[180px] overflow-hidden">
+                      <img
+                        src={encodeURI(image)}
+                        alt={post.title}
+                        className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  <div className="p-7">
+                    <div className="mb-4 inline-flex rounded-full bg-[#FC5230] px-4 py-2 text-sm font-black">
+                      {post.branch_name}
+                    </div>
+                    <h3 className="mb-3 text-xl font-black leading-tight">{post.title}</h3>
+                    <p className="line-clamp-2 text-sm leading-7 text-zinc-400">{post.description}</p>
                   </div>
-                  <h3 className="mb-4 text-2xl font-black leading-tight">{post.title}</h3>
-                  <p className="line-clamp-3 leading-7 text-zinc-400">{post.description}</p>
                 </a>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
