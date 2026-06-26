@@ -821,7 +821,7 @@ const faqJsonLd = {
         <div className="mx-auto max-w-6xl">
 
           <div className="mb-16">
-           <h2 className="break-keep text-5xl font-black tracking-[-0.05em]">
+           <h2 className="break-keep text-3xl font-black tracking-[-0.03em] md:text-4xl">
             {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
           </h2>
 
