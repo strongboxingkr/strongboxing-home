@@ -254,7 +254,7 @@ export async function generateMetadata({
         type: "website",
         images: [
           {
-            url: "/og.png",
+            url: `https://strongboxing.kr${branch.image}`,
             width: 1200,
             height: 630,
             alt: branch.fullName,
@@ -266,7 +266,7 @@ export async function generateMetadata({
         card: "summary_large_image",
         title,
         description: branch.description,
-        images: ["/og-image.jpg"],
+        images: [`https://strongboxing.kr${branch.image}`],
       },
 
       robots: {
