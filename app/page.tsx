@@ -9,6 +9,7 @@ import ReelsSection from "./components/ReelsSection";
 //import SplashScreen from "./components/SplashScreen";
 import NaverReviewsSection from "./components/NaverReviewsSection";
 import GallerySection from "./components/GallerySection";
+import RevealObserver from "./components/RevealObserver";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -134,6 +135,7 @@ export default async function HomePage() {
     {/*<SplashScreen />*/}
 
     <main className="min-h-screen bg-[#16171A] text-white">
+      <RevealObserver />
       <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-[#16171A]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
           <a href="/" className="flex items-center gap-3">
@@ -281,13 +283,13 @@ export default async function HomePage() {
       <section className="px-6 py-28 bg-[#111214]">
         <div className="mx-auto max-w-7xl">
           <div className="mb-14">
-            <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">HOW WE TRAIN</p>
-            <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
+            <p className="reveal mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">HOW WE TRAIN</p>
+            <h2 className="reveal d1 text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
               정해진 수업 시간이
               <br />
               없습니다
             </h2>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-zinc-400">
+            <p className="reveal d2 mt-6 max-w-xl text-lg leading-8 text-zinc-400">
               운영시간 내 편하신 시간에 방문하시면 바로 운동을 시작할 수 있어요.
             </p>
           </div>
@@ -346,8 +348,8 @@ export default async function HomePage() {
       <section className="px-6 py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mb-14">
-            <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">COACH</p>
-            <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
+            <p className="reveal mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">COACH</p>
+            <h2 className="reveal d1 text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
               직접 가르치는
               <br />
               전문 코치진.
@@ -409,8 +411,8 @@ export default async function HomePage() {
       <section className="px-6 py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">FIRST VISIT</p>
-            <h2 className="text-4xl font-black tracking-[-0.05em] md:text-5xl">처음 오면 어떻게 되나요?</h2>
+            <p className="reveal mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">FIRST VISIT</p>
+            <h2 className="reveal d1 text-4xl font-black tracking-[-0.05em] md:text-5xl">처음 오면 어떻게 되나요?</h2>
           </div>
 
           <div className="grid gap-4 md:grid-cols-4">
@@ -434,10 +436,10 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
+              <p className="reveal mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
                 PROGRAM
               </p>
-              <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
+              <h2 className="reveal d1 text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
                 복싱은 어렵지 않게,
                 <br />
                 운동은 확실하게.
@@ -477,10 +479,10 @@ export default async function HomePage() {
       <section className="px-6 py-28">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12">
-            <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
+            <p className="reveal mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
               STRONG SPACE
             </p>
-            <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
+            <h2 className="reveal d1 text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
               사진으로 먼저 보는
               <br />
               스트롱복싱의 공간.
@@ -552,15 +554,15 @@ export default async function HomePage() {
         <div className="pointer-events-none absolute inset-0 bg-[#16171A]/80" />
 
         <div className="relative z-10 mx-auto max-w-5xl text-center">
-          <p className="mb-5 text-sm font-black tracking-[0.35em] text-[#FC5230]">
+          <p className="reveal mb-5 text-sm font-black tracking-[0.35em] text-[#FC5230]">
             STRONG BOXING
           </p>
-          <h2 className="text-5xl font-black leading-[0.9] tracking-[-0.07em] md:text-8xl">
+          <h2 className="reveal d1 text-5xl font-black leading-[0.9] tracking-[-0.07em] md:text-8xl">
             스트롱복싱에서
             <br />
             첫 운동을 시작해보세요.
           </h2>
-          <p className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-zinc-300">
+          <p className="reveal d2 mx-auto mt-8 max-w-2xl text-lg leading-8 text-zinc-300">
             가까운 지점에서 편하게 상담받고 운동을 시작해보세요.
           </p>
 
@@ -582,10 +584,10 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
+              <p className="reveal mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
                 NEWS & REVIEW
               </p>
-              <h2 className="text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
+              <h2 className="reveal d1 text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
                 지점별 소식과 후기.
               </h2>
             </div>
