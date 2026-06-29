@@ -10,6 +10,7 @@ import ReelsSection from "./components/ReelsSection";
 import NaverReviewsSection from "./components/NaverReviewsSection";
 import GallerySection from "./components/GallerySection";
 import RevealObserver from "./components/RevealObserver";
+import BranchMap from "./components/BranchMap";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -278,6 +279,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <BranchMap />
 
       {/* HOW WE TRAIN 섹션 */}
       <section className="px-6 py-28 bg-[#111214]">

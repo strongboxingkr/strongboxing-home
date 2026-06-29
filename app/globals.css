@@ -47,3 +47,21 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .reveal:not(.in) { opacity: 1; transform: none; }
 }
+
+/* branch map */
+.pin-glow {
+  background: radial-gradient(circle, rgba(255,138,61,.55) 0%, rgba(255,138,61,.12) 45%, transparent 70%);
+  animation: pin-breathe 3.4s ease-in-out infinite;
+}
+.pin-glow-active {
+  animation: none;
+  background: radial-gradient(circle, rgba(255,138,61,.75) 0%, rgba(255,138,61,.2) 50%, transparent 72%);
+}
+@keyframes pin-breathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(.82); opacity: .55; }
+  50%       { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
