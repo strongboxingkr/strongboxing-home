@@ -73,8 +73,8 @@ export default function BranchMap() {
           <p className="reveal d2 mt-4 text-zinc-500">핀을 눌러 지점 정보를 확인하세요</p>
         </div>
 
-        <div className="relative mx-auto max-w-3xl overflow-hidden rounded-[28px] border border-white/10 bg-[#0E0E11]"
-          style={{ height: 580 }}
+        <div className="relative mx-auto max-w-lg overflow-hidden rounded-[28px] border border-white/10 bg-[#0E0E11]"
+          style={{ height: 480 }}
           onClick={() => setActive(null)}
         >
           {/* SVG map background */}
