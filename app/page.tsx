@@ -280,8 +280,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <BranchMap />
-
       {/* HOW WE TRAIN 섹션 */}
       <section className="px-6 py-28 bg-[#111214]">
         <div className="mx-auto max-w-7xl">
@@ -777,6 +775,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <BranchMap />
 
       <ConsultationForm />
 
