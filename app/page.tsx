@@ -701,6 +701,8 @@ export default async function HomePage() {
         </p>
       </section>
 
+      <BranchMap />
+
       <GallerySection />
 
       {/* 공인 단체 섹션 */}
@@ -775,8 +777,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      <BranchMap />
 
       <ConsultationForm />
 
