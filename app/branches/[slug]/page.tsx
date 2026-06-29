@@ -682,9 +682,6 @@ const faqJsonLd = {
 
             <div className="space-y-3 leading-8 text-zinc-300">
               <p>📞 {branch.phone}</p>
-              {branch.email && (
-                <p>✉️ <a href={`mailto:${branch.email}`} className="hover:text-white">{branch.email}</a></p>
-              )}
               <p>📍 {branch.address}</p>
 
               <div>
