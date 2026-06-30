@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 const links = [
   {
     type: "branch",
-    label: "목동점",
-    sub: "@strongboxing_mokdong",
-    href: "https://www.instagram.com/strongboxing_mokdong",
-    image: "/images/branches/mokdong.png",
+    label: "개봉점",
+    sub: "@strongboxing_gaebong",
+    href: "https://www.instagram.com/strongboxing_gaebong",
+    image: "/images/branches/gaebong.jpg",
   },
   {
     type: "branch",
@@ -27,10 +27,10 @@ const links = [
   },
   {
     type: "branch",
-    label: "개봉점",
-    sub: "@strongboxing_gaebong",
-    href: "https://www.instagram.com/strongboxing_gaebong",
-    image: "/images/branches/gaebong.jpg",
+    label: "목동점",
+    sub: "@strongboxing_mokdong",
+    href: "https://www.instagram.com/strongboxing_mokdong",
+    image: "/images/branches/mokdong.png",
   },
   {
     type: "branch",
