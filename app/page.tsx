@@ -128,76 +128,83 @@ export default async function HomePage() {
         <RevealObserver />
 
         {/* ── HEADER ── */}
-        <header className="fixed left-0 top-0 z-50 w-full bg-[#2B2B2B]">
+        <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-[#16171A]/80 backdrop-blur-xl">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
             <a href="/" className="flex items-center gap-3">
-              <img src="/icon.png" alt="스트롱복싱" className="h-8 w-8 object-contain brightness-0 invert" />
-              <span className="text-base font-black tracking-widest text-white uppercase">
-                Strong Boxing
+              <img src="/icon.png" alt="스트롱복싱" className="h-9 w-9 object-contain" />
+              <span className="text-lg font-black tracking-tight text-white">
+                STRONG<span className="text-[#FC5230]">BOXING</span>
               </span>
             </a>
-            <nav className="hidden items-center gap-8 text-xs font-bold tracking-widest text-white/50 md:flex">
-              <ScrollLink targetId="routine" className="transition hover:text-white">루틴</ScrollLink>
-              <ScrollLink targetId="branch" className="transition hover:text-white">지점</ScrollLink>
-              <ScrollLink targetId="program" className="transition hover:text-white">프로그램</ScrollLink>
-              <a href="/blog" className="transition hover:text-white">후기/소식</a>
+            <nav className="hidden items-center gap-7 text-sm font-bold text-zinc-300 md:flex">
+              <ScrollLink targetId="branch" className="transition hover:text-[#FC5230]">지점</ScrollLink>
+              <ScrollLink targetId="program" className="transition hover:text-[#FC5230]">프로그램</ScrollLink>
+              <a href="/blog" className="transition hover:text-[#FC5230]">후기/소식</a>
             </nav>
-            <ReservationButton className="rounded-full border border-white/20 px-5 py-2.5 text-xs font-black tracking-widest text-white transition hover:bg-white hover:text-[#111]">
-              무료 체험 신청
+            <ReservationButton className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black text-white">
+              방문 상담 예약
             </ReservationButton>
           </div>
         </header>
 
         {/* ── 01 HERO ── */}
-        <section className="relative flex min-h-screen flex-col justify-between overflow-hidden px-6 pb-10 pt-20 md:px-12">
-          {/* watermark */}
-          <div
-            className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none text-center font-black uppercase leading-none tracking-[-0.04em] text-[#111]/[0.045]"
-            style={{ fontSize: "clamp(80px, 18vw, 260px)", lineHeight: 0.88 }}
-            aria-hidden="true"
-          >
-            STRONG<br />BOXING
-          </div>
+        <section className="relative overflow-hidden bg-[#16171A] px-5 pt-24 pb-16 text-white md:px-6">
+          <img src="/images/gallery/gallery-1.jpg" alt=""
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20" />
+          <div className="pointer-events-none absolute inset-0 bg-[#16171A]/80" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.10),transparent_30%)]" />
 
-          {/* top label */}
-          <div className="relative z-10 flex items-center gap-3 pt-4">
-            <span className="h-px w-10 bg-[#111]/30" />
-            <p className="text-[11px] font-bold tracking-[0.3em] text-[#111]/40">
-              복싱 트레이닝 클럽 · 서울
-            </p>
-          </div>
-
-          {/* center content */}
-          <div className="relative z-10 flex flex-1 flex-col justify-center py-16">
-            <p className="mb-5 text-[11px] font-black tracking-[0.35em] text-[#111]/30 uppercase">
-              Boxing Training Club · Seoul &amp; Gwangmyeong
-            </p>
-            <p className="mb-8 max-w-sm text-xl font-bold leading-8 text-[#111]/60 md:text-2xl">
-              묵직한 정통 체육관에서 실전 감각을 깨우세요.<br />
-              당신의 속도로 강해지는 곳.
-            </p>
-
-            {/* FIT / FIGHT toggle */}
-            <div className="mb-8 flex w-fit rounded-full border border-[#111]/15 bg-white p-1 shadow-sm">
-              <div className="rounded-full bg-[#111] px-8 py-3 text-center">
-                <p className="text-xs font-black tracking-widest text-white">FIT</p>
-                <p className="text-[10px] text-white/50">가볍게 시작</p>
+          <div className="relative z-10 mx-auto grid min-h-[76vh] max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div>
+              <p className="mb-4 text-xs font-black tracking-[0.32em] text-[#FC5230] md:text-sm">STRONG BOXING</p>
+              <h1 className="text-[52px] font-black leading-[0.85] tracking-[-0.08em] md:text-[92px]">
+                누구나<br />시작할 수 있는<br />복싱
+              </h1>
+              <p className="mt-7 max-w-xl text-base leading-7 text-zinc-400 md:text-lg md:leading-8">
+                처음이어도 괜찮습니다.<br />
+                스트롱복싱은 운동을 오래 할 수 있는 분위기를 만듭니다.
+              </p>
+              <div className="mt-9 flex gap-3 overflow-x-auto pb-1 md:overflow-visible">
+                <ReservationButton className="shrink-0 rounded-full bg-[#FC5230] px-7 py-4 text-center font-black transition hover:scale-[1.02]">
+                  방문 상담 예약
+                </ReservationButton>
+                <a href="/blog"
+                  className="shrink-0 rounded-full border border-white/15 bg-white/5 px-7 py-4 text-center font-black backdrop-blur">
+                  운동 후기 보기
+                </a>
               </div>
-              <div className="px-8 py-3 text-center">
-                <p className="text-xs font-black tracking-widest text-[#111]">FIGHT</p>
-                <p className="text-[10px] text-[#111]/40">제대로 붙는다</p>
+              <div className="mt-10 flex flex-wrap gap-3">
+                {["초보자 가능", "다이어트 복싱", "코치 직접 지도"].map((item) => (
+                  <div key={item} className="border border-white/10 bg-[#202126] px-5 py-3 text-sm font-bold text-zinc-300">
+                    {item}
+                  </div>
+                ))}
               </div>
             </div>
 
-            <ReservationButton className="w-fit text-sm font-black text-[#111] underline-offset-4 hover:underline">
-              무료 체험 신청 →
-            </ReservationButton>
-          </div>
-
-          {/* bottom */}
-          <div className="relative z-10 flex items-center gap-3">
-            <span className="h-8 w-px bg-[#111]/20" />
-            <p className="text-[10px] font-black tracking-[0.4em] text-[#111]/30">SCROLL</p>
+            <div id="branch" className="-mx-5 flex gap-4 overflow-x-auto px-5 pb-4 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0">
+              {branches.slice(0, 5).map((branch, index) => (
+                <a key={branch.slug} href={`/branches/${branch.slug}`}
+                  className={`group relative overflow-hidden border border-white/10 bg-[#202126] min-w-[78vw] md:min-w-0 ${index === 0 ? "h-[320px] md:col-span-2" : "h-[250px]"}`}
+                >
+                  <img src={branch.image} alt={branch.name}
+                    className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#16171A] via-[#16171A]/15 to-transparent" />
+                  <div className="absolute bottom-0 left-0 p-6">
+                    <p className="mb-2 text-xs font-black tracking-[0.24em] text-[#FC5230]">STRONG BOXING</p>
+                    <h3 className="text-4xl font-black tracking-[-0.06em]">{branch.name}</h3>
+                    <p className="mt-2 text-sm font-bold text-zinc-100">★ {branch.score} · 네이버 리뷰 {branch.reviewCount}개</p>
+                    <p className="mt-1 line-clamp-1 text-sm text-zinc-300">{branch.review}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {branch.badges?.map((badge) => (
+                        <span key={badge} className="rounded-full bg-white/10 px-3 py-1 text-xs font-black text-white">{badge}</span>
+                      ))}
+                    </div>
+                    <p className="mt-3 inline-flex rounded-full bg-[#FC5230] px-4 py-2 text-xs font-black text-white">지점 자세히 보기 →</p>
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
         </section>
 
