@@ -12,6 +12,20 @@ export const metadata: Metadata = {
 
 const links = [
   {
+    type: "site",
+    label: "방문 상담 예약",
+    sub: "strongboxing.kr/reservation",
+    href: "https://strongboxing.kr/reservation",
+    image: null,
+  },
+  {
+    type: "site",
+    label: "공식 홈페이지",
+    sub: "strongboxing.kr",
+    href: "https://strongboxing.kr",
+    image: null,
+  },
+  {
     type: "branch",
     label: "개봉점",
     sub: "@strongboxing_gaebong",
@@ -45,20 +59,6 @@ const links = [
     sub: "@stron_gboxinggym",
     href: "https://www.instagram.com/stron_gboxinggym",
     image: "/images/branches/yeongdeungpo.jpg",
-  },
-  {
-    type: "site",
-    label: "방문 상담 예약",
-    sub: "strongboxing.kr/reservation",
-    href: "https://strongboxing.kr/reservation",
-    image: null,
-  },
-  {
-    type: "site",
-    label: "공식 홈페이지",
-    sub: "strongboxing.kr",
-    href: "https://strongboxing.kr",
-    image: null,
   },
 ];
 
