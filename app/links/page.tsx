@@ -48,16 +48,16 @@ const links = [
   },
   {
     type: "site",
-    label: "홈페이지 바로가기",
-    sub: "strongboxing.kr",
-    href: "https://strongboxing.kr",
+    label: "방문 상담 예약",
+    sub: "strongboxing.kr/reservation",
+    href: "https://strongboxing.kr/reservation",
     image: null,
   },
   {
     type: "site",
-    label: "방문 상담 예약",
-    sub: "네이버 예약",
-    href: "https://strongboxing.kr/reservation",
+    label: "공식 홈페이지",
+    sub: "strongboxing.kr",
+    href: "https://strongboxing.kr",
     image: null,
   },
 ];
