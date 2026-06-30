@@ -48,6 +48,17 @@ body {
   .reveal:not(.in) { opacity: 1; transform: none; }
 }
 
+/* marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+  width: max-content;
+  display: flex;
+}
+
 /* branch map */
 .pin-glow {
   background: radial-gradient(circle, rgba(255,138,61,.55) 0%, rgba(255,138,61,.12) 45%, transparent 70%);

@@ -4,7 +4,7 @@ export async function GET() {
   const [rows]: any = await db.query(`
     SELECT *
     FROM homepage_naver_reviews
-    ORDER BY is_active DESC, sort_order ASC, id DESC
+    ORDER BY is_active DESC, id DESC
   `);
 
   return Response.json({
