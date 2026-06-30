@@ -78,7 +78,7 @@ export default function LinksPage() {
             STRONG<span className="text-[#FC5230]">BOXING</span>
           </h1>
           <p className="mt-1 text-sm text-zinc-400">처음이어도 괜찮습니다</p>
-          <p className="mt-1 text-sm text-zinc-400">코치가 직접 가르치는 복싱 · 서울 5개 지점</p>
+          <p className="mt-1 text-sm text-zinc-400">선수 출신 지도진 · 서울 5개 지점</p>
           <p className="mt-2 text-xs text-zinc-600">목동 · 신정 · 개봉 · 철산 · 영등포</p>
         </div>
 
