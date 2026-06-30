@@ -12,13 +12,6 @@ export const metadata: Metadata = {
 
 const links = [
   {
-    type: "main",
-    label: "스트롱복싱 공식",
-    sub: "@strongboxing_official",
-    href: "https://www.instagram.com/strongboxing_official",
-    image: "/images/branches/gaebong.jpg",
-  },
-  {
     type: "branch",
     label: "목동점",
     sub: "@strongboxing_mokdong",
