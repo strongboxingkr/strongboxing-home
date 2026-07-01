@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 import type { Metadata } from "next";
-import AdminPostNumber from "@/app/components/AdminPostNumber";
 
 export const metadata: Metadata = {
   title: "스트롱복싱 소식 & 후기 | 복싱 다이어트 정보",
@@ -190,7 +189,6 @@ export default async function BlogPage({
                           {new Date(post.created_at).toLocaleDateString()}
                         </span>
 
-                        <AdminPostNumber id={post.id} />
                       </div>
 
                       <h2 className="mb-4 text-3xl font-black leading-tight tracking-[-0.04em]">
