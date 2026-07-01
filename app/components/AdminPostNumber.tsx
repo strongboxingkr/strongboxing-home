@@ -6,7 +6,10 @@ export default function AdminPostNumber({ id }: { id: number }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("strong_admin_auth") === "Y");
+    const cookie = document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("admin-password="));
+    setIsAdmin(!!cookie);
   }, []);
 
   if (!isAdmin) return null;
