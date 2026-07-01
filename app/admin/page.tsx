@@ -569,11 +569,12 @@ export default function AdminPage() {
 
           <div className="space-y-4">
             {(() => {
-              // 지점별 순번 계산 (오래된 글부터 #001)
-              const branchCounters: Record<string, number> = {};
+              // 지점+카테고리별 순번 계산 (오래된 글부터 #001)
+              const counters: Record<string, number> = {};
               const postsWithNo = [...posts].reverse().map((post) => {
-                branchCounters[post.branch_name] = (branchCounters[post.branch_name] || 0) + 1;
-                return { ...post, branchNo: branchCounters[post.branch_name] };
+                const key = `${post.branch_name}_${post.category}`;
+                counters[key] = (counters[key] || 0) + 1;
+                return { ...post, branchNo: counters[key] };
               }).reverse();
               return postsWithNo.map((post) => (
               <div
@@ -584,7 +585,7 @@ export default function AdminPage() {
                   <div className="flex items-center gap-3 mb-1">
                     <p className="text-sm text-zinc-500">{post.branch_name}</p>
                     <span className="rounded border border-zinc-300 bg-zinc-100 px-2 py-0.5 text-[11px] font-black tracking-widest text-zinc-400">
-                      #{String(post.branchNo).padStart(3, "0")}
+                      {post.category} #{String(post.branchNo).padStart(3, "0")}
                     </span>
                   </div>
 
