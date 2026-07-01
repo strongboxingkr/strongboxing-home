@@ -574,7 +574,12 @@ export default function AdminPage() {
                 className="flex flex-col gap-4 rounded-[24px] border border-zinc-200 bg-white p-5 md:flex-row md:items-center md:justify-between"
               >
                 <div>
-                  <p className="text-sm text-zinc-500">{post.branch_name}</p>
+                  <div className="flex items-center gap-3 mb-1">
+                    <p className="text-sm text-zinc-500">{post.branch_name}</p>
+                    <span className="rounded border border-zinc-300 bg-zinc-100 px-2 py-0.5 text-[11px] font-black tracking-widest text-zinc-400">
+                      #{String(post.id).padStart(3, "0")}
+                    </span>
+                  </div>
 
                   <h3 className="text-2xl font-black">{post.title}</h3>
 
