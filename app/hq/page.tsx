@@ -42,10 +42,10 @@ const card = {
 
 export default function HQDashboard() {
   return (
-    <div className="max-w-[1440px] mx-auto space-y-5">
+    <div className="max-w-[1360px] mx-auto space-y-5">
 
       {/* Page title */}
-      <div className="pt-1">
+      <div>
         <h1 className="text-[20px] font-black tracking-tight" style={{ color: "#111827" }}>
           안녕하세요, 수지님 👋
         </h1>
@@ -61,7 +61,7 @@ export default function HQDashboard() {
 
       {/* Quick Menu */}
       <section>
-        <p className="mb-2.5 text-[10px] font-medium uppercase tracking-widest" style={{ color: "#C4C9D4" }}>
+        <p className="mb-2.5 text-[12px] font-medium tracking-[0.06em]" style={{ color: "#9CA3AF" }}>
           빠른 메뉴
         </p>
         <QuickMenu />
@@ -125,7 +125,7 @@ export default function HQDashboard() {
             {ACTIVITIES.map((a, i) => (
               <li key={i} className="flex items-center gap-3">
                 <span
-                  className="shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-semibold"
+                  className="shrink-0 rounded px-1 py-px text-[9px] font-medium"
                   style={{ background: "#F3F4F6", color: "#9CA3AF" }}
                 >
                   {a.branch}
