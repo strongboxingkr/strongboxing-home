@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Copy, Check } from "lucide-react";
 
 /* ── 데이터 ───────────────────────────────────────── */
 
@@ -115,37 +115,37 @@ const TEMPLATES = [
 const BRANCHES = ["전체", "개봉", "신정", "목동", "철산", "영등포"];
 const CATEGORIES = ["전체", "회비", "원데이", "운영시간", "준비물", "PT", "환불·휴회", "이벤트"];
 
-const BRANCH_COLORS: Record<string, string> = {
+const BRANCH_COLOR: Record<string, string> = {
   전체: "#6B7280", 개봉: "#3B82F6", 신정: "#10B981",
   목동: "#8B5CF6", 철산: "#EF3B2D", 영등포: "#F59E0B",
 };
 
-/* ── 카드 컴포넌트 ─────────────────────────────────── */
+/* ── 카드 ─────────────────────────────────────────── */
 
-function TemplateCard({ title, branch, category, body }: {
-  title: string; branch: string; category: string; body: string;
-}) {
+function Card({ title, branch, category, body }: typeof TEMPLATES[0]) {
   const [copied, setCopied] = useState(false);
 
   function copy() {
     navigator.clipboard.writeText(body);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1000);
+    setTimeout(() => setCopied(false), 1200);
   }
+
+  const bc = BRANCH_COLOR[branch] ?? "#6B7280";
 
   return (
     <div
-      className="rounded-2xl border p-5 flex flex-col gap-3 transition-shadow hover:shadow-md"
+      className="flex flex-col rounded-2xl border overflow-hidden transition-shadow hover:shadow-md"
       style={{ background: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3">
+      {/* header */}
+      <div className="flex items-start justify-between gap-3 px-5 pt-5 pb-3">
         <div>
-          <p className="text-[14px] font-bold" style={{ color: "#111827" }}>{title}</p>
-          <div className="flex items-center gap-1.5 mt-1.5">
+          <p className="text-[14px] font-bold leading-snug" style={{ color: "#111827" }}>{title}</p>
+          <div className="flex items-center gap-1.5 mt-2">
             <span
               className="rounded-md px-2 py-0.5 text-[10px] font-semibold"
-              style={{ background: `${BRANCH_COLORS[branch] ?? "#6B7280"}14`, color: BRANCH_COLORS[branch] ?? "#6B7280" }}
+              style={{ background: `${bc}14`, color: bc }}
             >
               {branch}
             </span>
@@ -159,23 +159,26 @@ function TemplateCard({ title, branch, category, body }: {
         </div>
         <button
           onClick={copy}
-          className="shrink-0 rounded-xl px-3 py-1.5 text-[12px] font-semibold transition-all"
+          className="shrink-0 flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-[12px] font-semibold transition-all"
           style={{
-            background: copied ? "#D1FAE5" : "#F3F4F6",
+            background: copied ? "#ECFDF5" : "#F3F4F6",
             color: copied ? "#059669" : "#374151",
           }}
         >
-          {copied ? "복사됨 ✓" : "복사"}
+          {copied ? <Check size={13} /> : <Copy size={13} />}
+          {copied ? "복사됨" : "복사"}
         </button>
       </div>
 
-      {/* Body preview */}
-      <pre
-        className="text-[12px] leading-relaxed rounded-xl p-3 whitespace-pre-wrap font-sans"
-        style={{ background: "#F9FAFB", color: "#374151", border: "1px solid #F3F4F6" }}
-      >
-        {body}
-      </pre>
+      {/* body */}
+      <div className="px-5 pb-5">
+        <pre
+          className="text-[12px] leading-relaxed whitespace-pre-wrap font-sans rounded-xl p-3.5"
+          style={{ background: "#F9FAFB", color: "#374151", border: "1px solid #F3F4F6" }}
+        >
+          {body}
+        </pre>
+      </div>
     </div>
   );
 }
@@ -183,23 +186,23 @@ function TemplateCard({ title, branch, category, body }: {
 /* ── 페이지 ────────────────────────────────────────── */
 
 export default function ConsultationPage() {
-  const [query, setQuery] = useState("");
-  const [branch, setBranch] = useState("전체");
+  const [query, setQuery]       = useState("");
+  const [branch, setBranch]     = useState("전체");
   const [category, setCategory] = useState("전체");
 
-  const filtered = TEMPLATES.filter((t) => {
-    const matchBranch = branch === "전체" || t.branch === branch || t.branch === "전체";
-    const matchCat = category === "전체" || t.category === category;
-    const matchQ = query === "" || t.title.includes(query) || t.body.includes(query) || t.category.includes(query);
-    return matchBranch && matchCat && matchQ;
+  const results = TEMPLATES.filter((t) => {
+    const okBranch = branch === "전체" || t.branch === branch || t.branch === "전체";
+    const okCat    = category === "전체" || t.category === category;
+    const okQ      = !query || t.title.includes(query) || t.body.includes(query) || t.category.includes(query);
+    return okBranch && okCat && okQ;
   });
 
-  const pill = (active: boolean, color = "#EF3B2D") => ({
-    background: active ? color : "#F3F4F6",
-    color: active ? "#FFFFFF" : "#6B7280",
-    border: "none",
-    cursor: "pointer",
-  });
+  function filterBtn(active: boolean, color = "#EF3B2D") {
+    return {
+      background: active ? color : "#F3F4F6",
+      color: active ? "#FFFFFF" : "#6B7280",
+    } as React.CSSProperties;
+  }
 
   return (
     <div className="max-w-[1360px] mx-auto space-y-5">
@@ -214,7 +217,7 @@ export default function ConsultationPage() {
 
       {/* 검색 */}
       <div
-        className="flex items-center gap-2.5 rounded-2xl border px-4 h-11"
+        className="flex items-center gap-2.5 h-11 rounded-2xl border px-4"
         style={{ background: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}
       >
         <Search size={15} color="#9CA3AF" />
@@ -233,8 +236,8 @@ export default function ConsultationPage() {
           <button
             key={b}
             onClick={() => setBranch(b)}
-            className="rounded-full px-3 py-1.5 text-[12px] font-semibold transition-all"
-            style={pill(branch === b, BRANCH_COLORS[b])}
+            className="rounded-full px-3 py-1.5 text-[12px] font-semibold transition-colors"
+            style={filterBtn(branch === b, BRANCH_COLOR[b])}
           >
             {b}
           </button>
@@ -247,8 +250,8 @@ export default function ConsultationPage() {
           <button
             key={c}
             onClick={() => setCategory(c)}
-            className="rounded-full px-3 py-1.5 text-[12px] font-semibold transition-all"
-            style={pill(category === c)}
+            className="rounded-full px-3 py-1.5 text-[12px] font-semibold transition-colors"
+            style={filterBtn(category === c)}
           >
             {c}
           </button>
@@ -256,19 +259,15 @@ export default function ConsultationPage() {
       </div>
 
       {/* 결과 수 */}
-      <p className="text-[12px]" style={{ color: "#9CA3AF" }}>
-        {filtered.length}개의 답변 템플릿
-      </p>
+      <p className="text-[12px]" style={{ color: "#9CA3AF" }}>{results.length}개의 답변 템플릿</p>
 
-      {/* 카드 목록 */}
-      {filtered.length > 0 ? (
+      {/* 카드 그리드 */}
+      {results.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((t) => (
-            <TemplateCard key={t.id} {...t} />
-          ))}
+          {results.map((t) => <Card key={t.id} {...t} />)}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
+        <div className="flex flex-col items-center justify-center py-20">
           <p className="text-3xl mb-3">📭</p>
           <p className="text-[14px]" style={{ color: "#9CA3AF" }}>검색 결과가 없습니다.</p>
         </div>

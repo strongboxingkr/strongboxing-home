@@ -8,7 +8,7 @@ import { Menu, X, LayoutDashboard, Building2, MessageSquare, Megaphone, Clapperb
 const NAV = [
   { label: "대시보드",  href: "/hq",               icon: LayoutDashboard },
   { label: "지점 관리", href: "/hq/branches",       icon: Building2 },
-  { label: "상담 센터", href: "/hq/consultations",  icon: MessageSquare },
+  { label: "상담 센터", href: "/hq/consultation",  icon: MessageSquare },
   { label: "콘텐츠",    href: "/hq/contents",       icon: Clapperboard },
   { label: "마케팅",    href: "/hq/marketing",      icon: Megaphone },
   { label: "직원",      href: "/hq/staff",          icon: Users },
