@@ -1,63 +1,71 @@
-interface StatsCardProps {
-  title: string;
-  value: string | number;
-  description?: string;
-  icon: string;
+"use client";
+
+interface Props {
+  label: string;
+  value: string;
+  unit?: string;
+  sub?: string;
   accent?: string;
+  emoji?: string;
   delta?: string;
 }
 
 export default function StatsCard({
-  title, value, description, icon, accent = "#E53935", delta,
-}: StatsCardProps) {
+  label, value, unit = "", sub = "", accent = "#E53935", emoji = "📊", delta,
+}: Props) {
   return (
     <div
-      className="group relative rounded-2xl border p-5 overflow-hidden cursor-default transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl"
+      className="group relative cursor-default overflow-hidden rounded-3xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       style={{
-        background: "linear-gradient(145deg, #181C22 0%, #1a1f28 100%)",
+        background: "linear-gradient(145deg,#181C22 0%,#1C2128 100%)",
         borderColor: "#2A313C",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
+        boxShadow: "0 2px 16px rgba(0,0,0,0.4)",
       }}
     >
-      {/* Glow on hover */}
+      {/* hover radial glow */}
       <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
-        style={{ background: `radial-gradient(ellipse at 50% 0%, ${accent}18 0%, transparent 70%)` }}
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 rounded-3xl"
+        style={{ background: `radial-gradient(ellipse at 30% 0%,${accent}22 0%,transparent 65%)` }}
       />
 
-      {/* Top row */}
-      <div className="flex items-start justify-between mb-4">
-        <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "#94A3B8" }}>
-          {title}
-        </span>
-        <div
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-[18px] transition-transform duration-300 group-hover:scale-110"
-          style={{ background: `${accent}1A` }}
-        >
-          {icon}
+      {/* animated bottom bar */}
+      <div
+        className="absolute bottom-0 left-0 h-[2px] w-0 transition-all duration-500 group-hover:w-full rounded-b-3xl"
+        style={{ background: `linear-gradient(90deg,${accent},transparent)` }}
+      />
+
+      <div className="relative flex flex-col h-full">
+        {/* top row */}
+        <div className="flex items-center justify-between mb-5">
+          <span className="text-[11px] font-black uppercase tracking-widest" style={{ color: "#94A3B8" }}>
+            {label}
+          </span>
+          <span className="text-2xl transition-transform duration-300 group-hover:scale-110">{emoji}</span>
+        </div>
+
+        {/* value */}
+        <div className="flex items-end gap-1.5 mb-3">
+          <span className="text-5xl font-black leading-none tracking-tight" style={{ color: "#F8FAFC" }}>
+            {value}
+          </span>
+          {unit && (
+            <span className="mb-1 text-lg font-bold" style={{ color: "#94A3B8" }}>{unit}</span>
+          )}
+        </div>
+
+        {/* bottom row */}
+        <div className="flex items-center justify-between">
+          <span className="text-[12px]" style={{ color: "#94A3B8" }}>{sub}</span>
+          {delta && (
+            <span
+              className="rounded-full px-2 py-0.5 text-[11px] font-black"
+              style={{ background: `${accent}18`, color: accent }}
+            >
+              {delta}
+            </span>
+          )}
         </div>
       </div>
-
-      {/* Value */}
-      <p className="text-4xl font-black tracking-tight leading-none" style={{ color: "#F8FAFC" }}>
-        {value}
-      </p>
-
-      {/* Bottom row */}
-      <div className="mt-3 flex items-center justify-between">
-        {description && (
-          <p className="text-[12px]" style={{ color: "#94A3B8" }}>{description}</p>
-        )}
-        {delta && (
-          <span className="text-[11px] font-bold" style={{ color: accent }}>{delta}</span>
-        )}
-      </div>
-
-      {/* Bottom accent bar */}
-      <div
-        className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 rounded-b-2xl"
-        style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }}
-      />
     </div>
   );
 }

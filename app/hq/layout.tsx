@@ -1,5 +1,5 @@
-import HQHeader from "@/app/components/hq/Header";
 import HQSidebar from "@/app/components/hq/Sidebar";
+import HQHeader from "@/app/components/hq/Header";
 import HQMobileSidebar from "@/app/components/hq/MobileSidebar";
 
 export const metadata = {
@@ -12,10 +12,10 @@ export default function HQLayout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen overflow-hidden" style={{ background: "#0F1115" }}>
       <HQSidebar />
 
-      <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Mobile top bar */}
         <div
-          className="md:hidden flex items-center gap-3 px-4 h-[64px] border-b"
+          className="flex md:hidden h-[60px] shrink-0 items-center gap-3 border-b px-4"
           style={{ background: "#0F1115", borderColor: "#2A313C" }}
         >
           <HQMobileSidebar />
@@ -23,11 +23,14 @@ export default function HQLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Desktop header */}
-        <div className="hidden md:block">
+        <div className="hidden md:block shrink-0">
           <HQHeader />
         </div>
 
-        <main className="flex-1 overflow-y-auto p-5 md:p-8" style={{ background: "#0F1115" }}>
+        <main
+          className="flex-1 overflow-y-auto p-5 md:p-8"
+          style={{ background: "#0F1115" }}
+        >
           {children}
         </main>
       </div>
