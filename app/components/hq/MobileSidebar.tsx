@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, LayoutDashboard, Building2, MessageSquare, Megaphone, Clapperboard, Users, Archive, Settings, Sparkles, CalendarDays, BarChart2, Wallet } from "lucide-react";
+import { Menu, X, LayoutDashboard, Building2, MessageSquare, Megaphone, Clapperboard, Users, Archive, Settings, Sparkles, CalendarDays, BarChart2 } from "lucide-react";
 
 const NAV = [
   { label: "대시보드",   href: "/hq",               icon: LayoutDashboard },
@@ -13,7 +13,6 @@ const NAV = [
   { label: "마케팅",     href: "/hq/marketing",      icon: Megaphone },
   { label: "AI 콘텐츠", href: "/hq/ai-content",     icon: Sparkles },
   { label: "일정관리",   href: "/hq/calendar",       icon: CalendarDays },
-  { label: "매출관리",   href: "/hq/finance",        icon: Wallet },
   { label: "분석",       href: "/hq/analytics",      icon: BarChart2 },
   { label: "직원센터",   href: "/hq/staff",          icon: Users },
   { label: "자료실",     href: "/hq/assets",         icon: Archive },
