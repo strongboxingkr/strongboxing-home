@@ -1,74 +1,81 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { Search, Bell, Plus } from "lucide-react";
-
-const PAGE_TITLES: Record<string, string> = {
-  "/hq": "대시보드",
-  "/hq/branches": "지점 관리",
-  "/hq/consultations": "상담 관리",
-  "/hq/marketing": "마케팅",
-  "/hq/contents": "콘텐츠",
-  "/hq/staff": "직원 관리",
-  "/hq/assets": "자산 관리",
-  "/hq/settings": "설정",
-};
+import { Search, Bell, Plus, ChevronDown } from "lucide-react";
 
 export default function HQHeader() {
-  const pathname = usePathname();
-  const title = PAGE_TITLES[pathname] ?? "STRONG HQ";
-  const today = new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "short" });
+  const today = new Date().toLocaleDateString("ko-KR", {
+    year: "numeric", month: "long", day: "numeric", weekday: "long",
+  });
 
   return (
     <header
-      className="flex h-[60px] items-center justify-between px-6 border-b"
-      style={{ background: "#0F1115", borderColor: "#2A313C" }}
+      className="flex h-[64px] items-center gap-4 px-6"
+      style={{ background: "#0F1115", borderBottom: "1px solid #2A313C" }}
     >
-      <div className="flex items-center gap-3">
-        <h1 className="text-[15px] font-black" style={{ color: "#F8FAFC" }}>{title}</h1>
+      {/* Search */}
+      <div
+        className="flex items-center gap-3 h-10 rounded-2xl border px-4 flex-1 max-w-sm transition-all duration-200 focus-within:border-[#E53935]/50"
+        style={{ background: "#151922", borderColor: "#2A313C" }}
+      >
+        <Search size={14} color="#94A3B8" strokeWidth={2} />
+        <input
+          placeholder="검색..."
+          className="bg-transparent text-[13px] outline-none flex-1 placeholder:text-[#94A3B8]"
+          style={{ color: "#F8FAFC" }}
+        />
+        <kbd
+          className="hidden sm:flex items-center gap-0.5 rounded-lg px-1.5 py-0.5 text-[10px] font-bold"
+          style={{ background: "#2A313C", color: "#94A3B8" }}
+        >
+          ⌘K
+        </kbd>
+      </div>
+
+      <div className="flex-1" />
+
+      {/* Date */}
+      <span className="hidden lg:block text-[12px] font-medium" style={{ color: "#94A3B8" }}>
+        {today}
+      </span>
+
+      {/* Notification */}
+      <button
+        className="relative flex h-10 w-10 items-center justify-center rounded-2xl border transition-all duration-200 hover:border-[#E53935]/40 hover:bg-[#E53935]/8"
+        style={{ background: "#151922", borderColor: "#2A313C" }}
+      >
+        <Bell size={16} color="#94A3B8" strokeWidth={1.8} />
         <span
-          className="hidden sm:block rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide"
-          style={{ background: "rgba(148,163,184,0.1)", color: "#94A3B8" }}
-        >
-          {today}
-        </span>
-      </div>
+          className="absolute top-2.5 right-2.5 h-1.5 w-1.5 rounded-full ring-2"
+          style={{ background: "#E53935", ringColor: "#0F1115" }}
+        />
+      </button>
 
-      <div className="flex items-center gap-2">
-        {/* Search */}
+      {/* Profile */}
+      <button
+        className="flex items-center gap-2.5 h-10 rounded-2xl border px-3 transition-all duration-200 hover:border-white/20"
+        style={{ background: "#151922", borderColor: "#2A313C" }}
+      >
         <div
-          className="hidden sm:flex items-center gap-2 rounded-xl border px-3 h-9 w-48 transition-all"
-          style={{ background: "#181C22", borderColor: "#2A313C" }}
+          className="flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-black text-white"
+          style={{ background: "linear-gradient(135deg,#E53935,#FF5722)" }}
         >
-          <Search size={13} color="#94A3B8" />
-          <input
-            placeholder="검색..."
-            className="bg-transparent outline-none text-[13px] w-full placeholder:text-[#94A3B8]"
-            style={{ color: "#F8FAFC" }}
-          />
+          수
         </div>
+        <span className="hidden sm:block text-[13px] font-semibold" style={{ color: "#F8FAFC" }}>수지</span>
+        <ChevronDown size={13} color="#94A3B8" />
+      </button>
 
-        {/* Bell */}
-        <button
-          className="relative flex h-9 w-9 items-center justify-center rounded-xl border transition-all hover:border-[#E53935] hover:bg-[#E53935]/10"
-          style={{ background: "#181C22", borderColor: "#2A313C" }}
-        >
-          <Bell size={15} color="#94A3B8" />
-          <span
-            className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full"
-            style={{ background: "#E53935" }}
-          />
-        </button>
-
-        {/* CTA */}
-        <button
-          className="flex items-center gap-1.5 rounded-xl px-3 h-9 text-[13px] font-bold text-white transition-all hover:opacity-90 active:scale-95"
-          style={{ background: "linear-gradient(135deg,#E53935,#FF6B35)" }}
-        >
-          <Plus size={14} />
-          <span className="hidden sm:inline">콘텐츠 등록</span>
-        </button>
-      </div>
+      {/* CTA */}
+      <button
+        className="flex items-center gap-2 h-10 rounded-2xl px-4 text-[13px] font-bold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.97]"
+        style={{
+          background: "linear-gradient(135deg, #E53935 0%, #FF5722 100%)",
+          boxShadow: "0 4px 16px rgba(229,57,53,0.35)",
+        }}
+      >
+        <Plus size={15} strokeWidth={2.5} />
+        <span className="hidden sm:inline">콘텐츠 등록</span>
+      </button>
     </header>
   );
 }
