@@ -11,6 +11,7 @@
   "dependencies": {
     "@tailwindcss/typography": "^0.5.20",
     "archiver": "^8.0.0",
+    "lucide-react": "^1.23.0",
     "mysql2": "^3.22.3",
     "next": "16.2.6",
     "nodemailer": "^8.0.10",
