@@ -14,6 +14,15 @@ const FONT_SIZES = [
   { label: "특대", size: "32px" },
 ];
 
+const COLORS = [
+  { label: "기본", color: "#171717" },
+  { label: "빨강", color: "#FC5230" },
+  { label: "파랑", color: "#3B82F6" },
+  { label: "초록", color: "#22C55E" },
+  { label: "노랑", color: "#FACC15" },
+  { label: "회색", color: "#71717A" },
+];
+
 export default function RichTextEditor({ value, onChange }: Props) {
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -101,6 +110,22 @@ export default function RichTextEditor({ value, onChange }: Props) {
         >
           링크
         </button>
+        <div className="mx-1 w-px bg-zinc-300" />
+        {COLORS.map(({ label, color }) => (
+          <button
+            key={color}
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              exec("foreColor", color);
+            }}
+            className={btnClass}
+            style={{ color }}
+            title={label}
+          >
+            ■
+          </button>
+        ))}
         <button
           type="button"
           onClick={() => exec("removeFormat")}
