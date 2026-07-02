@@ -1,301 +1,308 @@
 "use client";
+import { useEffect, useState, useCallback } from "react";
+import { Plus, X, Save, Trash2, Pencil, Copy, Check, Sparkles, RefreshCw } from "lucide-react";
+import { Toast, useToast } from "@/app/components/hq/Toast";
 
-import { useState } from "react";
-import { Search, Copy, Check, Plus } from "lucide-react";
-
-/* ── 타입 ─────────────────────────────────────────── */
-
-interface Channel { insta: boolean; clip: boolean; blog: boolean; dangn: boolean; kakao: boolean; }
-interface Content {
-  id: number; title: string; branch: string; type: string; status: string;
-  date: string; manager: string; body: string; tags: string; clipTitle: string;
-  channels: Channel;
+interface Branch { id: number; name: string }
+interface Channel { id: number; channel_name: string; is_uploaded: number; post_url: string | null }
+interface Project {
+  id: number; branch_id: number | null; branch_name: string | null;
+  title: string; content_type: string; status: string; target: string | null;
+  shoot_date: string | null; manager: string | null;
+  caption: string | null; hashtags: string | null; clip_title: string | null; blog_draft: string | null;
+  memo: string | null; channels: Channel[] | Channel | null;
 }
 
-/* ── 데이터 ───────────────────────────────────────── */
-
-const CONTENTS: Content[] = [
-  {
-    id: 1, title: "목동점 학생 샌드백 릴스", branch: "목동", type: "릴스", status: "업로드대기",
-    date: "2026-07-02", manager: "수지",
-    body: `방학이라고 집에만 있기 아쉽다면🥊\n\n신나게 운동하고,\n체력도 같이 키워보세요.\n\n📍스트롱복싱 목동점`,
-    tags: "#목동복싱 #양천구복싱 #목동운동 #다이어트복싱 #스트롱복싱목동점",
-    clipTitle: "목동복싱장 학생 체력운동 루틴",
-    channels: { insta: false, clip: false, blog: false, dangn: false, kakao: false },
-  },
-  {
-    id: 2, title: "철산점 여고생 복싱 연습", branch: "철산", type: "릴스", status: "편집중",
-    date: "2026-07-01", manager: "수지",
-    body: `운동도 하고, 든든함도 챙기고.\n\n처음 시작하는 분들도 기초부터 차근차근 배울 수 있어요🥊\n\n📍스트롱복싱 철산점`,
-    tags: "#철산복싱 #광명복싱 #철산동복싱 #철산역복싱 #스트롱복싱철산점",
-    clipTitle: "철산복싱 초보자도 가능한 기본기 연습",
-    channels: { insta: true, clip: false, blog: false, dangn: false, kakao: false },
-  },
-  {
-    id: 3, title: "개봉점 미트 훈련 영상", branch: "개봉", type: "네이버클립", status: "업로드완료",
-    date: "2026-06-30", manager: "관장",
-    body: `복싱은 어렵게 시작하지 않아도 됩니다.\n\n기초부터 미트까지,\n내 속도에 맞춰 차근차근 배워보세요🥊\n\n📍스트롱복싱 개봉점`,
-    tags: "#개봉복싱 #구로복싱 #고척동복싱 #개봉동운동 #스트롱복싱개봉점",
-    clipTitle: "개봉동 복싱장 미트 훈련 수업",
-    channels: { insta: true, clip: true, blog: false, dangn: false, kakao: false },
-  },
-  {
-    id: 4, title: "목동 여름방학 특강 소식", branch: "목동", type: "블로그", status: "업로드대기",
-    date: "2026-07-02", manager: "수지",
-    body: `목동복싱장 스트롱복싱 목동점에서 여름방학 특강을 진행합니다.\n\n오전 10시, 11시 수업으로 학생들도 방학 기간 동안 규칙적으로 운동할 수 있습니다.\n전문 입시 코칭 프로그램과 체력 향상, 기술 훈련도 함께 가능합니다.`,
-    tags: "#목동복싱 #목동복싱장 #양천구복싱 #여름방학특강 #스트롱복싱목동점",
-    clipTitle: "목동복싱장 여름방학 특강 안내",
-    channels: { insta: false, clip: false, blog: false, dangn: false, kakao: false },
-  },
-  {
-    id: 5, title: "철산점 주말 자율운동 안내", branch: "철산", type: "당근", status: "아이디어",
-    date: "2026-07-03", manager: "수지",
-    body: `주말에도 복싱으로 가볍게 땀 흘리고 싶다면🥊\n\n스트롱복싱 철산점은 주말 운영도 함께 진행합니다.\n초보자분들도 기초 루틴 안내 가능합니다.`,
-    tags: "#철산복싱 #광명운동 #철산동운동 #주말운동 #스트롱복싱철산점",
-    clipTitle: "철산동 주말 복싱 운동 안내",
-    channels: { insta: false, clip: false, blog: false, dangn: false, kakao: false },
-  },
-  {
-    id: 6, title: "신정점 여성 회원 미트 운동", branch: "신정", type: "인스타", status: "촬영완료",
-    date: "2026-07-01", manager: "코치",
-    body: `처음엔 어렵게 느껴져도,\n한 라운드씩 따라오다 보면 어느새 땀이 쭉🥊\n\n스트레스 풀고 체력도 키우는 복싱 운동.\n📍스트롱복싱 신정점`,
-    tags: "#신정복싱 #양천구복싱 #신정동운동 #여성복싱 #스트롱복싱신정점",
-    clipTitle: "신정동 여성 복싱 미트 운동",
-    channels: { insta: false, clip: false, blog: false, dangn: false, kakao: false },
-  },
-];
-
-const BRANCHES  = ["전체", "개봉", "신정", "목동", "철산", "영등포"];
-const TYPES     = ["전체", "릴스", "네이버클립", "블로그", "당근", "카카오", "인스타", "전단지"];
-const STATUSES  = ["전체", "아이디어", "촬영완료", "편집중", "업로드대기", "업로드완료"];
-
-const BRANCH_COLOR: Record<string, string> = {
-  전체: "#6B7280", 개봉: "#3B82F6", 신정: "#10B981",
-  목동: "#8B5CF6", 철산: "#EF3B2D", 영등포: "#F59E0B",
+const TYPES   = ["릴스","네이버클립","블로그","당근","카카오","인스타"];
+const TARGETS = ["학생","여성","직장인","다이어트","키즈","초보자"];
+const MOODS   = ["자연스럽게","짧게","홍보스럽지 않게","학부모용","개인계정 느낌"];
+const STATUSES = ["아이디어","촬영완료","편집중","업로드대기","업로드완료"];
+const STATUS_STYLE: Record<string,{bg:string;color:string}> = {
+  아이디어:   {bg:"#F3F4F6",color:"#6B7280"},
+  촬영완료:   {bg:"#EFF6FF",color:"#3B82F6"},
+  편집중:     {bg:"#FFFBEB",color:"#D97706"},
+  업로드대기: {bg:"#FEF2F2",color:"#EF3B2D"},
+  업로드완료: {bg:"#F0FDF4",color:"#059669"},
 };
+const BC: Record<string,string> = { 목동점:"#8B5CF6",신정점:"#10B981",개봉점:"#3B82F6",철산점:"#EF3B2D",영등포점:"#F59E0B" };
+const CS = { background:"#FFFFFF", border:"1px solid #E5E7EB", boxShadow:"0 1px 3px rgba(0,0,0,0.06)" } as const;
 
-const STATUS_STYLE: Record<string, { bg: string; color: string }> = {
-  아이디어:    { bg: "#F3F4F6",           color: "#6B7280" },
-  촬영완료:    { bg: "rgba(59,130,246,0.1)", color: "#3B82F6" },
-  편집중:      { bg: "rgba(245,158,11,0.1)", color: "#D97706" },
-  업로드대기:  { bg: "rgba(239,59,45,0.1)",  color: "#EF3B2D" },
-  업로드완료:  { bg: "rgba(16,185,129,0.1)", color: "#059669" },
-};
-
-/* ── 복사 버튼 ────────────────────────────────────── */
-
-function CopyBtn({ text, label }: { text: string; label: string }) {
-  const [done, setDone] = useState(false);
-  function copy() {
-    navigator.clipboard.writeText(text);
-    setDone(true);
-    setTimeout(() => setDone(false), 1200);
-  }
+function CopyBtn({ text }: { text: string }) {
+  const [c,setC]=useState(false);
   return (
-    <button
-      onClick={copy}
-      className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-all duration-150"
-      style={{ background: done ? "#ECFDF5" : "#F3F4F6", color: done ? "#059669" : "#374151" }}
-    >
-      {done ? <Check size={11} /> : <Copy size={11} />}
-      {done ? "복사됨" : label}
+    <button onClick={async()=>{ await navigator.clipboard.writeText(text); setC(true); setTimeout(()=>setC(false),1200); }}
+      className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-all"
+      style={{background:c?"rgba(16,185,129,0.1)":"#F3F4F6",color:c?"#059669":"#6B7280"}}>
+      {c?<Check size={11}/>:<Copy size={11}/>} {c?"복사됨":"복사"}
     </button>
   );
 }
 
-/* ── 채널 체크 ────────────────────────────────────── */
+function ProjectModal({ branches, item, onClose, onSave }: {
+  branches:Branch[]; item:Partial<Project>|null; onClose:()=>void; onSave:()=>void;
+}) {
+  const isEdit=!!item?.id;
+  const [f,setF]=useState({
+    branch_id:String(item?.branch_id??""), title:item?.title??"", content_type:item?.content_type??"릴스",
+    status:item?.status??"아이디어", target:item?.target??"", shoot_date:item?.shoot_date?.slice(0,10)??"",
+    manager:item?.manager??"", caption:item?.caption??"", hashtags:item?.hashtags??"",
+    clip_title:item?.clip_title??"", blog_draft:item?.blog_draft??"", memo:item?.memo??"",
+  });
+  const [aiPrompt,setAiPrompt]=useState("");
+  const [aiMood,setAiMood]=useState("자연스럽게");
+  const [aiLoading,setAiLoading]=useState(false);
+  const [saving,setSaving]=useState(false);
+  const upd=(k:keyof typeof f)=>(e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>)=>setF(p=>({...p,[k]:e.target.value}));
+  const inp="w-full rounded-xl border px-3 py-2 text-[13px] outline-none focus:border-red-400 transition-colors";
+  const ist={borderColor:"#E5E7EB",color:"#111827",background:"#FAFAFA"};
+  const lbl="block text-[11px] font-semibold mb-1.5 uppercase tracking-widest";
 
-function ChannelCheck({ label, done }: { label: string; done: boolean }) {
+  const generateAI=async()=>{
+    if(!aiPrompt.trim()){alert("내용을 입력해주세요.");return;}
+    setAiLoading(true);
+    try{
+      const branch=branches.find(b=>String(b.id)===f.branch_id);
+      const r=await fetch("/api/hq/ai-content",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({branch:branch?.name??"스트롱복싱",type:f.content_type,target:f.target,mood:aiMood,prompt:aiPrompt})});
+      const j=await r.json();
+      if(j.success&&j.data){
+        setF(p=>({...p,caption:j.data.insta||p.caption,clip_title:j.data.clip_title||p.clip_title,
+          blog_draft:j.data.blog||p.blog_draft,hashtags:j.data.hashtags||p.hashtags}));
+      }else alert("AI 생성 실패: "+(j.message??""));
+    }finally{setAiLoading(false);}
+  };
+
   return (
-    <span
-      className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium"
-      style={{ background: done ? "rgba(16,185,129,0.1)" : "#F3F4F6", color: done ? "#059669" : "#9CA3AF" }}
-    >
-      {done ? "✓" : "○"} {label}
-    </span>
-  );
-}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{background:"rgba(0,0,0,0.3)"}}>
+      <div className="w-full max-w-2xl rounded-2xl p-6 max-h-[92vh] overflow-y-auto" style={CS}>
+        <div className="flex items-center justify-between mb-5">
+          <p className="text-[16px] font-black" style={{color:"#111827"}}>{isEdit?"콘텐츠 수정":"콘텐츠 등록"}</p>
+          <button onClick={onClose} className="p-1 rounded-lg hover:bg-gray-100"><X size={16} color="#6B7280"/></button>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>지점</label>
+            <select className={inp} style={ist} value={f.branch_id} onChange={upd("branch_id")}>
+              <option value="">공통</option>{branches.map(b=><option key={b.id} value={b.id}>{b.name}</option>)}
+            </select></div>
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>유형</label>
+            <select className={inp} style={ist} value={f.content_type} onChange={upd("content_type")}>
+              {TYPES.map(t=><option key={t}>{t}</option>)}
+            </select></div>
+          <div className="sm:col-span-2"><label className={lbl} style={{color:"#9CA3AF"}}>제목 *</label>
+            <input className={inp} style={ist} value={f.title} onChange={upd("title")} placeholder="콘텐츠 제목"/></div>
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>상태</label>
+            <select className={inp} style={ist} value={f.status} onChange={upd("status")}>
+              {STATUSES.map(s=><option key={s}>{s}</option>)}
+            </select></div>
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>타겟</label>
+            <select className={inp} style={ist} value={f.target} onChange={upd("target")}>
+              <option value="">선택 안함</option>{TARGETS.map(t=><option key={t}>{t}</option>)}
+            </select></div>
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>촬영일</label>
+            <input type="date" className={inp} style={ist} value={f.shoot_date} onChange={upd("shoot_date")}/></div>
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>담당자</label>
+            <input className={inp} style={ist} value={f.manager} onChange={upd("manager")} placeholder="담당자 이름"/></div>
+        </div>
 
-/* ── 요약 카드 ────────────────────────────────────── */
+        <div className="mt-5 rounded-xl p-4" style={{background:"#FEF2F2",border:"1px solid #FCA5A5"}}>
+          <p className="text-[12px] font-bold mb-3" style={{color:"#EF3B2D"}}>🤖 AI 콘텐츠 생성</p>
+          <div className="space-y-2">
+            <select className="w-full rounded-lg border px-2 py-1.5 text-[12px] outline-none" style={{borderColor:"#FCA5A5",background:"#FFF"}}
+              value={aiMood} onChange={e=>setAiMood(e.target.value)}>
+              {MOODS.map(m=><option key={m}>{m}</option>)}
+            </select>
+            <div className="flex gap-2">
+              <input className="flex-1 rounded-lg border px-3 py-1.5 text-[12px] outline-none" style={{borderColor:"#FCA5A5",background:"#FFF"}}
+                value={aiPrompt} onChange={e=>setAiPrompt(e.target.value)} placeholder="예: 목동점 학생들이 샌드백 치는 영상, 방학 특강 홍보용"/>
+              <button onClick={generateAI} disabled={aiLoading}
+                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-bold disabled:opacity-50"
+                style={{background:"#EF3B2D",color:"#FFF"}}>
+                {aiLoading?<RefreshCw size={12} className="animate-spin"/>:<Sparkles size={12}/>}
+                {aiLoading?"생성 중...":"생성"}
+              </button>
+            </div>
+          </div>
+        </div>
 
-function SummaryCard({ label, value, accent = "#111827" }: { label: string; value: number | string; accent?: string }) {
-  return (
-    <div className="flex-1 rounded-2xl border px-4 py-3.5"
-      style={{ background: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: "#9CA3AF" }}>{label}</p>
-      <p className="text-[24px] font-black" style={{ color: accent }}>{value}</p>
+        <div className="mt-4 space-y-3">
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>인스타 게시글</label>
+            <textarea className={inp} style={ist} rows={4} value={f.caption} onChange={upd("caption")} placeholder="인스타 게시글 내용..."/></div>
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>네이버 클립 제목</label>
+            <input className={inp} style={ist} value={f.clip_title} onChange={upd("clip_title")} placeholder="클립 제목"/></div>
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>해시태그</label>
+            <input className={inp} style={ist} value={f.hashtags} onChange={upd("hashtags")} placeholder="#해시태그1 #해시태그2"/></div>
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>블로그 초안</label>
+            <textarea className={inp} style={ist} rows={4} value={f.blog_draft} onChange={upd("blog_draft")} placeholder="블로그 초안..."/></div>
+          <div><label className={lbl} style={{color:"#9CA3AF"}}>메모</label>
+            <textarea className={inp} style={ist} rows={2} value={f.memo} onChange={upd("memo")} placeholder="내부 메모..."/></div>
+        </div>
+        <div className="flex justify-end gap-2 mt-6">
+          <button onClick={onClose} className="rounded-xl px-4 py-2 text-[13px] font-semibold" style={{background:"#F3F4F6",color:"#6B7280"}}>취소</button>
+          <button disabled={saving} onClick={async()=>{
+            if(!f.title.trim()){alert("제목은 필수입니다.");return;}
+            setSaving(true);
+            const body={...f,branch_id:f.branch_id?Number(f.branch_id):null};
+            try{
+              if(isEdit) await fetch(`/api/hq/content-projects/${item!.id}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+              else await fetch("/api/hq/content-projects",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+              onSave();onClose();
+            }finally{setSaving(false);}
+          }} className="flex items-center gap-2 rounded-xl px-5 py-2 text-[13px] font-bold disabled:opacity-50"
+            style={{background:"#EF3B2D",color:"#FFF"}}>
+            <Save size={14}/>{saving?"저장 중...":"저장"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
 
-/* ── 콘텐츠 카드 ──────────────────────────────────── */
-
-function ContentCard({ c }: { c: Content }) {
-  const bc   = BRANCH_COLOR[c.branch] ?? "#6B7280";
-  const st   = STATUS_STYLE[c.status] ?? STATUS_STYLE["아이디어"];
-
-  return (
-    <div className="flex flex-col rounded-2xl border overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
-      style={{ background: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-
-      {/* header */}
-      <div className="px-5 pt-5 pb-3">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <p className="text-[14px] font-bold leading-snug" style={{ color: "#111827" }}>{c.title}</p>
-          <span className="shrink-0 rounded-lg px-2 py-0.5 text-[10px] font-semibold"
-            style={{ background: st.bg, color: st.color }}>{c.status}</span>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          <span className="rounded-md px-2 py-0.5 text-[10px] font-semibold"
-            style={{ background: `${bc}14`, color: bc }}>📍 {c.branch}점</span>
-          <span className="rounded-md px-2 py-0.5 text-[10px] font-semibold"
-            style={{ background: "#F3F4F6", color: "#6B7280" }}>📹 {c.type}</span>
-          <span className="rounded-md px-2 py-0.5 text-[10px] font-semibold"
-            style={{ background: "#F3F4F6", color: "#6B7280" }}>📅 {c.date}</span>
-          <span className="rounded-md px-2 py-0.5 text-[10px] font-semibold"
-            style={{ background: "#F3F4F6", color: "#6B7280" }}>👤 {c.manager}</span>
-        </div>
-      </div>
-
-      {/* body */}
-      <div className="px-5 pb-3 space-y-2.5">
-        <pre className="text-[11px] leading-relaxed whitespace-pre-wrap font-sans rounded-xl p-3 max-h-32 overflow-y-auto"
-          style={{ background: "#F9FAFB", color: "#374151", border: "1px solid #F3F4F6" }}>
-          {c.body}
-        </pre>
-        <p className="text-[11px] leading-relaxed" style={{ color: "#6B7280" }}>{c.tags}</p>
-        <p className="text-[11px]" style={{ color: "#9CA3AF" }}>📌 클립 제목: <span style={{ color: "#374151" }}>{c.clipTitle}</span></p>
-      </div>
-
-      {/* channels */}
-      <div className="px-5 pb-3 flex flex-wrap gap-1.5">
-        <ChannelCheck label="인스타" done={c.channels.insta} />
-        <ChannelCheck label="네이버클립" done={c.channels.clip} />
-        <ChannelCheck label="블로그" done={c.channels.blog} />
-        <ChannelCheck label="당근" done={c.channels.dangn} />
-        <ChannelCheck label="카카오" done={c.channels.kakao} />
-      </div>
-
-      {/* actions */}
-      <div className="flex flex-wrap items-center gap-2 px-5 py-3.5"
-        style={{ borderTop: "1px solid #F3F4F6" }}>
-        <CopyBtn text={c.body}      label="게시글 복사" />
-        <CopyBtn text={c.tags}      label="해시태그 복사" />
-        <CopyBtn text={c.clipTitle} label="클립 제목 복사" />
-      </div>
-    </div>
-  );
+function parseChannels(raw: Channel[] | Channel | null | string): Channel[] {
+  if (!raw) return [];
+  if (typeof raw === "string") { try { return JSON.parse(raw); } catch { return []; } }
+  if (Array.isArray(raw)) return raw;
+  return [];
 }
-
-/* ── 페이지 ────────────────────────────────────────── */
 
 export default function ContentsPage() {
-  const [query,    setQuery]    = useState("");
-  const [branch,   setBranch]   = useState("전체");
-  const [type,     setType]     = useState("전체");
-  const [status,   setStatus]   = useState("전체");
+  const [projects,setProjects]=useState<Project[]>([]);
+  const [branches,setBranches]=useState<Branch[]>([]);
+  const [loading,setLoading]=useState(true);
+  const [statusFilter,setStatusFilter]=useState("전체");
+  const [branchFilter,setBranchFilter]=useState("전체");
+  const [modal,setModal]=useState<{open:boolean;item:Partial<Project>|null}>({open:false,item:null});
+  const {toast,notify}=useToast();
 
-  const results = CONTENTS.filter((c) => {
-    const okB = branch === "전체" || c.branch === branch;
-    const okT = type   === "전체" || c.type   === type;
-    const okS = status === "전체" || c.status === status;
-    const q   = query.trim().toLowerCase();
-    const okQ = !q || [c.title, c.branch, c.type, c.tags, c.body, c.clipTitle]
-      .some((s) => s.toLowerCase().includes(q));
-    return okB && okT && okS && okQ;
-  });
+  const load=useCallback(async()=>{
+    setLoading(true);
+    try{
+      const [pr,br]=await Promise.all([
+        fetch("/api/hq/content-projects").then(r=>r.json()),
+        fetch("/api/hq/branches").then(r=>r.json()),
+      ]);
+      setProjects(pr.data??[]);setBranches(br.data??[]);
+    }catch(e){console.error(e);notify("불러오기 실패",false);}
+    finally{setLoading(false);}
+  },[]);
+  useEffect(()=>{load();},[load]);
 
-  function pill(active: boolean, color = "#EF3B2D"): React.CSSProperties {
-    return { background: active ? color : "#F3F4F6", color: active ? "#FFF" : "#6B7280", transition: "all .15s" };
-  }
+  const del=async(p:Project)=>{
+    if(!confirm(`"${p.title}"을 삭제하시겠습니까?`))return;
+    const j=await fetch(`/api/hq/content-projects/${p.id}`,{method:"DELETE"}).then(r=>r.json());
+    if(j.success){notify("삭제됐습니다.");load();}else notify("삭제 실패",false);
+  };
 
-  const done  = CONTENTS.filter((c) => c.status === "업로드완료").length;
-  const wait  = CONTENTS.filter((c) => c.status === "업로드대기").length;
-  const shoot = CONTENTS.filter((c) => c.date === "2026-07-02" || c.date === "2026-07-03").length;
+  const toggleChannel=async(projId:number,ch:Channel)=>{
+    await fetch("/api/hq/content-channels",{method:"PUT",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({id:ch.id,is_uploaded:ch.is_uploaded?0:1})});
+    setProjects(p=>p.map(proj=>proj.id!==projId?proj:{...proj,
+      channels:parseChannels(proj.channels).map(c=>c.id===ch.id?{...c,is_uploaded:c.is_uploaded?0:1}:c)}));
+  };
+
+  const filtered=projects
+    .filter(p=>statusFilter==="전체"||p.status===statusFilter)
+    .filter(p=>branchFilter==="전체"||(p.branch_name===branchFilter));
+
+  const stats=[
+    {label:"전체",value:projects.length},
+    {label:"진행중",value:projects.filter(p=>p.status!=="업로드완료").length},
+    {label:"업로드완료",value:projects.filter(p=>p.status==="업로드완료").length},
+    {label:"촬영완료",value:projects.filter(p=>p.status==="촬영완료").length},
+  ];
 
   return (
-    <div className="max-w-[1360px] mx-auto space-y-5">
-
-      {/* 제목 + 등록 버튼 */}
+    <div className="max-w-[1360px] mx-auto space-y-6">
+      <Toast toast={toast}/>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[20px] font-black tracking-tight" style={{ color: "#111827" }}>콘텐츠 관리</h1>
-          <p className="mt-0.5 text-[13px]" style={{ color: "#6B7280" }}>사진·영상·게시글·해시태그를 한 곳에서 관리합니다.</p>
+          <h1 className="text-[20px] font-black tracking-tight" style={{color:"#111827"}}>콘텐츠 관리</h1>
+          <p className="mt-0.5 text-[13px]" style={{color:"#6B7280"}}>영상·사진 콘텐츠 제작 현황을 관리합니다.</p>
         </div>
-        <button
-          onClick={() => alert("콘텐츠 등록 준비중")}
-          className="flex items-center gap-1.5 rounded-xl px-4 py-2 text-[13px] font-semibold text-white shrink-0 transition-opacity hover:opacity-90"
-          style={{ background: "#EF3B2D" }}
-        >
-          <Plus size={14} strokeWidth={2.5} /> 콘텐츠 등록
-        </button>
+        <button onClick={()=>setModal({open:true,item:null})}
+          className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-bold shrink-0"
+          style={{background:"#EF3B2D",color:"#FFF"}}><Plus size={15}/> 콘텐츠 등록</button>
       </div>
 
-      {/* 요약 */}
-      <div className="flex gap-3">
-        <SummaryCard label="전체 콘텐츠"  value={CONTENTS.length} />
-        <SummaryCard label="업로드 대기"  value={wait}  accent="#EF3B2D" />
-        <SummaryCard label="업로드 완료"  value={done}  accent="#059669" />
-        <SummaryCard label="이번 주 촬영" value={shoot} accent="#8B5CF6" />
-      </div>
-
-      {/* 검색 */}
-      <div className="flex items-center gap-2.5 h-11 rounded-2xl border px-4 focus-within:border-[#EF3B2D]/40 transition-colors"
-        style={{ background: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-        <Search size={15} color="#9CA3AF" />
-        <input value={query} onChange={(e) => setQuery(e.target.value)}
-          placeholder="지점, 콘텐츠 유형, 해시태그, 제목 검색…"
-          className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#9CA3AF]"
-          style={{ color: "#111827" }} />
-      </div>
-
-      {/* 지점 필터 */}
-      <div className="flex flex-wrap gap-2">
-        {BRANCHES.map((b) => (
-          <button key={b} onClick={() => setBranch(b)}
-            className="rounded-full px-3 py-1.5 text-[12px] font-semibold"
-            style={pill(branch === b, BRANCH_COLOR[b])}>
-            {b}
-          </button>
+      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        {stats.map(s=>(
+          <div key={s.label} className="rounded-2xl border px-5 py-4 hover:shadow-md transition-all" style={CS}>
+            <p className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{color:"#9CA3AF"}}>{s.label}</p>
+            <div className="flex items-end gap-1">
+              <span className="text-[28px] font-black leading-none" style={{color:"#111827"}}>{s.value}</span>
+              <span className="text-[12px] font-semibold mb-0.5" style={{color:"#6B7280"}}>개</span>
+            </div>
+            <div className="mt-3 h-[2px] w-6 rounded-full" style={{background:"#EF3B2D"}}/>
+          </div>
         ))}
       </div>
 
-      {/* 유형 필터 */}
       <div className="flex flex-wrap gap-2">
-        {TYPES.map((t) => (
-          <button key={t} onClick={() => setType(t)}
-            className="rounded-full px-3 py-1.5 text-[12px] font-semibold"
-            style={pill(type === t)}>
-            {t}
-          </button>
+        {["전체",...STATUSES].map(s=>(
+          <button key={s} onClick={()=>setStatusFilter(s)}
+            className="rounded-xl px-3 py-1.5 text-[12px] font-semibold transition-all"
+            style={{background:statusFilter===s?"#EF3B2D":"#F3F4F6",color:statusFilter===s?"#FFF":"#6B7280"}}>{s}</button>
+        ))}
+        <div className="w-px mx-1" style={{background:"#E5E7EB"}}/>
+        {["전체",...branches.map(b=>b.name)].map(b=>(
+          <button key={b} onClick={()=>setBranchFilter(b)}
+            className="rounded-xl px-3 py-1.5 text-[12px] font-semibold transition-all"
+            style={{background:branchFilter===b?"#111827":"#F3F4F6",color:branchFilter===b?"#FFF":"#6B7280"}}>{b}</button>
         ))}
       </div>
 
-      {/* 상태 필터 */}
-      <div className="flex flex-wrap gap-2">
-        {STATUSES.map((s) => (
-          <button key={s} onClick={() => setStatus(s)}
-            className="rounded-full px-3 py-1.5 text-[12px] font-semibold"
-            style={pill(status === s, STATUS_STYLE[s]?.color ?? "#EF3B2D")}>
-            {s}
-          </button>
-        ))}
-      </div>
-
-      {/* 결과 수 */}
-      <p className="text-[12px]" style={{ color: "#9CA3AF" }}>{results.length}개의 콘텐츠</p>
-
-      {/* 카드 그리드 */}
-      {results.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {results.map((c) => <ContentCard key={c.id} c={c} />)}
+      {loading?(
+        <div className="flex items-center justify-center py-20"><p className="text-[13px]" style={{color:"#9CA3AF"}}>불러오는 중…</p></div>
+      ):filtered.length===0?(
+        <div className="flex flex-col items-center justify-center py-20 gap-3">
+          <p className="text-3xl">🎬</p><p className="text-[13px]" style={{color:"#9CA3AF"}}>등록된 콘텐츠가 없습니다.</p>
         </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-20">
-          <p className="text-3xl mb-3">📭</p>
-          <p className="text-[14px]" style={{ color: "#9CA3AF" }}>검색 결과가 없습니다.</p>
+      ):(
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {filtered.map(p=>{
+            const ss=STATUS_STYLE[p.status]??{bg:"#F3F4F6",color:"#6B7280"};
+            const bc=p.branch_name?(BC[p.branch_name]??"#6B7280"):"#9CA3AF";
+            const chs=parseChannels(p.channels);
+            return (
+              <div key={p.id} className="rounded-2xl p-5 flex flex-col gap-3 hover:shadow-md transition-all" style={CS}>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-bold truncate" style={{color:"#111827"}}>{p.title}</p>
+                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                      <span className="text-[10px] font-semibold rounded-md px-2 py-0.5" style={{background:ss.bg,color:ss.color}}>{p.status}</span>
+                      {p.branch_name&&<span className="text-[10px] font-semibold rounded-md px-2 py-0.5" style={{background:`${bc}14`,color:bc}}>📍{p.branch_name}</span>}
+                      <span className="text-[10px] rounded-md px-2 py-0.5" style={{background:"#F3F4F6",color:"#6B7280"}}>{p.content_type}</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-1 shrink-0">
+                    <button onClick={()=>setModal({open:true,item:p})} className="p-1.5 rounded-lg hover:bg-gray-100" style={{color:"#9CA3AF"}}><Pencil size={13}/></button>
+                    <button onClick={()=>del(p)} className="p-1.5 rounded-lg" style={{color:"#EF3B2D",background:"#FEF2F2"}}><Trash2 size={13}/></button>
+                  </div>
+                </div>
+                {p.caption&&<p className="text-[12px] leading-relaxed line-clamp-3 whitespace-pre-wrap" style={{color:"#374151"}}>{p.caption}</p>}
+                {p.hashtags&&<p className="text-[11px]" style={{color:"#6B7280"}}>{p.hashtags}</p>}
+                {chs.length>0&&(
+                  <div className="flex flex-wrap gap-1.5">
+                    {chs.map((ch:Channel)=>(
+                      <button key={ch.id} onClick={()=>toggleChannel(p.id,ch)}
+                        className="flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-semibold transition-all"
+                        style={{background:ch.is_uploaded?"#F0FDF4":"#F3F4F6",color:ch.is_uploaded?"#059669":"#9CA3AF",
+                          border:`1px solid ${ch.is_uploaded?"#86EFAC":"#E5E7EB"}`}}>
+                        {ch.is_uploaded?"✅":"○"} {ch.channel_name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <div className="flex gap-1.5 flex-wrap pt-1" style={{borderTop:"1px solid #F3F4F6"}}>
+                  {p.caption&&<CopyBtn text={p.caption}/>}
+                  {p.hashtags&&<CopyBtn text={p.hashtags}/>}
+                  {p.clip_title&&<CopyBtn text={p.clip_title}/>}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
+      {modal.open&&<ProjectModal branches={branches} item={modal.item} onClose={()=>setModal({open:false,item:null})} onSave={()=>{load();notify("저장됐습니다.");}}/>}
     </div>
   );
 }

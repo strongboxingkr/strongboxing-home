@@ -1,163 +1,178 @@
 "use client";
+import { useEffect, useState, useCallback } from "react";
+import { Toast, useToast } from "@/app/components/hq/Toast";
 
-import { Lightbulb } from "lucide-react";
+interface KPI { label:string; value:string; unit:string; color:string }
+interface ChannelStat { channel:string; impressions:number; clicks:number; inquiries:number; registrations:number; ad_cost:number }
+interface BranchStat { branch:string; tasks_done:number; tasks_total:number; content_done:number; content_total:number }
 
-const KPI = [
-  { label: "예약 전환율",      value: "43", unit: "%",  accent: "#10B981" },
-  { label: "상담 등록률",      value: "38", unit: "%",  accent: "#3B82F6" },
-  { label: "콘텐츠 업로드",   value: "24", unit: "개", accent: "#8B5CF6" },
-  { label: "평균 문의 단가",  value: "9,700", unit: "원", accent: "#EF3B2D" },
-];
+const CS = { background:"#FFFFFF", border:"1px solid #E5E7EB", boxShadow:"0 1px 3px rgba(0,0,0,0.06)" } as const;
+const BR_COLORS = ["#EF3B2D","#8B5CF6","#10B981","#3B82F6","#F59E0B"];
 
-const BRANCH_COMPARE = [
-  { name: "목동",   inquiry: 30, reg: 14, sales: 590, content: 8, color: "#8B5CF6" },
-  { name: "신정",   inquiry: 31, reg: 15, sales: 720, content: 5, color: "#10B981" },
-  { name: "개봉",   inquiry: 25, reg: 10, sales: 680, content: 4, color: "#3B82F6" },
-  { name: "철산",   inquiry: 28, reg: 12, sales: 630, content: 5, color: "#EF3B2D" },
-  { name: "영등포", inquiry: 18, reg: 7,  sales: 620, content: 2, color: "#F59E0B" },
-];
+function fmtN(n:number){return n>=10000?`${(n/10000).toFixed(1)}만`:n.toLocaleString();}
+function fmtW(n:number){return n>=10000?`${(n/10000).toFixed(0)}만원`:`${n.toLocaleString()}원`;}
 
-const TOP_CONTENT = [
-  { title: "목동 학생 샌드백 릴스",    branch: "목동",   views: 12400, conv: 8 },
-  { title: "철산 여고생 복싱 연습",    branch: "철산",   views: 9800,  conv: 6 },
-  { title: "개봉 미트 훈련 영상",      branch: "개봉",   views: 7600,  conv: 4 },
-  { title: "신정 여성 미트 운동",      branch: "신정",   views: 6200,  conv: 5 },
-  { title: "목동 여름방학 특강 소식",  branch: "목동",   views: 5100,  conv: 3 },
-];
-
-const KEYWORDS = [
-  { word: "회비",    count: 48, pct: 90 },
-  { word: "원데이",  count: 32, pct: 60 },
-  { word: "학생",    count: 28, pct: 53 },
-  { word: "다이어트",count: 22, pct: 41 },
-  { word: "PT",      count: 18, pct: 34 },
-  { word: "운영시간",count: 14, pct: 26 },
-];
-
-const INSIGHTS = [
-  { branch: "목동",   icon: "📈", text: "목동은 학생 관련 콘텐츠 반응이 좋습니다." },
-  { branch: "철산",   icon: "📊", text: "철산은 주말운동 문의가 증가했습니다." },
-  { branch: "개봉",   icon: "💡", text: "개봉은 고척동 키워드 노출을 강화하는 것이 좋습니다." },
-];
-
-const BRANCH_COLOR: Record<string, string> = {
-  목동: "#8B5CF6", 신정: "#10B981", 개봉: "#3B82F6", 철산: "#EF3B2D", 영등포: "#F59E0B",
-};
-
-const cardStyle = { background: "#FFFFFF", border: "1px solid #E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" } as const;
-
-const maxInq = Math.max(...BRANCH_COMPARE.map((b) => b.inquiry));
+function Bar({pct,color}:{pct:number;color:string}){
+  return (
+    <div className="w-full h-2 rounded-full" style={{background:"#F3F4F6"}}>
+      <div className="h-2 rounded-full transition-all" style={{width:`${Math.min(pct,100)}%`,background:color}}/>
+    </div>
+  );
+}
 
 export default function AnalyticsPage() {
+  const [mktStats,setMktStats]=useState<ChannelStat[]>([]);
+  const [branchStats,setBranchStats]=useState<BranchStat[]>([]);
+  const [loading,setLoading]=useState(true);
+  const {toast,notify}=useToast();
+
+  const load=useCallback(async()=>{
+    setLoading(true);
+    try{
+      const [mr,tr,cr,br]=await Promise.all([
+        fetch("/api/hq/marketing-stats").then(r=>r.json()),
+        fetch("/api/hq/staff-tasks").then(r=>r.json()),
+        fetch("/api/hq/content-projects").then(r=>r.json()),
+        fetch("/api/hq/branches").then(r=>r.json()),
+      ]);
+
+      // Aggregate marketing by channel
+      const mktRaw: any[] = mr.data ?? [];
+      const byChannel: Record<string,ChannelStat> = {};
+      for(const s of mktRaw){
+        if(!byChannel[s.channel]) byChannel[s.channel]={channel:s.channel,impressions:0,clicks:0,inquiries:0,registrations:0,ad_cost:0};
+        byChannel[s.channel].impressions+=Number(s.impressions)||0;
+        byChannel[s.channel].clicks+=Number(s.clicks)||0;
+        byChannel[s.channel].inquiries+=Number(s.inquiries)||0;
+        byChannel[s.channel].registrations+=Number(s.registrations)||0;
+        byChannel[s.channel].ad_cost+=Number(s.ad_cost)||0;
+      }
+      setMktStats(Object.values(byChannel).sort((a,b)=>b.impressions-a.impressions));
+
+      // Aggregate by branch
+      const tasks: any[]=tr.data??[];
+      const contents: any[]=cr.data??[];
+      const branches: any[]=br.data??[];
+      const bStats: BranchStat[]=branches.map((b:any)=>{
+        const bt=tasks.filter((t:any)=>t.branch_id===b.id);
+        const bc=contents.filter((c:any)=>c.branch_id===b.id);
+        return {
+          branch:b.name,
+          tasks_done:bt.filter((t:any)=>t.is_done).length,
+          tasks_total:bt.length,
+          content_done:bc.filter((c:any)=>c.status==="업로드완료").length,
+          content_total:bc.length,
+        };
+      });
+      setBranchStats(bStats);
+    }catch(e){console.error(e);notify("불러오기 실패",false);}
+    finally{setLoading(false);}
+  },[]);
+  useEffect(()=>{load();},[load]);
+
+  const totalImpr=mktStats.reduce((s,r)=>s+r.impressions,0);
+  const totalClicks=mktStats.reduce((s,r)=>s+r.clicks,0);
+  const totalReg=mktStats.reduce((s,r)=>s+r.registrations,0);
+  const totalCost=mktStats.reduce((s,r)=>s+r.ad_cost,0);
+
+  const kpis:KPI[]=[
+    {label:"총 노출수",value:fmtN(totalImpr),unit:"",color:"#3B82F6"},
+    {label:"총 클릭수",value:fmtN(totalClicks),unit:"",color:"#8B5CF6"},
+    {label:"등록수",value:String(totalReg),unit:"건",color:"#059669"},
+    {label:"총 광고비",value:fmtW(totalCost),unit:"",color:"#EF3B2D"},
+    {label:"CTR",value:totalImpr>0?((totalClicks/totalImpr)*100).toFixed(2):"-",unit:"%",color:"#D97706"},
+  ];
+
+  const maxImpr=Math.max(...mktStats.map(s=>s.impressions),1);
+
   return (
     <div className="max-w-[1360px] mx-auto space-y-6">
+      <Toast toast={toast}/>
       <div>
-        <h1 className="text-[20px] font-black tracking-tight" style={{ color: "#111827" }}>분석</h1>
-        <p className="mt-0.5 text-[13px]" style={{ color: "#6B7280" }}>지점별 성과와 운영 지표를 한눈에 확인합니다.</p>
+        <h1 className="text-[20px] font-black tracking-tight" style={{color:"#111827"}}>분석</h1>
+        <p className="mt-0.5 text-[13px]" style={{color:"#6B7280"}}>마케팅, 콘텐츠, 업무 데이터를 한눈에 확인합니다.</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        {KPI.map((k) => (
-          <div key={k.label} className="rounded-2xl border px-5 py-4 transition-all duration-200 hover:shadow-md" style={cardStyle}>
-            <p className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color: "#9CA3AF" }}>{k.label}</p>
-            <div className="flex items-end gap-1">
-              <span className="text-[28px] font-black leading-none" style={{ color: "#111827" }}>{k.value}</span>
-              <span className="text-[13px] font-semibold mb-0.5" style={{ color: "#6B7280" }}>{k.unit}</span>
-            </div>
-            <div className="mt-3 h-[2px] w-6 rounded-full" style={{ background: k.accent }} />
-          </div>
-        ))}
-      </div>
-
-      <div className="grid gap-5 lg:grid-cols-2">
-        {/* 지점별 비교 */}
-        <div className="rounded-2xl p-5 transition-all duration-200 hover:shadow-md" style={cardStyle}>
-          <p className="text-[14px] font-bold mb-5" style={{ color: "#111827" }}>지점별 비교</p>
-          <div className="mb-2 grid grid-cols-5 text-center">
-            {["지점","문의","등록","매출(만)","콘텐츠"].map((h) => (
-              <span key={h} className="text-[10px] font-semibold" style={{ color: "#9CA3AF" }}>{h}</span>
-            ))}
-          </div>
-          <div className="space-y-3">
-            {BRANCH_COMPARE.map((b) => (
-              <div key={b.name}>
-                <div className="grid grid-cols-5 text-center mb-1.5">
-                  <span className="text-[12px] font-bold" style={{ color: b.color }}>{b.name}</span>
-                  <span className="text-[12px] font-semibold" style={{ color: "#111827" }}>{b.inquiry}</span>
-                  <span className="text-[12px] font-semibold" style={{ color: "#111827" }}>{b.reg}</span>
-                  <span className="text-[12px] font-semibold" style={{ color: "#111827" }}>{b.sales}</span>
-                  <span className="text-[12px] font-semibold" style={{ color: "#111827" }}>{b.content}</span>
+      {loading?(
+        <div className="flex items-center justify-center py-20"><p className="text-[13px]" style={{color:"#9CA3AF"}}>불러오는 중…</p></div>
+      ):(
+        <>
+          {/* KPI 카드 */}
+          <div className="grid grid-cols-2 gap-4 xl:grid-cols-5">
+            {kpis.map(k=>(
+              <div key={k.label} className="rounded-2xl border px-5 py-4 hover:shadow-md transition-all" style={CS}>
+                <p className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{color:"#9CA3AF"}}>{k.label}</p>
+                <div className="flex items-end gap-1">
+                  <span className="text-[24px] font-black leading-none" style={{color:"#111827"}}>{k.value}</span>
+                  {k.unit&&<span className="text-[12px] font-semibold mb-0.5" style={{color:"#6B7280"}}>{k.unit}</span>}
                 </div>
-                <div className="h-1.5 rounded-full" style={{ background: "#F3F4F6" }}>
-                  <div className="h-1.5 rounded-full" style={{ width: `${(b.inquiry / maxInq) * 100}%`, background: b.color }} />
-                </div>
+                <div className="mt-3 h-[2px] w-6 rounded-full" style={{background:k.color}}/>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* 상담 키워드 */}
-        <div className="rounded-2xl p-5 transition-all duration-200 hover:shadow-md" style={cardStyle}>
-          <p className="text-[14px] font-bold mb-5" style={{ color: "#111827" }}>상담 키워드 분석</p>
-          <div className="space-y-3">
-            {KEYWORDS.map((k, i) => (
-              <div key={k.word}>
-                <div className="flex justify-between mb-1.5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-black w-4 text-center" style={{ color: i < 3 ? "#EF3B2D" : "#9CA3AF" }}>{i + 1}</span>
-                    <span className="text-[13px] font-semibold" style={{ color: "#374151" }}>{k.word}</span>
-                  </div>
-                  <span className="text-[12px] font-bold" style={{ color: "#111827" }}>{k.count}건</span>
+          <div className="grid gap-6 xl:grid-cols-2">
+            {/* 채널별 마케팅 성과 */}
+            <div className="rounded-2xl p-6" style={CS}>
+              <p className="text-[14px] font-black mb-5" style={{color:"#111827"}}>채널별 성과</p>
+              {mktStats.length===0
+                ?<p className="text-center py-8 text-[13px]" style={{color:"#9CA3AF"}}>마케팅 통계 데이터가 없습니다.</p>
+                :<div className="space-y-4">
+                  {mktStats.map((s,i)=>(
+                    <div key={s.channel}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full shrink-0" style={{background:BR_COLORS[i%BR_COLORS.length]}}/>
+                          <span className="text-[13px] font-semibold" style={{color:"#111827"}}>{s.channel}</span>
+                        </div>
+                        <div className="flex gap-4 text-[11px]" style={{color:"#6B7280"}}>
+                          <span>노출 {fmtN(s.impressions)}</span>
+                          <span>등록 {s.registrations}</span>
+                          <span>광고비 {fmtW(s.ad_cost)}</span>
+                        </div>
+                      </div>
+                      <Bar pct={(s.impressions/maxImpr)*100} color={BR_COLORS[i%BR_COLORS.length]}/>
+                    </div>
+                  ))}
                 </div>
-                <div className="h-1.5 rounded-full" style={{ background: "#F3F4F6" }}>
-                  <div className="h-1.5 rounded-full" style={{ width: `${k.pct}%`, background: i < 3 ? "#EF3B2D" : "#E5E7EB" }} />
+              }
+            </div>
+
+            {/* 지점별 현황 */}
+            <div className="rounded-2xl p-6" style={CS}>
+              <p className="text-[14px] font-black mb-5" style={{color:"#111827"}}>지점별 운영 현황</p>
+              {branchStats.length===0
+                ?<p className="text-center py-8 text-[13px]" style={{color:"#9CA3AF"}}>데이터가 없습니다.</p>
+                :<div className="space-y-4">
+                  {branchStats.map((b,i)=>{
+                    const taskPct=b.tasks_total>0?Math.round(b.tasks_done/b.tasks_total*100):0;
+                    const contPct=b.content_total>0?Math.round(b.content_done/b.content_total*100):0;
+                    return (
+                      <div key={b.branch} className="rounded-xl p-4" style={{background:"#F9FAFB"}}>
+                        <p className="text-[13px] font-bold mb-3" style={{color:BR_COLORS[i%BR_COLORS.length]}}>📍{b.branch}</p>
+                        <div className="space-y-2">
+                          <div>
+                            <div className="flex justify-between text-[11px] mb-1" style={{color:"#6B7280"}}>
+                              <span>업무 완료율</span><span>{b.tasks_done}/{b.tasks_total} ({taskPct}%)</span>
+                            </div>
+                            <Bar pct={taskPct} color={BR_COLORS[i%BR_COLORS.length]}/>
+                          </div>
+                          <div>
+                            <div className="flex justify-between text-[11px] mb-1" style={{color:"#6B7280"}}>
+                              <span>콘텐츠 업로드율</span><span>{b.content_done}/{b.content_total} ({contPct}%)</span>
+                            </div>
+                            <Bar pct={contPct} color={`${BR_COLORS[i%BR_COLORS.length]}99`}/>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              </div>
-            ))}
+              }
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* TOP 5 콘텐츠 */}
-      <div className="rounded-2xl p-5 transition-all duration-200 hover:shadow-md" style={cardStyle}>
-        <p className="text-[14px] font-bold mb-4" style={{ color: "#111827" }}>인기 콘텐츠 TOP 5</p>
-        <div className="space-y-3">
-          {TOP_CONTENT.map((c, i) => (
-            <div key={i} className="flex items-center gap-3 rounded-xl px-3 py-2.5"
-              style={{ background: "#F9FAFB", border: "1px solid #F3F4F6" }}>
-              <span className="text-[13px] font-black w-5 text-center shrink-0"
-                style={{ color: i < 3 ? "#EF3B2D" : "#9CA3AF" }}>{i + 1}</span>
-              <p className="flex-1 text-[13px] font-semibold min-w-0 truncate" style={{ color: "#111827" }}>{c.title}</p>
-              <span className="text-[10px] font-semibold rounded-md px-2 py-0.5 shrink-0"
-                style={{ background: `${BRANCH_COLOR[c.branch] ?? "#6B7280"}14`, color: BRANCH_COLOR[c.branch] ?? "#6B7280" }}>
-                {c.branch}
-              </span>
-              <span className="text-[12px] font-bold shrink-0" style={{ color: "#374151" }}>{c.views.toLocaleString()}</span>
-              <span className="text-[10px] font-semibold rounded-md px-2 py-0.5 shrink-0"
-                style={{ background: "rgba(16,185,129,0.1)", color: "#059669" }}>전환 {c.conv}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 인사이트 */}
-      <div>
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest" style={{ color: "#9CA3AF" }}>이번달 인사이트</p>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {INSIGHTS.map((ins) => (
-            <div key={ins.branch}
-              className="rounded-2xl p-5 flex gap-3 transition-all duration-200 hover:shadow-md"
-              style={{ ...cardStyle, borderLeft: `3px solid ${BRANCH_COLOR[ins.branch] ?? "#6B7280"}` }}>
-              <div className="text-xl shrink-0">{ins.icon}</div>
-              <div>
-                <p className="text-[11px] font-bold mb-1" style={{ color: BRANCH_COLOR[ins.branch] ?? "#6B7280" }}>{ins.branch}점</p>
-                <p className="text-[13px] leading-relaxed" style={{ color: "#374151" }}>{ins.text}</p>
-              </div>
-              <Lightbulb size={14} color="#9CA3AF" className="shrink-0 mt-0.5" />
-            </div>
-          ))}
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

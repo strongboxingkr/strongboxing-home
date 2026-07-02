@@ -9,12 +9,12 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
     const { id } = await ctx.params;
     const b = await req.json();
     await db.query(
-      `UPDATE hq_branches SET name=?,slug=?,phone=?,address=?,instagram=?,
-       kakao_map_url=?,naver_reservation_url=?,business_hours=?,memo=?
+      `UPDATE hq_content_projects SET branch_id=?,title=?,content_type=?,status=?,target=?,
+       shoot_date=?,manager=?,caption=?,hashtags=?,clip_title=?,blog_draft=?,memo=?
        WHERE id=? AND deleted_at IS NULL`,
-      [b.name, b.slug, b.phone||null, b.address||null, b.instagram||null,
-       b.kakao_map_url||null, b.naver_reservation_url||null,
-       b.business_hours ? JSON.stringify(b.business_hours) : null, b.memo||null, id]
+      [b.branch_id||null, b.title, b.content_type, b.status, b.target||null,
+       b.shoot_date||null, b.manager||null, b.caption||null, b.hashtags||null,
+       b.clip_title||null, b.blog_draft||null, b.memo||null, id]
     );
     return ok(null);
   } catch (e: any) {
@@ -25,7 +25,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
 export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await ctx.params;
-    await db.query("UPDATE hq_branches SET deleted_at=NOW(),is_active=0 WHERE id=?", [id]);
+    await db.query("UPDATE hq_content_projects SET deleted_at=NOW(),is_active=0 WHERE id=?", [id]);
     return ok(null);
   } catch (e: any) {
     return err(e?.message ?? "DB error");

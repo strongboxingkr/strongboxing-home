@@ -371,7 +371,7 @@ export default function BranchesPage() {
       }
       const json = await res.json();
       console.log("[hq/branches] response", json);
-      setBranches(json.items ?? []);
+      setBranches(json.data ?? json.items ?? []);
     } catch (e) {
       console.error("[hq/branches] fetch failed", e);
     } finally {

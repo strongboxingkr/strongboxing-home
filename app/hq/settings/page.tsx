@@ -1,81 +1,128 @@
 "use client";
+import { useEffect, useState, useCallback } from "react";
+import { Pencil, Check, X } from "lucide-react";
+import { Toast, useToast } from "@/app/components/hq/Toast";
 
-import { Building2, MessageSquare, Clapperboard, Users, Bell, Database, ChevronRight } from "lucide-react";
+interface Setting { id: number; setting_key: string; setting_value: string }
 
-const SECTIONS = [
-  {
-    icon: Building2,
-    color: "#3B82F6",
-    title: "지점 기본 정보 관리",
-    desc: "주소, 전화번호, 운영시간, 인스타 계정, 네이버 예약 링크를 수정합니다.",
-  },
-  {
-    icon: MessageSquare,
-    color: "#10B981",
-    title: "상담 답변 카테고리 관리",
-    desc: "상담센터에서 사용하는 카테고리와 태그를 추가·수정·삭제합니다.",
-  },
-  {
-    icon: Clapperboard,
-    color: "#8B5CF6",
-    title: "콘텐츠 카테고리 관리",
-    desc: "콘텐츠 관리 페이지의 유형과 상태 항목을 관리합니다.",
-  },
-  {
-    icon: Users,
-    color: "#EF3B2D",
-    title: "직원 권한 관리",
-    desc: "직원별 HQ 접근 권한 및 열람 가능한 페이지를 설정합니다.",
-  },
-  {
-    icon: Bell,
-    color: "#F59E0B",
-    title: "알림 설정",
-    desc: "신규 상담, 업로드 마감, 일정 알림을 카카오톡 또는 이메일로 받습니다.",
-  },
-  {
-    icon: Database,
-    color: "#6B7280",
-    title: "백업 / 내보내기",
-    desc: "상담 내역, 콘텐츠 목록, 매출 데이터를 CSV·Excel로 내보냅니다.",
-  },
-];
+const CS = { background:"#FFFFFF", border:"1px solid #E5E7EB", boxShadow:"0 1px 3px rgba(0,0,0,0.06)" } as const;
 
-const cardStyle = { background: "#FFFFFF", border: "1px solid #E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" } as const;
+const KEY_LABELS: Record<string,{label:string;desc:string;group:string}> = {
+  gym_name:       {label:"헬스장 이름",desc:"서비스 전반에 사용되는 상호명",group:"기본 정보"},
+  ceo_name:       {label:"대표자 이름",desc:"",group:"기본 정보"},
+  contact_phone:  {label:"대표 전화",desc:"",group:"기본 정보"},
+  contact_email:  {label:"대표 이메일",desc:"",group:"기본 정보"},
+  kakao_id:       {label:"카카오톡 채널 ID",desc:"",group:"SNS"},
+  instagram_main: {label:"인스타 메인 계정",desc:"@아이디",group:"SNS"},
+  naver_blog:     {label:"네이버 블로그 URL",desc:"",group:"SNS"},
+  monthly_target: {label:"월 목표 매출 (원)",desc:"",group:"목표"},
+  member_target:  {label:"월 목표 신규 회원",desc:"",group:"목표"},
+  ai_tone:        {label:"AI 글쓰기 톤",desc:"예: 친근하고 활기차게",group:"AI 설정"},
+  ai_brand_desc:  {label:"브랜드 소개",desc:"AI가 콘텐츠 작성 시 참고합니다",group:"AI 설정"},
+};
+
+function SettingRow({ s, onSave }: { s:Setting; onSave:(key:string,val:string)=>void }) {
+  const [editing,setEditing]=useState(false);
+  const [val,setVal]=useState(s.setting_value);
+  const meta=KEY_LABELS[s.setting_key];
+  const isLong=s.setting_key==="ai_brand_desc";
+
+  const save=async()=>{
+    await onSave(s.setting_key,val);
+    setEditing(false);
+  };
+
+  return (
+    <div className="px-5 py-4 flex items-start gap-4" style={{borderBottom:"1px solid #F3F4F6"}}>
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-semibold" style={{color:"#111827"}}>{meta?.label??s.setting_key}</p>
+        {meta?.desc&&<p className="text-[11px] mt-0.5" style={{color:"#9CA3AF"}}>{meta.desc}</p>}
+        {editing?(
+          isLong
+            ?<textarea className="mt-2 w-full rounded-xl border px-3 py-2 text-[13px] outline-none focus:border-red-400"
+              style={{borderColor:"#E5E7EB",color:"#111827",background:"#FAFAFA"}} rows={4}
+              value={val} onChange={e=>setVal(e.target.value)}/>
+            :<input className="mt-2 w-full rounded-xl border px-3 py-2 text-[13px] outline-none focus:border-red-400"
+              style={{borderColor:"#E5E7EB",color:"#111827",background:"#FAFAFA"}}
+              value={val} onChange={e=>setVal(e.target.value)} onKeyDown={e=>e.key==="Enter"&&save()}/>
+        ):(
+          <p className="mt-1.5 text-[13px]" style={{color:"#374151"}}>{s.setting_value||<span style={{color:"#D1D5DB"}}>미설정</span>}</p>
+        )}
+      </div>
+      <div className="flex gap-1 shrink-0 pt-0.5">
+        {editing?(
+          <>
+            <button onClick={save} className="p-1.5 rounded-lg" style={{background:"#F0FDF4",color:"#059669"}}><Check size={14}/></button>
+            <button onClick={()=>{setVal(s.setting_value);setEditing(false);}} className="p-1.5 rounded-lg hover:bg-gray-100" style={{color:"#9CA3AF"}}><X size={14}/></button>
+          </>
+        ):(
+          <button onClick={()=>setEditing(true)} className="p-1.5 rounded-lg hover:bg-gray-100" style={{color:"#9CA3AF"}}><Pencil size={14}/></button>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function SettingsPage() {
+  const [settings,setSettings]=useState<Setting[]>([]);
+  const [loading,setLoading]=useState(true);
+  const {toast,notify}=useToast();
+
+  const load=useCallback(async()=>{
+    setLoading(true);
+    try{
+      const j=await fetch("/api/hq/settings").then(r=>r.json());
+      const list:Setting[]=j.data?.list??[];
+      // Merge with known keys so all keys appear even if not in DB yet
+      const existing=new Set(list.map((s:Setting)=>s.setting_key));
+      const defaults=Object.keys(KEY_LABELS)
+        .filter(k=>!existing.has(k))
+        .map((k,i)=>({id:-(i+1),setting_key:k,setting_value:""}));
+      setSettings([...list,...defaults]);
+    }catch(e){console.error(e);notify("불러오기 실패",false);}
+    finally{setLoading(false);}
+  },[]);
+  useEffect(()=>{load();},[load]);
+
+  const save=async(key:string,value:string)=>{
+    const j=await fetch("/api/hq/settings",{method:"PUT",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({key,value})}).then(r=>r.json());
+    if(j.success){
+      notify("저장됐습니다.");
+      setSettings(p=>p.map(s=>s.setting_key===key?{...s,setting_value:value}:s));
+    }else notify("저장 실패",false);
+  };
+
+  // Group by category
+  const groups: Record<string,Setting[]> = {};
+  for(const s of settings){
+    const g=KEY_LABELS[s.setting_key]?.group??"기타";
+    if(!groups[g])groups[g]=[];
+    groups[g].push(s);
+  }
+
   return (
-    <div className="max-w-[1360px] mx-auto space-y-6">
+    <div className="max-w-[800px] mx-auto space-y-6">
+      <Toast toast={toast}/>
       <div>
-        <h1 className="text-[20px] font-black tracking-tight" style={{ color: "#111827" }}>설정</h1>
-        <p className="mt-0.5 text-[13px]" style={{ color: "#6B7280" }}>HQ 운영에 필요한 기본값을 관리합니다.</p>
+        <h1 className="text-[20px] font-black tracking-tight" style={{color:"#111827"}}>환경설정</h1>
+        <p className="mt-0.5 text-[13px]" style={{color:"#6B7280"}}>HQ 운영에 필요한 기본 정보를 설정합니다.</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {SECTIONS.map((s) => {
-          const Icon = s.icon;
-          return (
-            <button key={s.title} onClick={() => alert("준비중")}
-              className="rounded-2xl p-5 flex items-start gap-4 text-left transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 w-full"
-              style={cardStyle}>
-              <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: `${s.color}14` }}>
-                <Icon size={18} color={s.color} strokeWidth={1.8} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-bold" style={{ color: "#111827" }}>{s.title}</p>
-                <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#6B7280" }}>{s.desc}</p>
-              </div>
-              <ChevronRight size={16} color="#9CA3AF" className="shrink-0 mt-1" />
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="rounded-2xl p-5" style={{ ...cardStyle, background: "#F9FAFB" }}>
-        <p className="text-[12px] font-semibold" style={{ color: "#9CA3AF" }}>STRONG BOXING HQ v1.0</p>
-        <p className="text-[11px] mt-0.5" style={{ color: "#D1D5DB" }}>개봉 · 신정 · 목동 · 철산 · 영등포 5개 지점 운영 중</p>
-      </div>
+      {loading?(
+        <div className="flex items-center justify-center py-20"><p className="text-[13px]" style={{color:"#9CA3AF"}}>불러오는 중…</p></div>
+      ):(
+        Object.entries(groups).map(([group,rows])=>(
+          <div key={group} className="rounded-2xl overflow-hidden" style={CS}>
+            <div className="px-5 py-3" style={{borderBottom:"1px solid #E5E7EB",background:"#FAFAFA"}}>
+              <p className="text-[11px] font-bold uppercase tracking-widest" style={{color:"#9CA3AF"}}>{group}</p>
+            </div>
+            {rows.map(s=>(
+              <SettingRow key={s.setting_key} s={s} onSave={save}/>
+            ))}
+          </div>
+        ))
+      )}
     </div>
   );
 }

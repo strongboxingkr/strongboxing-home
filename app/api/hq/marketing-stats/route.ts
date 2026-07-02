@@ -7,7 +7,11 @@ const err = (msg: string, status = 500) => Response.json({ success: false, messa
 export async function GET() {
   try {
     const [rows]: any = await db.query(
-      "SELECT * FROM hq_branches WHERE deleted_at IS NULL ORDER BY id ASC"
+      `SELECT s.*, b.name AS branch_name
+       FROM hq_marketing_stats s
+       LEFT JOIN hq_branches b ON b.id = s.branch_id AND b.deleted_at IS NULL
+       WHERE s.deleted_at IS NULL
+       ORDER BY s.stat_date DESC, s.id DESC`
     );
     return ok(rows);
   } catch (e: any) {
@@ -19,11 +23,11 @@ export async function POST(req: NextRequest) {
   try {
     const b = await req.json();
     const [r]: any = await db.query(
-      `INSERT INTO hq_branches (name,slug,phone,address,instagram,kakao_map_url,naver_reservation_url,business_hours,memo)
+      `INSERT INTO hq_marketing_stats (branch_id, stat_date, channel, inquiries, registrations, ad_cost, impressions, clicks, memo)
        VALUES (?,?,?,?,?,?,?,?,?)`,
-      [b.name, b.slug, b.phone||null, b.address||null, b.instagram||null,
-       b.kakao_map_url||null, b.naver_reservation_url||null,
-       b.business_hours ? JSON.stringify(b.business_hours) : null, b.memo||null]
+      [b.branch_id||null, b.stat_date||new Date().toISOString().slice(0,10),
+       b.channel||"기타", b.inquiries||0, b.registrations||0,
+       b.ad_cost||0, b.impressions||0, b.clicks||0, b.memo||null]
     );
     return ok({ id: r.insertId });
   } catch (e: any) {

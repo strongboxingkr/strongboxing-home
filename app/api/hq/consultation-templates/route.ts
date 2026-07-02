@@ -6,9 +6,13 @@ const err = (msg: string, status = 500) => Response.json({ success: false, messa
 
 export async function GET() {
   try {
-    const [rows]: any = await db.query(
-      "SELECT * FROM hq_branches WHERE deleted_at IS NULL ORDER BY id ASC"
-    );
+    const [rows]: any = await db.query(`
+      SELECT t.*, b.name AS branch_name
+      FROM hq_consultation_templates t
+      LEFT JOIN hq_branches b ON b.id = t.branch_id AND b.deleted_at IS NULL
+      WHERE t.deleted_at IS NULL AND t.is_active = 1
+      ORDER BY t.favorite_count DESC, t.id ASC
+    `);
     return ok(rows);
   } catch (e: any) {
     return err(e?.message ?? "DB error");
@@ -19,11 +23,9 @@ export async function POST(req: NextRequest) {
   try {
     const b = await req.json();
     const [r]: any = await db.query(
-      `INSERT INTO hq_branches (name,slug,phone,address,instagram,kakao_map_url,naver_reservation_url,business_hours,memo)
-       VALUES (?,?,?,?,?,?,?,?,?)`,
-      [b.name, b.slug, b.phone||null, b.address||null, b.instagram||null,
-       b.kakao_map_url||null, b.naver_reservation_url||null,
-       b.business_hours ? JSON.stringify(b.business_hours) : null, b.memo||null]
+      `INSERT INTO hq_consultation_templates (branch_id,title,category,content,variables)
+       VALUES (?,?,?,?,?)`,
+      [b.branch_id||null, b.title, b.category, b.content, b.variables ? JSON.stringify(b.variables) : null]
     );
     return ok({ id: r.insertId });
   } catch (e: any) {
