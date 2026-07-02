@@ -79,9 +79,9 @@ export default function RichTextEditor({ value, onChange }: Props) {
           </button>
         ))}
         <div className="mx-1 w-px bg-zinc-300" />
-        <button type="button" onClick={() => exec("justifyLeft")} className={btnClass}>◀</button>
-        <button type="button" onClick={() => exec("justifyCenter")} className={btnClass}>●</button>
-        <button type="button" onClick={() => exec("justifyRight")} className={btnClass}>▶</button>
+        <button type="button" onClick={() => exec("justifyLeft")} className={btnClass}>좌</button>
+        <button type="button" onClick={() => exec("justifyCenter")} className={btnClass}>중앙</button>
+        <button type="button" onClick={() => exec("justifyRight")} className={btnClass}>우</button>
         <div className="mx-1 w-px bg-zinc-300" />
         <button
           type="button"
