@@ -27,6 +27,7 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
 
   const [posts, setPosts] = useState<any[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -132,6 +133,37 @@ export default function AdminPage() {
       alert("이미지 업로드 실패 ㅠ");
     } finally {
       setUploading(false);
+    }
+  }
+
+  async function handleVideoUpload(file: File) {
+    setUploadingVideo(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", "blog");
+      formData.append("branch", branchName);
+      formData.append("category", category);
+      formData.append("postNo", postNo);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        alert(data.message || "영상 업로드 실패 ㅠ");
+        return;
+      }
+
+      const videoHtml = `<video src="${data.url}" controls style="width:100%;border-radius:16px;margin:12px 0"></video>`;
+      setContent((prev) => prev + videoHtml);
+      alert("영상이 본문에 추가됐어!");
+    } catch {
+      alert("영상 업로드 실패 ㅠ");
+    } finally {
+      setUploadingVideo(false);
     }
   }
 
@@ -520,6 +552,25 @@ export default function AdminPage() {
 
             {uploading && (
               <p className="text-sm font-bold text-[#FC5230]">업로드 중...</p>
+            )}
+          </div>
+
+          <div className="rounded-[28px] border border-zinc-200 bg-white p-5 space-y-4">
+            <label className="block font-bold">영상 삽입</label>
+            <input
+              type="file"
+              accept="video/*"
+              disabled={uploadingVideo}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleVideoUpload(file);
+                e.target.value = "";
+              }}
+              className="w-full rounded-2xl border border-zinc-200 bg-white p-4 disabled:opacity-50"
+            />
+            <p className="text-sm text-zinc-400">영상 선택하면 바로 본문에 삽입돼요</p>
+            {uploadingVideo && (
+              <p className="text-sm font-bold text-[#FC5230]">영상 업로드 중...</p>
             )}
           </div>
 
