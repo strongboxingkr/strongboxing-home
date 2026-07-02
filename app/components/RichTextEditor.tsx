@@ -1,10 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 
 interface Props {
   value: string;
   onChange: (html: string) => void;
+}
+
+export interface RichTextEditorHandle {
+  insertHtml: (html: string) => void;
 }
 
 const FONT_SIZES = [
@@ -23,14 +27,54 @@ const COLORS = [
   { label: "회색", color: "#71717A" },
 ];
 
-export default function RichTextEditor({ value, onChange }: Props) {
+const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichTextEditor(
+  { value, onChange },
+  ref
+) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const savedRangeRef = useRef<Range | null>(null);
 
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value) {
       editorRef.current.innerHTML = value;
     }
   }, []);
+
+  // 커서 위치 저장
+  function saveSelection() {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+    }
+  }
+
+  // 저장된 커서 위치에 HTML 삽입
+  useImperativeHandle(ref, () => ({
+    insertHtml(html: string) {
+      editorRef.current?.focus();
+      const sel = window.getSelection();
+      let range = savedRangeRef.current;
+
+      if (!range && sel && sel.rangeCount > 0) {
+        range = sel.getRangeAt(0);
+      }
+
+      if (range) {
+        if (sel) {
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+        document.execCommand("insertHTML", false, html);
+      } else {
+        // 커서 없으면 맨 끝에 추가
+        if (editorRef.current) {
+          editorRef.current.innerHTML += html;
+        }
+      }
+
+      onChange(editorRef.current?.innerHTML || "");
+    },
+  }));
 
   function exec(command: string, val?: string) {
     document.execCommand(command, false, val);
@@ -47,7 +91,6 @@ export default function RichTextEditor({ value, onChange }: Props) {
 
   return (
     <div className="rounded-2xl border border-zinc-200 bg-white overflow-hidden">
-      {/* 툴바 */}
       <div className="flex flex-wrap gap-1.5 border-b border-zinc-200 bg-zinc-50 p-3">
         <button type="button" onClick={() => exec("bold")} className={btnClass + " font-black"}>B</button>
         <button type="button" onClick={() => exec("italic")} className={btnClass + " italic"}>I</button>
@@ -57,7 +100,6 @@ export default function RichTextEditor({ value, onChange }: Props) {
           <button
             key={size}
             type="button"
-            onClick={() => exec("fontSize", "7")}
             onMouseDown={(e) => {
               e.preventDefault();
               const sel = window.getSelection();
@@ -135,15 +177,18 @@ export default function RichTextEditor({ value, onChange }: Props) {
         </button>
       </div>
 
-      {/* 에디터 영역 */}
       <div
         ref={editorRef}
         contentEditable
         suppressContentEditableWarning
         onInput={handleInput}
+        onKeyUp={saveSelection}
+        onMouseUp={saveSelection}
         className="min-h-[320px] p-5 text-[16px] leading-8 outline-none"
         style={{ wordBreak: "break-word" }}
       />
     </div>
   );
-}
+});
+
+export default RichTextEditor;

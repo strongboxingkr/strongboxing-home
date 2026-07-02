@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import RichTextEditor from "@/app/components/RichTextEditor";
+import RichTextEditor, { RichTextEditorHandle } from "@/app/components/RichTextEditor";
 
 function makeSlug(text: string) {
   return text
@@ -33,6 +33,7 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
 
   const contentRef = useRef<HTMLTextAreaElement | null>(null);
+  const editorRef = useRef<RichTextEditorHandle>(null);
 
   const slugSuggestions = [
     "mokdong-boxing-gym-intro",
@@ -115,15 +116,8 @@ export default function AdminPage() {
       }
 
       if (layoutMode === "1열") {
-        const imageMarkdown = `\n\n![이미지](${data.url})\n\n`;
-        setContent((prev) => {
-          const textarea = contentRef.current;
-          if (!textarea) return prev + imageMarkdown;
-          const start = textarea.selectionStart;
-          const end = textarea.selectionEnd;
-          return prev.slice(0, start) + imageMarkdown + prev.slice(end);
-        });
-        setTimeout(() => contentRef.current?.focus(), 0);
+        const imageHtml = `<img src="${data.url}" style="width:100%;border-radius:16px;margin:12px 0" />`;
+        editorRef.current?.insertHtml(imageHtml);
         alert("이미지가 본문에 추가됐어!");
       } else {
         setPendingImages((prev) => [...prev, data.url]);
@@ -158,7 +152,7 @@ export default function AdminPage() {
       }
 
       const videoHtml = `<video src="${data.url}" controls style="width:100%;border-radius:16px;margin:12px 0"></video>`;
-      setContent((prev) => prev + videoHtml);
+      editorRef.current?.insertHtml(videoHtml);
       alert("영상이 본문에 추가됐어!");
     } catch {
       alert("영상 업로드 실패 ㅠ");
@@ -176,8 +170,8 @@ export default function AdminPage() {
     const imgs = pendingImages
       .map((url) => `<img src="${url}" style="width:100%;border-radius:16px;object-fit:cover" />`)
       .join("\n");
-    const gallery = `\n\n<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:12px">\n${imgs}\n</div>\n\n`;
-    setContent((prev) => prev + gallery);
+    const gallery = `<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:12px;margin:12px 0">${imgs}</div>`;
+    editorRef.current?.insertHtml(gallery);
     setPendingImages([]);
     alert(`${layoutMode} 갤러리가 본문에 추가됐어!`);
   }
@@ -576,7 +570,7 @@ export default function AdminPage() {
 
           <div>
             <label className="mb-2 block font-bold">본문</label>
-            <RichTextEditor value={content} onChange={setContent} />
+            <RichTextEditor ref={editorRef} value={content} onChange={setContent} />
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
