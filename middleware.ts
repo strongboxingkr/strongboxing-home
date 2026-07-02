@@ -24,7 +24,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
-  // API 보호 - 공개 API 제외하고 모두 인증 필요
+  // /hq 페이지 보호 — 인증 필요
+  if (pathname.startsWith("/hq")) {
+    if (!isAuthed(request)) {
+      return NextResponse.redirect(new URL("/admin-login", request.url));
+    }
+  }
+
+  // API 보호 - 공개 API 및 /api/hq/* 는 인증된 세션이면 허용
   if (pathname.startsWith("/api/") && !PUBLIC_API_PATHS.includes(pathname)) {
     if (!isAuthed(request)) {
       return NextResponse.json(
@@ -38,5 +45,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/admin-login", "/api/:path*"],
+  matcher: ["/admin/:path*", "/admin-login", "/hq/:path*", "/api/:path*"],
 };
