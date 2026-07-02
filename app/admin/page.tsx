@@ -151,7 +151,11 @@ export default function AdminPage() {
         return;
       }
 
-      const videoHtml = `<video src="${data.url}" controls style="width:100%;border-radius:16px;margin:12px 0"></video>`;
+      const videoTitle = prompt("영상 제목을 입력하세요 (선택 사항)", file.name.replace(/\.[^.]+$/, ""));
+      const titleHtml = videoTitle?.trim()
+        ? `<p style="text-align:center;font-size:14px;color:#666;margin:4px 0 12px">${videoTitle.trim()}</p>`
+        : "";
+      const videoHtml = `<div style="margin:12px 0"><video src="${data.url}" controls style="width:100%;border-radius:16px;display:block"></video>${titleHtml}</div>`;
       editorRef.current?.insertHtml(videoHtml);
       alert("영상이 본문에 추가됐어!");
     } catch {
