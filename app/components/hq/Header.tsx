@@ -9,54 +9,37 @@ export default function HQHeader() {
 
   return (
     <header
-      className="flex h-[62px] shrink-0 items-center gap-3 px-6"
-      style={{ background: "#0F1115", borderBottom: "1px solid #2A313C" }}
+      className="flex h-[56px] shrink-0 items-center gap-3 px-6"
+      style={{ background: "#FFFFFF", borderBottom: "1px solid #E5E7EB" }}
     >
       {/* Search */}
       <div
-        className="group flex h-9 flex-1 max-w-[320px] items-center gap-2.5 rounded-xl border px-3.5 transition-colors duration-200 focus-within:border-[rgba(229,57,53,0.5)]"
-        style={{ background: "#151922", borderColor: "#2A313C" }}
+        className="flex items-center gap-2 h-8 rounded-lg border px-3 flex-1 max-w-xs"
+        style={{ background: "#F9FAFB", borderColor: "#E5E7EB" }}
       >
-        <Search size={13} color="#94A3B8" strokeWidth={2} />
+        <Search size={13} color="#9CA3AF" />
         <input
           placeholder="검색..."
-          className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#94A3B8]"
-          style={{ color: "#F8FAFC" }}
+          className="bg-transparent text-[13px] outline-none flex-1 placeholder:text-[#9CA3AF]"
+          style={{ color: "#111827" }}
         />
-        <kbd
-          className="hidden sm:block rounded-md px-1.5 py-0.5 text-[10px] font-bold"
-          style={{ background: "#2A313C", color: "#94A3B8" }}
-        >
-          ⌘K
-        </kbd>
       </div>
 
       <div className="flex-1" />
 
-      {/* Date */}
-      <span className="hidden lg:block text-[12px] font-medium" style={{ color: "#94A3B8" }}>
-        {today}
-      </span>
+      <span className="hidden lg:block text-[12px]" style={{ color: "#9CA3AF" }}>{today}</span>
 
-      {/* Bell */}
       <button
-        className="relative flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-200 hover:border-[rgba(229,57,53,0.4)] hover:bg-[rgba(229,57,53,0.08)]"
-        style={{ background: "#151922", borderColor: "#2A313C" }}
+        className="relative flex h-8 w-8 items-center justify-center rounded-lg border transition-colors hover:bg-gray-50"
+        style={{ borderColor: "#E5E7EB" }}
       >
-        <Bell size={15} color="#94A3B8" strokeWidth={1.8} />
-        <span
-          className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full"
-          style={{ background: "#E53935", outline: "2px solid #0F1115" }}
-        />
+        <Bell size={14} color="#6B7280" />
+        <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full" style={{ background: "#EF3B2D" }} />
       </button>
 
-      {/* CTA */}
       <button
-        className="flex h-9 items-center gap-2 rounded-xl px-4 text-[13px] font-bold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.97]"
-        style={{
-          background: "linear-gradient(135deg,#E53935 0%,#FF6030 100%)",
-          boxShadow: "0 4px 18px rgba(229,57,53,0.38)",
-        }}
+        className="flex items-center gap-1.5 h-8 rounded-lg px-3 text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
+        style={{ background: "#EF3B2D" }}
       >
         <Plus size={14} strokeWidth={2.5} />
         <span className="hidden sm:inline">콘텐츠 등록</span>
