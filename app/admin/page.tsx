@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import RichTextEditor from "@/app/components/RichTextEditor";
 
 function makeSlug(text: string) {
   return text
@@ -524,13 +525,7 @@ export default function AdminPage() {
 
           <div>
             <label className="mb-2 block font-bold">본문</label>
-            <textarea
-              ref={contentRef}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="h-80 w-full rounded-2xl border border-zinc-200 bg-white p-4 leading-8 outline-none focus:border-[#FC5230]"
-              placeholder={`본문을 입력해줘.\n줄바꿈하면 상세페이지에서 문단으로 나와.`}
-            />
+            <RichTextEditor value={content} onChange={setContent} />
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
