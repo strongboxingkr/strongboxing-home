@@ -361,10 +361,22 @@ export default function BranchesPage() {
 
   const load = async () => {
     setLoading(true);
-    const res = await fetch("/api/hq/branches");
-    const json = await res.json();
-    setBranches(json.items ?? []);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/hq/branches");
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("[hq/branches] API error", res.status, text);
+        setLoading(false);
+        return;
+      }
+      const json = await res.json();
+      console.log("[hq/branches] response", json);
+      setBranches(json.items ?? []);
+    } catch (e) {
+      console.error("[hq/branches] fetch failed", e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(); }, []);
@@ -412,6 +424,11 @@ export default function BranchesPage() {
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <p className="text-[13px]" style={{ color: "#9CA3AF" }}>불러오는 중…</p>
+        </div>
+      ) : branches.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-3">
+          <p className="text-3xl">🏋️</p>
+          <p className="text-[13px]" style={{ color: "#9CA3AF" }}>등록된 지점이 없습니다. SQL을 먼저 실행해주세요.</p>
         </div>
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
