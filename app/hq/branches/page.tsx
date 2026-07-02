@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
-  Phone, Clock, Instagram, MapPin, ChevronDown, ChevronUp,
+  Phone, Clock, AtSign, MapPin, ChevronDown, ChevronUp,
   MessageSquare, Clapperboard, ExternalLink, Plus, Pencil, Trash2, X, Save,
 } from "lucide-react";
 
@@ -169,7 +169,7 @@ function BranchCard({
         )}
         {branch.instagram && (
           <div className="flex gap-2.5 items-center">
-            <Instagram size={13} color="#9CA3AF" className="shrink-0" />
+            <AtSign size={13} color="#9CA3AF" className="shrink-0" />
             <a href={`https://instagram.com/${branch.instagram}`} target="_blank" rel="noopener noreferrer"
               className="text-[12px] font-semibold hover:underline flex items-center gap-1" style={{ color: "#374151" }}>
               @{branch.instagram} <ExternalLink size={10} color="#9CA3AF" />
