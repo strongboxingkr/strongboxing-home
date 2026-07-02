@@ -169,9 +169,7 @@ body {
 
 /* 카드 */
 .strong-hq .card,
-.strong-hq [class*="card"],
-.strong-hq article,
-.strong-hq section > div {
+.strong-hq [class*="card"] {
   background: linear-gradient(180deg, rgba(24, 28, 34, 0.95), rgba(15, 17, 21, 0.95)) !important;
   border: 1px solid #2a313c !important;
   border-radius: 24px !important;
@@ -183,8 +181,7 @@ body {
 }
 
 .strong-hq .card:hover,
-.strong-hq [class*="card"]:hover,
-.strong-hq article:hover {
+.strong-hq [class*="card"]:hover {
   transform: translateY(-4px);
   border-color: rgba(229, 57, 53, 0.45) !important;
   box-shadow:
@@ -205,13 +202,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* 빨간 버튼 */
-.strong-hq button:not(aside button):not(nav button) {
-  background: linear-gradient(135deg, #ff4d3d, #e53935) !important;
-  color: white !important;
-  border: 0 !important;
-  box-shadow: 0 12px 30px rgba(229, 57, 53, 0.35);
-}
+/* 빨간 버튼은 개별 컴포넌트에서 직접 적용 */
 
 /* 입력창 */
 .strong-hq input,
