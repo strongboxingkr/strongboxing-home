@@ -254,7 +254,13 @@ export default function ReelsPage() {
           <h2 className="mb-5 text-3xl font-black">등록된 영상</h2>
 
           <div className="grid gap-5 md:grid-cols-3">
-            {reels.map((reel) => (
+            {(() => {
+              const counters: Record<string, number> = {};
+              const reelsWithNo = [...reels].reverse().map((reel) => {
+                counters[reel.branch_name] = (counters[reel.branch_name] || 0) + 1;
+                return { ...reel, branchNo: counters[reel.branch_name] };
+              }).reverse();
+              return reelsWithNo.map((reel) => (
               <div
                 key={reel.id}
                 className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm"
@@ -262,7 +268,12 @@ export default function ReelsPage() {
                 <video src={reel.video_url} controls className="w-full" />
 
                 <div className="p-5">
-                  <p className="text-sm text-[#FC5230]">{reel.branch_name}</p>
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="text-sm text-[#FC5230]">{reel.branch_name}</p>
+                    <span className="rounded border border-zinc-300 bg-zinc-100 px-2 py-0.5 text-[11px] font-black tracking-widest text-zinc-400">
+                      #{String(reel.branchNo).padStart(3, "0")}
+                    </span>
+                  </div>
                   <p className="mt-1 font-bold">{reel.title}</p>
 
                   <button
@@ -296,7 +307,8 @@ export default function ReelsPage() {
 
                 </div>
               </div>
-            ))}
+              ));
+            })()}
           </div>
         </section>
       </div>
