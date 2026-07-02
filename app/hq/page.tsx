@@ -42,14 +42,14 @@ const card = {
 
 export default function HQDashboard() {
   return (
-    <div className="max-w-[1200px] mx-auto space-y-6">
+    <div className="max-w-[1440px] mx-auto space-y-5">
 
       {/* Page title */}
-      <div>
-        <h1 className="text-[22px] font-black tracking-tight" style={{ color: "#111827" }}>
+      <div className="pt-1">
+        <h1 className="text-[20px] font-black tracking-tight" style={{ color: "#111827" }}>
           안녕하세요, 수지님 👋
         </h1>
-        <p className="mt-1 text-[14px]" style={{ color: "#6B7280" }}>
+        <p className="mt-0.5 text-[13px]" style={{ color: "#6B7280" }}>
           오늘도 스트롱복싱을 성장시켜봅시다.
         </p>
       </div>
@@ -61,7 +61,7 @@ export default function HQDashboard() {
 
       {/* Quick Menu */}
       <section>
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest" style={{ color: "#9CA3AF" }}>
+        <p className="mb-2.5 text-[10px] font-medium uppercase tracking-widest" style={{ color: "#C4C9D4" }}>
           빠른 메뉴
         </p>
         <QuickMenu />
@@ -125,8 +125,8 @@ export default function HQDashboard() {
             {ACTIVITIES.map((a, i) => (
               <li key={i} className="flex items-center gap-3">
                 <span
-                  className="shrink-0 rounded-lg px-2 py-0.5 text-[10px] font-semibold"
-                  style={{ background: "#F3F4F6", color: "#6B7280" }}
+                  className="shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-semibold"
+                  style={{ background: "#F3F4F6", color: "#9CA3AF" }}
                 >
                   {a.branch}
                 </span>

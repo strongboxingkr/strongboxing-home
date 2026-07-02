@@ -27,7 +27,7 @@ export default function HQLayout({ children }: { children: React.ReactNode }) {
           <HQHeader />
         </div>
 
-        <main className="flex-1 overflow-y-auto p-6 md:p-8" style={{ background: "#F7F7F8" }}>
+        <main className="flex-1 overflow-y-auto p-5 md:p-6" style={{ background: "#F7F7F8" }}>
           {children}
         </main>
       </div>

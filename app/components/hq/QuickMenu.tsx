@@ -17,7 +17,7 @@ export default function QuickMenu() {
         <Link
           key={href}
           href={href}
-          className="flex flex-col items-center gap-2.5 rounded-2xl border p-4 text-center transition-all hover:shadow-md hover:-translate-y-0.5"
+          className="flex flex-col items-center gap-2 rounded-2xl border p-3.5 text-center transition-all hover:shadow-md hover:-translate-y-0.5"
           style={{
             background: "#FFFFFF",
             borderColor: "#E5E7EB",
@@ -25,10 +25,10 @@ export default function QuickMenu() {
           }}
         >
           <div
-            className="flex h-10 w-10 items-center justify-center rounded-xl"
+            className="flex h-9 w-9 items-center justify-center rounded-xl"
             style={{ background: `${color}12` }}
           >
-            <Icon size={20} color={color} strokeWidth={1.8} />
+            <Icon size={18} color={color} strokeWidth={1.8} />
           </div>
           <span className="text-[12px] font-semibold" style={{ color: "#111827" }}>{label}</span>
         </Link>

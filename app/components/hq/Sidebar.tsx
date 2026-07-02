@@ -31,15 +31,10 @@ export default function HQSidebar() {
       {/* Logo */}
       <div className="px-6 py-6" style={{ borderBottom: "1px solid #E5E7EB" }}>
         <div className="flex items-center gap-2.5">
-          <span className="text-[18px]">🥊</span>
-          <div>
-            <p className="text-[13px] font-black tracking-tight leading-none" style={{ color: "#111827" }}>
-              STRONGBOXING
-            </p>
-            <p className="text-[10px] font-semibold mt-0.5" style={{ color: "#EF3B2D" }}>
-              HQ
-            </p>
-          </div>
+          <span className="text-[17px]">🥊</span>
+          <p className="text-[14px] font-black tracking-tight" style={{ color: "#111827" }}>
+            STRONG <span style={{ color: "#EF3B2D" }}>HQ</span>
+          </p>
         </div>
       </div>
 
