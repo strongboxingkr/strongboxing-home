@@ -1,16 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Copy, Check } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Search, Star, Copy, Check, Pencil } from "lucide-react";
+
+/* ── 타입 ─────────────────────────────────────────── */
+
+interface Template {
+  id: number;
+  title: string;
+  branch: string;
+  category: string;
+  body: string;
+}
 
 /* ── 데이터 ───────────────────────────────────────── */
 
-const TEMPLATES = [
+const TEMPLATES: Template[] = [
   {
-    id: 1,
-    title: "목동점 회비 안내",
-    branch: "목동",
-    category: "회비",
+    id: 1, title: "목동점 회비 안내", branch: "목동", category: "회비",
     body: `안녕하세요😊 스트롱복싱 목동점입니다!
 
 회비 안내드립니다.
@@ -36,10 +43,7 @@ const TEMPLATES = [
 원하시는 날짜와 시간을 말씀해주시면 상담 예약 도와드리겠습니다!`,
   },
   {
-    id: 2,
-    title: "개봉점 회비 안내",
-    branch: "개봉",
-    category: "회비",
+    id: 2, title: "개봉점 회비 안내", branch: "개봉", category: "회비",
     body: `안녕하세요😊 스트롱복싱 개봉점입니다!
 
 회비 안내드립니다.
@@ -59,10 +63,7 @@ const TEMPLATES = [
 원하시는 날짜와 시간을 말씀해주시면 상담 예약 도와드리겠습니다!`,
   },
   {
-    id: 3,
-    title: "철산점 회비 안내",
-    branch: "철산",
-    category: "회비",
+    id: 3, title: "철산점 회비 안내", branch: "철산", category: "회비",
     body: `안녕하세요😊 스트롱복싱 철산점입니다!
 
 회비 안내드립니다.
@@ -80,10 +81,7 @@ const TEMPLATES = [
 원하시는 날짜와 시간을 말씀해주시면 상담 예약 도와드리겠습니다!`,
   },
   {
-    id: 4,
-    title: "원데이 이용권 안내",
-    branch: "전체",
-    category: "원데이",
+    id: 4, title: "원데이 이용권 안내", branch: "전체", category: "원데이",
     body: `안녕하세요😊 스트롱복싱입니다!
 
 1회 이용권은 30,000원이며,
@@ -95,24 +93,18 @@ const TEMPLATES = [
 원하시는 날짜와 시간을 말씀해주시면 예약 도와드리겠습니다!`,
   },
   {
-    id: 5,
-    title: "준비물 안내",
-    branch: "전체",
-    category: "준비물",
+    id: 5, title: "준비물 안내", branch: "전체", category: "준비물",
     body: `처음 방문 시 실내용 운동화와 편한 운동복 준비해주시면 됩니다😊
 글러브와 핸드랩은 현장에서도 구매 가능하며, 처음 오시면 기본 자세부터 차근차근 안내드립니다.`,
   },
   {
-    id: 6,
-    title: "PT 안내",
-    branch: "전체",
-    category: "PT",
+    id: 6, title: "PT 안내", branch: "전체", category: "PT",
     body: `1:1 맞춤형 복싱 PT도 가능합니다.
 요일과 시간은 상담 후 조율 가능하며, 목적에 맞춰 체력 향상, 다이어트, 자세 교정, 기술 훈련 위주로 진행됩니다.`,
   },
 ];
 
-const BRANCHES = ["전체", "개봉", "신정", "목동", "철산", "영등포"];
+const BRANCHES   = ["전체", "개봉", "신정", "목동", "철산", "영등포"];
 const CATEGORIES = ["전체", "회비", "원데이", "운영시간", "준비물", "PT", "환불·휴회", "이벤트"];
 
 const BRANCH_COLOR: Record<string, string> = {
@@ -120,65 +112,151 @@ const BRANCH_COLOR: Record<string, string> = {
   목동: "#8B5CF6", 철산: "#EF3B2D", 영등포: "#F59E0B",
 };
 
+const LS_FAV    = "hq_consultation_favorites";
+const LS_RECENT = "hq_consultation_recent";
+
 /* ── 카드 ─────────────────────────────────────────── */
 
-function Card({ title, branch, category, body }: typeof TEMPLATES[0]) {
+function TemplateCard({
+  template,
+  isFav,
+  onToggleFav,
+  onCopy,
+}: {
+  template: Template;
+  isFav: boolean;
+  onToggleFav: (id: number) => void;
+  onCopy: (t: Template) => void;
+}) {
   const [copied, setCopied] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editBody, setEditBody] = useState(template.body);
 
   function copy() {
-    navigator.clipboard.writeText(body);
+    navigator.clipboard.writeText(editBody);
+    onCopy(template);
     setCopied(true);
     setTimeout(() => setCopied(false), 1200);
   }
 
-  const bc = BRANCH_COLOR[branch] ?? "#6B7280";
+  const bc = BRANCH_COLOR[template.branch] ?? "#6B7280";
 
   return (
     <div
-      className="flex flex-col rounded-2xl border overflow-hidden transition-shadow hover:shadow-md"
+      className="flex flex-col rounded-2xl border overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
       style={{ background: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
     >
       {/* header */}
-      <div className="flex items-start justify-between gap-3 px-5 pt-5 pb-3">
-        <div>
-          <p className="text-[14px] font-bold leading-snug" style={{ color: "#111827" }}>{title}</p>
-          <div className="flex items-center gap-1.5 mt-2">
+      <div className="flex items-start justify-between gap-2 px-5 pt-5 pb-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-[14px] font-bold leading-snug truncate" style={{ color: "#111827" }}>
+            {template.title}
+          </p>
+          <div className="flex items-center gap-1.5 mt-2 flex-wrap">
             <span
-              className="rounded-md px-2 py-0.5 text-[10px] font-semibold"
+              className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-semibold"
               style={{ background: `${bc}14`, color: bc }}
             >
-              {branch}
+              📍 {template.branch}점
             </span>
             <span
-              className="rounded-md px-2 py-0.5 text-[10px] font-semibold"
-              style={{ background: "#F3F4F6", color: "#6B7280" }}
+              className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-semibold"
+              style={{ background: "rgba(239,59,45,0.1)", color: "#EF3B2D" }}
             >
-              {category}
+              💰 {template.category}
             </span>
           </div>
         </div>
+
+        {/* 즐겨찾기 */}
+        <button
+          onClick={() => onToggleFav(template.id)}
+          className="shrink-0 flex h-8 w-8 items-center justify-center rounded-xl transition-all duration-200 hover:bg-amber-50"
+          title="즐겨찾기"
+        >
+          <Star
+            size={15}
+            strokeWidth={1.8}
+            fill={isFav ? "#F59E0B" : "none"}
+            color={isFav ? "#F59E0B" : "#D1D5DB"}
+          />
+        </button>
+      </div>
+
+      {/* body */}
+      <div className="px-5 pb-3 flex-1">
+        {editing ? (
+          <textarea
+            value={editBody}
+            onChange={(e) => setEditBody(e.target.value)}
+            rows={10}
+            className="w-full text-[12px] leading-relaxed rounded-xl p-3.5 font-sans outline-none resize-y"
+            style={{ background: "#F9FAFB", color: "#374151", border: "1px solid #E5E7EB" }}
+          />
+        ) : (
+          <pre
+            className="text-[12px] leading-relaxed whitespace-pre-wrap font-sans rounded-xl p-3.5"
+            style={{ background: "#F9FAFB", color: "#374151", border: "1px solid #F3F4F6" }}
+          >
+            {editBody}
+          </pre>
+        )}
+      </div>
+
+      {/* actions */}
+      <div
+        className="flex items-center gap-2 px-5 py-3.5"
+        style={{ borderTop: "1px solid #F3F4F6" }}
+      >
+        {/* 수정 */}
+        <button
+          onClick={() => setEditing((v) => !v)}
+          className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-[12px] font-semibold transition-all duration-200 hover:bg-gray-100"
+          style={{ color: "#6B7280" }}
+        >
+          <Pencil size={12} />
+          {editing ? "완료" : "수정"}
+        </button>
+
+        <div className="flex-1" />
+
+        {/* 즐겨찾기 (하단) */}
+        <button
+          onClick={() => onToggleFav(template.id)}
+          className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-[12px] font-semibold transition-all duration-200 hover:bg-amber-50"
+          style={{ color: isFav ? "#F59E0B" : "#9CA3AF" }}
+        >
+          <Star size={12} fill={isFav ? "#F59E0B" : "none"} />
+          즐겨찾기
+        </button>
+
+        {/* 복사 */}
         <button
           onClick={copy}
-          className="shrink-0 flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-[12px] font-semibold transition-all"
+          className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-[12px] font-semibold transition-all duration-200"
           style={{
             background: copied ? "#ECFDF5" : "#F3F4F6",
             color: copied ? "#059669" : "#374151",
           }}
         >
           {copied ? <Check size={13} /> : <Copy size={13} />}
-          {copied ? "복사됨" : "복사"}
+          {copied ? "복사 완료 ✅" : "📋 답변 복사"}
         </button>
       </div>
+    </div>
+  );
+}
 
-      {/* body */}
-      <div className="px-5 pb-5">
-        <pre
-          className="text-[12px] leading-relaxed whitespace-pre-wrap font-sans rounded-xl p-3.5"
-          style={{ background: "#F9FAFB", color: "#374151", border: "1px solid #F3F4F6" }}
-        >
-          {body}
-        </pre>
-      </div>
+/* ── 요약 카드 ────────────────────────────────────── */
+
+function SummaryCard({ label, value }: { label: string; value: number }) {
+  return (
+    <div
+      className="flex-1 rounded-2xl border px-4 py-3.5"
+      style={{ background: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}
+    >
+      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: "#9CA3AF" }}>{label}</p>
+      <p className="text-[24px] font-black" style={{ color: "#111827" }}>{value}</p>
     </div>
   );
 }
@@ -189,19 +267,54 @@ export default function ConsultationPage() {
   const [query, setQuery]       = useState("");
   const [branch, setBranch]     = useState("전체");
   const [category, setCategory] = useState("전체");
+  const [favorites, setFavorites] = useState<number[]>([]);
+  const [recent, setRecent]       = useState<number[]>([]);
 
-  const results = TEMPLATES.filter((t) => {
+  /* localStorage 로드 */
+  useEffect(() => {
+    try {
+      const f = localStorage.getItem(LS_FAV);
+      const r = localStorage.getItem(LS_RECENT);
+      if (f) setFavorites(JSON.parse(f));
+      if (r) setRecent(JSON.parse(r));
+    } catch {}
+  }, []);
+
+  const toggleFav = useCallback((id: number) => {
+    setFavorites((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      localStorage.setItem(LS_FAV, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const recordCopy = useCallback((t: Template) => {
+    setRecent((prev) => {
+      const next = [t.id, ...prev.filter((x) => x !== t.id)].slice(0, 10);
+      localStorage.setItem(LS_RECENT, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  /* 필터링 + 즐겨찾기 최상단 */
+  const filtered = TEMPLATES.filter((t) => {
     const okBranch = branch === "전체" || t.branch === branch || t.branch === "전체";
     const okCat    = category === "전체" || t.category === category;
-    const okQ      = !query || t.title.includes(query) || t.body.includes(query) || t.category.includes(query);
+    const q = query.trim().toLowerCase();
+    const okQ = !q || t.title.toLowerCase().includes(q) || t.body.toLowerCase().includes(q) || t.category.toLowerCase().includes(q);
     return okBranch && okCat && okQ;
+  }).sort((a, b) => {
+    const af = favorites.includes(a.id) ? 0 : 1;
+    const bf = favorites.includes(b.id) ? 0 : 1;
+    return af - bf;
   });
 
-  function filterBtn(active: boolean, color = "#EF3B2D") {
+  function filterBtn(active: boolean, color = "#EF3B2D"): React.CSSProperties {
     return {
       background: active ? color : "#F3F4F6",
       color: active ? "#FFFFFF" : "#6B7280",
-    } as React.CSSProperties;
+      transition: "all 0.15s ease",
+    };
   }
 
   return (
@@ -215,16 +328,23 @@ export default function ConsultationPage() {
         </p>
       </div>
 
+      {/* 요약 카드 3개 */}
+      <div className="flex gap-3">
+        <SummaryCard label="전체 답변" value={TEMPLATES.length} />
+        <SummaryCard label="즐겨찾기" value={favorites.length} />
+        <SummaryCard label="최근 사용" value={recent.length} />
+      </div>
+
       {/* 검색 */}
       <div
-        className="flex items-center gap-2.5 h-11 rounded-2xl border px-4"
+        className="flex items-center gap-2.5 h-11 rounded-2xl border px-4 transition-colors focus-within:border-[#EF3B2D]/40"
         style={{ background: "#FFFFFF", borderColor: "#E5E7EB", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}
       >
         <Search size={15} color="#9CA3AF" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="회비, 원데이, 준비물, PT 검색…"
+          placeholder="회비, 원데이, 준비물, 입관비, 환불, 운동화 검색…"
           className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#9CA3AF]"
           style={{ color: "#111827" }}
         />
@@ -236,7 +356,7 @@ export default function ConsultationPage() {
           <button
             key={b}
             onClick={() => setBranch(b)}
-            className="rounded-full px-3 py-1.5 text-[12px] font-semibold transition-colors"
+            className="rounded-full px-3 py-1.5 text-[12px] font-semibold"
             style={filterBtn(branch === b, BRANCH_COLOR[b])}
           >
             {b}
@@ -250,7 +370,7 @@ export default function ConsultationPage() {
           <button
             key={c}
             onClick={() => setCategory(c)}
-            className="rounded-full px-3 py-1.5 text-[12px] font-semibold transition-colors"
+            className="rounded-full px-3 py-1.5 text-[12px] font-semibold"
             style={filterBtn(category === c)}
           >
             {c}
@@ -259,12 +379,20 @@ export default function ConsultationPage() {
       </div>
 
       {/* 결과 수 */}
-      <p className="text-[12px]" style={{ color: "#9CA3AF" }}>{results.length}개의 답변 템플릿</p>
+      <p className="text-[12px]" style={{ color: "#9CA3AF" }}>{filtered.length}개의 답변 템플릿</p>
 
       {/* 카드 그리드 */}
-      {results.length > 0 ? (
+      {filtered.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {results.map((t) => <Card key={t.id} {...t} />)}
+          {filtered.map((t) => (
+            <TemplateCard
+              key={t.id}
+              template={t}
+              isFav={favorites.includes(t.id)}
+              onToggleFav={toggleFav}
+              onCopy={recordCopy}
+            />
+          ))}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-20">
