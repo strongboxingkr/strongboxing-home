@@ -3,13 +3,13 @@ import HQHeader from "@/app/components/hq/Header";
 import HQMobileSidebar from "@/app/components/hq/MobileSidebar";
 
 export const metadata = {
-  title: "STRONG HQ",
+  title: "STRONG OS",
   description: "STRONG BOXING 운영 관리 시스템",
 };
 
 export default function HQLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#0F1115" }}>
+    <div className="strong-hq flex h-screen overflow-hidden" style={{ background: "#0F1115" }}>
       <HQSidebar />
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
@@ -19,7 +19,7 @@ export default function HQLayout({ children }: { children: React.ReactNode }) {
           style={{ background: "#0F1115", borderColor: "#2A313C" }}
         >
           <HQMobileSidebar />
-          <span className="text-[14px] font-black" style={{ color: "#F8FAFC" }}>🥊 STRONG HQ</span>
+          <span className="text-[14px] font-black" style={{ color: "#F8FAFC" }}>🥊 STRONG OS</span>
         </div>
 
         {/* Desktop header */}

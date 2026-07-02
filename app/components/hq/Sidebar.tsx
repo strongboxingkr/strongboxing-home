@@ -41,7 +41,7 @@ export default function HQSidebar() {
         </div>
         <div>
           <p className="text-[13px] font-black tracking-tight leading-none" style={{ color: "#F8FAFC" }}>
-            STRONG HQ
+            STRONG OS
           </p>
           <p className="mt-1 text-[10px] font-medium tracking-[0.15em] uppercase" style={{ color: "#94A3B8" }}>
             Management System

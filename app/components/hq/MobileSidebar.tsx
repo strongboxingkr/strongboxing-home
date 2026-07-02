@@ -52,7 +52,7 @@ export default function HQMobileSidebar() {
                   🥊
                 </div>
                 <div>
-                  <p className="text-[13px] font-black" style={{ color: "#F8FAFC" }}>STRONG HQ</p>
+                  <p className="text-[13px] font-black" style={{ color: "#F8FAFC" }}>STRONG OS</p>
                   <p className="text-[10px] tracking-widest uppercase" style={{ color: "#94A3B8" }}>Management System</p>
                 </div>
               </div>
