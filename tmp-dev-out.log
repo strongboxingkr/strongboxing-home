@@ -1,0 +1,10 @@
+
+> strongboxing-home@0.1.0 dev
+> next dev -H 127.0.0.1 -p 4174
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://127.0.0.1:4174
+- Network:       http://127.0.0.1:4174
+- Environments: .env.local
+✓ Ready in 374ms
+[?25h

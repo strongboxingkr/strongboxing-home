@@ -1,0 +1,8 @@
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:4174
+- PID:          17696
+- Dir:          C:\Users\admin\Documents\projects\strongboxing-home
+- Log:          .next\dev\logs\next-development.log
+
+Run taskkill /PID 17696 /F to stop it.
