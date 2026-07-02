@@ -1,3 +1,5 @@
+"use client";
+
 import HQSidebar from "@/app/components/hq/Sidebar";
 import HQHeader from "@/app/components/hq/Header";
 import HQMobileSidebar from "@/app/components/hq/MobileSidebar";

@@ -1,3 +1,5 @@
+"use client";
+
 import StatsCard from "@/app/components/hq/StatsCard";
 import QuickMenu from "@/app/components/hq/QuickMenu";
 import {
