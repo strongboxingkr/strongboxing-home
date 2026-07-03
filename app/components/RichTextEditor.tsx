@@ -35,10 +35,13 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
   const savedRangeRef = useRef<Range | null>(null);
 
   useEffect(() => {
-    if (editorRef.current && editorRef.current.innerHTML !== value) {
-      editorRef.current.innerHTML = value;
+    // 에디터가 포커스 상태가 아닐 때만 외부에서 값을 주입 (타이핑 중 커서 점프 방지)
+    if (editorRef.current && document.activeElement !== editorRef.current) {
+      if (editorRef.current.innerHTML !== value) {
+        editorRef.current.innerHTML = value;
+      }
     }
-  }, []);
+  }, [value]);
 
   // 커서 위치 저장
   function saveSelection() {
