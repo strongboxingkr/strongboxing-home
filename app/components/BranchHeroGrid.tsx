@@ -98,7 +98,7 @@ function SmallCard({ branch, onSelect }: { branch: Branch; onSelect: (slug: stri
       href={`/branches/${branch.slug}`}
       onClick={() => onSelect(branch.slug)}
       className="group relative block overflow-hidden"
-      style={{ borderRadius: 12 }}
+      style={{ borderRadius: 12, height: "100%" }}
     >
       <img
         src={branch.image}
@@ -185,7 +185,7 @@ export default function BranchHeroGrid({ branches }: Props) {
 
         {/* 나머지 4개 지점 — 오른쪽 2×2 */}
         {others.slice(0, 4).map((branch, i) => (
-          <div key={branch.slug} style={{ gridColumn: 2, gridRow: i + 1 }}>
+          <div key={branch.slug} style={{ gridColumn: 2, gridRow: i + 1, height: "100%" }}>
             <SmallCard branch={branch} onSelect={handleSelect} />
           </div>
         ))}
