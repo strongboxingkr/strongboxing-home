@@ -25,7 +25,7 @@ export default async function NaverReviewsSection() {
             REAL NAVER REVIEWS
           </p>
 
-          <h2 className="text-4xl font-black tracking-[-0.05em] text-white md:text-5xl">
+          <h2 className="text-4xl font-black tracking-[-0.05em] text-[#F5F4F1] md:text-5xl">
             네이버 리뷰로 확인하는 스트롱복싱
           </h2>
 

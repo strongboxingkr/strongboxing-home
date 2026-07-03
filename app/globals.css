@@ -1,9 +1,20 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* ─── STRONG BOXING Brand Color Tokens ─── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0E0E10;
+  --foreground: #F5F4F1;
+
+  /* Brand palette */
+  --sb-black:     #0E0E10;   /* PRIMARY — page bg, header, hero */
+  --sb-surface:   #141416;   /* surface — section bg */
+  --sb-card:      #1A1A1C;   /* card bg */
+  --sb-mid:       #4A4C50;   /* MID GRAY — dividers, secondary borders */
+  --sb-concrete:  #8A8D91;   /* CONCRETE GRAY — captions, meta, descriptions */
+  --sb-offwhite:  #F5F4F1;   /* OFF WHITE — main headings, primary text */
+  --sb-red:       #D01E2E;   /* ACCENT RED — CTA, active, pointer only */
+  --sb-red-hover: #B71C2B;   /* red hover */
 }
 
 @theme inline {
@@ -11,6 +22,16 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Expose brand tokens as Tailwind utilities */
+  --color-sb-black:    var(--sb-black);
+  --color-sb-surface:  var(--sb-surface);
+  --color-sb-card:     var(--sb-card);
+  --color-sb-mid:      var(--sb-mid);
+  --color-sb-concrete: var(--sb-concrete);
+  --color-sb-offwhite: var(--sb-offwhite);
+  --color-sb-red:      var(--sb-red);
+  --color-sb-red-h:    var(--sb-red-hover);
 }
 
 @media (prefers-color-scheme: dark) {

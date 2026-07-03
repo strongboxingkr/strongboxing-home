@@ -294,11 +294,11 @@ export default async function BranchPage({
 
   if (!branch) {
     return (
-      <main className="min-h-screen bg-[#0d0d0f] px-6 py-24 text-white">
+      <main className="min-h-screen bg-[#0E0E10] px-6 py-24 text-white">
         <div className="mx-auto max-w-5xl">
           <h1 className="text-4xl font-black">지점을 찾을 수 없습니다.</h1>
 
-          <a href="/" className="mt-6 inline-block text-[#FC5230]">
+          <a href="/" className="mt-6 inline-block text-[#D01E2E]">
             메인으로 돌아가기
           </a>
         </div>
@@ -487,7 +487,7 @@ const faqJsonLd = {
 };
 
   return (
-    <main className="min-h-screen bg-[#0d0d0f] text-white">
+    <main className="min-h-screen bg-[#0E0E10] text-white">
             <script
               type="application/ld+json"
               dangerouslySetInnerHTML={{
@@ -522,19 +522,19 @@ const faqJsonLd = {
 
         <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 md:grid-cols-[1fr_420px]">
           <div>
-            <a href="/" className="mb-10 inline-block text-zinc-500 transition hover:text-white">
+            <a href="/" className="mb-10 inline-block text-[#4A4C50] transition hover:text-white">
               ← 메인으로
             </a>
 
-            <p className="mb-5 text-sm font-black tracking-[0.32em] text-[#FC5230]">
+            <p className="mb-5 text-sm font-black tracking-[0.32em] text-[#D01E2E]">
               STRONG BOXING BRANCH
             </p>
 
-            <h1 className="break-keep text-4xl font-black leading-tight tracking-[-0.05em] text-white md:text-6xl">
+            <h1 className="break-keep text-4xl font-black leading-tight tracking-[-0.05em] text-[#F5F4F1] md:text-6xl">
               {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-8 text-zinc-400">
+            <p className="mt-6 max-w-xl text-lg leading-8 text-[#8A8D91]">
               {seoContent?.description || branch.description}
             </p>
 
@@ -543,7 +543,7 @@ const faqJsonLd = {
                 {seoContent.nearby.map((area: string) => (
                   <span
                     key={area}
-                    className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-zinc-300"
+                    className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-[#8A8D91]"
                   >
                     {area} 인근
                   </span>
@@ -554,7 +554,7 @@ const faqJsonLd = {
             <div className="mt-10 flex flex-wrap gap-3">
               <a
                 href={`tel:${branch.phone.replaceAll("-", "")}`}
-                className="rounded-full bg-[#FC5230] px-7 py-4 text-sm font-black text-white shadow-lg shadow-[#FC5230]/30 transition hover:bg-[#e04828]"
+                className="rounded-[10px] bg-[#D01E2E] px-7 py-4 text-sm font-black text-white transition hover:bg-[#B71C2B]"
               >
                 📞 전화 문의
               </a>
@@ -563,7 +563,7 @@ const faqJsonLd = {
                 <a
                   href={branch.kakaoChat}
                   target="_blank"
-                  className="rounded-full bg-[#FEE500] px-7 py-4 text-sm font-black text-black transition hover:brightness-95"
+                  className="rounded-[10px] bg-[#FEE500] px-7 py-4 text-sm font-black text-black transition hover:brightness-95"
                 >
                   카카오톡 문의
                 </a>
@@ -573,7 +573,7 @@ const faqJsonLd = {
                 <a
                   href={branch.booking}
                   target="_blank"
-                  className="rounded-full border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
+                  className="rounded-[10px] border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
                 >
                   네이버 예약
                 </a>
@@ -583,7 +583,7 @@ const faqJsonLd = {
                 <a
                   href={branch.naverMap}
                   target="_blank"
-                  className="rounded-full border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
+                  className="rounded-[10px] border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
                 >
                   네이버지도
                 </a>
@@ -592,7 +592,7 @@ const faqJsonLd = {
               <a
                 href={branch.instagram}
                 target="_blank"
-                className="rounded-full border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
+                className="rounded-[10px] border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
               >
                 인스타그램
               </a>
@@ -600,7 +600,7 @@ const faqJsonLd = {
           </div>
 
           <div className="hidden md:block">
-            <div className="overflow-hidden rounded-[28px] shadow-2xl ring-1 ring-white/10">
+            <div className="overflow-hidden rounded-[14px] shadow-2xl ring-1 ring-white/10">
               <img
                 src={branch.image}
                 alt={branch.fullName}
@@ -624,7 +624,7 @@ const faqJsonLd = {
                 <a
                   key={post.id}
                   href={`/blog/${post.slug}`}
-                  className="group overflow-hidden rounded-[28px] border border-white/10 bg-[#171719] transition hover:border-[#FC5230]"
+                  className="group overflow-hidden rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] transition hover:border-white/30"
                 >
                   {image && (
                     <div className="h-[180px] overflow-hidden">
@@ -636,11 +636,11 @@ const faqJsonLd = {
                     </div>
                   )}
                   <div className="p-7">
-                    <div className="mb-4 inline-flex rounded-full bg-[#FC5230] px-4 py-2 text-sm font-black">
+                    <div className="mb-4 inline-flex rounded-[10px] bg-[#D01E2E] px-4 py-2 text-sm font-black">
                       {post.branch_name}
                     </div>
                     <h3 className="mb-3 text-xl font-black leading-tight">{post.title}</h3>
-                    <p className="line-clamp-2 text-sm leading-7 text-zinc-400">{post.description}</p>
+                    <p className="line-clamp-2 text-sm leading-7 text-[#8A8D91]">{post.description}</p>
                   </div>
                 </a>
                 );
@@ -654,15 +654,15 @@ const faqJsonLd = {
         <section className="bg-[#16171A] px-6 py-20">
           <div className="mx-auto max-w-6xl">
             <div className="mb-10">
-              <p className="mb-2 text-sm font-black tracking-[0.32em] text-[#FC5230]">STRONG CLIP</p>
-              <h2 className="text-4xl font-black tracking-[-0.05em] text-white">
+              <p className="mb-2 text-sm font-black tracking-[0.32em] text-[#D01E2E]">STRONG CLIP</p>
+              <h2 className="text-4xl font-black tracking-[-0.05em] text-[#F5F4F1]">
                 {branch.name} 클립
               </h2>
             </div>
             <div className="overflow-x-auto pb-4">
               <div className="flex gap-4">
                 {branchReels.map((reel: any) => (
-                  <div key={reel.id} className="shrink-0 w-[200px] overflow-hidden rounded-2xl border border-[#FC5230]/20 bg-[#202126]">
+                  <div key={reel.id} className="shrink-0 w-[200px] overflow-hidden rounded-[10px] border border-[#4A4C50]/30 bg-[#1A1A1C]">
                     <video
                       src={reel.video_url}
                       controls={Number(reel.is_muted) !== 1}
@@ -671,7 +671,7 @@ const faqJsonLd = {
                       loop={Number(reel.is_muted) === 1}
                       playsInline
                       preload="metadata"
-                      className="w-full bg-black object-cover aspect-[9/16]"
+                      className="w-full bg-[#0E0E10] object-cover aspect-[9/16]"
                     />
                     <div className="px-3 py-2">
                       <p className="text-xs font-bold text-white">{reel.title}</p>
@@ -686,10 +686,10 @@ const faqJsonLd = {
 
       <section className="px-6 py-20">
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
-          <div className="rounded-[30px] border border-white/10 bg-[#171719] p-8">
+          <div className="rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] p-8">
             <h2 className="mb-5 text-3xl font-black">지점 정보</h2>
 
-            <div className="space-y-3 leading-8 text-zinc-300">
+            <div className="space-y-3 leading-8 text-[#8A8D91]">
               <p>📞 {branch.phone}</p>
               <p>📍 {branch.address}</p>
 
@@ -704,7 +704,7 @@ const faqJsonLd = {
             </div>
           </div>
 
-          <div className="rounded-[30px] border border-[#FC5230]/30 bg-gradient-to-br from-[#181818] to-[#101010] p-8">
+          <div className="rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] p-8">
             <h2 className="mb-5 text-3xl font-black">바로가기</h2>
 
             <div className="flex flex-wrap gap-3">
@@ -712,7 +712,7 @@ const faqJsonLd = {
                 <a
                   href={branch.naverMap}
                   target="_blank"
-                  className="rounded-full bg-white px-5 py-3 font-black text-black"
+                  className="rounded-[10px] bg-white px-5 py-3 font-black text-black"
                 >
                   네이버지도
                 </a>
@@ -722,7 +722,7 @@ const faqJsonLd = {
                 <a
                   href={branch.kakaoMap}
                   target="_blank"
-                  className="rounded-full bg-white px-5 py-3 font-black text-black"
+                  className="rounded-[10px] bg-white px-5 py-3 font-black text-black"
                 >
                   카카오맵
                 </a>
@@ -732,7 +732,7 @@ const faqJsonLd = {
                 <a
                   href={branch.googleMap}
                   target="_blank"
-                  className="rounded-full bg-white px-5 py-3 font-black text-black"
+                  className="rounded-[10px] bg-white px-5 py-3 font-black text-black"
                 >
                   구글지도
                 </a>
@@ -741,7 +741,7 @@ const faqJsonLd = {
               <a
                 href={branch.instagram}
                 target="_blank"
-                className="rounded-full bg-white px-5 py-3 font-black text-black"
+                className="rounded-[10px] bg-white px-5 py-3 font-black text-black"
               >
                 인스타
               </a>
@@ -750,7 +750,7 @@ const faqJsonLd = {
                 <a
                   href={branch.kakaoChat}
                   target="_blank"
-                  className="rounded-full bg-[#FEE500] px-5 py-3 font-black text-black"
+                  className="rounded-[10px] bg-[#FEE500] px-5 py-3 font-black text-black"
                 >
                   카카오톡 문의
                 </a>
@@ -758,7 +758,7 @@ const faqJsonLd = {
 
               <a
                 href={`tel:${branch.phone.replaceAll("-", "")}`}
-                className="rounded-full bg-[#FC5230] px-5 py-3 font-black"
+                className="rounded-[10px] bg-[#D01E2E] px-5 py-3 font-black"
               >
                 전화
               </a>
@@ -790,10 +790,10 @@ const faqJsonLd = {
             ].map(([title, desc]) => (
               <div
                 key={title}
-                className="rounded-[28px] border border-white/10 bg-[#171719] p-7"
+                className="rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] p-7"
               >
                 <h3 className="mb-3 text-2xl font-black">{title}</h3>
-                <p className="leading-7 text-zinc-300">{desc}</p>
+                <p className="leading-7 text-[#8A8D91]">{desc}</p>
               </div>
             ))}
           </div>
@@ -802,19 +802,19 @@ const faqJsonLd = {
 
 
       <section className="px-6 pb-24">
-        <div className="mx-auto max-w-6xl rounded-[34px] bg-[#FC5230] p-10 text-center md:p-14">
-          <h2 className="mb-4 text-4xl font-black tracking-[-0.05em] md:text-6xl">
+        <div className="mx-auto max-w-6xl rounded-[16px] border border-[#4A4C50]/30 bg-[#111214] p-10 text-center md:p-14">
+          <h2 className="mb-4 text-4xl font-black tracking-[-0.05em] text-[#F5F4F1] md:text-6xl">
             {branch.name}에서 시작해볼까요?
           </h2>
 
-          <p className="mb-8 text-lg leading-8">
+          <p className="mb-8 text-lg leading-8 text-[#8A8D91]">
             처음이어도 괜찮습니다. 운동 목적에 맞춰 상담 후 안내해드립니다.
           </p>
 
           <div className="flex flex-col justify-center gap-3 sm:flex-row">
             <a
               href={`tel:${branch.phone.replaceAll("-", "")}`}
-              className="rounded-full bg-black px-8 py-4 font-black text-white"
+              className="rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black text-white transition hover:bg-[#B71C2B]"
             >
               전화 문의
             </a>
@@ -823,7 +823,7 @@ const faqJsonLd = {
               <a
                 href={branch.booking}
                 target="_blank"
-                className="rounded-full bg-white px-8 py-4 font-black text-black"
+                className="rounded-[10px] border border-white/20 bg-white/5 px-8 py-4 font-black text-white backdrop-blur-sm transition hover:bg-white/10"
               >
                 네이버 예약
               </a>
@@ -833,7 +833,7 @@ const faqJsonLd = {
               <a
                 href={branch.kakaoChat}
                 target="_blank"
-                className="rounded-full bg-[#FEE500] px-8 py-4 font-black text-black"
+                className="rounded-[10px] bg-[#FEE500] px-8 py-4 font-black text-black transition hover:brightness-95"
               >
                 카카오톡 문의
               </a>
@@ -850,7 +850,7 @@ const faqJsonLd = {
             {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
           </h2>
 
-          <p className="mt-6 max-w-3xl break-keep text-lg leading-8 text-zinc-300">
+          <p className="mt-6 max-w-3xl break-keep text-lg leading-8 text-[#8A8D91]">
             {seoContent?.description || branch.description}
           </p>
 
@@ -859,7 +859,7 @@ const faqJsonLd = {
               {seoContent.nearby.map((area: string) => (
                 <span
                   key={area}
-                  className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm font-black text-zinc-200"
+                  className="rounded-full border border-[#4A4C50]/30 bg-[#0E0E10]/40 px-4 py-2 text-sm font-black text-zinc-200"
                 >
                   {area} 인근 복싱
                 </span>
@@ -872,7 +872,7 @@ const faqJsonLd = {
             <img
               src={branch.image}
               alt={`${branch.area} 복싱장 ${branch.fullName} 내부`}
-              className="rounded-[32px] border border-white/10 object-cover"
+              className="rounded-[32px] border border-[#4A4C50]/30 object-cover"
             />
 
             <div className="flex flex-col justify-center">
@@ -880,7 +880,7 @@ const faqJsonLd = {
                 {branch.area} 복싱 입문 전문 체육관
               </h3>
 
-              <p className="mt-5 leading-8 text-zinc-300">
+              <p className="mt-5 leading-8 text-[#8A8D91]">
                 복싱 입문부터 다이어트, 체력 향상까지
                 운동 목적에 맞춰 지도해드립니다.
               </p>
@@ -894,7 +894,7 @@ const faqJsonLd = {
 
               <a
                 href="/reservation"
-                className="mt-10 inline-flex w-fit rounded-full bg-[#FC5230] px-8 py-4 font-black text-white"
+                className="mt-10 inline-flex w-fit rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black text-white"
               >
                 상담 문의하기
               </a>
@@ -910,13 +910,13 @@ const faqJsonLd = {
               {faqItems.map((item, index) => (
                 <div
                   key={index}
-                  className="rounded-[24px] border border-white/10 bg-black/40 p-6"
+                  className="rounded-[24px] border border-[#4A4C50]/30 bg-[#0E0E10]/40 p-6"
                 >
                   <h3 className="text-xl font-black">
                     {item.question}
                   </h3>
 
-                  <p className="mt-3 leading-7 text-zinc-300">
+                  <p className="mt-3 leading-7 text-[#8A8D91]">
                     {item.answer}
                   </p>
                 </div>

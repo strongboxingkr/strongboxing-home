@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -108,7 +108,7 @@ export default function AiCoachChat() {
     <>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-5 right-5 z-[9999] rounded-full bg-[#FC5230] px-5 py-4 text-sm font-black text-white shadow-2xl transition hover:scale-105"
+        className="fixed bottom-5 right-5 z-[9999] rounded-[10px] bg-[#D01E2E] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:bg-[#B71C2B]"
       >
         💬 AI 복싱 상담
       </button>
@@ -119,7 +119,7 @@ export default function AiCoachChat() {
             <p className="text-lg font-black text-white">
               🥊 스트롱 AI 상담
             </p>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-[#8A8D91]">
               복싱 입문 · 다이어트 · 상담 문의
             </p>
           </div>
@@ -131,7 +131,7 @@ export default function AiCoachChat() {
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
-                    className="border border-white/10 bg-[#202126] px-4 py-3 text-left text-sm font-bold text-zinc-200"
+                    className="border border-white/10 bg-[#1A1A1C] px-4 py-3 text-left text-sm font-bold text-zinc-200"
                   >
                     {q}
                   </button>
@@ -147,10 +147,10 @@ export default function AiCoachChat() {
                 }`}
               >
                 <div
-                  className={`max-w-[82%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 ${
+                  className={`max-w-[82%] whitespace-pre-line rounded-[10px] px-4 py-3 text-sm leading-6 ${
                     msg.role === "user"
-                      ? "bg-[#FC5230] text-white"
-                      : "bg-[#202126] text-zinc-200"
+                      ? "bg-[#D01E2E] text-white"
+                      : "bg-[#1A1A1C] text-zinc-200"
                   }`}
                 >
                   {msg.text}
@@ -170,12 +170,12 @@ export default function AiCoachChat() {
                   if (e.key === "Enter") sendMessage();
                 }}
                 placeholder="궁금한 점 입력..."
-                className="flex-1 border border-white/10 bg-[#202126] px-4 py-3 text-sm text-white outline-none"
+                className="flex-1 border border-white/10 bg-[#1A1A1C] px-4 py-3 text-sm text-white outline-none"
               />
 
               <button
                 onClick={() => sendMessage()}
-                className="bg-[#FC5230] px-5 font-black text-white"
+                className="rounded-[10px] bg-[#D01E2E] px-5 font-black text-white transition hover:bg-[#B71C2B]"
               >
                 전송
               </button>

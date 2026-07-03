@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 
@@ -24,10 +24,10 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
           <button
             key={branch}
             onClick={() => setSelectedBranch(branch)}
-            className={`shrink-0 rounded-full border px-5 py-3 text-sm font-black transition ${
+            className={`shrink-0 rounded-[10px] border px-5 py-2.5 text-sm font-black transition ${
               selectedBranch === branch
-                ? "border-[#FC5230] bg-[#FC5230] text-white"
-                : "border-white/10 bg-[#202126] text-zinc-300 hover:border-[#FC5230]"
+                ? "border-[#D01E2E] bg-[#D01E2E] text-white"
+                : "border-white/10 bg-[#1A1A1C] text-[#8A8D91] hover:border-white/30"
             }`}
           >
             {branch}
@@ -54,7 +54,7 @@ function ReelCard({ reel }: { reel: any }) {
   const [isPortrait, setIsPortrait] = useState(false);
 
   return (
-    <div className={`shrink-0 overflow-hidden rounded-2xl border border-[#FC5230]/20 bg-[#202126] ${isPortrait ? "w-[160px]" : "w-[240px]"}`}>
+    <div className={`shrink-0 overflow-hidden rounded-[10px] border border-white/10 bg-[#1A1A1C] ${isPortrait ? "w-[160px]" : "w-[240px]"}`}>
       <video
         src={reel.video_url}
         controls={Number(reel.is_muted) !== 1}
@@ -67,10 +67,10 @@ function ReelCard({ reel }: { reel: any }) {
           const v = e.currentTarget;
           setIsPortrait(v.videoHeight > v.videoWidth);
         }}
-        className={`w-full bg-black object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
+        className={`w-full bg-[#0E0E10] object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
       />
       <div className="px-3 py-2">
-        <p className="text-[10px] font-black tracking-[0.2em] text-[#FC5230]">{reel.branch_name}</p>
+        <p className="text-[10px] font-black tracking-[0.2em] text-[#D01E2E]">{reel.branch_name}</p>
         <p className="text-xs font-bold text-white">{reel.title}</p>
       </div>
     </div>

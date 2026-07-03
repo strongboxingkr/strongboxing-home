@@ -80,12 +80,65 @@ export default async function BlogDetailPage({
 
   const post = rows[0];
 
+  // 관련 글 3단계 fallback
+  let relatedPosts: any[] = [];
+  let relatedTitle = "함께 보면 좋은 글";
+
+  if (post) {
+    // 1순위: 같은 지점 + 같은 카테고리
+    const [relSameRows]: any = await db.query(
+      `SELECT id, title, slug, branch_name, category, created_at
+       FROM homepage_posts
+       WHERE slug != ? AND branch_name = ? AND category = ?
+       ORDER BY created_at DESC LIMIT 5`,
+      [slug, post.branch_name, post.category]
+    );
+    relatedPosts = relSameRows;
+
+    // 2순위: 같은 카테고리 (지점 무관)
+    if (relatedPosts.length < 5) {
+      const exclude1 = [slug, ...relatedPosts.map((p: any) => p.slug)];
+      const ph1 = exclude1.map(() => "?").join(", ");
+      const [relCatRows]: any = await db.query(
+        `SELECT id, title, slug, branch_name, category, created_at
+         FROM homepage_posts
+         WHERE slug NOT IN (${ph1}) AND category = ?
+         ORDER BY created_at DESC LIMIT ?`,
+        [...exclude1, post.category, 5 - relatedPosts.length]
+      );
+      relatedPosts = [...relatedPosts, ...relCatRows];
+    }
+
+    // 3순위: 최신 글로 채우기
+    if (relatedPosts.length < 5) {
+      const exclude2 = [slug, ...relatedPosts.map((p: any) => p.slug)];
+      const ph2 = exclude2.map(() => "?").join(", ");
+      const [relLatestRows]: any = await db.query(
+        `SELECT id, title, slug, branch_name, category, created_at
+         FROM homepage_posts
+         WHERE slug NOT IN (${ph2})
+         ORDER BY created_at DESC LIMIT ?`,
+        [...exclude2, 5 - relatedPosts.length]
+      );
+      relatedPosts = [...relatedPosts, ...relLatestRows];
+    }
+
+    const labelMap: Record<string, string> = {
+      소식: "같은 지점의 다른 소식",
+      이벤트: "관련 이벤트",
+      공지: "함께 확인할 공지",
+      후기: "회원 후기 더 보기",
+      운동팁: "함께 보면 좋은 글",
+    };
+    relatedTitle = labelMap[post.category] ?? "함께 보면 좋은 글";
+  }
+
   if (!post) {
     return (
-      <main className="min-h-screen bg-[#0d0d0f] px-6 py-24 text-white">
+      <main className="min-h-screen bg-[#0E0E10] px-6 py-24 text-white">
         <div className="mx-auto max-w-4xl">
           <h1 className="text-4xl font-black">글을 찾을 수 없습니다.</h1>
-          <a href="/blog" className="mt-6 inline-block text-[#FC5230]">
+          <a href="/blog" className="mt-6 inline-block text-[#D01E2E]">
             블로그로 돌아가기
           </a>
         </div>
@@ -116,7 +169,7 @@ export default async function BlogDetailPage({
   };
 
   return (
-    <main className="min-h-screen bg-[#0d0d0f] text-white">
+    <main className="min-h-screen bg-[#0E0E10] text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -125,18 +178,25 @@ export default async function BlogDetailPage({
       />
 
       <article>
-        <section className="bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.35),transparent_35%),linear-gradient(135deg,#070707,#151515)] px-6 py-24">
+        {/* 헤더 */}
+        <section
+          className="px-6 py-24"
+          style={{ background: "#0E0E10", borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+        >
           <div className="mx-auto max-w-4xl">
-            <a href="/blog" className="mb-10 inline-block text-zinc-400">
+            <a href="/blog" className="mb-10 inline-block text-[#4A4C50] transition hover:text-white">
               ← 블로그로
             </a>
 
             <div className="mb-5 flex items-center gap-3">
-              <span className="rounded-full bg-[#FC5230] px-4 py-2 text-sm font-black">
+              <span className="rounded-full bg-[#D01E2E] px-3 py-1 text-xs font-black">
                 {post.branch_name}
               </span>
-              <span className="text-sm text-zinc-400">
-                {new Date(post.created_at).toLocaleDateString()}
+              <span className="rounded-full border border-[#4A4C50]/30 px-3 py-1 text-xs text-[#8A8D91]">
+                {post.category}
+              </span>
+              <span className="text-xs text-[#4A4C50]">
+                {new Date(post.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}
               </span>
             </div>
 
@@ -146,46 +206,92 @@ export default async function BlogDetailPage({
           </div>
         </section>
 
+        {/* 본문 */}
         <section className="px-6 py-20">
           <div className="mx-auto max-w-4xl">
             <MarkdownContent content={String(post.content || "")} />
 
-            <section className="mt-16 border-t border-white/10 pt-12">
-            <h2 className="mb-6 text-3xl font-black">
-              스트롱복싱 지점 둘러보기
-            </h2>
+            {/* ── 관련 글 ── */}
+            {relatedPosts.length > 0 && (
+              <section className="mt-20" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 52 }}>
+                <p className="mb-1.5 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>
+                  RELATED
+                </p>
+                <h2 className="mb-8 text-lg font-black" style={{ color: "#8A8D91", letterSpacing: "-0.02em" }}>
+                  {relatedTitle}
+                </h2>
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              {[
+                <ul>
+                  {relatedPosts.map((rp: any) => (
+                    <li key={rp.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                      <a
+                        href={`/blog/${rp.slug}`}
+                        className="group flex items-center justify-between gap-4 py-5 transition-all duration-200"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="mb-1.5 text-[11px] font-bold" style={{ color: "#5A5C61" }}>
+                            {rp.branch_name} · {rp.category} · {new Date(rp.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}
+                          </p>
+                          <p className="truncate text-sm font-bold transition-colors duration-200 group-hover:text-white" style={{ color: "#C8CACD" }}>
+                            {rp.title}
+                          </p>
+                        </div>
+                        <span
+                          className="shrink-0 text-sm transition-transform duration-300 group-hover:translate-x-1"
+                          style={{ color: "#5A5C61" }}
+                        >
+                          →
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* ── 지점 둘러보기 ── */}
+            <section className="mt-16 border-t border-[#4A4C50]/30 pt-12">
+              <h2 className="mb-6 text-xl font-black" style={{ color: "#8A8D91" }}>
+                스트롱복싱 지점 둘러보기
+              </h2>
+
+              <div className="grid gap-2 sm:grid-cols-2">
+                {[
                   ["철산복싱 · 철산동복싱 · 광명복싱", "/branches/cheolsan"],
                   ["개봉복싱 · 고척복싱 · 구로구복싱", "/branches/gaebong"],
                   ["목동복싱 · 오목교복싱 · 양천구복싱", "/branches/mokdong"],
                   ["신정복싱 · 신정동복싱 · 양천구복싱", "/branches/sinjeong"],
                   ["영등포복싱 · 신길동복싱", "/branches/yeongdeungpo"],
                 ].map(([label, href]) => (
-                <a
-                  key={href}
-                  href={href}
-                  className="rounded-2xl border border-white/10 bg-[#171719] px-5 py-4 font-black transition hover:border-[#FC5230]"
-                >
-                  {label} 바로가기 →
-                </a>
-              ))}
-            </div>
-          </section>
+                  <a
+                    key={href}
+                    href={href}
+                    className="rounded-[10px] border border-[#4A4C50]/30 bg-[#141416] px-5 py-4 text-sm font-bold text-[#8A8D91] transition duration-200 hover:border-white/25 hover:text-white"
+                  >
+                    {label} →
+                  </a>
+                ))}
+              </div>
+            </section>
 
-            <div className="mt-14 rounded-[30px] bg-[#FC5230] p-8 text-center">
-              <h2 className="mb-4 text-3xl font-black">
+            {/* ── CTA ── */}
+            <div
+              className="mt-14 p-10 text-center"
+              style={{ borderRadius: 16, background: "#141416", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <p className="mb-2 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>STRONG BOXING</p>
+              <h2 className="mb-4 text-2xl font-black" style={{ color: "#F5F4F1", letterSpacing: "-0.03em" }}>
                 가까운 지점에서 상담 받아보세요
               </h2>
-              <p className="mb-6 leading-7">
+              <p className="mb-8 leading-7" style={{ color: "#8A8D91" }}>
                 처음이어도 괜찮습니다. 목적에 맞는 운동 방향을 안내해드립니다.
               </p>
               <a
                 href="/reservation"
-                className="inline-flex rounded-full bg-black px-7 py-4 font-black text-white"
+                className="group inline-flex items-center gap-2 rounded-[10px] bg-[#D01E2E] px-7 py-3.5 font-black text-white transition-all duration-300 hover:bg-[#B71C2B]"
               >
-                지점 확인하기
+                지점 상담 예약하기
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>
             </div>
           </div>

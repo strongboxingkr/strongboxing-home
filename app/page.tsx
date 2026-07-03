@@ -1,4 +1,4 @@
-import BoxingCalculator from "./components/BoxingCalculator";
+﻿import BoxingCalculator from "./components/BoxingCalculator";
 import { db } from "@/lib/db";
 import ConsultationForm from "./components/ConsultationForm";
 import ScrollLink from "./components/ScrollLink";
@@ -11,6 +11,7 @@ import NaverReviewsSection from "./components/NaverReviewsSection";
 import GallerySection from "./components/GallerySection";
 import RevealObserver from "./components/RevealObserver";
 import BranchMap from "./components/BranchMap";
+import BranchHeroGrid from "./components/BranchHeroGrid";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -19,13 +20,10 @@ export const metadata: Metadata = {
   title: "스트롱복싱 | 복싱 PT · 다이어트 복싱 · 체력증진",
   description:
     "서울 복싱장 스트롱복싱. 철산·개봉·목동·신정·영등포 5개 지점 운영. 초보자 환영, 복싱 PT, 다이어트 복싱, 체력증진 프로그램. 네이버 평점 4.9.",
-  alternates: {
-    canonical: "https://strongboxing.kr",
-  },
+  alternates: { canonical: "https://strongboxing.kr" },
   openGraph: {
     title: "스트롱복싱 | 복싱 PT · 다이어트 복싱 · 체력증진",
-    description:
-      "서울 5개 지점 운영 복싱짐. 초보자부터 다이어트, PT까지. 네이버 평점 4.9.",
+    description: "서울 5개 지점 운영 복싱짐. 초보자부터 다이어트, PT까지. 네이버 평점 4.9.",
     url: "https://strongboxing.kr",
     siteName: "스트롱복싱",
     locale: "ko_KR",
@@ -53,8 +51,7 @@ const branches = [
     reviewCount: 229,
     badges: ["초보자 환영", "구로구 복싱"],
     instagram: "https://www.instagram.com/strongboxing_gaebong",
-    booking:
-      "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
+    booking: "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
     naverMap: "https://naver.me/5aFquqcz",
   },
   {
@@ -114,11 +111,22 @@ const branches = [
     reviewCount: 77,
     badges: ["퇴근 후 운동", "영등포 복싱"],
     instagram: "https://www.instagram.com/stron_gboxinggym",
-    booking:
-      "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll",
+    booking: "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll",
     naverMap: "https://naver.me/G4yQwkR0",
   },
 ];
+
+/* ─────────────────────────────────────────────
+   Design tokens
+   PRIMARY  #0E0E10
+   SURFACE  #141416
+   CARD     #1A1A1C
+   BORDER   rgba(255,255,255,0.07)
+   GRAY1    #8A8D91   (body text muted)
+   GRAY2    #5A5C61   (very muted)
+   WHITE    #F5F4F1
+   RED      #D01E2E   (CTA only — ≤5%)
+───────────────────────────────────────────── */
 
 export default async function HomePage() {
   const [rows]: any = await db.query(`
@@ -127,687 +135,611 @@ export default async function HomePage() {
     ORDER BY created_at DESC
     LIMIT 3
   `);
-
   const latestPosts = rows;
 
   return (
+    <>
+      {/*<SplashScreen />*/}
+      <main style={{ background: "#0E0E10", color: "#F5F4F1" }} className="min-h-screen">
+        <RevealObserver />
 
-     <>
-    {/*<SplashScreen />*/}
-
-    <main className="min-h-screen bg-[#16171A] text-white">
-      <RevealObserver />
-      <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-[#16171A]/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-          <a href="/" className="flex items-center gap-3">
-            <img
-              src="/icon.png"
-              alt="스트롱복싱"
-              className="h-9 w-9 object-contain"
-            />
-            <span className="text-lg font-black tracking-tight">
-              STRONG<span className="text-[#FC5230]">BOXING</span>
-            </span>
-          </a>
-
-          <nav className="hidden items-center gap-7 text-sm font-bold text-zinc-300 md:flex">
-            <ScrollLink targetId="branch" className="transition hover:text-[#FC5230]">
-              지점
-            </ScrollLink>
-            <ScrollLink targetId="program" className="transition hover:text-[#FC5230]">
-              프로그램
-            </ScrollLink>
-            <a href="/blog" className="transition hover:text-[#FC5230]">
-              후기/소식
+        {/* ══════════════════════════════════════
+            HEADER
+        ══════════════════════════════════════ */}
+        <header
+          className="fixed left-0 top-0 z-50 w-full"
+          style={{ background: "rgba(14,14,16,0.92)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+            {/* 로고 */}
+            <a href="/" className="flex items-center gap-2.5">
+              <img src="/icon.png" alt="스트롱복싱" className="h-7 w-7 object-contain" />
+              <div className="flex flex-col leading-none">
+                <span className="text-[15px] font-black tracking-[0.08em]" style={{ color: "#F5F4F1" }}>STRONG</span>
+                <span className="text-[9px] font-black tracking-[0.22em]" style={{ color: "#D01E2E" }}>— BOXING —</span>
+              </div>
             </a>
-          </nav>
 
-          <ReservationButton className="rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black">
-            방문 상담 예약
-          </ReservationButton>
-        </div>
-      </header>
-
-      <section className="relative overflow-hidden px-5 pt-24 pb-16 md:px-6">
-        <img
-          src="/images/gallery/gallery-1.jpg"
-          alt=""
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20"
-        />
-        <div className="pointer-events-none absolute inset-0 bg-[#16171A]/80" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(252,82,48,.10),transparent_30%)]" />
-
-        <div className="relative z-10 mx-auto grid min-h-[76vh] max-w-7xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-          <div>
-            <p className="mb-4 text-xs font-black tracking-[0.32em] text-[#FC5230] md:text-sm">
-              STRONG BOXING
-            </p>
-
-            <h1 className="text-[52px] font-black leading-[0.85] tracking-[-0.08em] md:text-[92px]">
-              누구나
-              <br />
-              시작할 수 있는
-              <br />
-              복싱
-            </h1>
-
-            <p className="mt-7 max-w-xl text-base leading-7 text-zinc-400 md:text-lg md:leading-8">
-              처음이어도 괜찮습니다.
-              <br />
-              스트롱복싱은 운동을 오래 할 수 있는 분위기를 만듭니다.
-            </p>
-
-            <div className="mt-9 flex gap-3 overflow-x-auto pb-1 md:overflow-visible">
-              <ReservationButton className="shrink-0 rounded-full bg-[#FC5230] px-7 py-4 text-center font-black transition hover:scale-[1.02]">
-                방문 상담 예약
-              </ReservationButton>
-
-              <a
-                href="/blog"
-                className="shrink-0 rounded-full border border-white/15 bg-white/5 px-7 py-4 text-center font-black backdrop-blur"
-              >
-                운동 후기 보기
-              </a>
-            </div>
-
-            <div className="mt-10 flex flex-wrap gap-3">
-              {["초보자 가능", "다이어트 복싱", "코치 직접 지도"].map(
-                (item) => (
-                  <div
-                    key={item}
-                    className="border border-white/10 bg-[#202126] px-5 py-3 text-sm font-bold text-zinc-300"
+            {/* 네비 */}
+            <nav className="hidden items-center gap-8 md:flex">
+              {["지점", "프로그램", "후기/소식"].map((label, i) => {
+                const ids = ["branch", "program", ""];
+                return ids[i] ? (
+                  <ScrollLink key={label} targetId={ids[i]}
+                    className="relative text-sm font-semibold text-[#8A8D91] transition-colors hover:text-white"
                   >
-                    {item}
-                  </div>
-                )
-              )}
-            </div>
-          </div>
+                    {label}
+                  </ScrollLink>
+                ) : (
+                  <a key={label} href="/blog"
+                    className="text-sm font-semibold transition-colors hover:text-white"
+                    style={{ color: "#8A8D91" }}
+                  >
+                    {label}
+                  </a>
+                );
+              })}
+            </nav>
 
-          <div
-            id="branch"
-            className="-mx-5 flex gap-4 overflow-x-auto px-5 pb-4 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0"
-          >
-            {branches.slice(0, 5).map((branch, index) => (
-              <a
-                key={branch.slug}
-                href={`/branches/${branch.slug}`}
-                className={`group relative overflow-hidden border border-white/10 bg-[#202126] min-w-[78vw] md:min-w-0 ${
-                  index === 0 ? "h-[320px] md:col-span-2" : "h-[250px]"
-                }`}
-              >
-                <img
-                  src={branch.image}
-                  alt={branch.name}
-                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#16171A] via-[#16171A]/15 to-transparent" />
-
-                <div className="absolute bottom-0 left-0 p-6">
-                  <p className="mb-2 text-xs font-black tracking-[0.24em] text-[#FC5230]">
-                    STRONG BOXING
-                  </p>
-                  <h3 className="text-4xl font-black tracking-[-0.06em]">
-                    {branch.name}
-                  </h3>
-                  <p className="mt-2 text-sm font-bold text-zinc-100">
-                    ★ {branch.score} · 네이버 리뷰 {branch.reviewCount}개
-                  </p>
-
-                  <p className="mt-1 line-clamp-1 text-sm text-zinc-300">
-                    {branch.review}
-                  </p>
-
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {branch.badges?.map((badge) => (
-                      <span
-                        key={badge}
-                        className="rounded-full bg-white/10 px-3 py-1 text-xs font-black text-white"
-                      >
-                        {badge}
-                      </span>
-                    ))}
-                  </div>
-
-                  <p className="mt-3 inline-flex rounded-full bg-[#FC5230] px-4 py-2 text-xs font-black text-white">
-                    지점 자세히 보기 →
-                  </p>
-
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* HOW WE TRAIN 섹션 */}
-      <section className="px-6 py-28 bg-[#111214]">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-14">
-            <p className="reveal mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">HOW WE TRAIN</p>
-            <h2 className="reveal d1 text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
-              정해진 수업 시간이
-              <br />
-              없습니다
-            </h2>
-            <p className="reveal d2 mt-6 max-w-xl text-lg leading-8 text-zinc-400">
-              운영시간 내 편하신 시간에 방문하시면 바로 운동을 시작할 수 있어요.
-            </p>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-2">
-            <div className="border border-white/10 bg-[#202126] p-8">
-              <p className="mb-4 text-xs font-black tracking-[0.2em] text-[#FC5230]">MY SCHEDULE</p>
-              <h3 className="mb-4 text-3xl font-black tracking-[-0.05em]">내 시간에 맞게</h3>
-              <p className="mb-7 leading-8 text-zinc-400">
-                수업 예약 없이, 운영시간 내 언제든 방문하면 바로 운동 시작.
-                직장인, 주부, 학생 모두 가능합니다.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <span className="rounded-full border border-[#FC5230]/40 bg-[#FC5230]/10 px-4 py-2 text-sm font-black text-[#FC5230]">BEGINNER FRIENDLY</span>
-                <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-black text-zinc-300">개인별 진행</span>
-              </div>
-            </div>
-
-            <div className="border border-white/10 bg-[#202126] p-8">
-              <p className="mb-4 text-xs font-black tracking-[0.2em] text-[#FC5230]">PROGRAM</p>
-              <h3 className="mb-6 text-3xl font-black tracking-[-0.05em]">1회 운동 구성</h3>
-              <div className="flex flex-col gap-4">
-                {[
-                  ["몸풀기", "스트레칭 & 워밍업"],
-                  ["줄넘기 3R", "기초 체력 훈련"],
-                  ["기초자세 & 스텝", "복싱 기본기"],
-                  ["미트트레이닝", "코치와 1:1 실전"],
-                  ["샌드백", "파워 & 지구력"],
-                  ["체력운동", "코어 마무리"],
-                ].map(([step, desc], i) => (
-                  <div key={step} className="flex items-center gap-4 border-b border-white/5 pb-4 last:border-0 last:pb-0">
-                    <span className="w-5 shrink-0 text-xs font-black text-[#FC5230]">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="font-black">{step}</span>
-                    <span className="ml-auto text-sm text-zinc-500">{desc}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-5 flex flex-col items-center justify-between gap-6 border border-[#FC5230] bg-[#202126] p-8 sm:flex-row">
-            <p className="text-xl font-black">운영시간 내 언제든 시작 가능!</p>
-            <a
-              href="/#branch"
-              className="shrink-0 border border-[#FC5230] px-7 py-4 text-sm font-black text-[#FC5230]"
-            >
-              지점 운영시간 확인 →
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* 코치 소개 섹션 */}
-      <section className="px-6 py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-14">
-            <p className="reveal mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">COACH</p>
-            <h2 className="reveal d1 text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
-              직접 가르치는
-              <br />
-              전문 코치진.
-            </h2>
-          </div>
-
-          {/* 대표 */}
-          <a
-            href="https://www.instagram.com/strongboxing_official"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mb-8 flex flex-col overflow-hidden border border-[#FC5230]/40 bg-[#1a1a1c] transition hover:border-[#FC5230] md:flex-row"
-          >
-            <div className="h-64 w-full shrink-0 md:h-auto md:w-64">
-              <img src="/images/coaches/hansol.jpg" alt="한솔 대표" className="h-full w-full object-cover object-top" />
-            </div>
-            <div className="flex flex-1 flex-col justify-center gap-4 p-10">
-              <p className="text-sm font-black tracking-[0.35em] text-[#FC5230]">REPRESENTATIVE</p>
-              <h3 className="text-5xl font-black tracking-[-0.05em]">한솔 대표</h3>
-              <p className="text-zinc-400">스트롱복싱 대표 · 전 지점 총괄</p>
-            </div>
-          </a>
-
-          {/* 지점별 코치 */}
-          <div className="grid gap-4 md:grid-cols-3">
-            {[
-              { branch: "개봉점", name: "안진호", role: "관장", instagram: "dkswkd3" },
-              { branch: "신정점", name: "유상혁", role: "관장", instagram: "robuste_hyeok" },
-              { branch: "신정점", name: "정동주", role: "코치", instagram: "jdj_00_" },
-              { branch: "목동점", name: "송재용", role: "관장", instagram: "nan_yong_" },
-              { branch: "목동점", name: "양승호", role: "코치", instagram: "qortor0_0" },
-              { branch: "철산점", name: "안도연", role: "코치", instagram: "strongboxing_andy" },
-            ].map((coach) => (
-              <a
-                key={coach.name}
-                href={`https://www.instagram.com/${coach.instagram}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-white/10 bg-[#202126] p-6 transition hover:border-[#FC5230]"
-              >
-                <p className="mb-1 text-xs font-black tracking-[0.2em] text-[#FC5230]">{coach.branch}</p>
-                <h3 className="mb-1 text-xl font-black tracking-[-0.03em]">{coach.name} {coach.role}</h3>
-                <p className="text-xs text-zinc-500">@{coach.instagram}</p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <ReelsSection />
-
-      <NaverReviewsSection />
-
-      <section id="calculator" className="bg-[#111214]">
-        <BoxingCalculator />
-      </section>
-
-      {/* 처음 오면 어떻게 되나요 */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <p className="reveal mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">FIRST VISIT</p>
-            <h2 className="reveal d1 text-4xl font-black tracking-[-0.05em] md:text-5xl">처음 오면 어떻게 되나요?</h2>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-4">
-            {[
-              ["01", "방문 상담 예약", "홈페이지나 네이버로 간단히 예약"],
-              ["02", "체육관 방문", "편한 복장으로 방문하시면 돼요"],
-              ["03", "코치와 1:1 상담", "목적·체력·일정 맞춤 안내"],
-              ["04", "바로 운동 시작", "당일 체험도 가능합니다"],
-            ].map(([step, title, desc]) => (
-              <div key={step} className="border border-white/10 bg-[#202126] p-7">
-                <p className="mb-6 text-3xl font-black text-[#FC5230]">{step}</p>
-                <h3 className="mb-2 text-lg font-black">{title}</h3>
-                <p className="text-sm leading-7 text-zinc-400">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="program" className="px-6 py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <div>
-              <p className="reveal mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
-                PROGRAM
-              </p>
-              <h2 className="reveal d1 text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
-                복싱은 어렵지 않게,
-                <br />
-                운동은 확실하게.
-              </h2>
-            </div>
-            <p className="max-w-md leading-8 text-zinc-400">
-              처음 배우는 자세부터 다이어트, 체력향상, 스트레스 해소까지
-              목적에 맞는 수업으로 진행합니다.
-            </p>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {[
-              ["01", "복싱 입문", "기본자세, 스텝, 펀치부터 차근차근"],
-              ["02", "다이어트 복싱", "재밌게 땀나는 그룹 복싱 수업"],
-              ["03", "코치 직접 지도", "목적에 맞춘 밀착 트레이닝"],
-            ].map(([num, title, desc]) => (
-              <div
-                key={num}
-                className="border border-white/10 bg-[#202126] p-8 transition hover:border-[#FC5230]"
-              >
-                <p className="mb-10 text-sm font-black text-[#FC5230]">
-                  {num}
-                </p>
-                <h3 className="mb-4 text-3xl font-black tracking-[-0.05em]">
-                  {title}
-                </h3>
-                <p className="leading-7 text-zinc-400">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <FaqSection />
-
-      <section className="px-6 py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12">
-            <p className="reveal mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
-              STRONG SPACE
-            </p>
-            <h2 className="reveal d1 text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
-              사진으로 먼저 보는
-              <br />
-              스트롱복싱의 공간.
-            </h2>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="overflow-hidden border border-white/10">
-              <img
-                src="/images/gallery/gallery-1.jpg"
-                alt="시설"
-                className="h-full min-h-[520px] w-full object-cover transition duration-700 hover:scale-105"
-              />
-            </div>
-
-            <div className="grid gap-4">
-              <div className="overflow-hidden border border-white/10">
-                <img
-                  src="/images/gallery/gallery-2.jpg"
-                  alt="시설"
-                  className="h-[250px] w-full object-cover transition duration-700 hover:scale-105"
-                />
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <img
-                  src="/images/gallery/gallery-3.jpg"
-                  alt="시설"
-                  className="h-[250px] w-full border border-white/10 object-cover"
-                />
-                <img
-                  src="/images/gallery/gallery-4.jpg"
-                  alt="시설"
-                  className="h-[250px] w-full border border-white/10 object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-24">
-        <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-4">
-          {[
-            ["4.9", "평균 리뷰 만족도"],
-            ["5", "운영 지점"],
-            ["VISIT", "방문 상담 예약"],
-            ["BEGINNER", "초보자 가능"],
-          ].map(([num, text]) => (
-            <div
-              key={num}
-              className="border border-white/10 bg-[#202126] p-8"
-            >
-              <p className="text-5xl font-black tracking-[-0.06em] text-[#FC5230]">
-                {num}
-              </p>
-              <p className="mt-4 font-bold text-zinc-300">{text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden px-6 py-32">
-        <img
-          src="/images/gallery/gallery-1.jpg"
-          alt="스트롱복싱"
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="pointer-events-none absolute inset-0 bg-[#16171A]/80" />
-
-        <div className="relative z-10 mx-auto max-w-5xl text-center">
-          <p className="reveal mb-5 text-sm font-black tracking-[0.35em] text-[#FC5230]">
-            STRONG BOXING
-          </p>
-          <h2 className="reveal d1 text-5xl font-black leading-[0.9] tracking-[-0.07em] md:text-8xl">
-            스트롱복싱에서
-            <br />
-            첫 운동을 시작해보세요.
-          </h2>
-          <p className="reveal d2 mx-auto mt-8 max-w-2xl text-lg leading-8 text-zinc-300">
-            가까운 지점에서 편하게 상담받고 운동을 시작해보세요.
-          </p>
-
-          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-            <ReservationButton className="bg-[#FC5230] px-9 py-5 text-lg font-black">
-            방문 상담 예약하기
+            <ReservationButton className="rounded-[10px] bg-[#D01E2E] px-5 py-2.5 text-sm font-black text-white transition hover:bg-[#B71C2B]">
+              방문 상담 예약
             </ReservationButton>
-            <a
-              href="/blog"
-              className="border border-white/20 bg-white/10 px-9 py-5 text-lg font-black backdrop-blur"
-            >
-              운동 후기 보기
-            </a>
+          </div>
+        </header>
+
+        {/* ══════════════════════════════════════
+            HERO — 좌: 카피 / 우: 지점 Magazine Grid
+        ══════════════════════════════════════ */}
+        <section className="relative overflow-hidden" style={{ background: "#0E0E10" }}>
+          {/* 배경 텍스처 — 아주 살짝 */}
+          <div className="pointer-events-none absolute inset-0"
+            style={{ background: "radial-gradient(ellipse 80% 60% at 30% 50%, rgba(255,255,255,0.015) 0%, transparent 70%)" }} />
+          {/* 상단 레드 라인 */}
+          <div className="pointer-events-none absolute left-0 top-0 h-[2px] w-full" style={{ background: "#D01E2E" }} />
+
+          <div className="mx-auto max-w-[1440px] px-6 md:px-10">
+            <div className="grid min-h-screen items-center gap-12 py-28 lg:grid-cols-[1fr_1.15fr] lg:gap-8 lg:py-24">
+
+              {/* ── 왼쪽: 카피 ── */}
+              <div className="flex flex-col justify-center">
+                <p className="mb-7 text-[10px] font-black tracking-[0.45em]" style={{ color: "#5A5C61" }}>
+                  STRONG BOXING — 서울 · 경기 5개 지점
+                </p>
+
+                <h1 style={{ fontSize: "clamp(56px, 8.5vw, 120px)", lineHeight: 0.87, letterSpacing: "-0.05em", fontWeight: 900 }}>
+                  <span style={{ color: "#F5F4F1" }}>STRONGER</span>
+                  <br />
+                  <span style={{ WebkitTextStroke: "1.5px #F5F4F1", WebkitTextFillColor: "transparent", color: "transparent" }}>
+                    EVERY DAY
+                  </span>
+                </h1>
+
+                <div className="my-7 h-[2px] w-14" style={{ background: "#D01E2E" }} />
+
+                <p className="max-w-sm text-base leading-8" style={{ color: "#8A8D91" }}>
+                  처음이어도 괜찮습니다.<br />
+                  체계적인 수업과 전문 코치로<br />더 강한 나를 만듭니다.
+                </p>
+
+                <div className="mt-9 flex flex-wrap gap-3">
+                  <ReservationButton className="group rounded-[10px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
+                    지점 상담/예약
+                    <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </ReservationButton>
+                  <a
+                    href="#program"
+                    className="group inline-flex items-center gap-2 rounded-[10px] px-7 py-3.5 text-sm font-black transition-all duration-300 hover:bg-white/6"
+                    style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}
+                  >
+                    프로그램 보기
+                    <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </a>
+                </div>
+
+                {/* 스탯 */}
+                <div className="mt-14 flex gap-8" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 24 }}>
+                  {[["4.9", "평균 리뷰 평점"], ["5", "운영 지점"], ["100%", "초보자 환영"]].map(([n, t]) => (
+                    <div key={n}>
+                      <p className="text-2xl font-black" style={{ color: "#F5F4F1" }}>{n}</p>
+                      <p className="mt-0.5 text-[11px]" style={{ color: "#3A3A3E" }}>{t}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── 오른쪽: Magazine 지점 그리드 ── */}
+              <BranchHeroGrid branches={branches} />
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════
+            FEATURE STRIP (아이콘 4개)
+        ══════════════════════════════════════ */}
+        <div style={{ background: "#141416", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-0 px-6 md:grid-cols-4">
+            {[
+              ["전문 코칭", "경험 많은 관장·코치의 체계적인 지도"],
+              ["체력 & 기술 향상", "기술 향상은 물론 체력과 자신감까지"],
+              ["다이어트 효과", "전신 운동으로 효과적인 체지방 감량"],
+              ["초보자 환영", "복싱이 처음이어도 걱정 없이 시작"],
+            ].map(([title, desc], i) => (
+              <div
+                key={title}
+                className="px-8 py-7"
+                style={{ borderRight: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none" }}
+              >
+                <p className="mb-1.5 text-sm font-black" style={{ color: "#F5F4F1" }}>{title}</p>
+                <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>{desc}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
 
-      <section id="news" className="px-6 py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <div>
-              <p className="reveal mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
-                NEWS & REVIEW
+
+        {/* ══════════════════════════════════════
+            HOW WE TRAIN
+        ══════════════════════════════════════ */}
+        <section className="px-6 py-32 md:px-8" style={{ background: "#141416" }}>
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-16">
+              <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>HOW WE TRAIN</p>
+              <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
+                정해진 수업 시간이<br />없습니다
+              </h2>
+              <p className="reveal d2 mt-6 max-w-lg text-base leading-8" style={{ color: "#8A8D91" }}>
+                운영시간 내 편하신 시간에 방문하시면 바로 운동을 시작할 수 있어요.
               </p>
-              <h2 className="reveal d1 text-5xl font-black leading-[0.95] tracking-[-0.07em] md:text-7xl">
-                지점별 소식과 후기.
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="p-8" style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
+                <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>MY SCHEDULE</p>
+                <h3 className="mb-4 text-2xl font-black" style={{ letterSpacing: "-0.04em" }}>내 시간에 맞게</h3>
+                <p className="mb-7 leading-8 text-sm" style={{ color: "#8A8D91" }}>
+                  수업 예약 없이, 운영시간 내 언제든 방문하면 바로 운동 시작.
+                  직장인, 주부, 학생 모두 가능합니다.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-[10px] px-3 py-1.5 text-xs font-bold" style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>BEGINNER FRIENDLY</span>
+                  <span className="rounded-[10px] px-3 py-1.5 text-xs font-bold" style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>개인별 진행</span>
+                </div>
+              </div>
+
+              <div className="p-8" style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
+                <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>1 SESSION</p>
+                <h3 className="mb-6 text-2xl font-black" style={{ letterSpacing: "-0.04em" }}>1회 운동 구성</h3>
+                <div className="space-y-3">
+                  {[
+                    ["01", "몸풀기", "스트레칭 & 워밍업"],
+                    ["02", "줄넘기 3R", "기초 체력 훈련"],
+                    ["03", "기초자세 & 스텝", "복싱 기본기"],
+                    ["04", "미트트레이닝", "코치와 1:1 실전"],
+                    ["05", "샌드백", "파워 & 지구력"],
+                    ["06", "체력운동", "코어 마무리"],
+                  ].map(([num, step, desc], i) => (
+                    <div key={step} className="flex items-center gap-4 pb-3" style={{ borderBottom: i < 5 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
+                      <span className="w-5 shrink-0 text-[10px] font-black" style={{ color: "#5A5C61" }}>{num}</span>
+                      <span className="text-sm font-bold" style={{ color: "#F5F4F1" }}>{step}</span>
+                      <span className="ml-auto text-xs" style={{ color: "#5A5C61" }}>{desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-col items-center justify-between gap-4 p-7 sm:flex-row"
+              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
+              <p className="font-black text-lg" style={{ color: "#F5F4F1" }}>운영시간 내 언제든 시작 가능!</p>
+              <a href="/#branch"
+                className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] px-6 py-3 text-sm font-black transition-all duration-300 hover:bg-white/6"
+                style={{ border: "1px solid rgba(255,255,255,0.15)", color: "#F5F4F1" }}>
+                지점 운영시간 확인
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════
+            코치 소개
+        ══════════════════════════════════════ */}
+        <section className="px-6 py-32 md:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-16">
+              <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>COACH</p>
+              <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
+                직접 가르치는<br />전문 코치진.
               </h2>
             </div>
-            <a href="/blog" className="font-black text-[#FC5230]">
-              전체 글 보기 →
-            </a>
-          </div>
 
-          {latestPosts.length > 0 ? (
-            <div className="grid gap-5 md:grid-cols-3">
-              {latestPosts.map((post: any) => (
-                <a
-                  key={post.id}
-                  href={`/blog/${post.slug}`}
-                  className="border border-white/10 bg-[#202126] p-8 transition hover:border-[#FC5230]"
+            <a
+              href="https://www.instagram.com/strongboxing_official"
+              target="_blank" rel="noopener noreferrer"
+              className="mb-4 flex flex-col overflow-hidden transition-opacity hover:opacity-90 md:flex-row"
+              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}
+            >
+              <div className="h-60 w-full shrink-0 md:h-auto md:w-72">
+                <img src="/images/coaches/hansol.jpg" alt="한솔 대표" className="h-full w-full object-cover object-top" style={{ filter: "grayscale(0.1)" }} />
+              </div>
+              <div className="flex flex-1 flex-col justify-center gap-3 p-10">
+                <p className="text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>REPRESENTATIVE</p>
+                <h3 className="font-black" style={{ fontSize: "clamp(32px, 4vw, 48px)", letterSpacing: "-0.04em" }}>한솔 대표</h3>
+                <p className="text-sm" style={{ color: "#8A8D91" }}>스트롱복싱 대표 · 전 지점 총괄</p>
+              </div>
+            </a>
+
+            <div className="grid gap-3 md:grid-cols-3">
+              {[
+                { branch: "개봉점", name: "안진호", role: "관장", instagram: "dkswkd3" },
+                { branch: "신정점", name: "유상혁", role: "관장", instagram: "robuste_hyeok" },
+                { branch: "신정점", name: "정동주", role: "코치", instagram: "jdj_00_" },
+                { branch: "목동점", name: "송재용", role: "관장", instagram: "nan_yong_" },
+                { branch: "목동점", name: "양승호", role: "코치", instagram: "qortor0_0" },
+                { branch: "철산점", name: "안도연", role: "코치", instagram: "strongboxing_andy" },
+              ].map((coach) => (
+                <a key={coach.name}
+                  href={`https://www.instagram.com/${coach.instagram}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="p-6 transition-opacity hover:opacity-80"
+                  style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}
                 >
-                  <div className="mb-5 flex items-center justify-between">
-                    <span className="bg-[#FC5230] px-4 py-2 text-sm font-black">
-                      {post.branch_name}
-                    </span>
-                    <span className="text-sm text-zinc-500">
-                      {new Date(post.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <h3 className="mb-4 text-3xl font-black leading-tight tracking-[-0.05em]">
-                    {post.title}
+                  <p className="mb-1 text-[10px] font-black tracking-[0.2em]" style={{ color: "#5A5C61" }}>{coach.branch}</p>
+                  <h3 className="mb-1 text-lg font-black" style={{ letterSpacing: "-0.03em", color: "#F5F4F1" }}>
+                    {coach.name} {coach.role}
                   </h3>
-                  <p className="line-clamp-3 leading-7 text-zinc-400">
-                    {post.description}
-                  </p>
+                  <p className="text-xs" style={{ color: "#5A5C61" }}>@{coach.instagram}</p>
                 </a>
               ))}
             </div>
-          ) : (
-            <div className="border border-white/10 bg-[#202126] p-10 text-center">
-              <h3 className="mb-3 text-2xl font-black">소식 준비중</h3>
-              <p className="text-zinc-400">
-                곧 지점별 운동 소식과 후기를 업데이트할 예정입니다.
-              </p>
+          </div>
+        </section>
+
+        <ReelsSection />
+
+        <NaverReviewsSection />
+
+        <section id="calculator" style={{ background: "#0E0E10" }}>
+          <BoxingCalculator />
+        </section>
+
+        {/* ══════════════════════════════════════
+            FIRST VISIT
+        ══════════════════════════════════════ */}
+        <section className="px-6 py-32 md:px-8" style={{ background: "#141416" }}>
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-16 text-center">
+              <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>FIRST VISIT</p>
+              <h2 className="reveal d1 font-black" style={{ fontSize: "clamp(36px, 5vw, 56px)", letterSpacing: "-0.05em" }}>
+                처음 오면 어떻게 되나요?
+              </h2>
             </div>
-          )}
-        </div>
-      </section>
 
-      <section className="sr-only">
-        <h2>스트롱복싱 지점별 복싱장 안내</h2>
-
-        <p>
-          스트롱복싱은 개봉점, 신정점, 목동점, 철산점, 영등포점으로 운영되는 복싱 체육관입니다.
-          개봉 복싱, 개봉동 복싱, 구로 복싱, 신정 복싱, 신정동 복싱, 양천구 복싱,
-          목동 복싱, 목동 복싱장, 철산 복싱, 철산동 복싱, 광명 복싱,
-          영등포 복싱, 영등포구 복싱을 찾는 분들이 방문하고 있습니다.
-        </p>
-
-        <p>
-          초보자 복싱, 여성 복싱, 다이어트 복싱, 직장인 운동, 학생 운동,
-          키즈 복싱, 어린이 복싱, 체력 향상 운동, 스트레스 해소 운동을
-          목적에 맞게 시작할 수 있습니다.
-        </p>
-
-        <h3>개봉점</h3>
-        <p>
-          서울 구로구 개봉동 166-5 유원빌딩 지하 1층.
-          개봉 복싱, 개봉동 복싱장, 구로 복싱, 개봉 다이어트 복싱.
-          운영시간 월요일부터 금요일 13시부터 23시까지.
-          전화번호 02-2060-1279.
-        </p>
-
-        <h3>신정점</h3>
-        <p>
-          서울 양천구 신정동 1021-7 태화상가 2층.
-          신정 복싱, 신정동 복싱장, 양천구 복싱, 신정 다이어트 복싱.
-          운영시간 평일 10시부터 24시까지, 14시부터 15시까지 휴게,
-          토요일 10시부터 16시까지.
-          전화번호 02-2647-3373.
-        </p>
-
-        <h3>목동점</h3>
-        <p>
-          서울 양천구 목동 909-6 우방빌딩 4층.
-          목동 복싱, 목동 복싱장, 양천구 복싱, 목동 다이어트 복싱,
-          목동 여성 복싱, 목동 직장인 운동.
-          운영시간 평일 14시부터 24시까지, 토요일 11시부터 16시까지.
-          전화번호 02-2643-5971.
-        </p>
-
-        <h3>철산점</h3>
-        <p>
-          경기도 광명시 철산동 56-14 3층.
-          철산 복싱, 철산동 복싱장, 광명 복싱, 광명 다이어트 복싱,
-          철산역 복싱, 철산 여성 복싱.
-          운영시간 평일 14시부터 23시까지, 토요일과 일요일 14시부터 18시까지.
-          전화번호 02-2066-0406.
-        </p>
-
-        <h3>영등포점</h3>
-        <p>
-          서울 영등포구 도림로 313 건영상가 2층.
-          영등포 복싱, 영등포구 복싱장, 영등포 다이어트 복싱,
-          영등포 직장인 운동, 도림동 복싱.
-          운영시간 평일 13시부터 23시까지.
-          전화번호 02-831-9312.
-        </p>
-
-        <h2>스트롱복싱 운동 영상</h2>
-        <p>
-          스트롱복싱 운동 영상은 철산 복싱, 광명 복싱, 목동 복싱,
-          신정동 복싱, 개봉동 복싱, 영등포 복싱, 여성 복싱,
-          초보자 복싱, 다이어트 복싱, 체력 향상 운동 모습을 담고 있습니다.
-        </p>
-      </section>
-
-      <BranchMap />
-
-      <GallerySection />
-
-      {/* 공인 단체 섹션 */}
-      <section className="border-t border-white/10 bg-[#111214] px-6 py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">CERTIFIED GYM</p>
-            <h2 className="mb-4 text-3xl font-black tracking-[-0.05em] md:text-4xl">
-              프로복싱 <span className="text-[#FC5230]">4개 단체</span> 가입 체육관
-            </h2>
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-zinc-400">
-              <span>✔ 프로테스트 참가 가능</span>
-              <span>✔ 각종 대회 참가 가능</span>
-              <span>✔ 선수 등록 및 활동 가능</span>
+            <div className="grid gap-3 md:grid-cols-4">
+              {[
+                ["01", "방문 상담 예약", "홈페이지나 네이버로 간단히 예약"],
+                ["02", "체육관 방문", "편한 복장으로 방문하시면 돼요"],
+                ["03", "코치와 1:1 상담", "목적·체력·일정 맞춤 안내"],
+                ["04", "바로 운동 시작", "당일 체험도 가능합니다"],
+              ].map(([step, title, desc]) => (
+                <div key={step} className="p-7"
+                  style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
+                  <p className="mb-6 text-2xl font-black" style={{ color: "#2A2A2E" }}>{step}</p>
+                  <h3 className="mb-2 text-base font-black" style={{ color: "#F5F4F1" }}>{title}</h3>
+                  <p className="text-sm leading-6" style={{ color: "#8A8D91" }}>{desc}</p>
+                </div>
+              ))}
             </div>
           </div>
+        </section>
 
-          <div className="mb-14 grid grid-cols-2 gap-6 md:grid-cols-4">
-            {[
-              { src: "/images/boxing-orgs/kbf.jpg", name: "KBF", full: "한국권투연맹" },
-              { src: "/images/boxing-orgs/kbm.jpg", name: "KBM", full: "한국복싱커미션" },
-              { src: "/images/boxing-orgs/kbc.jpg", name: "KBC", full: "한국권투위원회" },
-              { src: "/images/boxing-orgs/kba.jpg", name: "KBA", full: "한국권투협회" },
-            ].map((org) => (
-              <div key={org.name} className="flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-6">
-                <img src={org.src} alt={org.full} className="h-20 w-20 rounded-full object-cover" />
-                <div className="text-center">
-                  <p className="text-lg font-black">{org.name}</p>
-                  <p className="text-xs text-zinc-400">{org.full}</p>
+        {/* ══════════════════════════════════════
+            PROGRAM
+        ══════════════════════════════════════ */}
+        <section id="program" className="px-6 py-32 md:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+              <div>
+                <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>PROGRAM</p>
+                <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
+                  복싱은 어렵지 않게,<br />운동은 확실하게.
+                </h2>
+              </div>
+              <p className="max-w-sm text-sm leading-7" style={{ color: "#8A8D91" }}>
+                처음 배우는 자세부터 다이어트, 체력향상, 스트레스 해소까지 목적에 맞는 수업으로 진행합니다.
+              </p>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-3">
+              {[
+                ["01", "복싱 입문", "기본자세, 스텝, 펀치부터 차근차근"],
+                ["02", "다이어트 복싱", "재밌게 땀나는 그룹 복싱 수업"],
+                ["03", "코치 직접 지도", "목적에 맞춘 밀착 트레이닝"],
+              ].map(([num, title, desc]) => (
+                <div key={num} className="group p-10 transition-transform hover:-translate-y-1"
+                  style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
+                  <p className="mb-12 text-xs font-black" style={{ color: "#3A3A3E" }}>{num}</p>
+                  <h3 className="mb-3 text-2xl font-black" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>{title}</h3>
+                  <p className="text-sm leading-7" style={{ color: "#8A8D91" }}>{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <FaqSection />
+
+        {/* ══════════════════════════════════════
+            SPACE GALLERY
+        ══════════════════════════════════════ */}
+        <section className="px-6 py-32 md:px-8" style={{ background: "#141416" }}>
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-14">
+              <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>STRONG SPACE</p>
+              <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
+                사진으로 먼저 보는<br />스트롱복싱의 공간.
+              </h2>
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="overflow-hidden" style={{ borderRadius: 14 }}>
+                <img src="/images/gallery/gallery-1.jpg" alt="시설"
+                  className="h-full min-h-[500px] w-full object-cover transition duration-700 hover:scale-105"
+                  style={{ filter: "brightness(0.85)" }} />
+              </div>
+              <div className="grid gap-3">
+                <div className="overflow-hidden" style={{ borderRadius: 14 }}>
+                  <img src="/images/gallery/gallery-2.jpg" alt="시설"
+                    className="h-[240px] w-full object-cover transition duration-700 hover:scale-105"
+                    style={{ filter: "brightness(0.85)" }} />
+                </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div className="overflow-hidden" style={{ borderRadius: 14 }}>
+                    <img src="/images/gallery/gallery-3.jpg" alt="시설"
+                      className="h-[240px] w-full object-cover" style={{ filter: "brightness(0.85)" }} />
+                  </div>
+                  <div className="overflow-hidden" style={{ borderRadius: 14 }}>
+                    <img src="/images/gallery/gallery-4.jpg" alt="시설"
+                      className="h-[240px] w-full object-cover" style={{ filter: "brightness(0.85)" }} />
+                  </div>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
+        </section>
 
-          <div className="flex flex-col items-center gap-6 overflow-hidden border border-white/10 bg-[#1a1a1c] p-8 md:flex-row md:justify-between">
-            <div className="flex items-center gap-5">
-              <img src="/images/boxing-orgs/kaba.jpg" alt="대한생활체육복싱협회" className="h-20 w-20 object-contain" />
+        {/* ══════════════════════════════════════
+            CTA — 풀스크린
+        ══════════════════════════════════════ */}
+        <section className="relative overflow-hidden px-6 py-40 text-center md:px-8">
+          <img src="/images/gallery/gallery-1.jpg" alt=""
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            style={{ filter: "brightness(0.18) grayscale(0.3)" }} />
+          <div className="pointer-events-none absolute left-0 top-0 h-[1px] w-full" style={{ background: "rgba(255,255,255,0.08)" }} />
+          <div className="pointer-events-none absolute bottom-0 left-0 h-[1px] w-full" style={{ background: "rgba(255,255,255,0.08)" }} />
+
+          <div className="relative z-10 mx-auto max-w-4xl">
+            <p className="reveal mb-6 text-xs font-black tracking-[0.4em]" style={{ color: "#5A5C61" }}>STRONG BOXING</p>
+            <h2 className="reveal d1 font-black leading-[0.88]"
+              style={{ fontSize: "clamp(44px, 8vw, 96px)", letterSpacing: "-0.05em", color: "#F5F4F1" }}>
+              스트롱복싱에서<br />첫 운동을 시작해보세요.
+            </h2>
+            <p className="reveal d2 mx-auto mt-8 max-w-lg text-base leading-8" style={{ color: "#8A8D91" }}>
+              가까운 지점에서 편하게 상담받고 운동을 시작해보세요.
+            </p>
+            <div className="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
+              <ReservationButton className="group rounded-[10px] bg-[#D01E2E] px-10 py-5 text-base font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
+                방문 상담 예약하기
+                <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </ReservationButton>
+              <a href="/blog"
+                className="group inline-flex items-center gap-2 rounded-[10px] px-10 py-5 text-base font-black transition-all duration-300 hover:bg-white/6"
+                style={{ border: "1px solid rgba(255,255,255,0.15)", color: "#F5F4F1" }}>
+                운동 후기 보기
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════
+            NEWS & REVIEW
+        ══════════════════════════════════════ */}
+        <section id="news" className="px-6 py-32 md:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
-                <p className="text-xs text-zinc-400">KOREA AMATEUR BOXING ASSOCIATION</p>
-                <p className="text-xl font-black">대한생활체육복싱협회</p>
+                <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>NEWS & REVIEW</p>
+                <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
+                  지점별 소식과 후기.
+                </h2>
+              </div>
+              <a href="/blog" className="text-sm font-black transition hover:opacity-60" style={{ color: "#8A8D91" }}>
+                전체 글 보기 →
+              </a>
+            </div>
+
+            {latestPosts.length > 0 ? (
+              <div className="grid gap-3 md:grid-cols-3">
+                {latestPosts.map((post: any) => (
+                  <a key={post.id} href={`/blog/${post.slug}`}
+                    className="group flex flex-col p-7 transition-transform hover:-translate-y-1"
+                    style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
+                    <div className="mb-5 flex items-center justify-between">
+                      <span className="rounded-[10px] px-2.5 py-1 text-[10px] font-black"
+                        style={{ border: "1px solid rgba(255,255,255,0.1)", color: "#8A8D91" }}>
+                        {post.branch_name}
+                      </span>
+                      <span className="text-xs" style={{ color: "#3A3A3E" }}>
+                        {new Date(post.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <h3 className="mb-3 flex-1 text-xl font-black leading-tight" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>
+                      {post.title}
+                    </h3>
+                    <p className="line-clamp-2 text-sm leading-6" style={{ color: "#8A8D91" }}>
+                      {post.description}
+                    </p>
+                    <p className="mt-5 text-xs font-bold" style={{ color: "#5A5C61" }}>읽기 →</p>
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <div className="p-10 text-center"
+                style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
+                <h3 className="mb-3 text-xl font-black" style={{ color: "#F5F4F1" }}>소식 준비중</h3>
+                <p className="text-sm" style={{ color: "#8A8D91" }}>곧 지점별 운동 소식과 후기를 업데이트할 예정입니다.</p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* SEO sr-only */}
+        <section className="sr-only">
+          <h2>스트롱복싱 지점별 복싱장 안내</h2>
+          <p>
+            스트롱복싱은 개봉점, 신정점, 목동점, 철산점, 영등포점으로 운영되는 복싱 체육관입니다.
+            개봉 복싱, 개봉동 복싱, 구로 복싱, 신정 복싱, 신정동 복싱, 양천구 복싱,
+            목동 복싱, 목동 복싱장, 철산 복싱, 철산동 복싱, 광명 복싱,
+            영등포 복싱, 영등포구 복싱을 찾는 분들이 방문하고 있습니다.
+          </p>
+          <p>
+            초보자 복싱, 여성 복싱, 다이어트 복싱, 직장인 운동, 학생 운동,
+            키즈 복싱, 어린이 복싱, 체력 향상 운동, 스트레스 해소 운동을
+            목적에 맞게 시작할 수 있습니다.
+          </p>
+          <h3>개봉점</h3>
+          <p>서울 구로구 개봉동 166-5 유원빌딩 지하 1층. 개봉 복싱, 개봉동 복싱장, 구로 복싱, 개봉 다이어트 복싱. 운영시간 월요일부터 금요일 13시부터 23시까지. 전화번호 02-2060-1279.</p>
+          <h3>신정점</h3>
+          <p>서울 양천구 신정동 1021-7 태화상가 2층. 신정 복싱, 신정동 복싱장, 양천구 복싱, 신정 다이어트 복싱. 운영시간 평일 10시부터 24시까지, 토요일 10시부터 16시까지. 전화번호 02-2647-3373.</p>
+          <h3>목동점</h3>
+          <p>서울 양천구 목동 909-6 우방빌딩 4층. 목동 복싱, 목동 복싱장, 양천구 복싱, 목동 다이어트 복싱, 목동 여성 복싱, 목동 직장인 운동. 운영시간 평일 14시부터 24시까지, 토요일 11시부터 16시까지. 전화번호 02-2643-5971.</p>
+          <h3>철산점</h3>
+          <p>경기도 광명시 철산동 56-14 3층. 철산 복싱, 철산동 복싱장, 광명 복싱, 광명 다이어트 복싱, 철산역 복싱, 철산 여성 복싱. 운영시간 평일 14시부터 23시까지, 토요일과 일요일 14시부터 18시까지. 전화번호 02-2066-0406.</p>
+          <h3>영등포점</h3>
+          <p>서울 영등포구 도림로 313 건영상가 2층. 영등포 복싱, 영등포구 복싱장, 영등포 다이어트 복싱, 영등포 직장인 운동, 도림동 복싱. 운영시간 평일 13시부터 23시까지. 전화번호 02-831-9312.</p>
+          <h2>스트롱복싱 운동 영상</h2>
+          <p>스트롱복싱 운동 영상은 철산 복싱, 광명 복싱, 목동 복싱, 신정동 복싱, 개봉동 복싱, 영등포 복싱, 여성 복싱, 초보자 복싱, 다이어트 복싱, 체력 향상 운동 모습을 담고 있습니다.</p>
+        </section>
+
+        <BranchMap />
+
+        <GallerySection />
+
+        {/* ══════════════════════════════════════
+            공인 단체
+        ══════════════════════════════════════ */}
+        <section className="px-6 py-24 md:px-8" style={{ background: "#0E0E10", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-12 text-center">
+              <p className="mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>CERTIFIED GYM</p>
+              <h2 className="font-black" style={{ fontSize: "clamp(28px, 4vw, 40px)", letterSpacing: "-0.04em", color: "#F5F4F1" }}>
+                프로복싱 4개 단체 가입 체육관
+              </h2>
+              <div className="mt-4 flex flex-wrap justify-center gap-6 text-xs" style={{ color: "#5A5C61" }}>
+                <span>✔ 프로테스트 참가 가능</span>
+                <span>✔ 각종 대회 참가 가능</span>
+                <span>✔ 선수 등록 및 활동 가능</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="border border-[#FC5230] px-4 py-2 text-sm font-black text-[#FC5230]">승단 심사 체육관</span>
+
+            <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+              {[
+                { src: "/images/boxing-orgs/kbf.jpg", name: "KBF", full: "한국권투연맹" },
+                { src: "/images/boxing-orgs/kbm.jpg", name: "KBM", full: "한국복싱커미션" },
+                { src: "/images/boxing-orgs/kbc.jpg", name: "KBC", full: "한국권투위원회" },
+                { src: "/images/boxing-orgs/kba.jpg", name: "KBA", full: "한국권투협회" },
+              ].map((org) => (
+                <div key={org.name} className="flex flex-col items-center gap-3 p-6"
+                  style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
+                  <img src={org.src} alt={org.full} className="h-16 w-16 rounded-full object-cover" />
+                  <div className="text-center">
+                    <p className="text-base font-black" style={{ color: "#F5F4F1" }}>{org.name}</p>
+                    <p className="text-xs" style={{ color: "#5A5C61" }}>{org.full}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="flex flex-col gap-2 text-sm text-zinc-300">
-              <span>✔ 체육관 자체 승단 심사 가능</span>
-              <span>✔ 공인 단증 취득 가능</span>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 가격 안내 */}
-      <section className="px-6 py-20 bg-[#111214]">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col items-center gap-6 border border-white/10 bg-[#202126] p-10 text-center md:flex-row md:text-left">
-            <div className="flex-1">
-              <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">PRICING</p>
-              <h2 className="mb-3 text-3xl font-black tracking-[-0.05em]">수강료가 궁금하신가요?</h2>
-              <p className="leading-8 text-zinc-400">
-                수강료는 지점별·프로그램별로 다르게 운영됩니다.<br />
-                방문 상담 시 목적에 맞는 플랜을 안내해드립니다.
-              </p>
-            </div>
-            <a
-              href="/reservation"
-              className="shrink-0 bg-[#FC5230] px-8 py-5 font-black text-white"
-            >
-              상담 예약하고 문의하기 →
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <ConsultationForm />
-
-      <AiCoachChat />
-
-      <footer className="border-t border-white/10 bg-[#0d0d0f] px-6 py-16">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-10">
-            <span className="text-xl font-black tracking-tight">
-              STRONG<span className="text-[#FC5230]">BOXING</span>
-            </span>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {branches.map((b) => (
-              <div key={b.slug}>
-                <p className="mb-1 text-xs font-black text-[#FC5230]">{b.name}</p>
-                <p className="text-xs text-zinc-500">{b.address}</p>
-                <p className="text-xs text-zinc-400">{b.phone}</p>
-                <p className="text-xs text-zinc-600">{b.hours.join(" / ")}</p>
+            <div className="flex flex-col items-center gap-6 overflow-hidden p-8 md:flex-row md:justify-between"
+              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
+              <div className="flex items-center gap-5">
+                <img src="/images/boxing-orgs/kaba.jpg" alt="대한생활체육복싱협회" className="h-16 w-16 object-contain" />
+                <div>
+                  <p className="text-[10px]" style={{ color: "#5A5C61" }}>KOREA AMATEUR BOXING ASSOCIATION</p>
+                  <p className="text-lg font-black" style={{ color: "#F5F4F1" }}>대한생활체육복싱협회</p>
+                </div>
               </div>
-            ))}
+              <span className="rounded-[10px] px-4 py-2 text-sm font-black"
+                style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>
+                승단 심사 체육관
+              </span>
+              <div className="flex flex-col gap-1.5 text-xs" style={{ color: "#8A8D91" }}>
+                <span>✔ 체육관 자체 승단 심사 가능</span>
+                <span>✔ 공인 단증 취득 가능</span>
+              </div>
+            </div>
           </div>
+        </section>
 
-          <div className="mt-10 border-t border-white/10 pt-8 text-xs text-zinc-600">
-            © 2025 STRONG BOXING. All rights reserved.
+        {/* ══════════════════════════════════════
+            가격 안내
+        ══════════════════════════════════════ */}
+        <section className="px-6 py-16 md:px-8" style={{ background: "#141416" }}>
+          <div className="mx-auto max-w-7xl">
+            <div className="flex flex-col items-center gap-8 p-10 text-center md:flex-row md:text-left"
+              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
+              <div className="flex-1">
+                <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>PRICING</p>
+                <h2 className="mb-3 text-2xl font-black" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>수강료가 궁금하신가요?</h2>
+                <p className="text-sm leading-7" style={{ color: "#8A8D91" }}>
+                  수강료는 지점별·프로그램별로 다르게 운영됩니다.<br />
+                  방문 상담 시 목적에 맞는 플랜을 안내해드립니다.
+                </p>
+              </div>
+              <a href="/reservation"
+                className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
+                상담 예약하고 문의하기
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
           </div>
-        </div>
-      </footer>
+        </section>
 
-       </main>
-  </>
-);
+        <ConsultationForm />
+
+        <AiCoachChat />
+
+        {/* ══════════════════════════════════════
+            FOOTER
+        ══════════════════════════════════════ */}
+        <footer className="px-6 py-16 md:px-8"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.06)", background: "#080809" }}>
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-10 flex items-center gap-2">
+              <img src="/icon.png" alt="" className="h-6 w-6 object-contain opacity-60" />
+              <div>
+                <span className="text-base font-black" style={{ color: "#F5F4F1" }}>STRONG</span>
+                <span className="text-base font-black" style={{ color: "#3A3A3E" }}>BOXING</span>
+              </div>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+              {branches.map((b) => (
+                <div key={b.slug}>
+                  <p className="mb-2 text-xs font-black" style={{ color: "#8A8D91" }}>{b.name}</p>
+                  <p className="text-xs leading-5" style={{ color: "#3A3A3E" }}>{b.address}</p>
+                  <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>{b.phone}</p>
+                  <p className="text-xs" style={{ color: "#2A2A2E" }}>{b.hours.join(" / ")}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 pt-8 text-xs" style={{ borderTop: "1px solid rgba(255,255,255,0.05)", color: "#2A2A2E" }}>
+              © 2025 STRONG BOXING. All rights reserved.
+            </div>
+          </div>
+        </footer>
+      </main>
+    </>
+  );
 }

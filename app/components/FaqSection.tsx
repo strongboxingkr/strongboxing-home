@@ -1,4 +1,4 @@
-import ReservationButton from "./ReservationButton";
+﻿import ReservationButton from "./ReservationButton";
 
 const faqs = [
   {
@@ -64,7 +64,7 @@ export default function FaqSection() {
 
       <div className="mx-auto max-w-7xl">
         <div className="mb-12">
-          <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
+          <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#D01E2E]">
             FAQ
           </p>
 
@@ -79,27 +79,27 @@ export default function FaqSection() {
           {faqs.map((item) => (
             <div
               key={item.q}
-              className="border border-white/10 bg-[#202126] p-7"
+              className="border border-[#4A4C50]/30 bg-[#1A1A1C] p-7"
             >
               <h3 className="mb-4 text-2xl font-black tracking-[-0.04em]">
                 {item.q}
               </h3>
 
-              <p className="leading-7 text-zinc-400">{item.a}</p>
+              <p className="leading-7 text-[#8A8D91]">{item.a}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-10 border border-white/10 bg-[#16171A] p-8 text-center">
+        <div className="mt-10 border border-[#4A4C50]/30 bg-[#16171A] p-8 text-center">
           <h3 className="mb-4 text-3xl font-black">
             아직 고민 중이신가요?
           </h3>
 
-          <p className="mb-7 text-zinc-400">
+          <p className="mb-7 text-[#8A8D91]">
             직접 와서 분위기와 운동 방식을 경험해보세요.
           </p>
 
-          <ReservationButton className="inline-flex rounded-full bg-[#FC5230] px-8 py-4 font-black">
+          <ReservationButton className="inline-flex rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black transition hover:bg-[#B71C2B]">
             방문상담 신청하기
           </ReservationButton>
         </div>

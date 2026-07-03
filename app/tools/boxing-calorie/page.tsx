@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 
@@ -22,12 +22,12 @@ export default function BoxingCaloriePage() {
 
         <div className="absolute inset-0 bg-[#16171A]/85" />
 
-        <div className="absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FC5230]/10 blur-[140px]" />
+        <div className="absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D01E2E]/10 blur-[140px]" />
 
         <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-20 lg:flex-row lg:items-center lg:justify-between">
           {/* LEFT */}
           <div className="max-w-2xl">
-            <p className="mb-5 text-sm font-black tracking-[0.32em] text-[#FC5230]">
+            <p className="mb-5 text-sm font-black tracking-[0.32em] text-[#D01E2E]">
               STRONG BOXING
             </p>
 
@@ -39,7 +39,7 @@ export default function BoxingCaloriePage() {
               많이 태웁니다.
             </h1>
 
-            <p className="mt-8 max-w-lg text-lg leading-8 text-zinc-400">
+            <p className="mt-8 max-w-lg text-lg leading-8 text-[#8A8D91]">
               스트롱복싱 수업 기준 예상 칼로리 소모량입니다.
               체중과 운동시간에 따라 직접 확인해보세요.
             </p>
@@ -52,7 +52,7 @@ export default function BoxingCaloriePage() {
               ].map((item) => (
                 <div
                   key={item}
-                  className="border border-white/10 bg-[#202126] px-5 py-3 text-sm font-bold text-zinc-300"
+                  className="border border-white/10 bg-[#1A1A1C] px-5 py-3 text-sm font-bold text-[#8A8D91]"
                 >
                   {item}
                 </div>
@@ -61,10 +61,10 @@ export default function BoxingCaloriePage() {
           </div>
 
           {/* RIGHT */}
-          <div className="w-full max-w-xl border border-white/10 bg-[#202126]/90 p-8 backdrop-blur-xl md:p-10">
+          <div className="w-full max-w-xl border border-white/10 bg-[#1A1A1C]/90 p-8 backdrop-blur-xl md:p-10">
             {/* kcal */}
             <div className="mb-14 border-b border-white/10 pb-10">
-              <p className="mb-3 text-sm font-black tracking-[0.28em] text-zinc-500">
+              <p className="mb-3 text-sm font-black tracking-[0.28em] text-[#4A4C50]">
                 ESTIMATED CALORIES
               </p>
 
@@ -73,7 +73,7 @@ export default function BoxingCaloriePage() {
                   {calories}
                 </span>
 
-                <span className="pb-3 text-2xl font-black text-[#FC5230]">
+                <span className="pb-3 text-2xl font-black text-[#D01E2E]">
                   KCAL
                 </span>
               </div>
@@ -82,11 +82,11 @@ export default function BoxingCaloriePage() {
             {/* 체중 */}
             <div className="mb-10">
               <div className="mb-4 flex items-center justify-between">
-                <p className="font-bold text-zinc-300">
+                <p className="font-bold text-[#8A8D91]">
                   체중
                 </p>
 
-                <p className="font-black text-[#FC5230]">
+                <p className="font-black text-[#D01E2E]">
                   {weight}kg
                 </p>
               </div>
@@ -99,18 +99,18 @@ export default function BoxingCaloriePage() {
                 onChange={(e) =>
                   setWeight(Number(e.target.value))
                 }
-                className="w-full accent-[#FC5230]"
+                className="w-full accent-[#D01E2E]"
               />
             </div>
 
             {/* 운동시간 */}
             <div className="mb-14">
               <div className="mb-4 flex items-center justify-between">
-                <p className="font-bold text-zinc-300">
+                <p className="font-bold text-[#8A8D91]">
                   운동 시간
                 </p>
 
-                <p className="font-black text-[#FC5230]">
+                <p className="font-black text-[#D01E2E]">
                   {minutes}분
                 </p>
               </div>
@@ -124,13 +124,13 @@ export default function BoxingCaloriePage() {
                 onChange={(e) =>
                   setMinutes(Number(e.target.value))
                 }
-                className="w-full accent-[#FC5230]"
+                className="w-full accent-[#D01E2E]"
               />
             </div>
 
             {/* result */}
-            <div className="mb-10 border border-white/10 bg-black/30 p-5">
-              <p className="text-sm leading-7 text-zinc-400">
+            <div className="mb-10 border border-white/10 bg-[#0E0E10]/30 p-5">
+              <p className="text-sm leading-7 text-[#8A8D91]">
                 {minutes}분 동안 약{" "}
                 <span className="font-black text-white">
                   {calories}kcal
@@ -144,7 +144,7 @@ export default function BoxingCaloriePage() {
             {/* CTA */}
             <a
               href="/reservation"
-              className="block w-full rounded-full bg-[#FC5230] px-8 py-5 text-center text-lg font-black transition hover:scale-[1.02]"
+              className="block w-full rounded-[10px] bg-[#D01E2E] px-8 py-5 text-center text-lg font-black transition hover:bg-[#B71C2B]"
             >
               방문 상담 신청하기
             </a>

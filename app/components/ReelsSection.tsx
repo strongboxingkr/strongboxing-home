@@ -21,15 +21,15 @@ export default async function ReelsSection() {
     <section className="bg-[#16171A] px-6 py-28">
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 text-center">
-          <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#FC5230]">
+          <p className="mb-3 text-sm font-black tracking-[0.35em] text-[#D01E2E]">
             STRONG CLIP
           </p>
 
-          <h2 className="text-4xl font-black tracking-[-0.05em] text-white md:text-5xl">
+          <h2 className="text-4xl font-black tracking-[-0.05em] text-[#F5F4F1] md:text-5xl">
             Inside STRONG BOXING
           </h2>
 
-          <div className="mx-auto mt-5 h-[3px] w-20 rounded-full bg-[#FC5230]" />
+          <div className="mx-auto mt-5 h-[2px] w-14 bg-[#D01E2E]" />
         </div>
 
         <ReelsClient reels={reels} />
