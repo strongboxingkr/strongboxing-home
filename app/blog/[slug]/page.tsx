@@ -123,14 +123,20 @@ export default async function BlogDetailPage({
       relatedPosts = [...relatedPosts, ...relLatestRows];
     }
 
-    const labelMap: Record<string, string> = {
-      소식: "같은 지점의 다른 소식",
-      이벤트: "관련 이벤트",
-      공지: "함께 확인할 공지",
-      후기: "회원 후기 더 보기",
-      운동팁: "함께 보면 좋은 글",
-    };
-    relatedTitle = labelMap[post.category] ?? "함께 보면 좋은 글";
+    // 결과가 모두 같은 지점이면 지점별 제목, 아니면 범용 제목
+    const allSameBranch = relatedPosts.every((p: any) => p.branch_name === post.branch_name);
+    if (allSameBranch && relatedPosts.length > 0) {
+      const labelMap: Record<string, string> = {
+        소식: "같은 지점의 다른 소식",
+        이벤트: "관련 이벤트",
+        공지: "함께 확인할 공지",
+        후기: "회원 후기 더 보기",
+        운동팁: "함께 보면 좋은 글",
+      };
+      relatedTitle = labelMap[post.category] ?? "함께 보면 좋은 글";
+    } else {
+      relatedTitle = "함께 보면 좋은 글";
+    }
   }
 
   if (!post) {
