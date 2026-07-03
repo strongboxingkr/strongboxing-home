@@ -1,7 +1,6 @@
 ﻿import BoxingCalculator from "./components/BoxingCalculator";
 import { db } from "@/lib/db";
 import ConsultationForm from "./components/ConsultationForm";
-import ScrollLink from "./components/ScrollLink";
 import ReservationButton from "./components/ReservationButton";
 import AiCoachChat from "./components/AiCoachChat";
 import FaqSection from "./components/FaqSection";
@@ -12,6 +11,7 @@ import GallerySection from "./components/GallerySection";
 import RevealObserver from "./components/RevealObserver";
 import BranchMap from "./components/BranchMap";
 import BranchHeroGrid from "./components/BranchHeroGrid";
+import SiteHeader from "./components/SiteHeader";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -143,54 +143,12 @@ export default async function HomePage() {
       <main style={{ background: "#0E0E10", color: "#F5F4F1" }} className="min-h-screen">
         <RevealObserver />
 
-        {/* ══════════════════════════════════════
-            HEADER
-        ══════════════════════════════════════ */}
-        <header
-          className="fixed left-0 top-0 z-50 w-full"
-          style={{ background: "rgba(14,14,16,0.92)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-        >
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-            {/* 로고 */}
-            <a href="/" className="flex items-center gap-2.5">
-              <img src="/icon.png" alt="스트롱복싱" className="h-7 w-7 object-contain" />
-              <div className="flex flex-col leading-none">
-                <span className="text-[15px] font-black tracking-[0.08em]" style={{ color: "#F5F4F1" }}>STRONG</span>
-                <span className="text-[9px] font-black tracking-[0.22em]" style={{ color: "#D01E2E" }}>— BOXING —</span>
-              </div>
-            </a>
-
-            {/* 네비 */}
-            <nav className="hidden items-center gap-8 md:flex">
-              {["지점", "프로그램", "후기/소식"].map((label, i) => {
-                const ids = ["branch", "program", ""];
-                return ids[i] ? (
-                  <ScrollLink key={label} targetId={ids[i]}
-                    className="relative text-sm font-semibold text-[#8A8D91] transition-colors hover:text-white"
-                  >
-                    {label}
-                  </ScrollLink>
-                ) : (
-                  <a key={label} href="/blog"
-                    className="text-sm font-semibold transition-colors hover:text-white"
-                    style={{ color: "#8A8D91" }}
-                  >
-                    {label}
-                  </a>
-                );
-              })}
-            </nav>
-
-            <ReservationButton className="rounded-[10px] bg-[#D01E2E] px-5 py-2.5 text-sm font-black text-white transition hover:bg-[#B71C2B]">
-              방문 상담 예약
-            </ReservationButton>
-          </div>
-        </header>
+        <SiteHeader />
 
         {/* ══════════════════════════════════════
             HERO — 좌: 카피 / 우: 지점 Magazine Grid
         ══════════════════════════════════════ */}
-        <section className="relative overflow-hidden" style={{ background: "#0E0E10" }}>
+        <section id="branches" className="relative overflow-hidden" style={{ background: "#0E0E10", scrollMarginTop: "72px" }}>
           {/* 배경 텍스처 — 아주 살짝 */}
           <div className="pointer-events-none absolute inset-0"
             style={{ background: "radial-gradient(ellipse 80% 60% at 30% 50%, rgba(255,255,255,0.015) 0%, transparent 70%)" }} />
@@ -280,7 +238,7 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             HOW WE TRAIN
         ══════════════════════════════════════ */}
-        <section className="px-6 py-32 md:px-8" style={{ background: "#141416" }}>
+        <section id="programs" className="px-6 py-32 md:px-8" style={{ background: "#141416", scrollMarginTop: "72px" }}>
           <div className="mx-auto max-w-7xl">
             <div className="mb-16">
               <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>HOW WE TRAIN</p>
@@ -344,7 +302,7 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             코치 소개
         ══════════════════════════════════════ */}
-        <section className="px-6 py-32 md:px-8">
+        <section id="coaches" className="px-6 py-32 md:px-8" style={{ scrollMarginTop: "72px" }}>
           <div className="mx-auto max-w-7xl">
             <div className="mb-16">
               <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>COACH</p>
@@ -395,9 +353,13 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <ReelsSection />
+        <div id="clips" style={{ scrollMarginTop: "72px" }}>
+          <ReelsSection />
+        </div>
 
-        <NaverReviewsSection />
+        <div id="reviews" style={{ scrollMarginTop: "72px" }}>
+          <NaverReviewsSection />
+        </div>
 
         <section id="calculator" style={{ background: "#0E0E10" }}>
           <BoxingCalculator />
@@ -719,7 +681,9 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <ConsultationForm />
+        <div id="contact" style={{ scrollMarginTop: "72px" }}>
+          <ConsultationForm />
+        </div>
 
         <AiCoachChat />
 

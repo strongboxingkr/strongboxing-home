@@ -125,47 +125,66 @@ export default function BlogViewClient({ posts }: { posts: Post[] }) {
       {/* 리스트형 */}
       {viewMode === "list" && (
         <div className="overflow-hidden rounded-[12px] border border-[#4A4C50]/30">
-          {posts.map((post, i) => (
-            <a
-              key={post.id}
-              href={`/blog/${post.slug}`}
-              className="group flex items-center justify-between gap-5 px-6 py-5 transition-all duration-200"
-              style={{
-                borderBottom:
-                  i < posts.length - 1 ? "1px solid rgba(74,76,80,0.2)" : "none",
-                background: "transparent",
-              }}
-              onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLElement).style.background =
-                  "rgba(74,76,80,0.12)")
-              }
-              onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLElement).style.background =
-                  "transparent")
-              }
-            >
-              <div className="min-w-0 flex-1">
-                <p className="mb-1 text-[11px] font-bold text-[#4A4C50]">
-                  {post.branch_name} · {post.category} ·{" "}
-                  {formatDate(post.created_at)}
-                </p>
-                <h2 className="mb-1 truncate text-sm font-black tracking-[-0.02em] text-[#F5F4F1] transition-colors group-hover:text-white">
-                  {post.title}
-                </h2>
-                {post.description && (
-                  <p className="truncate text-xs leading-5 text-[#8A8D91]">
-                    {post.description}
-                  </p>
-                )}
-              </div>
-
-              <span
-                className="shrink-0 text-sm text-[#4A4C50] transition-transform duration-300 group-hover:translate-x-1"
+          {posts.map((post, i) => {
+            const thumb = getFirstImage(post.content);
+            return (
+              <a
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                className="group flex items-center gap-4 px-5 py-4 transition-all duration-200"
+                style={{
+                  borderBottom:
+                    i < posts.length - 1 ? "1px solid rgba(74,76,80,0.2)" : "none",
+                  background: "transparent",
+                }}
+                onMouseEnter={(e) =>
+                  ((e.currentTarget as HTMLElement).style.background =
+                    "rgba(74,76,80,0.12)")
+                }
+                onMouseLeave={(e) =>
+                  ((e.currentTarget as HTMLElement).style.background =
+                    "transparent")
+                }
               >
-                →
-              </span>
-            </a>
-          ))}
+                {/* 썸네일 */}
+                <div
+                  className="h-14 w-14 shrink-0 overflow-hidden rounded-[8px]"
+                  style={{ background: "#1A1A1C" }}
+                >
+                  {thumb ? (
+                    <img
+                      src={thumb}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-[18px] font-black" style={{ color: "#2A2A2E" }}>
+                      S
+                    </div>
+                  )}
+                </div>
+
+                {/* 텍스트 */}
+                <div className="min-w-0 flex-1">
+                  <p className="mb-0.5 text-[11px] font-bold text-[#4A4C50]">
+                    {post.branch_name} · {post.category} · {formatDate(post.created_at)}
+                  </p>
+                  <h2 className="truncate text-sm font-black tracking-[-0.02em] text-[#F5F4F1] transition-colors group-hover:text-white">
+                    {post.title}
+                  </h2>
+                  {post.description && (
+                    <p className="mt-0.5 truncate text-xs leading-5 text-[#8A8D91]">
+                      {post.description}
+                    </p>
+                  )}
+                </div>
+
+                <span className="shrink-0 text-sm text-[#4A4C50] transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
+              </a>
+            );
+          })}
         </div>
       )}
     </>
