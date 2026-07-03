@@ -87,17 +87,17 @@ export default function BlogViewClient({ posts }: { posts: Post[] }) {
                 className="group overflow-hidden rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] transition duration-300 hover:-translate-y-1 hover:border-white/25"
               >
                 {image && (
-                  <div className="h-[252px] overflow-hidden md:h-[252px]">
+                  <div className="h-[300px] overflow-hidden">
                     <img
                       src={image}
                       alt={post.title}
-                      className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-105"
+                      className="h-full w-full object-cover object-[center_25%] transition duration-500 group-hover:scale-105"
                     />
                   </div>
                 )}
 
-                <div className="p-8">
-                  <div className="mb-5 flex flex-wrap items-center gap-2">
+                <div className="p-5">
+                  <div className="mb-3 flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-[#D01E2E] px-3 py-1 text-xs font-black">
                       {post.branch_name}
                     </span>
@@ -109,15 +109,15 @@ export default function BlogViewClient({ posts }: { posts: Post[] }) {
                     </span>
                   </div>
 
-                  <h2 className="mb-3 text-2xl font-black leading-tight tracking-[-0.04em] text-[#F5F4F1] transition-colors group-hover:text-white">
+                  <h2 className="mb-2 text-xl font-black leading-tight tracking-[-0.04em] text-[#F5F4F1] transition-colors group-hover:text-white">
                     {post.title}
                   </h2>
 
-                  <p className="line-clamp-2 text-sm leading-7 text-[#8A8D91]">
+                  <p className="line-clamp-1 text-sm leading-6 text-[#8A8D91]">
                     {post.description}
                   </p>
 
-                  <p className="mt-5 text-xs font-black text-[#D01E2E] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <p className="mt-3 text-xs font-black text-[#D01E2E] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     자세히 보기 →
                   </p>
                 </div>
