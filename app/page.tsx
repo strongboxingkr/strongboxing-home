@@ -174,9 +174,13 @@ export default async function HomePage() {
 
                 <div className="my-7 h-[2px] w-14" style={{ background: "#D01E2E" }} />
 
-                <p className="max-w-sm text-base leading-8" style={{ color: "#8A8D91" }}>
+                <p className="max-w-md text-sm leading-[2] md:text-base md:leading-[2.1]" style={{ color: "#C9C9C9" }}>
                   처음이어도 괜찮습니다.<br />
-                  체계적인 수업과 전문 코치로<br />더 강한 나를 만듭니다.
+                  정해진 단체 수업이 아니라,{" "}
+                  <span style={{ color: "#F5F4F1", fontWeight: 700 }}>회원님의 목적과 실력에 맞춰</span>{" "}
+                  지도합니다.<br />
+                  기초부터 미트, 샌드백, 체력운동까지{" "}
+                  차근차근 맞춰나갑니다.
                 </p>
 
                 <div className="mt-9 flex flex-wrap gap-3">
