@@ -16,12 +16,12 @@ export default function BoxingCalculator() {
       id="calculator"
       className="relative overflow-hidden bg-[#111214] px-5 py-28 md:px-6"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(252,82,48,.10),transparent_35%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(208,30,46,.10),transparent_35%)]" />
 
       <div className="relative mx-auto grid max-w-7xl gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         {/* LEFT */}
         <div>
-          <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#FC5230]">
+          <p className="mb-4 text-sm font-black tracking-[0.35em] text-[#D01E2E]">
             BOXING CALCULATOR
           </p>
 
@@ -44,7 +44,7 @@ export default function BoxingCalculator() {
             ].map((item) => (
               <div
                 key={item}
-                className="border border-white/10 bg-[#202126] px-5 py-3 text-sm font-bold text-zinc-300"
+                className="rounded-[10px] border border-white/10 bg-[#202126] px-5 py-3 text-sm font-bold text-zinc-300"
               >
                 {item}
               </div>
@@ -53,7 +53,7 @@ export default function BoxingCalculator() {
         </div>
 
         {/* RIGHT */}
-        <div className="border border-white/10 bg-[#202126] p-7 md:p-10">
+        <div className="rounded-[14px] border border-white/10 bg-[#202126] p-7 md:p-10">
           <p className="mb-3 text-sm font-black tracking-[0.28em] text-zinc-500">
             ESTIMATED CALORIES
           </p>
@@ -63,7 +63,7 @@ export default function BoxingCalculator() {
               {calories}
             </span>
 
-            <span className="pb-3 text-2xl font-black text-[#FC5230] md:text-4xl">
+            <span className="pb-3 text-2xl font-black text-[#D01E2E] md:text-4xl">
               KCAL
             </span>
           </div>
@@ -73,7 +73,7 @@ export default function BoxingCalculator() {
             <div className="mb-4 flex items-center justify-between">
               <p className="font-bold">현재 몸무게</p>
 
-              <p className="font-black text-[#FC5230]">
+              <p className="font-black text-[#D01E2E]">
                 {weight}kg
               </p>
             </div>
@@ -86,7 +86,7 @@ export default function BoxingCalculator() {
               onChange={(e) =>
                 setWeight(Number(e.target.value))
               }
-              className="h-2 w-full cursor-pointer appearance-none bg-zinc-700 accent-[#FC5230]"
+              className="h-2 w-full cursor-pointer appearance-none bg-zinc-700 accent-[#D01E2E]"
             />
           </div>
 
@@ -95,7 +95,7 @@ export default function BoxingCalculator() {
             <div className="mb-4 flex items-center justify-between">
               <p className="font-bold">운동 시간</p>
 
-              <p className="font-black text-[#FC5230]">
+              <p className="font-black text-[#D01E2E]">
                 {minutes}분
               </p>
             </div>
@@ -109,7 +109,7 @@ export default function BoxingCalculator() {
               onChange={(e) =>
                 setMinutes(Number(e.target.value))
               }
-              className="h-2 w-full cursor-pointer appearance-none bg-zinc-700 accent-[#FC5230]"
+              className="h-2 w-full cursor-pointer appearance-none bg-zinc-700 accent-[#D01E2E]"
             />
           </div>
 
@@ -130,7 +130,7 @@ export default function BoxingCalculator() {
             ].map(([title, value]) => (
               <div
                 key={title}
-                className="border border-white/10 bg-[#16171A] p-5"
+                className="rounded-[10px] border border-white/10 bg-[#16171A] p-5"
               >
                 <p className="text-sm text-zinc-500">
                   {title}
@@ -143,7 +143,7 @@ export default function BoxingCalculator() {
             ))}
           </div>
 
-          <ReservationButton className="mt-10 inline-flex w-full justify-center bg-[#FC5230] px-8 py-5 text-lg font-black transition hover:scale-[1.01]">
+          <ReservationButton className="mt-10 inline-flex w-full justify-center rounded-[10px] bg-[#D01E2E] px-8 py-5 text-lg font-black transition hover:bg-[#B71C2B]">
             가까운 지점에서 시작하기
           </ReservationButton>
         </div>

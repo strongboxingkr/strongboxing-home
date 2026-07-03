@@ -1,4 +1,4 @@
-﻿import ReservationButton from "./ReservationButton";
+import ReservationButton from "./ReservationButton";
 
 const faqs = [
   {
@@ -79,18 +79,18 @@ export default function FaqSection() {
           {faqs.map((item) => (
             <div
               key={item.q}
-              className="border border-[#4A4C50]/30 bg-[#1A1A1C] p-7"
+              className="rounded-[14px] border border-[#4A4C50]/30 bg-[#1A1A1C] p-7 transition-all duration-200 hover:border-[#4A4C50]/55"
             >
               <h3 className="mb-4 text-2xl font-black tracking-[-0.04em]">
                 {item.q}
               </h3>
 
-              <p className="leading-7 text-[#8A8D91]">{item.a}</p>
+              <p className="leading-[1.9] text-[#C9C9C9]">{item.a}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-10 border border-[#4A4C50]/30 bg-[#16171A] p-8 text-center">
+        <div className="mt-10 rounded-[14px] border border-[#4A4C50]/30 bg-[#16171A] p-8 text-center">
           <h3 className="mb-4 text-3xl font-black">
             아직 고민 중이신가요?
           </h3>

@@ -148,7 +148,7 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             HERO — 좌: 카피 / 우: 지점 Magazine Grid
         ══════════════════════════════════════ */}
-        <section id="branches" className="relative overflow-hidden" style={{ background: "#0E0E10", scrollMarginTop: "72px" }}>
+        <section id="branches" className="relative overflow-hidden" style={{ background: "#0E0E10", scrollMarginTop: "120px" }}>
           {/* 배경 텍스처 — 아주 살짝 */}
           <div className="pointer-events-none absolute inset-0"
             style={{ background: "radial-gradient(ellipse 80% 60% at 30% 50%, rgba(255,255,255,0.015) 0%, transparent 70%)" }} />
@@ -238,7 +238,7 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             HOW WE TRAIN
         ══════════════════════════════════════ */}
-        <section id="programs" className="px-6 py-32 md:px-8" style={{ background: "#141416", scrollMarginTop: "72px" }}>
+        <section id="programs" className="px-6 py-32 md:px-8" style={{ background: "#141416", scrollMarginTop: "120px" }}>
           <div className="mx-auto max-w-7xl">
             <div className="mb-16">
               <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>HOW WE TRAIN</p>
@@ -251,16 +251,32 @@ export default async function HomePage() {
             </div>
 
             <div className="grid gap-3 md:grid-cols-2">
-              <div className="p-8" style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
+              <div className="flex flex-col p-8" style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
                 <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>MY SCHEDULE</p>
                 <h3 className="mb-4 text-2xl font-black" style={{ letterSpacing: "-0.04em" }}>내 시간에 맞게</h3>
-                <p className="mb-7 leading-8 text-sm" style={{ color: "#8A8D91" }}>
+                <p className="mb-6 leading-8 text-sm" style={{ color: "#8A8D91" }}>
                   수업 예약 없이, 운영시간 내 언제든 방문하면 바로 운동 시작.
                   직장인, 주부, 학생 모두 가능합니다.
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="mb-6 space-y-3">
+                  {[
+                    ["방문", "예약 없이 운영시간 내 자유 방문"],
+                    ["개인별", "개인 수준·목표에 맞춘 운동 진행"],
+                    ["유연", "1개월 단위 등록, 중단 부담 없음"],
+                  ].map(([label, desc]) => (
+                    <div key={label} className="flex items-start gap-3 pb-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                      <span className="mt-0.5 shrink-0 text-[10px] font-black" style={{ color: "#D01E2E" }}>●</span>
+                      <div>
+                        <span className="text-sm font-bold" style={{ color: "#F5F4F1" }}>{label}</span>
+                        <span className="ml-2 text-xs" style={{ color: "#5A5C61" }}>{desc}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-auto flex flex-wrap gap-2">
                   <span className="rounded-[10px] px-3 py-1.5 text-xs font-bold" style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>BEGINNER FRIENDLY</span>
                   <span className="rounded-[10px] px-3 py-1.5 text-xs font-bold" style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>개인별 진행</span>
+                  <span className="rounded-[10px] px-3 py-1.5 text-xs font-bold" style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>자유 방문</span>
                 </div>
               </div>
 
@@ -302,7 +318,7 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             코치 소개
         ══════════════════════════════════════ */}
-        <section id="coaches" className="px-6 py-32 md:px-8" style={{ scrollMarginTop: "72px" }}>
+        <section id="coaches" className="px-6 py-32 md:px-8" style={{ scrollMarginTop: "120px" }}>
           <div className="mx-auto max-w-7xl">
             <div className="mb-16">
               <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>COACH</p>
@@ -365,11 +381,11 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <div id="clips" style={{ scrollMarginTop: "72px" }}>
+        <div id="clips" style={{ scrollMarginTop: "120px" }}>
           <ReelsSection />
         </div>
 
-        <div id="reviews" style={{ scrollMarginTop: "72px" }}>
+        <div id="reviews" style={{ scrollMarginTop: "120px" }}>
           <NaverReviewsSection />
         </div>
 
@@ -693,7 +709,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <div id="contact" style={{ scrollMarginTop: "72px" }}>
+        <div id="contact" style={{ scrollMarginTop: "120px" }}>
           <ConsultationForm />
         </div>
 
