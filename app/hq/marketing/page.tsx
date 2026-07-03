@@ -97,9 +97,12 @@ function StatModal({ item, onClose, onSave }: {
 // ─── 엑셀 업로드 모달 ───────────────────────────────────────────────────────
 interface ExcelRow { stat_date:string; channel:string; impressions:number; clicks:number; inquiries:number; registrations:number; ad_cost:number; memo:string }
 
+const AD_SOURCES = ["메타광고","네이버광고","카카오광고","구글광고","기타"];
+
 function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) {
   const [rows,setRows]=useState<ExcelRow[]>([]);
   const [saving,setSaving]=useState(false);
+  const [adSource,setAdSource]=useState("메타광고");
   const fileRef=useRef<HTMLInputElement>(null);
 
   function parseFile(file:File){
@@ -108,31 +111,46 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
       const wb=XLSX.read(e.target?.result,{type:"array"});
       const ws=wb.Sheets[wb.SheetNames[0]];
       const raw: any[]=XLSX.utils.sheet_to_json(ws,{defval:""});
-      // 컬럼명 유연하게 매핑
+
       const mapped=raw.map(r=>{
-        const k=(name:string)=>Object.keys(r).find(k=>k.replace(/\s/g,"").toLowerCase().includes(name.toLowerCase()))??"";
-        const num=(name:string)=>Number(String(r[k(name)]??"0").replace(/[^0-9.]/g,""))||0;
-        const dateRaw=r[k("날짜")]||r[k("date")]||r[k("일")]||"";
+        // 키 검색 헬퍼 (공백/괄호 무시, 부분 매칭)
+        const findKey=(...names:string[])=>Object.keys(r).find(k=>{
+          const norm=k.replace(/[\s()（）]/g,"").toLowerCase();
+          return names.some(n=>norm.includes(n.toLowerCase()));
+        })??"";
+        const num=(...names:string[])=>{
+          const key=findKey(...names);
+          return key?Number(String(r[key]).replace(/[^0-9.]/g,""))||0:0;
+        };
+
+        // 날짜
+        const dateKey=findKey("날짜","date","일자","기간");
+        const dateRaw=dateKey?r[dateKey]:"";
         let stat_date="";
         if(dateRaw){
-          // 엑셀 시리얼 넘버 or 문자열
           if(typeof dateRaw==="number"){
             const d=XLSX.SSF.parse_date_code(dateRaw);
             stat_date=`${d.y}-${String(d.m).padStart(2,"0")}-${String(d.d).padStart(2,"0")}`;
           } else {
-            stat_date=String(dateRaw).slice(0,10).replace(/\./g,"-");
+            stat_date=String(dateRaw).slice(0,10).replace(/\./g,"-").replace(/\//g,"-");
           }
         }
-        const channel=r[k("채널")]||r[k("channel")]||r[k("캠페인")]||"메타광고";
+
+        // 채널: 파일 내 채널 컬럼 있으면 쓰고, 없으면 선택한 adSource
+        const chKey=findKey("채널","channel","캠페인","광고유형");
+        const channel=chKey&&r[chKey]?String(r[chKey]):adSource;
+
         return {
           stat_date,
-          channel:String(channel),
-          impressions:num("노출")||num("impression"),
-          clicks:num("클릭")||num("click"),
-          inquiries:num("문의")||num("result"),
-          registrations:num("등록")||num("registr"),
-          ad_cost:num("광고비")||num("지출")||num("cost")||num("spent")||num("금액"),
-          memo:String(r[k("메모")]||r[k("memo")]||""),
+          channel,
+          // 메타: 노출, 클릭(전체), 결과, 지출금액
+          // 네이버: 노출수, 클릭수, 전환수, 총비용
+          impressions: num("노출수","노출","impression","impressions"),
+          clicks:      num("클릭수","클릭","click","clicks","링크클릭"),
+          inquiries:   num("문의","inquiry","전환수","전환","result","결과"),
+          registrations: num("등록수","등록","registration","구매","가입"),
+          ad_cost:     num("광고비","지출금액","총비용","비용","cost","spent","amount","금액"),
+          memo:        String(r[findKey("메모","memo","캠페인명","광고명")]||""),
         } as ExcelRow;
       }).filter(r=>r.stat_date);
       setRows(mapped);
@@ -160,20 +178,36 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
         </div>
 
         {rows.length===0 ? (
-          <div className="flex flex-col items-center justify-center gap-4 py-16"
-            style={{border:"2px dashed #E5E7EB",borderRadius:16,cursor:"pointer"}}
-            onClick={()=>fileRef.current?.click()}>
-            <FileSpreadsheet size={40} color="#9CA3AF"/>
-            <p className="text-[14px] font-bold" style={{color:"#374151"}}>엑셀 파일을 선택하세요</p>
-            <p className="text-[12px] text-center" style={{color:"#9CA3AF"}}>
-              메타 광고 내보내기 파일 (.xlsx, .csv) 지원<br/>
-              날짜, 채널, 노출수, 클릭수, 광고비 컬럼이 있으면 자동 매핑됩니다
-            </p>
-            <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden"
-              onChange={e=>{ const f=e.target.files?.[0]; if(f) parseFile(f); }}/>
-            <button className="rounded-xl px-5 py-2 text-[13px] font-bold" style={{background:"#EF3B2D",color:"#FFF"}}>
-              파일 선택
-            </button>
+          <div className="space-y-4">
+            {/* 광고 플랫폼 선택 */}
+            <div>
+              <p className="text-[11px] font-semibold mb-2 uppercase tracking-widest" style={{color:"#9CA3AF"}}>광고 플랫폼</p>
+              <div className="flex flex-wrap gap-2">
+                {AD_SOURCES.map(s=>(
+                  <button key={s} onClick={()=>setAdSource(s)}
+                    className="rounded-xl px-4 py-1.5 text-[12px] font-semibold transition-all"
+                    style={{background:adSource===s?"#EF3B2D":"#F3F4F6",color:adSource===s?"#FFF":"#6B7280"}}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {/* 드롭존 */}
+            <div className="flex flex-col items-center justify-center gap-4 py-14"
+              style={{border:"2px dashed #E5E7EB",borderRadius:16,cursor:"pointer"}}
+              onClick={()=>fileRef.current?.click()}>
+              <FileSpreadsheet size={40} color="#9CA3AF"/>
+              <p className="text-[14px] font-bold" style={{color:"#374151"}}>{adSource} 엑셀 파일을 선택하세요</p>
+              <p className="text-[12px] text-center" style={{color:"#9CA3AF"}}>
+                메타·네이버 광고 내보내기 파일 (.xlsx, .csv) 지원<br/>
+                컬럼명이 달라도 자동 매핑됩니다
+              </p>
+              <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden"
+                onChange={e=>{ const f=e.target.files?.[0]; if(f) parseFile(f); }}/>
+              <button className="rounded-xl px-5 py-2 text-[13px] font-bold" style={{background:"#EF3B2D",color:"#FFF"}}>
+                파일 선택
+              </button>
+            </div>
           </div>
         ) : (
           <>
