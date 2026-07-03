@@ -98,3 +98,12 @@ body {
   to   { opacity: 1; transform: none; }
 }
 
+/* 블로그 본문 이미지 — 원본 비율 유지, 절대 잘리지 않게 */
+.prose img {
+  height: auto !important;
+  aspect-ratio: auto !important;
+  object-fit: initial !important;
+  max-width: 100%;
+  display: block;
+}
+
