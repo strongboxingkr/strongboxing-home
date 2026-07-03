@@ -90,6 +90,7 @@ export default function AdminPage() {
     setSlug(data.post.slug || makeSlug(data.post.title));
     setDescription(data.post.description);
     setContent(data.post.content);
+    editorRef.current?.setContent(data.post.content || "");
   }
 
   async function handleImageUpload(file: File) {
@@ -231,6 +232,8 @@ export default function AdminPage() {
     setContent(post.content || "");
     setBranchName(post.branch_name || "철산점");
     setCategory(post.category || "소식");
+    // 에디터 DOM에 직접 주입 (state update는 비동기라 useEffect로는 타이밍이 불안정)
+    editorRef.current?.setContent(post.content || "");
 
     window.scrollTo({
       top: 0,
@@ -598,7 +601,7 @@ export default function AdminPage() {
                   setSlug("");
                   setDescription("");
                   setContent("");
-                  setContent("");
+                  editorRef.current?.setContent("");
                 }}
                 className="rounded-full border border-zinc-200 px-8 py-5 text-lg font-black"
               >

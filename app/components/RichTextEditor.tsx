@@ -9,6 +9,7 @@ interface Props {
 
 export interface RichTextEditorHandle {
   insertHtml: (html: string) => void;
+  setContent: (html: string) => void;
 }
 
 const FONT_SIZES = [
@@ -34,14 +35,13 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
   const editorRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
 
+  // 최초 마운트 시 초기값 설정
   useEffect(() => {
-    // 에디터가 포커스 상태가 아닐 때만 외부에서 값을 주입 (타이핑 중 커서 점프 방지)
-    if (editorRef.current && document.activeElement !== editorRef.current) {
-      if (editorRef.current.innerHTML !== value) {
-        editorRef.current.innerHTML = value;
-      }
+    if (editorRef.current) {
+      editorRef.current.innerHTML = value;
     }
-  }, [value]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 커서 위치 저장
   function saveSelection() {
@@ -51,8 +51,16 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
     }
   }
 
-  // 저장된 커서 위치에 HTML 삽입
   useImperativeHandle(ref, () => ({
+    // 외부에서 본문 전체를 교체할 때 (수정 모드 진입, AI 생성 등)
+    setContent(html: string) {
+      if (editorRef.current) {
+        editorRef.current.innerHTML = html;
+        onChange(html);
+      }
+    },
+
+    // 현재 커서 위치에 HTML 삽입 (이미지/영상 첨부)
     insertHtml(html: string) {
       editorRef.current?.focus();
       const sel = window.getSelection();
@@ -69,7 +77,6 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
         }
         document.execCommand("insertHTML", false, html);
       } else {
-        // 커서 없으면 맨 끝에 추가
         if (editorRef.current) {
           editorRef.current.innerHTML += html;
         }
