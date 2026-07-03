@@ -44,8 +44,9 @@ export async function POST(req: NextRequest) {
     });
 
     if (!res.ok) {
-      const t = await res.text();
-      return err(`OpenAI 오류: ${t}`, 502);
+      let t = await res.text();
+      try { const j = JSON.parse(t); t = j?.error?.message ?? t; } catch {}
+      return err(`OpenAI 오류 (${res.status}): ${t}`, 502);
     }
 
     const json = await res.json();

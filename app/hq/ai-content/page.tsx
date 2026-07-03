@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Sparkles, RefreshCw, Copy, Check, ChevronDown } from "lucide-react";
+import { Sparkles, RefreshCw, Copy, Check, ChevronDown, AlertCircle } from "lucide-react";
 import { Toast, useToast } from "@/app/components/hq/Toast";
 
 interface Branch { id: number; name: string }
@@ -44,6 +44,7 @@ export default function AiContentPage() {
   const [f,setF]=useState({branch_id:"",type:"릴스",target:"일반",mood:"자연스럽게",prompt:""});
   const [loading,setLoading]=useState(false);
   const [result,setResult]=useState<{insta?:string;clip_title?:string;blog?:string;hashtags?:string}|null>(null);
+  const [errorMsg,setErrorMsg]=useState<string|null>(null);
   const {toast,notify}=useToast();
 
   const loadBranches=useCallback(async()=>{
@@ -61,14 +62,25 @@ export default function AiContentPage() {
     if(!f.prompt.trim()){notify("내용을 입력해주세요.",false);return;}
     setLoading(true);
     setResult(null);
+    setErrorMsg(null);
     try{
       const branch=branches.find(b=>String(b.id)===f.branch_id);
       const r=await fetch("/api/hq/ai-content",{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({branch:branch?.name??"스트롱복싱",type:f.type,target:f.target,mood:f.mood,prompt:f.prompt})});
       const j=await r.json();
-      if(j.success&&j.data){setResult(j.data);notify("AI 생성 완료!");}
-      else notify("생성 실패: "+(j.message??""),false);
-    }catch(e){notify("네트워크 오류",false);}
+      if(j.success&&j.data){
+        setResult(j.data);
+        notify("AI 생성 완료!");
+      } else {
+        const msg = j.message ?? "알 수 없는 오류";
+        setErrorMsg(msg);
+        notify("생성 실패",false);
+      }
+    }catch(e:any){
+      const msg = e?.message ?? "네트워크 오류";
+      setErrorMsg(msg);
+      notify("네트워크 오류",false);
+    }
     finally{setLoading(false);}
   };
 
@@ -138,6 +150,17 @@ export default function AiContentPage() {
           {loading?"AI가 생성 중입니다...":"콘텐츠 생성"}
         </button>
       </div>
+
+      {/* 에러 표시 (영구적으로) */}
+      {errorMsg&&(
+        <div className="flex items-start gap-3 rounded-2xl p-4" style={{background:"#FEF2F2",border:"1px solid #FECACA"}}>
+          <AlertCircle size={16} color="#EF3B2D" className="shrink-0 mt-0.5"/>
+          <div>
+            <p className="text-[13px] font-bold" style={{color:"#EF3B2D"}}>AI 생성 실패</p>
+            <p className="text-[12px] mt-1" style={{color:"#7F1D1D"}}>{errorMsg}</p>
+          </div>
+        </div>
+      )}
 
       {/* 결과 */}
       {result&&(
