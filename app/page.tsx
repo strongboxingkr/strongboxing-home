@@ -130,7 +130,7 @@ const branches = [
 
 export default async function HomePage() {
   const [rows]: any = await db.query(`
-    SELECT id, title, slug, description, branch_name, created_at
+    SELECT id, title, slug, description, branch_name, created_at, content
     FROM homepage_posts
     ORDER BY created_at DESC
     LIMIT 3
@@ -174,7 +174,7 @@ export default async function HomePage() {
 
                 <div className="my-7 h-[2px] w-14" style={{ background: "#D01E2E" }} />
 
-                <p className="max-w-md text-sm leading-[2] md:text-base md:leading-[2.1]" style={{ color: "#C9C9C9" }}>
+                <p className="max-w-md text-sm leading-[2] md:text-base md:leading-[2.1]" style={{ color: "#C9C9C9", wordBreak: "keep-all" }}>
                   처음이어도 괜찮습니다.<br />
                   정해진 단체 수업이 아니라,{" "}
                   <span style={{ color: "#F5F4F1", fontWeight: 700 }}>회원님의 목적과 실력에 맞춰</span>{" "}
@@ -567,28 +567,45 @@ export default async function HomePage() {
 
             {latestPosts.length > 0 ? (
               <div className="grid gap-3 md:grid-cols-3">
-                {latestPosts.map((post: any) => (
+                {latestPosts.map((post: any) => {
+                  const thumb = (() => {
+                    const s = String(post.content || "");
+                    const html = s.match(/<img[^>]+src=["']([^"']+)["']/i);
+                    if (html?.[1]) return html[1];
+                    const md = s.match(/!\[.*?\]\((.*?)\)/);
+                    return md?.[1] || null;
+                  })();
+                  return (
                   <a key={post.id} href={`/blog/${post.slug}`}
-                    className="group flex flex-col p-7 transition-transform hover:-translate-y-1"
+                    className="group flex flex-col overflow-hidden transition-transform hover:-translate-y-1"
                     style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
-                    <div className="mb-5 flex items-center justify-between">
-                      <span className="rounded-[10px] px-2.5 py-1 text-[10px] font-black"
-                        style={{ border: "1px solid rgba(255,255,255,0.1)", color: "#8A8D91" }}>
-                        {post.branch_name}
-                      </span>
-                      <span className="text-xs" style={{ color: "#3A3A3E" }}>
-                        {new Date(post.created_at).toLocaleDateString()}
-                      </span>
+                    {thumb && (
+                      <div className="h-[160px] overflow-hidden">
+                        <img src={thumb} alt={post.title}
+                          className="h-full w-full object-cover object-[center_25%] transition duration-500 group-hover:scale-105" />
+                      </div>
+                    )}
+                    <div className="flex flex-col flex-1 p-5">
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="rounded-[10px] px-2.5 py-1 text-[10px] font-black"
+                          style={{ border: "1px solid rgba(255,255,255,0.1)", color: "#8A8D91" }}>
+                          {post.branch_name}
+                        </span>
+                        <span className="text-xs" style={{ color: "#3A3A3E" }}>
+                          {new Date(post.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <h3 className="mb-2 flex-1 text-lg font-black leading-tight" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>
+                        {post.title}
+                      </h3>
+                      <p className="line-clamp-1 text-sm leading-6" style={{ color: "#8A8D91" }}>
+                        {post.description}
+                      </p>
+                      <p className="mt-4 text-xs font-bold" style={{ color: "#5A5C61" }}>읽기 →</p>
                     </div>
-                    <h3 className="mb-3 flex-1 text-xl font-black leading-tight" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>
-                      {post.title}
-                    </h3>
-                    <p className="line-clamp-2 text-sm leading-6" style={{ color: "#8A8D91" }}>
-                      {post.description}
-                    </p>
-                    <p className="mt-5 text-xs font-bold" style={{ color: "#5A5C61" }}>읽기 →</p>
                   </a>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="p-10 text-center"
