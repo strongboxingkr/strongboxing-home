@@ -544,8 +544,21 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             NEWS & REVIEW
         ══════════════════════════════════════ */}
-        <section id="news" className="px-6 py-32 md:px-8">
-          <div className="mx-auto max-w-7xl">
+        <section id="news" className="relative overflow-hidden px-6 py-32 md:px-8">
+          {/* 배경 체육관 이미지 */}
+          <img
+            src="/images/gallery/gallery-1.jpg"
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            style={{ filter: "brightness(0.2) grayscale(0.3)" }}
+          />
+          {/* 오버레이 — 상단/하단 진하게, 중앙 살짝 열기 */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{ background: "linear-gradient(to bottom, rgba(14,14,16,0.72) 0%, rgba(14,14,16,0.48) 40%, rgba(14,14,16,0.72) 100%)" }}
+          />
+          <div className="relative z-10 mx-auto max-w-7xl">
             <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
                 <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>NEWS & REVIEW</p>
@@ -592,6 +605,7 @@ export default async function HomePage() {
             )}
           </div>
         </section>
+        {/* /NEWS & REVIEW */}
 
         {/* SEO sr-only */}
         <section className="sr-only">

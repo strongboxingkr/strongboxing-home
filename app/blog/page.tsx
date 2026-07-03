@@ -1,5 +1,6 @@
 ﻿import { db } from "@/lib/db";
 import type { Metadata } from "next";
+import BlogViewClient from "@/app/components/BlogViewClient";
 
 export const metadata: Metadata = {
   title: "스트롱복싱 소식 & 후기 | 복싱 다이어트 정보",
@@ -25,11 +26,6 @@ export const metadata: Metadata = {
     images: ["/og.png"],
   },
 };
-
-function getFirstImage(content: string) {
-  const match = String(content || "").match(/!\[.*?\]\((.*?)\)/);
-  return match?.[1] || null;
-}
 
 export default async function BlogPage({
   searchParams,
@@ -160,57 +156,7 @@ export default async function BlogPage({
               </p>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2">
-              {filteredPosts.map((post: any) => {
-                const image = getFirstImage(post.content);
-
-                return (
-                  <a
-                    key={post.id}
-                    href={`/blog/${post.slug}`}
-                    className="group overflow-hidden rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] transition duration-300 hover:-translate-y-1 hover:border-white/25"
-                  >
-                    {image && (
-                      <div className="h-[220px] overflow-hidden">
-                        <img
-                          src={image}
-                          alt={post.title}
-                          className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-105"
-                        />
-                      </div>
-                    )}
-
-                    <div className="p-7">
-                      <div className="mb-4 flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-[#D01E2E] px-3 py-1 text-xs font-black">
-                          {post.branch_name}
-                        </span>
-
-                        <span className="rounded-full border border-[#4A4C50]/30 px-3 py-1 text-xs text-[#8A8D91]">
-                          {post.category}
-                        </span>
-
-                        <span className="text-xs text-[#8A8D91]">
-                          {new Date(post.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}
-                        </span>
-                      </div>
-
-                      <h2 className="mb-3 text-2xl font-black leading-tight tracking-[-0.04em] text-[#F5F4F1] transition-colors group-hover:text-white">
-                        {post.title}
-                      </h2>
-
-                      <p className="line-clamp-2 text-sm leading-7 text-[#8A8D91]">
-                        {post.description}
-                      </p>
-
-                      <p className="mt-4 text-xs font-black text-[#D01E2E] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        자세히 보기 →
-                      </p>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
+            <BlogViewClient posts={filteredPosts} />
           )}
         </div>
       </section>

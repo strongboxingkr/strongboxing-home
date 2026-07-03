@@ -169,19 +169,25 @@ export default function BranchHeroGrid({ branches }: Props) {
       className="transition-opacity duration-500"
       style={{ opacity: mounted ? 1 : 0.6 }}
     >
-      {/* Magazine Grid: featured(왼쪽) + 2×2 small(오른쪽) */}
+      {/* Magazine Grid: 왼쪽 대표 카드 + 오른쪽 2×2 소형 카드 4개 */}
       <div
-        className="grid h-[560px] gap-2.5 md:h-[600px]"
-        style={{ gridTemplateColumns: "1fr 1fr", gridTemplateRows: "1fr 1fr" }}
+        className="grid gap-2.5"
+        style={{
+          gridTemplateColumns: "1fr 1fr",
+          gridTemplateRows: "repeat(4, 1fr)",
+          height: "clamp(480px, 62vw, 660px)",
+        }}
       >
-        {/* 대표 지점 — 2행을 차지 */}
-        <div style={{ gridRow: "1 / 3" }}>
+        {/* 대표 지점 — 왼쪽 전체 (4행 span) */}
+        <div style={{ gridColumn: 1, gridRow: "1 / 5" }}>
           <FeaturedCard branch={featured} onSelect={handleSelect} />
         </div>
 
-        {/* 나머지 4개 작은 카드 */}
-        {others.slice(0, 4).map((branch) => (
-          <SmallCard key={branch.slug} branch={branch} onSelect={handleSelect} />
+        {/* 나머지 4개 지점 — 오른쪽 2×2 */}
+        {others.slice(0, 4).map((branch, i) => (
+          <div key={branch.slug} style={{ gridColumn: 2, gridRow: i + 1 }}>
+            <SmallCard branch={branch} onSelect={handleSelect} />
+          </div>
         ))}
       </div>
 
