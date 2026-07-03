@@ -352,14 +352,7 @@ export default async function HomePage() {
                 <a key={coach.name}
                   href={`https://www.instagram.com/${coach.instagram}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="group p-6 transition-all duration-300 hover:-translate-y-0.5"
-                  style={{
-                    borderRadius: 14,
-                    border: "1px solid rgba(74,76,80,0.3)",
-                    background: "#141416",
-                  }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(138,141,145,0.45)"; (e.currentTarget as HTMLElement).style.background = "rgba(74,76,80,0.08)"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(74,76,80,0.3)"; (e.currentTarget as HTMLElement).style.background = "#141416"; }}
+                  className="p-6 rounded-[14px] border border-[rgba(74,76,80,0.3)] bg-[#141416] transition-all duration-300 hover:-translate-y-0.5 hover:border-[rgba(138,141,145,0.45)] hover:bg-[rgba(74,76,80,0.08)]"
                 >
                   <p className="mb-1 text-[10px] font-black tracking-[0.2em]" style={{ color: "#5A5C61" }}>{coach.branch}</p>
                   <h3 className="mb-1 text-lg font-black" style={{ letterSpacing: "-0.03em", color: "#F5F4F1" }}>
