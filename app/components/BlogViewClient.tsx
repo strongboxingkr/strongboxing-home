@@ -15,8 +15,13 @@ interface Post {
 }
 
 function getFirstImage(content: string) {
-  const match = String(content || "").match(/!\[.*?\]\((.*?)\)/);
-  return match?.[1] || null;
+  const str = String(content || "");
+  // HTML img 태그 우선 (RichTextEditor 출력)
+  const html = str.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if (html?.[1]) return html[1];
+  // 마크다운 이미지 폴백
+  const md = str.match(/!\[.*?\]\((.*?)\)/);
+  return md?.[1] || null;
 }
 
 function formatDate(dateStr: string) {
