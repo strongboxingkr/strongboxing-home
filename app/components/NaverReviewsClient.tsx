@@ -54,7 +54,7 @@ export default function NaverReviewsClient({ reviews }: { reviews: any[] }) {
               </p>
             </div>
 
-            <p className="text-sm font-black tracking-[0.2em] text-[#D01E2E]">
+            <p className="text-sm font-black tracking-[0.2em] text-[#22C55E]">
               NAVER REVIEW
             </p>
 
