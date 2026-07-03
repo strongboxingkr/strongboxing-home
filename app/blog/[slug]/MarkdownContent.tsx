@@ -14,9 +14,9 @@ const PROSE =
   "[&_ol]:my-6 [&_ol]:list-decimal [&_ol]:pl-6 " +
   "[&_li]:text-zinc-200 [&_li]:my-2 [&_li]:leading-8 " +
   "[&_li::marker]:text-[#D01E2E] " +
-  /* 이미지: 16:9 비율 고정, object-cover, 위아래 충분한 여백 */
-  "[&_img]:w-full [&_img]:rounded-2xl [&_img]:border [&_img]:border-white/10 " +
-  "[&_img]:aspect-video [&_img]:object-cover [&_img]:my-10 " +
+  /* 이미지: 원본 비율 유지, 잘리지 않게 */
+  "[&_img]:w-full [&_img]:h-auto [&_img]:rounded-2xl [&_img]:border [&_img]:border-white/10 " +
+  "[&_img]:my-10 " +
   /* video도 동일하게 */
   "[&_video]:w-full [&_video]:rounded-2xl [&_video]:my-10";
 
