@@ -24,7 +24,17 @@ interface Branch {
   is_active: number;
 }
 
-const BRANCH_COLORS = ["#8B5CF6", "#10B981", "#3B82F6", "#EF3B2D", "#F59E0B", "#6B7280"];
+const BRANCH_COLORS: Record<string, string> = {
+  gaebong:      "#8B5CF6",
+  sinjeong:     "#10B981",
+  mokdong:      "#3B82F6",
+  cheolsan:     "#F59E0B",
+  yeongdeungpo: "#EF3B2D",
+};
+const FALLBACK_COLORS = ["#6B7280", "#EC4899", "#14B8A6", "#F97316"];
+function branchColor(slug: string, idx: number) {
+  return BRANCH_COLORS[slug] ?? FALLBACK_COLORS[idx % FALLBACK_COLORS.length];
+}
 
 const cardStyle = {
   background: "#FFFFFF",
@@ -436,7 +446,7 @@ export default function BranchesPage() {
             <BranchCard
               key={b.id}
               branch={b}
-              color={BRANCH_COLORS[i % BRANCH_COLORS.length]}
+              color={branchColor(b.slug, i)}
               onEdit={(b) => setModal({ open: true, data: b })}
               onDelete={handleDelete}
             />
