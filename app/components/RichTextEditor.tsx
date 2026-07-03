@@ -185,6 +185,49 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
         >
           초기화
         </button>
+        <div className="mx-1 w-px bg-zinc-300" />
+        <button
+          type="button"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            const hr = document.createElement("hr");
+            hr.style.cssText = "border:none;border-top:2px solid #e4e4e7;margin:24px 0";
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount > 0) {
+              const range = sel.getRangeAt(0);
+              range.collapse(false);
+              range.insertNode(hr);
+              range.setStartAfter(hr);
+              range.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(range);
+            } else if (editorRef.current) {
+              editorRef.current.appendChild(hr);
+            }
+            onChange(editorRef.current?.innerHTML || "");
+          }}
+          className={btnClass}
+          title="구분선"
+        >
+          ─
+        </button>
+        <div className="mx-1 w-px bg-zinc-300" />
+        {["🥊", "💪", "🔥", "✅", "👊", "😊", "⭐", "📍"].map((emoji) => (
+          <button
+            key={emoji}
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              editorRef.current?.focus();
+              document.execCommand("insertText", false, emoji);
+              onChange(editorRef.current?.innerHTML || "");
+            }}
+            className={btnClass}
+            title={emoji}
+          >
+            {emoji}
+          </button>
+        ))}
       </div>
 
       <div
