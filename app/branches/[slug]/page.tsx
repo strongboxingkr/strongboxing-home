@@ -510,42 +510,37 @@ const faqJsonLd = {
             />
 
       <section className="relative min-h-[90vh] overflow-hidden bg-[#080808]">
-        {/* Background image with overlay */}
-        <div className="absolute inset-0 hidden md:block">
-          <img
-            src={branch.image}
-            alt={branch.fullName}
-            className="h-full w-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#080808] via-[#080808]/80 to-transparent" />
+        {/* 배경 이미지 */}
+        <div className="absolute inset-0">
+          <img src={branch.image} alt="" aria-hidden="true" className="h-full w-full object-cover" style={{ filter: "brightness(0.18) grayscale(0.2)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.65) 55%, rgba(8,8,8,0.15) 100%)" }} />
         </div>
 
-        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 md:grid-cols-[1fr_420px]">
+        <div className="relative z-10 mx-auto grid max-w-[1280px] items-center gap-14 px-6 py-28 md:min-h-[90vh] md:grid-cols-[1fr_500px] lg:px-10">
           <div>
-            <a href="/" className="mb-10 inline-block text-[#4A4C50] transition hover:text-white">
+            <a href="/" className="mb-10 inline-block text-[#4A4C50] transition hover:text-white text-sm">
               ← 메인으로
             </a>
 
-            <p className="mb-5 text-sm font-black tracking-[0.32em] text-[#D01E2E]">
+            <p className="mb-6 text-xs font-black tracking-[0.38em] text-[#D01E2E]">
               STRONG BOXING BRANCH
             </p>
 
-            <h1 className="break-keep text-4xl font-black leading-tight tracking-[-0.05em] text-[#F5F4F1] md:text-6xl">
+            <h1 className="break-keep font-black leading-[0.88] tracking-[-0.05em] text-[#F5F4F1]" style={{ fontSize: "clamp(40px, 5.5vw, 80px)" }}>
               {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-8 text-[#8A8D91]">
-              {seoContent?.description || branch.description}
+            <div className="my-7 h-[2px] w-12" style={{ background: "#D01E2E" }} />
+
+            <p className="max-w-lg text-base leading-8 text-[#8A8D91]">
+              {branch.description}
             </p>
 
             {seoContent?.nearby && (
-              <div className="mt-8 flex flex-wrap gap-2">
+              <div className="mt-7 flex flex-wrap gap-2">
                 {seoContent.nearby.map((area: string) => (
-                  <span
-                    key={area}
-                    className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-[#8A8D91]"
-                  >
-                    {area} 인근
+                  <span key={area} className="rounded-full border border-[#4A4C50]/40 px-3 py-1 text-xs font-bold text-[#8A8D91]">
+                    {area}
                   </span>
                 ))}
               </div>
@@ -554,28 +549,30 @@ const faqJsonLd = {
             <div className="mt-10 flex flex-wrap gap-3">
               <a
                 href={`tel:${branch.phone.replaceAll("-", "")}`}
-                className="rounded-[10px] bg-[#D01E2E] px-7 py-4 text-sm font-black text-white transition hover:bg-[#B71C2B]"
+                className="inline-flex items-center gap-2 rounded-[10px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white transition hover:bg-[#B71C2B]"
               >
-                📞 전화 문의
+                전화 문의
               </a>
-
-              {branch.kakaoChat && (
-                <a
-                  href={branch.kakaoChat}
-                  target="_blank"
-                  className="rounded-[10px] bg-[#FEE500] px-7 py-4 text-sm font-black text-black transition hover:brightness-95"
-                >
-                  카카오톡 문의
-                </a>
-              )}
 
               {branch.booking && (
                 <a
                   href={branch.booking}
                   target="_blank"
-                  className="rounded-[10px] border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
+                  className="inline-flex items-center gap-2 rounded-[10px] border border-[#4A4C50]/40 bg-white/6 px-7 py-3.5 text-sm font-black text-[#F5F4F1] transition hover:border-white/30 hover:bg-white/10"
                 >
                   네이버 예약
+                </a>
+              )}
+
+              {branch.kakaoChat && (
+                <a
+                  href={branch.kakaoChat}
+                  target="_blank"
+                  className="inline-flex items-center gap-2 rounded-[10px] border border-[#4A4C50]/40 bg-white/6 px-7 py-3.5 text-sm font-black transition hover:border-white/30 hover:bg-white/10"
+                  style={{ color: "#F5F4F1" }}
+                >
+                  <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#FEE500" }} />
+                  카카오 문의
                 </a>
               )}
 
@@ -583,40 +580,38 @@ const faqJsonLd = {
                 <a
                   href={branch.naverMap}
                   target="_blank"
-                  className="rounded-[10px] border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
+                  className="inline-flex items-center gap-2 rounded-[10px] border border-[#4A4C50]/40 bg-white/6 px-7 py-3.5 text-sm font-black text-[#8A8D91] transition hover:border-white/30 hover:text-white"
                 >
-                  네이버지도
+                  지도 보기
                 </a>
               )}
+            </div>
 
-              <a
-                href={branch.instagram}
-                target="_blank"
-                className="rounded-[10px] border border-white/20 bg-white/10 px-7 py-4 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"
-              >
-                인스타그램
-              </a>
+            {/* 지점 기본 정보 */}
+            <div className="mt-12 flex flex-col gap-2 text-sm" style={{ color: "#5A5C61" }}>
+              <span>{branch.phone}</span>
+              <span>{branch.hours.join(" · ")}</span>
             </div>
           </div>
 
           <div className="hidden md:block">
-            <div className="overflow-hidden rounded-[14px] shadow-2xl ring-1 ring-white/10">
-              <img
-                src={branch.image}
-                alt={branch.fullName}
-                className="h-[520px] w-full object-cover"
-              />
+            <div className="overflow-hidden rounded-[16px]" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.08)" }}>
+              <img src={branch.image} alt={branch.fullName} className="h-[600px] w-full object-cover" style={{ filter: "brightness(0.92)" }} />
             </div>
           </div>
         </div>
       </section>
 
       {relatedPosts.length > 0 && (
-        <section className="px-6 pt-20 pb-4">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="mb-8 text-4xl font-black tracking-[-0.05em]">
-              {branch.name} 소식 & 후기
-            </h2>
+        <section className="px-6 py-24">
+          <div className="mx-auto max-w-[1280px] lg:px-4">
+            <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>NEWS & REVIEW</p>
+            <div className="mb-10 flex items-end justify-between gap-4">
+              <h2 className="font-black tracking-[-0.05em]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
+                {branch.name} 소식 & 후기
+              </h2>
+              <a href="/blog" className="shrink-0 text-sm font-black text-[#8A8D91] transition hover:text-white">전체 글 →</a>
+            </div>
             <div className="grid gap-5 md:grid-cols-3">
               {relatedPosts.map((post: any) => {
                 const image = getFirstImage(post.content);
@@ -624,23 +619,27 @@ const faqJsonLd = {
                 <a
                   key={post.id}
                   href={`/blog/${post.slug}`}
-                  className="group overflow-hidden rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] transition hover:border-white/30"
+                  className="group overflow-hidden rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] transition duration-300 hover:-translate-y-1 hover:border-white/25"
                 >
-                  {image && (
-                    <div className="h-[180px] overflow-hidden">
+                  <div className="h-[210px] overflow-hidden bg-[#1A1A1C]">
+                    {image && (
                       <img
                         src={encodeURI(image)}
                         alt={post.title}
-                        className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-105"
+                        className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-[1.03]"
                       />
-                    </div>
-                  )}
+                    )}
+                  </div>
                   <div className="p-7">
-                    <div className="mb-4 inline-flex rounded-[10px] bg-[#D01E2E] px-4 py-2 text-sm font-black">
-                      {post.branch_name}
+                    <div className="mb-4 flex items-center gap-2">
+                      <span className="rounded-full bg-[#D01E2E] px-3 py-1 text-xs font-black">{post.branch_name}</span>
+                      <span className="text-xs text-[#8A8D91]">
+                        {new Date(post.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}
+                      </span>
                     </div>
-                    <h3 className="mb-3 text-xl font-black leading-tight">{post.title}</h3>
+                    <h3 className="mb-3 text-xl font-black leading-tight tracking-[-0.03em] text-[#F5F4F1]">{post.title}</h3>
                     <p className="line-clamp-2 text-sm leading-7 text-[#8A8D91]">{post.description}</p>
+                    <p className="mt-4 text-xs font-black text-[#D01E2E] opacity-0 transition-opacity duration-300 group-hover:opacity-100">자세히 보기 →</p>
                   </div>
                 </a>
                 );
@@ -651,31 +650,33 @@ const faqJsonLd = {
       )}
 
       {branchReels.length > 0 && (
-        <section className="bg-[#16171A] px-6 py-20">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-10">
-              <p className="mb-2 text-sm font-black tracking-[0.32em] text-[#D01E2E]">STRONG CLIP</p>
-              <h2 className="text-4xl font-black tracking-[-0.05em] text-[#F5F4F1]">
-                {branch.name} 클립
-              </h2>
-            </div>
-            <div className="overflow-x-auto pb-4">
+        <section className="px-6 py-24" style={{ background: "#141416" }}>
+          <div className="mx-auto max-w-[1280px] lg:px-4">
+            <p className="mb-3 text-xs font-black tracking-[0.32em] text-[#D01E2E]">STRONG CLIP</p>
+            <h2 className="mb-10 font-black tracking-[-0.05em] text-[#F5F4F1]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
+              {branch.name} 클립
+            </h2>
+            <div className="overflow-x-auto pb-3" style={{ scrollbarWidth: "thin", scrollbarColor: "#4A4C50 transparent" }}>
               <div className="flex gap-4">
                 {branchReels.map((reel: any) => (
-                  <div key={reel.id} className="shrink-0 w-[200px] overflow-hidden rounded-[10px] border border-[#4A4C50]/30 bg-[#1A1A1C]">
-                    <video
-                      src={reel.video_url}
-                      controls={Number(reel.is_muted) !== 1}
-                      muted
-                      autoPlay={Number(reel.is_muted) === 1}
-                      loop={Number(reel.is_muted) === 1}
-                      playsInline
-                      preload="metadata"
-                      className="w-full bg-[#0E0E10] object-cover aspect-[9/16]"
-                    />
-                    <div className="px-3 py-2">
-                      <p className="text-xs font-bold text-white">{reel.title}</p>
+                  <div key={reel.id} className="group shrink-0 w-[260px] overflow-hidden rounded-[12px] border border-[#4A4C50]/30 bg-[#1A1A1C] transition duration-300 hover:-translate-y-1 hover:border-[#4A4C50]/60">
+                    <div className="overflow-hidden">
+                      <video
+                        src={reel.video_url}
+                        controls={Number(reel.is_muted) !== 1}
+                        muted
+                        autoPlay={Number(reel.is_muted) === 1}
+                        loop={Number(reel.is_muted) === 1}
+                        playsInline
+                        preload="metadata"
+                        className="w-full bg-[#0E0E10] object-cover aspect-[9/16] transition duration-500 group-hover:scale-[1.03]"
+                      />
                     </div>
+                    {reel.title && (
+                      <div className="px-4 py-3">
+                        <p className="text-sm font-bold text-[#F5F4F1] line-clamp-1">{reel.title}</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -684,239 +685,247 @@ const faqJsonLd = {
         </section>
       )}
 
-      <section className="px-6 py-20">
-        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
-          <div className="rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] p-8">
-            <h2 className="mb-5 text-3xl font-black">지점 정보</h2>
-
-            <div className="space-y-3 leading-8 text-[#8A8D91]">
-              <p>📞 {branch.phone}</p>
-              <p>📍 {branch.address}</p>
-
-              <div>
-                🕒 운영시간
-                {branch.hours.map((h: string) => (
-                  <p key={h} className="ml-7">
-                    {h}
-                  </p>
-                ))}
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-[1280px] lg:px-4">
+          <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>BRANCH INFO</p>
+          <div className="grid gap-5 md:grid-cols-2">
+            {/* 지점 정보 */}
+            <div className="rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9">
+              <h2 className="mb-7 text-2xl font-black tracking-[-0.03em] text-[#F5F4F1]">지점 정보</h2>
+              <div className="space-y-4 text-sm leading-7">
+                <div className="flex gap-4">
+                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>전화</span>
+                  <span style={{ color: "#F5F4F1" }}>{branch.phone}</span>
+                </div>
+                <div className="flex gap-4">
+                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>주소</span>
+                  <span style={{ color: "#8A8D91" }}>{branch.address}</span>
+                </div>
+                <div className="flex gap-4">
+                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>운영</span>
+                  <div className="flex flex-col gap-0.5">
+                    {branch.hours.map((h: string) => (
+                      <span key={h} style={{ color: "#8A8D91" }}>{h}</span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] p-8">
-            <h2 className="mb-5 text-3xl font-black">바로가기</h2>
+            {/* 바로가기 */}
+            <div className="rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9">
+              <h2 className="mb-7 text-2xl font-black tracking-[-0.03em] text-[#F5F4F1]">바로가기</h2>
 
-            <div className="flex flex-wrap gap-3">
-              {branch.naverMap && (
+              {/* Primary CTA */}
+              <div className="mb-4 flex flex-wrap gap-3">
                 <a
-                  href={branch.naverMap}
-                  target="_blank"
-                  className="rounded-[10px] bg-white px-5 py-3 font-black text-black"
+                  href={`tel:${branch.phone.replaceAll("-", "")}`}
+                  className="rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition hover:bg-[#B71C2B]"
                 >
-                  네이버지도
+                  전화 문의
                 </a>
-              )}
 
-              {branch.kakaoMap && (
-                <a
-                  href={branch.kakaoMap}
-                  target="_blank"
-                  className="rounded-[10px] bg-white px-5 py-3 font-black text-black"
-                >
-                  카카오맵
+                {branch.booking && (
+                  <a
+                    href={branch.booking}
+                    target="_blank"
+                    className="rounded-[10px] border border-[#4A4C50]/40 bg-[#0E0E10] px-6 py-3 text-sm font-black text-[#F5F4F1] transition hover:border-white/30"
+                  >
+                    네이버 예약
+                  </a>
+                )}
+
+                {branch.kakaoChat && (
+                  <a
+                    href={branch.kakaoChat}
+                    target="_blank"
+                    className="inline-flex items-center gap-2 rounded-[10px] border border-[#4A4C50]/40 bg-[#0E0E10] px-6 py-3 text-sm font-black text-[#F5F4F1] transition hover:border-white/30"
+                  >
+                    <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: "#FEE500" }} />
+                    카카오 문의
+                  </a>
+                )}
+              </div>
+
+              {/* Secondary links */}
+              <div className="flex flex-wrap gap-2">
+                {branch.naverMap && (
+                  <a href={branch.naverMap} target="_blank"
+                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
+                    네이버지도
+                  </a>
+                )}
+                {branch.kakaoMap && (
+                  <a href={branch.kakaoMap} target="_blank"
+                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
+                    카카오맵
+                  </a>
+                )}
+                {branch.googleMap && (
+                  <a href={branch.googleMap} target="_blank"
+                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
+                    구글지도
+                  </a>
+                )}
+                <a href={branch.instagram} target="_blank"
+                  className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
+                  인스타그램
                 </a>
-              )}
-
-              {branch.googleMap && (
-                <a
-                  href={branch.googleMap}
-                  target="_blank"
-                  className="rounded-[10px] bg-white px-5 py-3 font-black text-black"
-                >
-                  구글지도
-                </a>
-              )}
-
-              <a
-                href={branch.instagram}
-                target="_blank"
-                className="rounded-[10px] bg-white px-5 py-3 font-black text-black"
-              >
-                인스타
-              </a>
-
-              {branch.kakaoChat && (
-                <a
-                  href={branch.kakaoChat}
-                  target="_blank"
-                  className="rounded-[10px] bg-[#FEE500] px-5 py-3 font-black text-black"
-                >
-                  카카오톡 문의
-                </a>
-              )}
-
-              <a
-                href={`tel:${branch.phone.replaceAll("-", "")}`}
-                className="rounded-[10px] bg-[#D01E2E] px-5 py-3 font-black"
-              >
-                전화
-              </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="px-6 py-20">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="mb-8 text-4xl font-black tracking-[-0.05em]">
+      <section className="px-6 py-24" style={{ background: "#141416" }}>
+        <div className="mx-auto max-w-[1280px] lg:px-4">
+          <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>PROGRAM</p>
+          <h2 className="mb-12 font-black tracking-[-0.05em]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
             {branch.area} 복싱 프로그램
           </h2>
 
-          <div className="grid gap-5 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-3">
             {[
-              [
-                "복싱 입문",
-                "처음 배우는 분들도 스텝과 기본 자세부터 차근차근 배웁니다.",
-              ],
-              [
-                "다이어트 복싱",
-                "지루하지 않게 땀나는 복싱 트레이닝으로 운동량을 높입니다.",
-              ],
-              [
-                "체력 향상",
-                "운동 목적과 체력에 맞춰 무리 없이 꾸준히 운동할 수 있습니다.",
-              ],
-            ].map(([title, desc]) => (
+              ["01", "복싱 입문", "처음 배우는 분들도 스텝과 기본 자세부터 차근차근 배웁니다."],
+              ["02", "다이어트 복싱", "지루하지 않게 땀나는 복싱 트레이닝으로 운동량을 높입니다."],
+              ["03", "체력 향상", "운동 목적과 체력에 맞춰 무리 없이 꾸준히 운동할 수 있습니다."],
+            ].map(([num, title, desc]) => (
               <div
                 key={title}
-                className="rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] p-7"
+                className="group rounded-[16px] border border-[#4A4C50]/30 bg-[#0E0E10] p-9 transition duration-300 hover:-translate-y-1 hover:border-[#4A4C50]/60 hover:bg-[#141416]"
               >
-                <h3 className="mb-3 text-2xl font-black">{title}</h3>
+                <p className="mb-8 text-xs font-black" style={{ color: "#2A2A2E" }}>{num}</p>
+                <h3 className="mb-3 text-2xl font-black tracking-[-0.04em] text-[#F5F4F1]">{title}</h3>
                 <p className="leading-7 text-[#8A8D91]">{desc}</p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-
-      <section className="px-6 pb-24">
-        <div className="mx-auto max-w-6xl rounded-[16px] border border-[#4A4C50]/30 bg-[#111214] p-10 text-center md:p-14">
-          <h2 className="mb-4 text-4xl font-black tracking-[-0.05em] text-[#F5F4F1] md:text-6xl">
-            {branch.name}에서 시작해볼까요?
-          </h2>
-
-          <p className="mb-8 text-lg leading-8 text-[#8A8D91]">
-            처음이어도 괜찮습니다. 운동 목적에 맞춰 상담 후 안내해드립니다.
-          </p>
-
-          <div className="flex flex-col justify-center gap-3 sm:flex-row">
-            <a
-              href={`tel:${branch.phone.replaceAll("-", "")}`}
-              className="rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black text-white transition hover:bg-[#B71C2B]"
-            >
-              전화 문의
-            </a>
-
-            {branch.booking && (
-              <a
-                href={branch.booking}
-                target="_blank"
-                className="rounded-[10px] border border-white/20 bg-white/5 px-8 py-4 font-black text-white backdrop-blur-sm transition hover:bg-white/10"
-              >
-                네이버 예약
-              </a>
-            )}
-
-            {branch.kakaoChat && (
-              <a
-                href={branch.kakaoChat}
-                target="_blank"
-                className="rounded-[10px] bg-[#FEE500] px-8 py-4 font-black text-black transition hover:brightness-95"
-              >
-                카카오톡 문의
-              </a>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-24 bg-[#111] text-white">
-        <div className="mx-auto max-w-6xl">
-
-          <div className="mb-16">
-           <h2 className="break-keep text-3xl font-black tracking-[-0.03em] md:text-4xl">
-            {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
-          </h2>
-
-          <p className="mt-6 max-w-3xl break-keep text-lg leading-8 text-[#8A8D91]">
-            {seoContent?.description || branch.description}
-          </p>
-
-          {seoContent?.nearby && (
-            <div className="mt-8 flex flex-wrap gap-2">
-              {seoContent.nearby.map((area: string) => (
-                <span
-                  key={area}
-                  className="rounded-full border border-[#4A4C50]/30 bg-[#0E0E10]/40 px-4 py-2 text-sm font-black text-zinc-200"
-                >
-                  {area} 인근 복싱
-                </span>
+          {/* 수업 흐름 */}
+          <div className="mt-8 rounded-[16px] border border-[#4A4C50]/30 bg-[#0E0E10] p-9">
+            <p className="mb-6 text-xs font-black tracking-[0.28em]" style={{ color: "#5A5C61" }}>1회 수업 흐름</p>
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+              {[
+                ["01", "몸풀기"],
+                ["02", "줄넘기"],
+                ["03", "자세 & 스텝"],
+                ["04", "미트 트레이닝"],
+                ["05", "샌드백"],
+                ["06", "체력 운동"],
+              ].map(([n, s]) => (
+                <div key={n} className="flex flex-col items-center gap-2 rounded-[10px] border border-[#4A4C50]/20 p-4 text-center">
+                  <span className="text-[10px] font-black" style={{ color: "#5A5C61" }}>{n}</span>
+                  <span className="text-xs font-bold leading-tight text-[#8A8D91]">{s}</span>
+                </div>
               ))}
             </div>
-          )}
           </div>
+        </div>
+      </section>
 
-          <div className="grid gap-10 md:grid-cols-2">
-            <img
-              src={branch.image}
-              alt={`${branch.area} 복싱장 ${branch.fullName} 내부`}
-              className="rounded-[32px] border border-[#4A4C50]/30 object-cover"
-            />
 
-            <div className="flex flex-col justify-center">
-              <h3 className="text-3xl font-black">
-                {branch.area} 복싱 입문 전문 체육관
-              </h3>
-
-              <p className="mt-5 leading-8 text-[#8A8D91]">
-                복싱 입문부터 다이어트, 체력 향상까지
-                운동 목적에 맞춰 지도해드립니다.
-              </p>
-
-              <ul className="mt-8 space-y-4 text-zinc-200">
-                <li>🥊 초보자 개인지도</li>
-                <li>🥊 여성 회원 운동 가능</li>
-                <li>🥊 다이어트 복싱</li>
-                <li>🥊 직장인 야간 운동</li>
-              </ul>
-
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-[1280px] lg:px-4">
+          <div className="relative overflow-hidden rounded-[20px] border border-[#4A4C50]/30 bg-[#111214] p-12 text-center md:p-16">
+            <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 70% 60% at 50% 100%, rgba(208,30,46,0.07) 0%, transparent 70%)" }} />
+            <p className="relative mb-4 text-xs font-black tracking-[0.38em]" style={{ color: "#5A5C61" }}>STRONG BOXING</p>
+            <h2 className="relative mb-4 font-black tracking-[-0.05em] text-[#F5F4F1]" style={{ fontSize: "clamp(32px, 5vw, 64px)" }}>
+              {branch.name}에서 시작해볼까요?
+            </h2>
+            <p className="relative mb-10 text-base leading-8 text-[#8A8D91]">
+              처음이어도 괜찮습니다. 운동 목적에 맞춰 상담 후 안내해드립니다.
+            </p>
+            <div className="relative flex flex-col justify-center gap-3 sm:flex-row">
               <a
-                href="/reservation"
-                className="mt-10 inline-flex w-fit rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black text-white"
+                href={`tel:${branch.phone.replaceAll("-", "")}`}
+                className="group inline-flex items-center justify-center gap-2 rounded-[10px] bg-[#D01E2E] px-9 py-4 font-black text-white transition hover:bg-[#B71C2B]"
               >
-                상담 문의하기
+                전화 문의
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>
+              {branch.booking && (
+                <a
+                  href={branch.booking}
+                  target="_blank"
+                  className="rounded-[10px] border border-[#4A4C50]/40 px-9 py-4 font-black text-[#F5F4F1] transition hover:border-white/30 hover:bg-white/6"
+                >
+                  네이버 예약
+                </a>
+              )}
+              {branch.kakaoChat && (
+                <a
+                  href={branch.kakaoChat}
+                  target="_blank"
+                  className="inline-flex items-center justify-center gap-2 rounded-[10px] border border-[#4A4C50]/40 px-9 py-4 font-black text-[#F5F4F1] transition hover:border-white/30 hover:bg-white/6"
+                >
+                  <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#FEE500" }} />
+                  카카오 문의
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-24" style={{ background: "#0E0E10", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+        <div className="mx-auto max-w-[1280px] lg:px-4">
+
+          {/* 지역 소개 */}
+          <div className="mb-20 grid gap-12 md:grid-cols-2">
+            <div className="overflow-hidden rounded-[14px] border border-[#4A4C50]/30">
+              <img
+                src={branch.image}
+                alt={`${branch.area} 복싱장 ${branch.fullName} 내부`}
+                className="h-[380px] w-full object-cover"
+                style={{ filter: "brightness(0.9)" }}
+              />
+            </div>
+            <div className="flex flex-col justify-center">
+              <p className="mb-4 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>ABOUT</p>
+              <h2 className="mb-2 break-keep font-black tracking-[-0.04em] text-[#F5F4F1]" style={{ fontSize: "clamp(28px, 3.5vw, 44px)" }}>
+                {seoContent?.title || `${branch.area} 복싱 입문 전문 체육관`}
+              </h2>
+              <div className="my-5 h-[2px] w-10" style={{ background: "#D01E2E" }} />
+              <p className="max-w-lg break-keep text-base leading-8 text-[#8A8D91]">
+                {seoContent?.description || branch.description}
+              </p>
+              <div className="mt-8 grid grid-cols-2 gap-3">
+                {["초보자 개인지도", "여성 회원 환영", "다이어트 복싱", "직장인 야간 운동"].map((t) => (
+                  <div key={t} className="flex items-center gap-2 text-sm" style={{ color: "#8A8D91" }}>
+                    <span className="h-1 w-1 rounded-full shrink-0" style={{ background: "#D01E2E" }} />
+                    {t}
+                  </div>
+                ))}
+              </div>
+              {seoContent?.nearby && (
+                <div className="mt-8 flex flex-wrap gap-2">
+                  {seoContent.nearby.map((area: string) => (
+                    <span key={area} className="rounded-full border border-[#4A4C50]/30 px-3 py-1 text-xs font-bold text-[#8A8D91]">
+                      {area} 인근
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="mt-24">
-            <h2 className="text-4xl font-black">
+          {/* FAQ */}
+          <div>
+            <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>FAQ</p>
+            <h2 className="mb-10 text-3xl font-black tracking-[-0.04em] text-[#F5F4F1] md:text-4xl">
               자주 묻는 질문
             </h2>
 
-            <div className="mt-10 space-y-6">
+            <div className="space-y-3">
               {faqItems.map((item, index) => (
                 <div
                   key={index}
-                  className="rounded-[24px] border border-[#4A4C50]/30 bg-[#0E0E10]/40 p-6"
+                  className="rounded-[14px] border border-[#4A4C50]/25 bg-[#141416] p-7 transition duration-250 hover:border-[#4A4C50]/55"
                 >
-                  <h3 className="text-xl font-black">
+                  <h3 className="text-base font-black tracking-[-0.02em] text-[#F5F4F1]">
                     {item.question}
                   </h3>
-
-                  <p className="mt-3 leading-7 text-[#8A8D91]">
+                  <p className="mt-3 text-sm leading-7 text-[#8A8D91]">
                     {item.answer}
                   </p>
                 </div>

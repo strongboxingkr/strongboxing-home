@@ -311,18 +311,31 @@ export default async function HomePage() {
               </h2>
             </div>
 
+            {/* 대표 카드 — red border 강조 */}
             <a
               href="https://www.instagram.com/strongboxing_official"
               target="_blank" rel="noopener noreferrer"
-              className="mb-4 flex flex-col overflow-hidden transition-opacity hover:opacity-90 md:flex-row"
-              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}
+              className="group mb-4 flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-0.5 md:flex-row"
+              style={{
+                borderRadius: 16,
+                border: "1px solid rgba(208,30,46,0.45)",
+                boxShadow: "0 0 0 1px rgba(208,30,46,0.08)",
+                background: "#141416",
+              }}
             >
-              <div className="h-60 w-full shrink-0 md:h-auto md:w-72">
-                <img src="/images/coaches/hansol.jpg" alt="한솔 대표" className="h-full w-full object-cover object-top" style={{ filter: "grayscale(0.1)" }} />
+              <div className="h-60 w-full shrink-0 overflow-hidden md:h-auto md:w-72">
+                <img
+                  src="/images/coaches/hansol.jpg"
+                  alt="한솔 대표"
+                  className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.03]"
+                  style={{ filter: "grayscale(0.1)" }}
+                />
               </div>
               <div className="flex flex-1 flex-col justify-center gap-3 p-10">
-                <p className="text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>REPRESENTATIVE</p>
-                <h3 className="font-black" style={{ fontSize: "clamp(32px, 4vw, 48px)", letterSpacing: "-0.04em" }}>한솔 대표</h3>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-[6px] px-2 py-0.5 text-[10px] font-black" style={{ border: "1px solid rgba(208,30,46,0.35)", color: "#D01E2E" }}>DIRECTOR</span>
+                </div>
+                <h3 className="font-black" style={{ fontSize: "clamp(32px, 4vw, 48px)", letterSpacing: "-0.04em", color: "#F5F4F1" }}>한솔 대표</h3>
                 <p className="text-sm" style={{ color: "#8A8D91" }}>스트롱복싱 대표 · 전 지점 총괄</p>
               </div>
             </a>
@@ -339,8 +352,14 @@ export default async function HomePage() {
                 <a key={coach.name}
                   href={`https://www.instagram.com/${coach.instagram}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="p-6 transition-opacity hover:opacity-80"
-                  style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}
+                  className="group p-6 transition-all duration-300 hover:-translate-y-0.5"
+                  style={{
+                    borderRadius: 14,
+                    border: "1px solid rgba(74,76,80,0.3)",
+                    background: "#141416",
+                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(138,141,145,0.45)"; (e.currentTarget as HTMLElement).style.background = "rgba(74,76,80,0.08)"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(74,76,80,0.3)"; (e.currentTarget as HTMLElement).style.background = "#141416"; }}
                 >
                   <p className="mb-1 text-[10px] font-black tracking-[0.2em]" style={{ color: "#5A5C61" }}>{coach.branch}</p>
                   <h3 className="mb-1 text-lg font-black" style={{ letterSpacing: "-0.03em", color: "#F5F4F1" }}>
