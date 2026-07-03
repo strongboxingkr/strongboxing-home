@@ -257,6 +257,8 @@ export default function MarketingPage() {
   const [stats,setStats]=useState<StatRow[]>([]);
   const [loading,setLoading]=useState(true);
   const [channelFilter,setChannelFilter]=useState("전체");
+  const [viewMode,setViewMode]=useState<"일별"|"월별">("일별");
+  const [selectedMonth,setSelectedMonth]=useState(()=>new Date().toISOString().slice(0,7)); // YYYY-MM
   const [modal,setModal]=useState<{open:boolean;item:Partial<StatRow>|null}>({open:false,item:null});
   const [excelModal,setExcelModal]=useState(false);
   const {toast,notify}=useToast();
@@ -277,24 +279,50 @@ export default function MarketingPage() {
     if(j.success){notify("삭제됐습니다.");load();}else notify("삭제 실패",false);
   };
 
-  const totalImpr=stats.reduce((s,r)=>s+r.impressions,0);
-  const totalClicks=stats.reduce((s,r)=>s+r.clicks,0);
-  const totalInq=stats.reduce((s,r)=>s+r.inquiries,0);
-  const totalReg=stats.reduce((s,r)=>s+r.registrations,0);
-  const totalCost=stats.reduce((s,r)=>s+r.ad_cost,0);
+  // 채널 필터 적용
+  const byChannel=stats.filter(s=>channelFilter==="전체"||s.channel===channelFilter);
+
+  // 일별: 선택한 월 필터
+  const dailyRows=byChannel.filter(s=>s.stat_date?.slice(0,7)===selectedMonth)
+    .sort((a,b)=>b.stat_date.localeCompare(a.stat_date));
+
+  // 월별: YYYY-MM 기준으로 집계
+  const monthlyMap: Record<string,{impressions:number;clicks:number;inquiries:number;registrations:number;ad_cost:number}>={}
+  byChannel.forEach(s=>{
+    const m=s.stat_date?.slice(0,7)??"";
+    if(!m)return;
+    if(!monthlyMap[m])monthlyMap[m]={impressions:0,clicks:0,inquiries:0,registrations:0,ad_cost:0};
+    monthlyMap[m].impressions+=s.impressions;
+    monthlyMap[m].clicks+=s.clicks;
+    monthlyMap[m].inquiries+=s.inquiries;
+    monthlyMap[m].registrations+=s.registrations;
+    monthlyMap[m].ad_cost+=s.ad_cost;
+  });
+  const monthlyRows=Object.entries(monthlyMap)
+    .sort(([a],[b])=>b.localeCompare(a))
+    .map(([month,v])=>({month,...v}));
+
+  // KPI: 일별 모드면 선택 월 기준, 월별 모드면 전체
+  const kpiSource=viewMode==="일별"?dailyRows:byChannel;
+  const totalImpr=kpiSource.reduce((s,r)=>s+r.impressions,0);
+  const totalClicks=kpiSource.reduce((s,r)=>s+r.clicks,0);
+  const totalInq=kpiSource.reduce((s,r)=>s+r.inquiries,0);
+  const totalReg=kpiSource.reduce((s,r)=>s+r.registrations,0);
+  const totalCost=kpiSource.reduce((s,r)=>s+r.ad_cost,0);
   const ctr=totalImpr>0?((totalClicks/totalImpr)*100).toFixed(2):"-";
 
-  const filtered=stats.filter(s=>channelFilter==="전체"||s.channel===channelFilter);
+  // 선택 가능한 월 목록
+  const months=[...new Set(stats.map(s=>s.stat_date?.slice(0,7)).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
 
   return (
     <div className="max-w-[1360px] mx-auto space-y-6">
       <Toast toast={toast}/>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-[20px] font-black tracking-tight" style={{color:"#111827"}}>마케팅 관리</h1>
           <p className="mt-0.5 text-[13px]" style={{color:"#6B7280"}}>채널별 마케팅 성과 데이터를 입력하고 분석합니다.</p>
         </div>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex gap-2 shrink-0 flex-wrap">
           <button onClick={()=>setExcelModal(true)}
             className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-bold"
             style={{background:"#F3F4F6",color:"#374151"}}><FileSpreadsheet size={15}/> 엑셀 업로드</button>
@@ -304,9 +332,40 @@ export default function MarketingPage() {
         </div>
       </div>
 
+      {/* 일별/월별 탭 + 기간 선택 */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex rounded-xl overflow-hidden" style={{border:"1px solid #E5E7EB"}}>
+          {(["일별","월별"] as const).map(m=>(
+            <button key={m} onClick={()=>setViewMode(m)}
+              className="px-5 py-2 text-[13px] font-bold transition-all"
+              style={{background:viewMode===m?"#EF3B2D":"#FFF",color:viewMode===m?"#FFF":"#6B7280"}}>
+              {m}
+            </button>
+          ))}
+        </div>
+        {viewMode==="일별"&&(
+          <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)}
+            className="rounded-xl border px-3 py-2 text-[13px] outline-none"
+            style={{borderColor:"#E5E7EB",color:"#111827",background:"#FFF"}}>
+            {months.length===0
+              ?<option value={selectedMonth}>{selectedMonth}</option>
+              :months.map(m=><option key={m} value={m}>{m.replace("-","년 ")}월</option>)
+            }
+          </select>
+        )}
+        <div className="flex flex-wrap gap-2">
+          {["전체",...CHANNELS,...AD_SOURCES.filter(a=>!CHANNELS.includes(a))].map(c=>(
+            <button key={c} onClick={()=>setChannelFilter(c)}
+              className="rounded-xl px-3 py-1.5 text-[12px] font-semibold transition-all"
+              style={{background:channelFilter===c?"#EF3B2D":"#F3F4F6",color:channelFilter===c?"#FFF":"#6B7280"}}>{c}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* KPI 카드 */}
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-5">
         {[
-          {label:"총 노출수",value:fmtN(totalImpr)},
+          {label:viewMode==="일별"?`${selectedMonth.replace("-","년 ")}월 노출`:"총 노출수",value:fmtN(totalImpr)},
           {label:"총 클릭수",value:fmtN(totalClicks)},
           {label:"CTR",value:`${ctr}%`},
           {label:"문의수",value:String(totalInq)},
@@ -336,21 +395,50 @@ export default function MarketingPage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {["전체",...CHANNELS].map(c=>(
-          <button key={c} onClick={()=>setChannelFilter(c)}
-            className="rounded-xl px-3 py-1.5 text-[12px] font-semibold transition-all"
-            style={{background:channelFilter===c?"#EF3B2D":"#F3F4F6",color:channelFilter===c?"#FFF":"#6B7280"}}>{c}</button>
-        ))}
-      </div>
-
       {loading?(
         <div className="flex items-center justify-center py-20"><p className="text-[13px]" style={{color:"#9CA3AF"}}>불러오는 중…</p></div>
-      ):filtered.length===0?(
+      ):viewMode==="월별"?(
+        /* ── 월별 집계 테이블 ── */
+        monthlyRows.length===0?(
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <p className="text-3xl">📊</p><p className="text-[13px]" style={{color:"#9CA3AF"}}>통계 데이터가 없습니다.</p>
+          </div>
+        ):(
+          <div className="rounded-2xl overflow-hidden" style={{border:"1px solid #E5E7EB"}}>
+            <table className="w-full text-[12px]">
+              <thead><tr style={{background:"#F9FAFB"}}>
+                {["월","노출","클릭","CTR","문의","등록","광고비","등록당비용"].map(h=>(
+                  <th key={h} className="px-4 py-3 text-left font-semibold" style={{color:"#6B7280"}}>{h}</th>
+                ))}
+              </tr></thead>
+              <tbody>
+                {monthlyRows.map((r,i)=>{
+                  const ctrVal=r.impressions>0?((r.clicks/r.impressions)*100).toFixed(2):"-";
+                  const cpa=r.registrations>0?fmtW(Math.round(r.ad_cost/r.registrations)):"-";
+                  return (
+                    <tr key={r.month} style={{borderTop:"1px solid #F3F4F6",background:i%2===0?"#FFF":"#FAFAFA"}}>
+                      <td className="px-4 py-3 font-black" style={{color:"#111827"}}>{r.month.replace("-","년 ")}월</td>
+                      <td className="px-4 py-3" style={{color:"#374151"}}>{fmtN(r.impressions)}</td>
+                      <td className="px-4 py-3" style={{color:"#374151"}}>{fmtN(r.clicks)}</td>
+                      <td className="px-4 py-3" style={{color:"#6B7280"}}>{ctrVal}%</td>
+                      <td className="px-4 py-3" style={{color:"#374151"}}>{r.inquiries}</td>
+                      <td className="px-4 py-3 font-bold" style={{color:"#059669"}}>{r.registrations}</td>
+                      <td className="px-4 py-3 font-bold" style={{color:"#EF3B2D"}}>{fmtW(r.ad_cost)}</td>
+                      <td className="px-4 py-3" style={{color:"#111827"}}>{cpa}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )
+      ):dailyRows.length===0?(
         <div className="flex flex-col items-center justify-center py-20 gap-3">
-          <p className="text-3xl">📊</p><p className="text-[13px]" style={{color:"#9CA3AF"}}>통계 데이터가 없습니다.</p>
+          <p className="text-3xl">📊</p>
+          <p className="text-[13px]" style={{color:"#9CA3AF"}}>{selectedMonth.replace("-","년 ")}월 데이터가 없습니다.</p>
         </div>
       ):(
+        /* ── 일별 상세 테이블 ── */
         <div className="rounded-2xl overflow-hidden" style={{border:"1px solid #E5E7EB"}}>
           <table className="w-full text-[12px]">
             <thead><tr style={{background:"#F9FAFB"}}>
@@ -359,7 +447,7 @@ export default function MarketingPage() {
               ))}
             </tr></thead>
             <tbody>
-              {filtered.map((s,i)=>{
+              {dailyRows.map((s,i)=>{
                 const bc=s.branch_name?(BC[s.branch_name]??"#6B7280"):"#9CA3AF";
                 return (
                   <tr key={s.id} style={{borderTop:"1px solid #F3F4F6",background:i%2===0?"#FFF":"#FAFAFA"}}>
@@ -373,8 +461,8 @@ export default function MarketingPage() {
                     <td className="px-4 py-3" style={{color:"#374151"}}>{fmtN(s.impressions)}</td>
                     <td className="px-4 py-3" style={{color:"#374151"}}>{fmtN(s.clicks)}</td>
                     <td className="px-4 py-3" style={{color:"#374151"}}>{s.inquiries}</td>
-                    <td className="px-4 py-3" style={{color:"#059669",fontWeight:600}}>{s.registrations}</td>
-                    <td className="px-4 py-3" style={{color:"#EF3B2D"}}>{fmtW(s.ad_cost)}</td>
+                    <td className="px-4 py-3 font-bold" style={{color:"#059669"}}>{s.registrations}</td>
+                    <td className="px-4 py-3 font-bold" style={{color:"#EF3B2D"}}>{fmtW(s.ad_cost)}</td>
                     <td className="px-4 py-3" style={{color:"#9CA3AF"}}>{s.memo??""}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
