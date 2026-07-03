@@ -1,7 +1,8 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import { Plus, X, Save, Trash2 } from "lucide-react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { Plus, X, Save, Trash2, Upload, FileSpreadsheet } from "lucide-react";
 import { Toast, useToast } from "@/app/components/hq/Toast";
+import * as XLSX from "xlsx";
 
 interface StatRow {
   id: number; branch_id: number | null; branch_name: string | null;
@@ -93,11 +94,137 @@ function StatModal({ item, onClose, onSave }: {
   );
 }
 
+// ─── 엑셀 업로드 모달 ───────────────────────────────────────────────────────
+interface ExcelRow { stat_date:string; channel:string; impressions:number; clicks:number; inquiries:number; registrations:number; ad_cost:number; memo:string }
+
+function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) {
+  const [rows,setRows]=useState<ExcelRow[]>([]);
+  const [saving,setSaving]=useState(false);
+  const fileRef=useRef<HTMLInputElement>(null);
+
+  function parseFile(file:File){
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const wb=XLSX.read(e.target?.result,{type:"array"});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const raw: any[]=XLSX.utils.sheet_to_json(ws,{defval:""});
+      // 컬럼명 유연하게 매핑
+      const mapped=raw.map(r=>{
+        const k=(name:string)=>Object.keys(r).find(k=>k.replace(/\s/g,"").toLowerCase().includes(name.toLowerCase()))??"";
+        const num=(name:string)=>Number(String(r[k(name)]??"0").replace(/[^0-9.]/g,""))||0;
+        const dateRaw=r[k("날짜")]||r[k("date")]||r[k("일")]||"";
+        let stat_date="";
+        if(dateRaw){
+          // 엑셀 시리얼 넘버 or 문자열
+          if(typeof dateRaw==="number"){
+            const d=XLSX.SSF.parse_date_code(dateRaw);
+            stat_date=`${d.y}-${String(d.m).padStart(2,"0")}-${String(d.d).padStart(2,"0")}`;
+          } else {
+            stat_date=String(dateRaw).slice(0,10).replace(/\./g,"-");
+          }
+        }
+        const channel=r[k("채널")]||r[k("channel")]||r[k("캠페인")]||"메타광고";
+        return {
+          stat_date,
+          channel:String(channel),
+          impressions:num("노출")||num("impression"),
+          clicks:num("클릭")||num("click"),
+          inquiries:num("문의")||num("result"),
+          registrations:num("등록")||num("registr"),
+          ad_cost:num("광고비")||num("지출")||num("cost")||num("spent")||num("금액"),
+          memo:String(r[k("메모")]||r[k("memo")]||""),
+        } as ExcelRow;
+      }).filter(r=>r.stat_date);
+      setRows(mapped);
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  const save=async()=>{
+    if(rows.length===0)return;
+    setSaving(true);
+    try{
+      const j=await fetch("/api/hq/marketing-stats/bulk",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({rows})}).then(r=>r.json());
+      if(j.success){onSave();onClose();}else alert(j.message??"저장 실패");
+    }finally{setSaving(false);}
+  };
+
+  const CS2={background:"#FFFFFF",border:"1px solid #E5E7EB",boxShadow:"0 1px 3px rgba(0,0,0,0.06)"} as const;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{background:"rgba(0,0,0,0.35)"}}>
+      <div className="w-full max-w-4xl rounded-2xl p-6 max-h-[90vh] flex flex-col" style={CS2}>
+        <div className="flex items-center justify-between mb-5">
+          <p className="text-[16px] font-black" style={{color:"#111827"}}>엑셀 업로드</p>
+          <button onClick={onClose} className="p-1 rounded-lg hover:bg-gray-100"><X size={16} color="#6B7280"/></button>
+        </div>
+
+        {rows.length===0 ? (
+          <div className="flex flex-col items-center justify-center gap-4 py-16"
+            style={{border:"2px dashed #E5E7EB",borderRadius:16,cursor:"pointer"}}
+            onClick={()=>fileRef.current?.click()}>
+            <FileSpreadsheet size={40} color="#9CA3AF"/>
+            <p className="text-[14px] font-bold" style={{color:"#374151"}}>엑셀 파일을 선택하세요</p>
+            <p className="text-[12px] text-center" style={{color:"#9CA3AF"}}>
+              메타 광고 내보내기 파일 (.xlsx, .csv) 지원<br/>
+              날짜, 채널, 노출수, 클릭수, 광고비 컬럼이 있으면 자동 매핑됩니다
+            </p>
+            <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden"
+              onChange={e=>{ const f=e.target.files?.[0]; if(f) parseFile(f); }}/>
+            <button className="rounded-xl px-5 py-2 text-[13px] font-bold" style={{background:"#EF3B2D",color:"#FFF"}}>
+              파일 선택
+            </button>
+          </div>
+        ) : (
+          <>
+            <p className="mb-3 text-[13px]" style={{color:"#6B7280"}}>총 <b style={{color:"#111827"}}>{rows.length}행</b> 인식됨. 확인 후 저장하세요.</p>
+            <div className="overflow-auto flex-1 rounded-xl" style={{border:"1px solid #E5E7EB"}}>
+              <table className="w-full text-[11px]">
+                <thead><tr style={{background:"#F9FAFB"}}>
+                  {["날짜","채널","노출","클릭","문의","등록","광고비","메모"].map(h=>(
+                    <th key={h} className="px-3 py-2 text-left font-semibold" style={{color:"#6B7280"}}>{h}</th>
+                  ))}
+                </tr></thead>
+                <tbody>
+                  {rows.map((r,i)=>(
+                    <tr key={i} style={{borderTop:"1px solid #F3F4F6",background:i%2===0?"#FFF":"#FAFAFA"}}>
+                      <td className="px-3 py-2" style={{color:"#111827"}}>{r.stat_date}</td>
+                      <td className="px-3 py-2" style={{color:"#374151"}}>{r.channel}</td>
+                      <td className="px-3 py-2" style={{color:"#374151"}}>{r.impressions.toLocaleString()}</td>
+                      <td className="px-3 py-2" style={{color:"#374151"}}>{r.clicks.toLocaleString()}</td>
+                      <td className="px-3 py-2" style={{color:"#374151"}}>{r.inquiries}</td>
+                      <td className="px-3 py-2" style={{color:"#059669",fontWeight:600}}>{r.registrations}</td>
+                      <td className="px-3 py-2" style={{color:"#EF3B2D"}}>{r.ad_cost.toLocaleString()}원</td>
+                      <td className="px-3 py-2" style={{color:"#9CA3AF"}}>{r.memo}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex justify-between items-center mt-4">
+              <button onClick={()=>setRows([])} className="text-[12px]" style={{color:"#9CA3AF"}}>다시 선택</button>
+              <div className="flex gap-2">
+                <button onClick={onClose} className="rounded-xl px-4 py-2 text-[13px] font-semibold" style={{background:"#F3F4F6",color:"#6B7280"}}>취소</button>
+                <button disabled={saving} onClick={save}
+                  className="flex items-center gap-2 rounded-xl px-5 py-2 text-[13px] font-bold disabled:opacity-50"
+                  style={{background:"#EF3B2D",color:"#FFF"}}>
+                  <Upload size={14}/>{saving?"저장 중...":"DB에 저장"}
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function MarketingPage() {
   const [stats,setStats]=useState<StatRow[]>([]);
   const [loading,setLoading]=useState(true);
   const [channelFilter,setChannelFilter]=useState("전체");
   const [modal,setModal]=useState<{open:boolean;item:Partial<StatRow>|null}>({open:false,item:null});
+  const [excelModal,setExcelModal]=useState(false);
   const {toast,notify}=useToast();
 
   const load=useCallback(async()=>{
@@ -133,9 +260,14 @@ export default function MarketingPage() {
           <h1 className="text-[20px] font-black tracking-tight" style={{color:"#111827"}}>마케팅 관리</h1>
           <p className="mt-0.5 text-[13px]" style={{color:"#6B7280"}}>채널별 마케팅 성과 데이터를 입력하고 분석합니다.</p>
         </div>
-        <button onClick={()=>setModal({open:true,item:null})}
-          className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-bold shrink-0"
-          style={{background:"#EF3B2D",color:"#FFF"}}><Plus size={15}/> 통계 입력</button>
+        <div className="flex gap-2 shrink-0">
+          <button onClick={()=>setExcelModal(true)}
+            className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-bold"
+            style={{background:"#F3F4F6",color:"#374151"}}><FileSpreadsheet size={15}/> 엑셀 업로드</button>
+          <button onClick={()=>setModal({open:true,item:null})}
+            className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-bold"
+            style={{background:"#EF3B2D",color:"#FFF"}}><Plus size={15}/> 직접 입력</button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-5">
@@ -224,6 +356,7 @@ export default function MarketingPage() {
         </div>
       )}
       {modal.open&&<StatModal item={modal.item} onClose={()=>setModal({open:false,item:null})} onSave={()=>{load();notify("저장됐습니다.");}}/>}
+      {excelModal&&<ExcelModal onClose={()=>setExcelModal(false)} onSave={()=>{load();notify(`엑셀 데이터 저장 완료!`);}}/>}
     </div>
   );
 }
