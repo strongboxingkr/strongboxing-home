@@ -95,7 +95,7 @@ function StatModal({ item, onClose, onSave }: {
 }
 
 // ─── 엑셀 업로드 모달 ───────────────────────────────────────────────────────
-interface ExcelRow { stat_date:string; channel:string; impressions:number; clicks:number; inquiries:number; registrations:number; ad_cost:number; memo:string }
+interface ExcelRow { branch_id:number|null; stat_date:string; channel:string; impressions:number; clicks:number; inquiries:number; registrations:number; ad_cost:number; memo:string }
 
 const AD_SOURCES = ["메타광고","네이버광고","카카오광고","구글광고","기타"];
 
@@ -103,57 +103,94 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
   const [rows,setRows]=useState<ExcelRow[]>([]);
   const [saving,setSaving]=useState(false);
   const [adSource,setAdSource]=useState("메타광고");
+  const [branchId,setBranchId]=useState<string>("");
+  const [branches,setBranches]=useState<{id:number;name:string}[]>([]);
   const fileRef=useRef<HTMLInputElement>(null);
+
+  useEffect(()=>{fetch("/api/hq/branches").then(r=>r.json()).then(j=>setBranches(j.data??[]));},[]);
+
+  const toNum=(v:any)=>Number(String(v??"").replace(/[^0-9.]/g,""))||0;
+
+  function parseNaver(wb: XLSX.WorkBook): ExcelRow[] {
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    // 첫 줄이 "캠페인 보고서..." 헤더라서 header:1로 배열로 읽기
+    const arr: any[][]=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});
+    if(arr.length<3) return [];
+
+    // 1번 인덱스(두 번째 줄)이 실제 컬럼명
+    const headers: string[]=arr[1].map((h:any)=>String(h).replace(/[\s()（）]/g,"").toLowerCase());
+    const idxOf=(...names:string[])=>headers.findIndex(h=>names.some(n=>h.includes(n.toLowerCase())));
+
+    const dateIdx=idxOf("일별");
+    const impressIdx=idxOf("노출수","노출");
+    const clickIdx=idxOf("클릭수","클릭");
+    const costIdx=idxOf("총비용","비용");
+
+    // 날짜별 합산 (지역·PC/모바일 분리된 행들을 합침)
+    const byDate: Record<string,{impressions:number;clicks:number;ad_cost:number}>={};
+    for(const row of arr.slice(2)){
+      const dateRaw=String(row[dateIdx]??"").trim();
+      if(!dateRaw||dateRaw==="") continue;
+      // "2026.01.01." → "2026-01-01"
+      const stat_date=dateRaw.replace(/\.$/,"").replace(/\./g,"-");
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(stat_date)) continue;
+      if(!byDate[stat_date]) byDate[stat_date]={impressions:0,clicks:0,ad_cost:0};
+      byDate[stat_date].impressions+=toNum(row[impressIdx]);
+      byDate[stat_date].clicks+=toNum(row[clickIdx]);
+      byDate[stat_date].ad_cost+=toNum(row[costIdx]);
+    }
+    return Object.entries(byDate).sort(([a],[b])=>a.localeCompare(b)).map(([stat_date,d])=>({
+      branch_id: branchId?Number(branchId):null,
+      stat_date, channel:adSource,
+      impressions:d.impressions, clicks:d.clicks,
+      inquiries:0, registrations:0, ad_cost:d.ad_cost, memo:"",
+    }));
+  }
+
+  function parseMeta(wb: XLSX.WorkBook): ExcelRow[] {
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    const raw: any[]=XLSX.utils.sheet_to_json(ws,{defval:""});
+    // "No data available." 행 제거
+    const data=raw.filter(r=>!Object.values(r).some(v=>String(v).includes("No data")));
+    if(data.length===0) return [];
+
+    const findKey=(...names:string[])=>Object.keys(data[0]).find(k=>{
+      const norm=k.replace(/[\s()（）]/g,"").toLowerCase();
+      return names.some(n=>norm.includes(n.toLowerCase()));
+    })??"";
+
+    const dateKey=findKey("보고시작","시작","날짜","date","일자");
+    const impressKey=findKey("노출수","노출","impression");
+    const clickKey=findKey("링크클릭","클릭수","클릭","click");
+    const inquiryKey=findKey("새로운메시지대화상대","메시지대화시작","전환수","결과");
+    const costKey=findKey("지출금액","광고비","총비용","비용","cost","spent","amount");
+
+    // 여러 광고행을 월별로 합산 (메타는 한 파일 = 한 기간)
+    const byMonth: Record<string,{impressions:number;clicks:number;inquiries:number;registrations:number;ad_cost:number}>={};
+    for(const row of data){
+      const dateRaw=dateKey?String(row[dateKey]):"";
+      if(!dateRaw) continue;
+      const ym=dateRaw.slice(0,7).replace(/\./g,"-");
+      if(!/^\d{4}-\d{2}$/.test(ym)) continue;
+      const stat_date=`${ym}-01`;
+      if(!byMonth[stat_date]) byMonth[stat_date]={impressions:0,clicks:0,inquiries:0,registrations:0,ad_cost:0};
+      byMonth[stat_date].impressions+=toNum(impressKey?row[impressKey]:0);
+      byMonth[stat_date].clicks+=toNum(clickKey?row[clickKey]:0);
+      byMonth[stat_date].inquiries+=toNum(inquiryKey?row[inquiryKey]:0);
+      byMonth[stat_date].ad_cost+=toNum(costKey?row[costKey]:0);
+    }
+    return Object.entries(byMonth).sort(([a],[b])=>a.localeCompare(b)).map(([stat_date,d])=>({
+      branch_id: branchId?Number(branchId):null,
+      stat_date, channel:adSource, ...d, memo:"",
+    }));
+  }
 
   function parseFile(file:File){
     const reader=new FileReader();
     reader.onload=e=>{
       const wb=XLSX.read(e.target?.result,{type:"array"});
-      const ws=wb.Sheets[wb.SheetNames[0]];
-      const raw: any[]=XLSX.utils.sheet_to_json(ws,{defval:""});
-
-      const mapped=raw.map(r=>{
-        // 키 검색 헬퍼 (공백/괄호 무시, 부분 매칭)
-        const findKey=(...names:string[])=>Object.keys(r).find(k=>{
-          const norm=k.replace(/[\s()（）]/g,"").toLowerCase();
-          return names.some(n=>norm.includes(n.toLowerCase()));
-        })??"";
-        const num=(...names:string[])=>{
-          const key=findKey(...names);
-          return key?Number(String(r[key]).replace(/[^0-9.]/g,""))||0:0;
-        };
-
-        // 날짜
-        const dateKey=findKey("날짜","date","일자","기간");
-        const dateRaw=dateKey?r[dateKey]:"";
-        let stat_date="";
-        if(dateRaw){
-          if(typeof dateRaw==="number"){
-            const d=XLSX.SSF.parse_date_code(dateRaw);
-            stat_date=`${d.y}-${String(d.m).padStart(2,"0")}-${String(d.d).padStart(2,"0")}`;
-          } else {
-            stat_date=String(dateRaw).slice(0,10).replace(/\./g,"-").replace(/\//g,"-");
-          }
-        }
-
-        // 채널: 파일 내 채널 컬럼 있으면 쓰고, 없으면 선택한 adSource
-        const chKey=findKey("채널","channel","캠페인","광고유형");
-        const channel=chKey&&r[chKey]?String(r[chKey]):adSource;
-
-        return {
-          stat_date,
-          channel,
-          // 메타: 노출, 클릭(전체), 결과, 지출금액
-          // 네이버: 노출수, 클릭수, 전환수, 총비용
-          impressions: num("노출수","노출","impression","impressions"),
-          clicks:      num("클릭수","클릭","click","clicks","링크클릭"),
-          inquiries:   num("문의","inquiry","전환수","전환","result","결과"),
-          registrations: num("등록수","등록","registration","구매","가입"),
-          ad_cost:     num("광고비","지출금액","총비용","비용","cost","spent","amount","금액"),
-          memo:        String(r[findKey("메모","memo","캠페인명","광고명")]||""),
-        } as ExcelRow;
-      }).filter(r=>r.stat_date);
-      setRows(mapped);
+      const parsed=adSource==="네이버광고"?parseNaver(wb):parseMeta(wb);
+      setRows(parsed);
     };
     reader.readAsArrayBuffer(file);
   }
@@ -168,6 +205,8 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
   };
 
   const CS2={background:"#FFFFFF",border:"1px solid #E5E7EB",boxShadow:"0 1px 3px rgba(0,0,0,0.06)"} as const;
+  const inp="w-full rounded-xl border px-3 py-2 text-[13px] outline-none focus:border-red-400 transition-colors";
+  const ist={borderColor:"#E5E7EB",color:"#111827",background:"#FAFAFA"};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{background:"rgba(0,0,0,0.35)"}}>
@@ -179,17 +218,26 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
 
         {rows.length===0 ? (
           <div className="space-y-4">
-            {/* 광고 플랫폼 선택 */}
-            <div>
-              <p className="text-[11px] font-semibold mb-2 uppercase tracking-widest" style={{color:"#9CA3AF"}}>광고 플랫폼</p>
-              <div className="flex flex-wrap gap-2">
-                {AD_SOURCES.map(s=>(
-                  <button key={s} onClick={()=>setAdSource(s)}
-                    className="rounded-xl px-4 py-1.5 text-[12px] font-semibold transition-all"
-                    style={{background:adSource===s?"#EF3B2D":"#F3F4F6",color:adSource===s?"#FFF":"#6B7280"}}>
-                    {s}
-                  </button>
-                ))}
+            {/* 광고 플랫폼 + 지점 선택 */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <p className="text-[11px] font-semibold mb-2 uppercase tracking-widest" style={{color:"#9CA3AF"}}>광고 플랫폼</p>
+                <div className="flex flex-wrap gap-2">
+                  {AD_SOURCES.map(s=>(
+                    <button key={s} onClick={()=>setAdSource(s)}
+                      className="rounded-xl px-4 py-1.5 text-[12px] font-semibold transition-all"
+                      style={{background:adSource===s?"#EF3B2D":"#F3F4F6",color:adSource===s?"#FFF":"#6B7280"}}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold mb-2 uppercase tracking-widest" style={{color:"#9CA3AF"}}>지점</p>
+                <select className={inp} style={ist} value={branchId} onChange={e=>setBranchId(e.target.value)}>
+                  <option value="">공통 (지점 미지정)</option>
+                  {branches.map(b=><option key={b.id} value={b.id}>{b.name}</option>)}
+                </select>
               </div>
             </div>
             {/* 드롭존 */}
@@ -199,8 +247,10 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
               <FileSpreadsheet size={40} color="#9CA3AF"/>
               <p className="text-[14px] font-bold" style={{color:"#374151"}}>{adSource} 엑셀 파일을 선택하세요</p>
               <p className="text-[12px] text-center" style={{color:"#9CA3AF"}}>
-                메타·네이버 광고 내보내기 파일 (.xlsx, .csv) 지원<br/>
-                컬럼명이 달라도 자동 매핑됩니다
+                {adSource==="네이버광고"
+                  ? "네이버 플레이스 캠페인 보고서 CSV (.csv)"
+                  : "메타 광고 내보내기 파일 (.xlsx, .csv)"}<br/>
+                날짜별·광고별 행 자동 집계됩니다
               </p>
               <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden"
                 onChange={e=>{ const f=e.target.files?.[0]; if(f) parseFile(f); }}/>
@@ -211,11 +261,14 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
           </div>
         ) : (
           <>
-            <p className="mb-3 text-[13px]" style={{color:"#6B7280"}}>총 <b style={{color:"#111827"}}>{rows.length}행</b> 인식됨. 확인 후 저장하세요.</p>
+            <p className="mb-3 text-[13px]" style={{color:"#6B7280"}}>
+              총 <b style={{color:"#111827"}}>{rows.length}행</b> 인식됨
+              {adSource==="네이버광고"?" (일별 합산)":"  (월별 합산)"}. 확인 후 저장하세요.
+            </p>
             <div className="overflow-auto flex-1 rounded-xl" style={{border:"1px solid #E5E7EB"}}>
               <table className="w-full text-[11px]">
                 <thead><tr style={{background:"#F9FAFB"}}>
-                  {["날짜","채널","노출","클릭","문의","등록","광고비","메모"].map(h=>(
+                  {["날짜","채널","노출","클릭","문의","등록","광고비"].map(h=>(
                     <th key={h} className="px-3 py-2 text-left font-semibold" style={{color:"#6B7280"}}>{h}</th>
                   ))}
                 </tr></thead>
@@ -229,7 +282,6 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
                       <td className="px-3 py-2" style={{color:"#374151"}}>{r.inquiries}</td>
                       <td className="px-3 py-2" style={{color:"#059669",fontWeight:600}}>{r.registrations}</td>
                       <td className="px-3 py-2" style={{color:"#EF3B2D"}}>{r.ad_cost.toLocaleString()}원</td>
-                      <td className="px-3 py-2" style={{color:"#9CA3AF"}}>{r.memo}</td>
                     </tr>
                   ))}
                 </tbody>
