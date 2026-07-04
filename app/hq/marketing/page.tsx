@@ -354,7 +354,13 @@ export default function MarketingPage() {
     setLoading(true);
     try{
       const j=await fetch("/api/hq/marketing-stats").then(r=>r.json());
-      setStats(j.data??[]);
+      const data=j.data??[];
+      setStats(data);
+      // 현재 선택된 월에 데이터가 없으면 가장 최근 월로 자동 보정
+      const ms=[...new Set((data as StatRow[]).map((s:StatRow)=>s.stat_date?.slice(0,7)).filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+      if(ms.length>0){
+        setSelectedMonth(prev=>ms.includes(prev)?prev:ms[0] as string);
+      }
     }catch(e){console.error(e);notify("불러오기 실패",false);}
     finally{setLoading(false);}
   },[]);
