@@ -74,6 +74,17 @@ const DAANGN_CHEOLSAN = [
 
 // ── 메인 ────────────────────────────────────────────────────────────────────
 
+// MySQL 서브쿼리로 지점명 비교 — Node.js 인코딩 우회
+const SQL_NAVER = `INSERT INTO hq_marketing_stats
+  (branch_id, stat_date, channel, impressions, clicks, inquiries, registrations, ad_cost, memo)
+  SELECT b.id, ?, '네이버광고', ?, ?, 0, 0, ?, NULL
+  FROM hq_branches b WHERE CONVERT(b.name USING utf8mb4) = ? LIMIT 1`;
+
+const SQL_DAANGN = `INSERT INTO hq_marketing_stats
+  (branch_id, stat_date, channel, impressions, clicks, inquiries, registrations, ad_cost, memo)
+  SELECT b.id, ?, '당근비즈니스', ?, ?, 0, ?, 0, NULL
+  FROM hq_branches b WHERE CONVERT(b.name USING utf8mb4) = ? LIMIT 1`;
+
 async function main() {
   const conn = await mysql.createConnection({
     host: env.DB_HOST || 'localhost',
@@ -84,39 +95,32 @@ async function main() {
     charset: 'utf8mb4',
   });
 
-  const [branches] = await conn.query('SELECT id, name FROM branches');
-  const bid = {};
-  branches.forEach(b => { bid[b.name] = b.id; });
-  console.log('지점 ID:', bid);
-
-  const SQL = `INSERT INTO hq_marketing_stats
-    (branch_id, stat_date, channel, impressions, clicks, inquiries, registrations, ad_cost, memo)
-    VALUES (?,?,?,?,?,0,?,?,?)`;
-
   let inserted = 0;
 
-  async function insertRows(data, branchName, channel, isNaver) {
-    const bId = bid[branchName];
-    if (!bId) { console.warn(`⚠ 지점 없음: ${branchName}`); return; }
-    for (const row of data) {
-      if (isNaver) {
-        const [date, impr, clicks, cost] = row;
-        await conn.query(SQL, [bId, date, channel, impr, clicks, 0, cost, null]);
-      } else {
-        const [date, impr, clicks, regs] = row;
-        await conn.query(SQL, [bId, date, channel, impr, clicks, regs, 0, null]);
-      }
+  async function insertNaver(data, branchName) {
+    for (const [date, impr, clicks, cost] of data) {
+      const [r] = await conn.query(SQL_NAVER, [date, impr, clicks, cost, branchName]);
+      if (r.affectedRows === 0) { console.warn(`⚠ 지점 없음: ${branchName}`); return; }
       inserted++;
     }
-    console.log(`✓ ${branchName} ${channel}: ${data.length}행`);
+    console.log(`✓ ${branchName} 네이버광고: ${data.length}행`);
   }
 
-  await insertRows(NAVER_MOKDONG,  '목동점', '네이버광고', true);
-  await insertRows(NAVER_GAEBONG,  '개봉점', '네이버광고', true);
-  await insertRows(NAVER_CHEOLSAN, '철산점', '네이버광고', true);
-  await insertRows(DAANGN_MOKDONG,  '목동점', '당근비즈니스', false);
-  await insertRows(DAANGN_GAEBONG,  '개봉점', '당근비즈니스', false);
-  await insertRows(DAANGN_CHEOLSAN, '철산점', '당근비즈니스', false);
+  async function insertDaangn(data, branchName) {
+    for (const [date, impr, clicks, regs] of data) {
+      const [r] = await conn.query(SQL_DAANGN, [date, impr, clicks, regs, branchName]);
+      if (r.affectedRows === 0) { console.warn(`⚠ 지점 없음: ${branchName}`); return; }
+      inserted++;
+    }
+    console.log(`✓ ${branchName} 당근비즈니스: ${data.length}행`);
+  }
+
+  await insertNaver(NAVER_MOKDONG,  '목동점');
+  await insertNaver(NAVER_GAEBONG,  '개봉점');
+  await insertNaver(NAVER_CHEOLSAN, '철산점');
+  await insertDaangn(DAANGN_MOKDONG,  '목동점');
+  await insertDaangn(DAANGN_GAEBONG,  '개봉점');
+  await insertDaangn(DAANGN_CHEOLSAN, '철산점');
 
   await conn.end();
   console.log(`\n완료: 총 ${inserted}행 삽입`);

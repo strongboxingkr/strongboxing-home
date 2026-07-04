@@ -37,15 +37,16 @@ async function main() {
   branches.forEach(b => { bid[b.name] = b.id; });
   console.log('지점 ID:', bid);
 
+  // MySQL 서브쿼리로 지점명 비교 — Node.js 인코딩 우회
   const SQL = `INSERT INTO hq_marketing_stats
     (branch_id, stat_date, channel, impressions, clicks, inquiries, registrations, ad_cost, memo)
-    VALUES (?,?,?,?,?,?,0,?,?)`;
+    SELECT b.id, ?, '메타광고', ?, ?, ?, 0, ?, NULL
+    FROM hq_branches b WHERE CONVERT(b.name USING utf8mb4) = ? LIMIT 1`;
 
   let inserted = 0;
   for (const [branchName, date, impr, clicks, inq, cost] of META_JUNE) {
-    const bId = bid[branchName];
-    if (!bId) { console.warn(`⚠ 지점 없음: ${branchName}`); continue; }
-    await conn.query(SQL, [bId, date, '메타광고', impr, clicks, inq, cost, null]);
+    const [r] = await conn.query(SQL, [date, impr, clicks, inq, cost, branchName]);
+    if (r.affectedRows === 0) { console.warn(`⚠ 지점 없음: ${branchName}`); continue; }
     console.log(`✓ ${branchName} 메타광고 ${date}: 노출${impr} 클릭${clicks} 문의${inq} 비용${cost.toLocaleString()}원`);
     inserted++;
   }
