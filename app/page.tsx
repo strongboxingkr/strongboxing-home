@@ -17,13 +17,13 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "스트롱복싱 | 복싱 PT · 다이어트 복싱 · 체력증진",
+  title: "스트롱복싱 | 관장 직접 지도 · 초보자 환영 · 서울 경기 5개 지점",
   description:
-    "서울 복싱장 스트롱복싱. 철산·개봉·목동·신정·영등포 5개 지점 운영. 초보자 환영, 복싱 PT, 다이어트 복싱, 체력증진 프로그램. 네이버 평점 4.9.",
+    "관장이 직접 가르치는 스트롱복싱. 개봉동·고척동·목동·신정·철산·영등포 5개 지점. 초보자 환영, 다이어트 복싱, 키즈·학생 복싱, 직장인 운동. 원데이 클래스 30,000원.",
   alternates: { canonical: "https://strongboxing.kr" },
   openGraph: {
-    title: "스트롱복싱 | 복싱 PT · 다이어트 복싱 · 체력증진",
-    description: "서울 5개 지점 운영 복싱짐. 초보자부터 다이어트, PT까지. 네이버 평점 4.9.",
+    title: "스트롱복싱 | 관장 직접 지도 · 초보자 환영 · 서울 경기 5개 지점",
+    description: "관장이 직접 가르치는 복싱장. 개봉·목동·철산·신정·영등포 5개 지점. 초보자 환영, 원데이 클래스 30,000원.",
     url: "https://strongboxing.kr",
     siteName: "스트롱복싱",
     locale: "ko_KR",
@@ -32,8 +32,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "스트롱복싱 | 복싱 PT · 다이어트 복싱 · 체력증진",
-    description: "서울 5개 지점 운영 복싱짐. 초보자부터 다이어트, PT까지.",
+    title: "스트롱복싱 | 관장 직접 지도 · 초보자 환영 · 서울 경기 5개 지점",
+    description: "관장이 직접 가르치는 복싱장. 개봉·목동·철산·신정·영등포 5개 지점. 초보자 환영.",
     images: ["/og.png"],
   },
 };
@@ -46,10 +46,10 @@ const branches = [
     phone: "02-2060-1279",
     address: "서울시 구로구 개봉동 166-5번지 유원빌딩 지하 1층",
     hours: ["월-금 13:00~23:00"],
-    review: "초보자도 분위기 좋게 시작하기 좋은 지점",
+    review: "관장 직접 지도 · 고척동에서도 가까운 개봉동 복싱장",
     score: "4.9",
     reviewCount: 229,
-    badges: ["초보자 환영", "구로구 복싱"],
+    badges: ["관장 직접 지도", "개봉동 · 고척동 복싱"],
     instagram: "https://www.instagram.com/strongboxing_gaebong",
     booking: "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
     naverMap: "https://naver.me/5aFquqcz",
@@ -61,10 +61,10 @@ const branches = [
     phone: "02-2647-3373",
     address: "서울시 양천구 신정동 1021-7 태화상가 2층",
     hours: ["월-금 10:00~24:00", "토 10:00~16:00"],
-    review: "운동 루틴 만들기 좋은 밸런스형 복싱짐",
+    review: "초보자 · 다이어트 · 꾸준히 다니기 좋은 신정동 복싱장",
     score: "4.9",
     reviewCount: 277,
-    badges: ["여성 회원 다수", "양천구 복싱"],
+    badges: ["초보자 · 다이어트", "양천구 · 신정동 복싱"],
     instagram: "https://www.instagram.com/strongboxing_sinjeong",
     booking: "https://booking.naver.com/booking/13/bizes/1367177",
     naverMap: "https://naver.me/5nhXvzXH",
@@ -76,10 +76,10 @@ const branches = [
     phone: "02-2643-5971",
     address: "서울시 양천구 목동 909-6 우방빌딩 4층",
     hours: ["월-금 14:00~24:00", "토 11:00~16:00"],
-    review: "깔끔한 공간에서 다이어트 복싱 시작하기 좋음",
+    review: "학생 · 키즈 · 방학특강 · 목동 복싱장",
     score: "4.9",
     reviewCount: 106,
-    badges: ["다이어트 복싱", "직장인 운동"],
+    badges: ["학생 · 키즈 복싱", "방학특강 · 목동 복싱"],
     instagram: "https://www.instagram.com/strongboxing_mokdong",
     booking: "https://booking.naver.com/booking/13/bizes/1510638",
     naverMap: "https://naver.me/GII8f9Qv",
@@ -91,10 +91,10 @@ const branches = [
     phone: "02-2066-0406",
     address: "경기도 광명시 철산동 56-14 3층",
     hours: ["월-금 14:00~23:00", "토일 14:00~18:00"],
-    review: "네이버 리뷰 4.9",
+    review: "직장인 · 여성 · 퇴근 후 운동하기 좋은 광명 복싱장",
     score: "4.9",
     reviewCount: 32,
-    badges: ["광명 복싱"],
+    badges: ["직장인 · 여성 환영", "철산 · 광명 복싱"],
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
     booking: "",
     naverMap: "",
@@ -106,10 +106,10 @@ const branches = [
     phone: "02-831-9312",
     address: "서울시 영등포구 도림로 313 건영상가 2층",
     hours: ["월-금 13:00~23:00"],
-    review: "퇴근 후 운동하기 좋은 도심형 복싱짐",
+    review: "학생 · 초보자 · 직장인 복싱 · 영등포 복싱장",
     score: "4.8",
     reviewCount: 77,
-    badges: ["퇴근 후 운동", "영등포 복싱"],
+    badges: ["학생 · 직장인 복싱", "영등포 복싱"],
     instagram: "https://www.instagram.com/stron_gboxinggym",
     booking: "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll",
     naverMap: "https://naver.me/G4yQwkR0",
@@ -176,24 +176,21 @@ export default async function HomePage() {
 
                 <p className="max-w-md text-sm leading-[2] md:text-base md:leading-[2.1]" style={{ color: "#C9C9C9", wordBreak: "keep-all" }}>
                   처음이어도 괜찮습니다.<br />
-                  정해진 단체 수업이 아니라,{" "}
-                  <span style={{ color: "#F5F4F1", fontWeight: 700 }}>회원님의 목적과 실력에 맞춰</span>{" "}
-                  지도합니다.<br />
-                  기초부터 미트, 샌드백, 체력운동까지{" "}
-                  차근차근 맞춰나갑니다.
+                  <span style={{ color: "#F5F4F1", fontWeight: 700 }}>관장이 직접 진도에 맞춰 잡아드립니다.</span><br />
+                  기본기부터 미트, 샌드백까지 단계적으로 진행합니다.
                 </p>
 
                 <div className="mt-9 flex flex-wrap gap-3">
                   <ReservationButton className="group rounded-[10px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
-                    지점 상담/예약
+                    원데이 클래스 예약하기
                     <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </ReservationButton>
                   <a
-                    href="#program"
+                    href="#branch"
                     className="group inline-flex items-center gap-2 rounded-[10px] px-7 py-3.5 text-sm font-black transition-all duration-300 hover:bg-white/6"
                     style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}
                   >
-                    프로그램 보기
+                    가까운 지점 보기
                     <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </a>
                 </div>
@@ -221,10 +218,10 @@ export default async function HomePage() {
         <div style={{ background: "#141416", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
           <div className="mx-auto grid max-w-7xl grid-cols-2 gap-0 px-6 md:grid-cols-4">
             {[
-              ["전문 코칭", "경험 많은 관장·코치의 체계적인 지도"],
-              ["체력 & 기술 향상", "기술 향상은 물론 체력과 자신감까지"],
-              ["다이어트 효과", "전신 운동으로 효과적인 체지방 감량"],
-              ["초보자 환영", "복싱이 처음이어도 걱정 없이 시작"],
+              ["관장 직접 지도", "관장·코치가 개인 진도에 맞춰 직접 지도"],
+              ["기본기부터 차근차근", "자세, 스텝, 미트, 샌드백까지 단계적으로"],
+              ["다이어트 & 체력", "전신 운동으로 체지방 감량과 체력증진 동시에"],
+              ["초보자 환영", "운동이 처음이어도 기본기부터 편하게 시작"],
             ].map(([title, desc], i) => (
               <div
                 key={title}
@@ -247,10 +244,10 @@ export default async function HomePage() {
             <div className="mb-16">
               <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>HOW WE TRAIN</p>
               <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
-                정해진 수업 시간이<br />없습니다
+                관장이 직접<br />가르칩니다
               </h2>
               <p className="reveal d2 mt-6 max-w-lg text-base leading-8" style={{ color: "#8A8D91" }}>
-                운영시간 내 편하신 시간에 방문하시면 바로 운동을 시작할 수 있어요.
+                정해진 단체 수업이 아닙니다. 운영시간 내 언제든 방문하면 관장·코치가 개인 진도에 맞춰 직접 지도합니다.
               </p>
             </div>
 
@@ -259,8 +256,8 @@ export default async function HomePage() {
                 <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>MY SCHEDULE</p>
                 <h3 className="mb-4 text-2xl font-black" style={{ letterSpacing: "-0.04em" }}>내 시간에 맞게</h3>
                 <p className="mb-6 leading-8 text-sm" style={{ color: "#8A8D91" }}>
-                  수업 예약 없이, 운영시간 내 언제든 방문하면 바로 운동 시작.
-                  직장인, 주부, 학생 모두 가능합니다.
+                  예약 없이 운영시간 내 방문하면 바로 시작할 수 있어요.
+                  직장인, 주부, 학생, 처음 운동하는 분 모두 가능합니다.
                 </p>
                 <div className="mb-6 space-y-3">
                   {[
@@ -308,11 +305,14 @@ export default async function HomePage() {
 
             <div className="mt-3 flex flex-col items-center justify-between gap-4 p-7 sm:flex-row"
               style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
-              <p className="font-black text-lg" style={{ color: "#F5F4F1" }}>운영시간 내 언제든 시작 가능!</p>
+              <div>
+                <p className="font-black text-lg" style={{ color: "#F5F4F1" }}>원데이 클래스로 먼저 경험해보세요.</p>
+                <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>30,000원 현장결제 · 당일 등록 시 회원권에서 전액 차감</p>
+              </div>
               <a href="/#branch"
                 className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] px-6 py-3 text-sm font-black transition-all duration-300 hover:bg-white/6"
                 style={{ border: "1px solid rgba(255,255,255,0.15)", color: "#F5F4F1" }}>
-                지점 운영시간 확인
+                가까운 지점 보기
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>
             </div>
@@ -411,10 +411,10 @@ export default async function HomePage() {
 
             <div className="grid gap-3 md:grid-cols-4">
               {[
-                ["01", "방문 상담 예약", "홈페이지나 네이버로 간단히 예약"],
-                ["02", "체육관 방문", "편한 복장으로 방문하시면 돼요"],
-                ["03", "코치와 1:1 상담", "목적·체력·일정 맞춤 안내"],
-                ["04", "바로 운동 시작", "당일 체험도 가능합니다"],
+                ["01", "예약 또는 방문", "네이버·홈페이지로 예약하거나 바로 방문해도 됩니다"],
+                ["02", "편한 복장으로", "편한 복장과 실내용 운동화만 준비해주세요"],
+                ["03", "관장과 상담", "운동 목적·체력에 맞춰 맞춤 안내해드립니다"],
+                ["04", "바로 운동 시작", "처음 오셔도 기본 자세부터 천천히 알려드립니다"],
               ].map(([step, title, desc]) => (
                 <div key={step} className="p-7"
                   style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
@@ -436,19 +436,19 @@ export default async function HomePage() {
               <div>
                 <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>PROGRAM</p>
                 <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
-                  복싱은 어렵지 않게,<br />운동은 확실하게.
+                  가능한 만큼부터<br />시작합니다.
                 </h2>
               </div>
               <p className="max-w-sm text-sm leading-7" style={{ color: "#8A8D91" }}>
-                처음 배우는 자세부터 다이어트, 체력향상, 스트레스 해소까지 목적에 맞는 수업으로 진행합니다.
+                입문, 다이어트, 체력증진, 스트레스 해소까지 운동 목적에 맞게 진행합니다.
               </p>
             </div>
 
             <div className="grid gap-3 md:grid-cols-3">
               {[
-                ["01", "복싱 입문", "기본자세, 스텝, 펀치부터 차근차근"],
-                ["02", "다이어트 복싱", "재밌게 땀나는 그룹 복싱 수업"],
-                ["03", "코치 직접 지도", "목적에 맞춘 밀착 트레이닝"],
+                ["01", "복싱 입문", "기본자세, 스텝, 펀치부터 차근차근. 처음 오셔도 바로 시작할 수 있습니다."],
+                ["02", "다이어트 · 체력", "전신 운동으로 체지방 감량과 체력증진을 동시에."],
+                ["03", "관장 직접 지도", "개인 수준과 목표에 맞춰 관장·코치가 직접 잡아드립니다."],
               ].map(([num, title, desc]) => (
                 <div key={num} className="group p-10 transition-transform hover:-translate-y-1"
                   style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
@@ -515,14 +515,14 @@ export default async function HomePage() {
             <p className="reveal mb-6 text-xs font-black tracking-[0.4em]" style={{ color: "#5A5C61" }}>STRONG BOXING</p>
             <h2 className="reveal d1 font-black leading-[0.88]"
               style={{ fontSize: "clamp(44px, 8vw, 96px)", letterSpacing: "-0.05em", color: "#F5F4F1" }}>
-              스트롱복싱에서<br />첫 운동을 시작해보세요.
+              가까운 지점에서<br />원데이 클래스로 시작해보세요.
             </h2>
             <p className="reveal d2 mx-auto mt-8 max-w-lg text-base leading-8" style={{ color: "#8A8D91" }}>
-              가까운 지점에서 편하게 상담받고 운동을 시작해보세요.
+              30,000원 현장결제 · 당일 등록 시 회원권에서 전액 차감됩니다.
             </p>
             <div className="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
               <ReservationButton className="group rounded-[10px] bg-[#D01E2E] px-10 py-5 text-base font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
-                방문 상담 예약하기
+                원데이 클래스 예약하기
                 <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
               </ReservationButton>
               <a href="/blog"
@@ -623,27 +623,29 @@ export default async function HomePage() {
           <h2>스트롱복싱 지점별 복싱장 안내</h2>
           <p>
             스트롱복싱은 개봉점, 신정점, 목동점, 철산점, 영등포점으로 운영되는 복싱 체육관입니다.
-            개봉 복싱, 개봉동 복싱, 구로 복싱, 신정 복싱, 신정동 복싱, 양천구 복싱,
+            관장이 직접 지도하는 정통 복싱장으로, 초보자도 기본기부터 편하게 시작할 수 있습니다.
+            개봉 복싱, 개봉동 복싱, 고척동 복싱, 구로 복싱, 신정 복싱, 신정동 복싱, 양천구 복싱,
             목동 복싱, 목동 복싱장, 철산 복싱, 철산동 복싱, 광명 복싱,
             영등포 복싱, 영등포구 복싱을 찾는 분들이 방문하고 있습니다.
           </p>
           <p>
             초보자 복싱, 여성 복싱, 다이어트 복싱, 직장인 운동, 학생 운동,
-            키즈 복싱, 어린이 복싱, 체력 향상 운동, 스트레스 해소 운동을
+            키즈 복싱, 방학특강, 어린이 복싱, 체력 향상 운동, 스트레스 해소 운동을
             목적에 맞게 시작할 수 있습니다.
+            원데이 클래스 30,000원 현장결제, 당일 등록 시 회원권에서 전액 차감됩니다.
           </p>
           <h3>개봉점</h3>
-          <p>서울 구로구 개봉동 166-5 유원빌딩 지하 1층. 개봉 복싱, 개봉동 복싱장, 구로 복싱, 개봉 다이어트 복싱. 운영시간 월요일부터 금요일 13시부터 23시까지. 전화번호 02-2060-1279.</p>
+          <p>서울 구로구 개봉동 166-5 유원빌딩 지하 1층. 개봉 복싱, 개봉동 복싱장, 고척동 복싱, 구로 복싱, 초보자 복싱. 관장 직접 지도, 기본기 중심, 꾸준히 다니기 좋은 분위기. 운영시간 월요일부터 금요일 13시부터 23시까지. 전화번호 02-2060-1279.</p>
           <h3>신정점</h3>
-          <p>서울 양천구 신정동 1021-7 태화상가 2층. 신정 복싱, 신정동 복싱장, 양천구 복싱, 신정 다이어트 복싱. 운영시간 평일 10시부터 24시까지, 토요일 10시부터 16시까지. 전화번호 02-2647-3373.</p>
+          <p>서울 양천구 신정동 1021-7 태화상가 2층. 신정 복싱, 신정동 복싱장, 양천구 복싱, 신정 다이어트 복싱. 초보자도 꾸준히 다니기 좋은 신정동 생활권 복싱장. 운영시간 평일 10시부터 24시까지, 토요일 10시부터 16시까지. 전화번호 02-2647-3373.</p>
           <h3>목동점</h3>
-          <p>서울 양천구 목동 909-6 우방빌딩 4층. 목동 복싱, 목동 복싱장, 양천구 복싱, 목동 다이어트 복싱, 목동 여성 복싱, 목동 직장인 운동. 운영시간 평일 14시부터 24시까지, 토요일 11시부터 16시까지. 전화번호 02-2643-5971.</p>
+          <p>서울 양천구 목동 909-6 우방빌딩 4층. 목동 복싱, 목동 복싱장, 목동 학생 복싱, 목동 키즈 복싱, 양천구 복싱, 목동 방학특강, 성장기 운동, 체육대 입시 준비. 운영시간 평일 14시부터 24시까지, 토요일 11시부터 16시까지. 전화번호 02-2643-5971.</p>
           <h3>철산점</h3>
-          <p>경기도 광명시 철산동 56-14 3층. 철산 복싱, 철산동 복싱장, 광명 복싱, 광명 다이어트 복싱, 철산역 복싱, 철산 여성 복싱. 운영시간 평일 14시부터 23시까지, 토요일과 일요일 14시부터 18시까지. 전화번호 02-2066-0406.</p>
+          <p>경기도 광명시 철산동 56-14 3층. 철산 복싱, 철산동 복싱장, 광명 복싱, 철산 직장인 복싱, 광명 여성 복싱, 퇴근 후 운동. 처음 와도 적응하기 쉬운 분위기, 여성도 부담 없는 복싱장. 운영시간 평일 14시부터 23시까지, 토요일과 일요일 14시부터 18시까지. 전화번호 02-2066-0406.</p>
           <h3>영등포점</h3>
-          <p>서울 영등포구 도림로 313 건영상가 2층. 영등포 복싱, 영등포구 복싱장, 영등포 다이어트 복싱, 영등포 직장인 운동, 도림동 복싱. 운영시간 평일 13시부터 23시까지. 전화번호 02-831-9312.</p>
-          <h2>스트롱복싱 운동 영상</h2>
-          <p>스트롱복싱 운동 영상은 철산 복싱, 광명 복싱, 목동 복싱, 신정동 복싱, 개봉동 복싱, 영등포 복싱, 여성 복싱, 초보자 복싱, 다이어트 복싱, 체력 향상 운동 모습을 담고 있습니다.</p>
+          <p>서울 영등포구 도림로 313 건영상가 2층. 영등포 복싱, 영등포구 복싱장, 영등포 학생 복싱, 영등포 직장인 복싱, 초보자 복싱. 운영시간 평일 13시부터 23시까지. 전화번호 02-831-9312.</p>
+          <h2>스트롱복싱 수업 방식</h2>
+          <p>몸풀기, 줄넘기, 기초자세와 스텝, 미트 트레이닝, 샌드백, 체력운동 순서로 개인 진도에 맞춰 진행합니다. 단체 수업이 아니라 관장·코치가 직접 각 회원의 수준에 맞게 지도합니다.</p>
         </section>
 
         <BranchMap />

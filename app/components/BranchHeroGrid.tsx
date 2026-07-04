@@ -10,6 +10,7 @@ interface Branch {
   reviewCount: number;
   review: string;
   badges: string[];
+  // badges[0]: 타깃 태그라인, badges[1]: SEO 키워드
 }
 
 interface Props {
@@ -116,6 +117,9 @@ function SmallCard({ branch, onSelect }: { branch: Branch; onSelect: (slug: stri
       />
 
       <div className="absolute bottom-0 left-0 right-0 p-4">
+        <p className="mb-0.5 text-[9px] font-black" style={{ color: "rgba(255,255,255,0.35)", letterSpacing: "0.05em" }}>
+          {branch.badges[0]}
+        </p>
         <h3 className="font-black" style={{ fontSize: 16, letterSpacing: "-0.03em", color: "#F5F4F1" }}>
           {branch.name}
         </h3>
