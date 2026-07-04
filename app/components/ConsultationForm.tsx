@@ -140,14 +140,17 @@ export default function ConsultationForm() {
             지점별 운영시간에 맞춰 희망 날짜와 시간을 선택해주세요.
           </p>
 
-          {/* 원데이 클래스 안내 */}
-          <div className="mx-auto mt-8 max-w-md rounded-[12px] border border-[#D01E2E]/25 bg-[#D01E2E]/8 px-6 py-4 text-left">
-            <p className="mb-1 text-[10px] font-black tracking-[0.25em] text-[#D01E2E]">ONE DAY CLASS</p>
-            <p className="text-sm font-black text-white">원데이 클래스 · 30,000원 현장결제</p>
-            <p className="mt-1 text-xs leading-5 text-[#8A8D91]">
-              당일 등록 시 회원권 금액에서 전액 페이백됩니다.<br />
-              편한 복장과 실내용 운동화를 준비해주세요.
-            </p>
+          {/* 예약 옵션 안내 */}
+          <div className="mx-auto mt-8 flex max-w-sm divide-x divide-[#4A4C50]/30 rounded-[12px] border border-[#4A4C50]/30 bg-[#141416] overflow-hidden">
+            <div className="flex-1 px-5 py-4 text-center">
+              <p className="text-[11px] font-semibold text-[#8A8D91]">방문 상담 예약</p>
+              <p className="mt-1 text-base font-black text-white">무료</p>
+            </div>
+            <div className="flex-1 px-5 py-4 text-center">
+              <p className="text-[11px] font-semibold text-[#8A8D91]">일일권</p>
+              <p className="mt-1 text-base font-black text-white">30,000원</p>
+              <p className="mt-0.5 text-[10px] text-[#D01E2E] font-semibold">당일 등록 시 페이백</p>
+            </div>
           </div>
         </div>
 
