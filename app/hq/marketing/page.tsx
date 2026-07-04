@@ -121,7 +121,7 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
     const headers: string[]=arr[1].map((h:any)=>String(h).replace(/[\s()（）]/g,"").toLowerCase());
     const idxOf=(...names:string[])=>headers.findIndex(h=>names.some(n=>h.includes(n.toLowerCase())));
 
-    const dateIdx=idxOf("일별");
+    const dateIdx=idxOf("일별","date");
     const impressIdx=idxOf("노출수","노출");
     const clickIdx=idxOf("클릭수","클릭");
     const costIdx=idxOf("총비용","비용");
