@@ -139,6 +139,16 @@ export default function ConsultationForm() {
           <p className="mt-5 text-lg leading-8 text-[#8A8D91]">
             지점별 운영시간에 맞춰 희망 날짜와 시간을 선택해주세요.
           </p>
+
+          {/* 원데이 클래스 안내 */}
+          <div className="mx-auto mt-8 max-w-md rounded-[12px] border border-[#D01E2E]/25 bg-[#D01E2E]/8 px-6 py-4 text-left">
+            <p className="mb-1 text-[10px] font-black tracking-[0.25em] text-[#D01E2E]">ONE DAY CLASS</p>
+            <p className="text-sm font-black text-white">원데이 클래스 · 30,000원 현장결제</p>
+            <p className="mt-1 text-xs leading-5 text-[#8A8D91]">
+              당일 등록 시 회원권 금액에서 전액 페이백됩니다.<br />
+              편한 복장과 실내용 운동화를 준비해주세요.
+            </p>
+          </div>
         </div>
 
         <form

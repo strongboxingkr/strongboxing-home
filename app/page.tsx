@@ -195,6 +195,11 @@ export default async function HomePage() {
                   </a>
                 </div>
 
+                <p className="mt-4 text-xs leading-5" style={{ color: "#5A5C61" }}>
+                  원데이 클래스 <span style={{ color: "#8A8D91", fontWeight: 700 }}>30,000원</span> 현장결제
+                  &nbsp;·&nbsp; 당일 등록 시 회원권에서 <span style={{ color: "#8A8D91", fontWeight: 700 }}>전액 페이백</span>
+                </p>
+
                 {/* 스탯 */}
                 <div className="mt-14 flex gap-8" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 24 }}>
                   {[["4.9", "평균 리뷰 평점"], ["5", "운영 지점"], ["100%", "초보자 환영"]].map(([n, t]) => (
