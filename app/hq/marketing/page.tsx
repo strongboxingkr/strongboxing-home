@@ -97,7 +97,7 @@ function StatModal({ item, onClose, onSave }: {
 // ─── 엑셀 업로드 모달 ───────────────────────────────────────────────────────
 interface ExcelRow { branch_id:number|null; stat_date:string; channel:string; impressions:number; clicks:number; inquiries:number; registrations:number; ad_cost:number; memo:string }
 
-const AD_SOURCES = ["메타광고","네이버광고","카카오광고","구글광고","기타"];
+const AD_SOURCES = ["메타광고","네이버광고","당근비즈니스","카카오광고","구글광고","기타"];
 
 function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) {
   const [rows,setRows]=useState<ExcelRow[]>([]);
@@ -185,11 +185,44 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
     }));
   }
 
+  function parseDaangn(wb: XLSX.WorkBook): ExcelRow[] {
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    const arr: any[][]=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});
+    if(arr.length<2) return [];
+    // 헤더: 날짜, 조회수, 방문 고객, 단골수
+    const headers: string[]=arr[0].map((h:any)=>String(h).replace(/[\s]/g,"").toLowerCase());
+    const idxOf=(...names:string[])=>headers.findIndex(h=>names.some(n=>h.includes(n.toLowerCase())));
+    const dateIdx=idxOf("날짜");
+    const impressIdx=idxOf("조회수");
+    const clickIdx=idxOf("방문고객","방문");
+    const regIdx=idxOf("단골수","단골");
+
+    return arr.slice(1).flatMap(row=>{
+      const dateRaw=String(row[dateIdx]??"").trim();
+      if(!dateRaw) return [];
+      // "2026.06.01" → "2026-06-01"
+      const stat_date=dateRaw.replace(/\./g,"-");
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(stat_date)) return [];
+      return [{
+        branch_id: branchId?Number(branchId):null,
+        stat_date, channel:adSource,
+        impressions:toNum(row[impressIdx]),
+        clicks:toNum(row[clickIdx]),
+        inquiries:0,
+        registrations:toNum(row[regIdx]),
+        ad_cost:0, memo:"",
+      }];
+    });
+  }
+
   function parseFile(file:File){
     const reader=new FileReader();
     reader.onload=e=>{
       const wb=XLSX.read(e.target?.result,{type:"array"});
-      const parsed=adSource==="네이버광고"?parseNaver(wb):parseMeta(wb);
+      let parsed: ExcelRow[];
+      if(adSource==="네이버광고") parsed=parseNaver(wb);
+      else if(adSource==="당근비즈니스") parsed=parseDaangn(wb);
+      else parsed=parseMeta(wb);
       setRows(parsed);
     };
     reader.readAsArrayBuffer(file);
@@ -249,6 +282,8 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
               <p className="text-[12px] text-center" style={{color:"#9CA3AF"}}>
                 {adSource==="네이버광고"
                   ? "네이버 플레이스 캠페인 보고서 CSV (.csv)"
+                  : adSource==="당근비즈니스"
+                  ? "당근비즈니스 프로필 통계 CSV (.csv)"
                   : "메타 광고 내보내기 파일 (.xlsx, .csv)"}<br/>
                 날짜별·광고별 행 자동 집계됩니다
               </p>
@@ -263,7 +298,7 @@ function ExcelModal({ onClose, onSave }: { onClose:()=>void; onSave:()=>void }) 
           <>
             <p className="mb-3 text-[13px]" style={{color:"#6B7280"}}>
               총 <b style={{color:"#111827"}}>{rows.length}행</b> 인식됨
-              {adSource==="네이버광고"?" (일별 합산)":"  (월별 합산)"}. 확인 후 저장하세요.
+              {adSource==="네이버광고"||adSource==="당근비즈니스"?" (일별)":"  (월별 합산)"}. 확인 후 저장하세요.
             </p>
             <div className="overflow-auto flex-1 rounded-xl" style={{border:"1px solid #E5E7EB"}}>
               <table className="w-full text-[11px]">
