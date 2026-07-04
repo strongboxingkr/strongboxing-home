@@ -29,6 +29,7 @@ async function main() {
     user: env.DB_USER,
     password: env.DB_PASSWORD,
     database: env.DB_NAME,
+    charset: 'utf8mb4',
   });
 
   const [branches] = await conn.query('SELECT id, name FROM branches');
