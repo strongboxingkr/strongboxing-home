@@ -1,10 +1,14 @@
 import HQSidebar from "@/app/components/hq/Sidebar";
 import HQHeader from "@/app/components/hq/Header";
 import HQMobileSidebar from "@/app/components/hq/MobileSidebar";
+import type { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "STRONGBOXING HQ",
   description: "STRONG BOXING 운영 관리 시스템",
+  icons: {
+    icon: [{ url: "/favicon-hq.PNG" }],
+  },
 };
 
 export default function HQLayout({ children }: { children: React.ReactNode }) {
