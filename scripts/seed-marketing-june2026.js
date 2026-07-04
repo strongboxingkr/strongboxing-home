@@ -9,7 +9,10 @@ const envPath = path.join(__dirname, '../.env.local');
 const env = {};
 fs.readFileSync(envPath, 'utf8').split('\n').forEach(line => {
   const eq = line.indexOf('=');
-  if (eq > 0) env[line.slice(0, eq).trim()] = line.slice(eq + 1).trim();
+  if (eq > 0) {
+    const val = line.slice(eq + 1).trim();
+    env[line.slice(0, eq).trim()] = val.replace(/^["']|["']$/g, '');
+  }
 });
 
 // ── 데이터 ──────────────────────────────────────────────────────────────────
