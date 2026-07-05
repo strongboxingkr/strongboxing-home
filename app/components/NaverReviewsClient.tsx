@@ -45,7 +45,7 @@ export default function NaverReviewsClient({ reviews }: { reviews: any[] }) {
             className="rounded-[14px] border border-[#4A4C50]/25 bg-[#141416] p-6"
           >
             <div className="mb-4 flex items-center justify-between gap-3">
-              <p className="text-sm font-black text-[#D01E2E]">
+              <p className="text-[11px] font-semibold text-[#D01E2E]">
                 {review.branch_name}
               </p>
 
@@ -62,7 +62,7 @@ export default function NaverReviewsClient({ reviews }: { reviews: any[] }) {
               {review.reviewer_name || "네이버 리뷰"}
             </p>
 
-            <p className="mt-4 line-clamp-6 whitespace-pre-wrap leading-[1.85] text-sm text-[#C9C9C9]">
+            <p className="mt-4 line-clamp-6 whitespace-pre-wrap leading-[1.85] text-[15px] text-[#E8E8E8]">
               {review.content}
             </p>
 

@@ -12,6 +12,7 @@ import RevealObserver from "./components/RevealObserver";
 import BranchMap from "./components/BranchMap";
 import BranchHeroGrid from "./components/BranchHeroGrid";
 import SiteHeader from "./components/SiteHeader";
+import NewsReviewClient from "./components/NewsReviewClient";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -549,82 +550,9 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             NEWS & REVIEW
         ══════════════════════════════════════ */}
-        <section id="news" className="relative overflow-hidden px-6 py-32 md:px-8">
-          {/* 배경 체육관 이미지 */}
-          <img
-            src="/images/gallery/gallery-1.jpg"
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-            style={{ filter: "brightness(0.2) grayscale(0.3)" }}
-          />
-          {/* 오버레이 — 상단/하단 진하게, 중앙 살짝 열기 */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{ background: "linear-gradient(to bottom, rgba(14,14,16,0.72) 0%, rgba(14,14,16,0.48) 40%, rgba(14,14,16,0.72) 100%)" }}
-          />
-          <div className="relative z-10 mx-auto max-w-7xl">
-            <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-              <div>
-                <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>NEWS & REVIEW</p>
-                <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
-                  지점별 소식과 후기.
-                </h2>
-              </div>
-              <a href="/blog" className="text-sm font-black transition hover:opacity-60" style={{ color: "#8A8D91" }}>
-                전체 글 보기 →
-              </a>
-            </div>
-
-            {latestPosts.length > 0 ? (
-              <div className="grid gap-3 md:grid-cols-3">
-                {latestPosts.map((post: any) => {
-                  const thumb = (() => {
-                    const s = String(post.content || "");
-                    const html = s.match(/<img[^>]+src=["']([^"']+)["']/i);
-                    if (html?.[1]) return html[1];
-                    const md = s.match(/!\[.*?\]\((.*?)\)/);
-                    return md?.[1] || null;
-                  })();
-                  return (
-                  <a key={post.id} href={`/blog/${post.slug}`}
-                    className="group flex flex-col overflow-hidden transition-transform hover:-translate-y-1"
-                    style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
-                    {thumb && (
-                      <div className="h-[160px] overflow-hidden">
-                        <img src={thumb} alt={post.title}
-                          className="h-full w-full object-cover object-[center_25%] transition duration-500 group-hover:scale-105" />
-                      </div>
-                    )}
-                    <div className="flex flex-col flex-1 p-5">
-                      <div className="mb-3 flex items-center justify-between">
-                        <span className="rounded-[10px] px-2.5 py-1 text-[10px] font-black"
-                          style={{ border: "1px solid rgba(255,255,255,0.1)", color: "#8A8D91" }}>
-                          {post.branch_name}
-                        </span>
-                        <span className="text-xs" style={{ color: "#3A3A3E" }}>
-                          {new Date(post.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <h3 className="mb-2 flex-1 text-lg font-black leading-tight" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>
-                        {post.title}
-                      </h3>
-                      <p className="line-clamp-1 text-sm leading-6" style={{ color: "#8A8D91" }}>
-                        {post.description}
-                      </p>
-                      <p className="mt-4 text-xs font-bold" style={{ color: "#5A5C61" }}>읽기 →</p>
-                    </div>
-                  </a>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="p-10 text-center"
-                style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
-                <h3 className="mb-3 text-xl font-black" style={{ color: "#F5F4F1" }}>소식 준비중</h3>
-                <p className="text-sm" style={{ color: "#8A8D91" }}>곧 지점별 운동 소식과 후기를 업데이트할 예정입니다.</p>
-              </div>
-            )}
+        <section id="news" className="px-6 py-32 md:px-8" style={{ background: "#0E0E10" }}>
+          <div className="mx-auto max-w-7xl">
+            <NewsReviewClient posts={latestPosts} />
           </div>
         </section>
         {/* /NEWS & REVIEW */}
