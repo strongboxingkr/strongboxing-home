@@ -21,9 +21,61 @@ function getFirstMedia(content: string): { url: string; type: "image" | "video" 
   if (htmlImg?.[1]) return { url: htmlImg[1], type: "image" };
   const mdImg = str.match(/!\[.*?\]\((.*?)\)/);
   if (mdImg?.[1]) return { url: mdImg[1], type: "image" };
-  const htmlVideo = str.match(/<video[^>]+src=["']([^"']+)["']/i);
+  // video: try <video src=...> first, then any /uploads/ video file URL
+  const htmlVideo = str.match(/<video[^>]*src=["']([^"']+)["']/i)
+    || str.match(/src=["'](\/uploads\/[^"']+\.(?:mp4|webm|ogg|mov))/i);
   if (htmlVideo?.[1]) return { url: htmlVideo[1], type: "video" };
   return null;
+}
+
+function VideoThumb({ src, className }: { src: string; className: string }) {
+  const [dataUrl, setDataUrl] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    const video = document.createElement("video");
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = "metadata";
+
+    const onMeta = () => { video.currentTime = 0.001; };
+    const onSeeked = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth || 480;
+        canvas.height = video.videoHeight || 270;
+        canvas.getContext("2d")?.drawImage(video, 0, 0, canvas.width, canvas.height);
+        setDataUrl(canvas.toDataURL("image/jpeg", 0.85));
+      } catch { setFailed(true); }
+    };
+    const onError = () => setFailed(true);
+
+    video.addEventListener("loadedmetadata", onMeta);
+    video.addEventListener("seeked", onSeeked);
+    video.addEventListener("error", onError);
+    video.src = src;
+
+    return () => {
+      video.removeEventListener("loadedmetadata", onMeta);
+      video.removeEventListener("seeked", onSeeked);
+      video.removeEventListener("error", onError);
+      video.src = "";
+    };
+  }, [src]);
+
+  if (dataUrl) {
+    return <img src={dataUrl} alt="" className={className} style={{ transition: "transform 0.5s ease" }} />;
+  }
+
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center gap-1.5" style={{ background: "#141416" }}>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style={{ opacity: failed ? 0.12 : 0.3 }}>
+        <circle cx="12" cy="12" r="10" stroke="#F5F4F1" strokeWidth="1.5" />
+        <path d="M10 8l6 4-6 4V8z" fill="#F5F4F1" />
+      </svg>
+      {!failed && <span className="text-[10px]" style={{ color: "#3A3A3E" }}>동영상</span>}
+    </div>
+  );
 }
 
 function formatDate(dateStr: string) {
@@ -136,23 +188,7 @@ function CardItem({ post, index }: { post: Post; index: number }) {
           <div className="absolute inset-0">
             {media ? (
               media.type === "video" ? (
-                <video
-                  src={media.url}
-                  className="h-full w-full object-cover object-[center_25%]"
-                  muted
-                  playsInline
-                  preload="metadata"
-                  style={{ transition: "transform 0.5s ease" }}
-                  ref={el => {
-                    if (!el) return;
-                    const card = el.closest("a");
-                    if (!card) return;
-                    const enter = () => { el.style.transform = "scale(1.05)"; };
-                    const leave = () => { el.style.transform = "scale(1)"; };
-                    card.addEventListener("mouseenter", enter);
-                    card.addEventListener("mouseleave", leave);
-                  }}
-                />
+                <VideoThumb src={media.url} className="h-full w-full object-cover object-[center_25%]" />
               ) : (
                 <img
                   src={media.url}
@@ -301,17 +337,7 @@ function ListItem({ post, index }: { post: Post; index: number }) {
         <div className="relative h-[72px] w-[100px] shrink-0 overflow-hidden rounded-[12px]" style={{ background: "#141416" }}>
           {thumb ? (
             isVideo ? (
-              <video src={thumb} muted playsInline preload="metadata"
-                className="h-full w-full object-cover object-[center_25%]"
-                style={{ transition: "transform 0.4s ease" }}
-                ref={el => {
-                  if (!el) return;
-                  const card = el.closest("a");
-                  if (!card) return;
-                  card.addEventListener("mouseenter", () => { el.style.transform = "scale(1.08)"; });
-                  card.addEventListener("mouseleave", () => { el.style.transform = "scale(1)"; });
-                }}
-              />
+              <VideoThumb src={thumb} className="h-full w-full object-cover object-[center_25%]" />
             ) : (
               <img src={thumb} alt="" className="h-full w-full object-cover object-[center_25%]" style={{ transition: "transform 0.4s ease" }}
                 ref={el => {

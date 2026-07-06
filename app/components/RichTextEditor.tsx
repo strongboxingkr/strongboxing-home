@@ -111,8 +111,7 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
             key={size}
             type="button"
             onMouseDown={(e) => {
-              e.preventDefault();
-              editorRef.current?.focus();
+              e.preventDefault(); // 버튼이 포커스 가져가지 않도록 — 에디터 selection 유지
               const sel = window.getSelection();
               if (!sel || sel.rangeCount === 0) return;
               const range = sel.getRangeAt(0);
