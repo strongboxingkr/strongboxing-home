@@ -61,36 +61,13 @@ export async function POST(request: Request) {
       "헬스장 다니다 지쳐서 복싱으로 넘어온 사람의 시각으로",
       "복싱 글러브 처음 끼는 순간부터 미트 치는 쾌감까지 생생하게",
       "운동 동기부여가 안 될 때 복싱이 답인 이유를 친구한테 말하듯",
-      "다이어트 음식 조절보다 복싱 한 시간이 왜 더 효과적인지",
-      "체중 감량 목표가 있는 사람이 복싱 첫 달에 겪는 변화를 중심으로",
-      "처음엔 무서웠는데 다녀보니 완전 다른 분위기였다는 반전 스타일로",
-      "복싱 스파링 없이 운동만 해도 되는지 걱정하는 초보자에게 설명하듯",
-      "운동을 꾸준히 못 하는 사람이 복싱은 왜 오래 다니게 되는지",
-      "복싱 배우면서 자세나 체형이 어떻게 달라지는지 경험담 스타일로",
-      "복싱으로 코어 운동, 유산소, 전신 운동이 동시에 되는 이유를 생생하게",
-      "취미로 복싱을 배우고 싶은 사람을 위한 입문 안내 스타일로",
       "오늘 수업 현장을 생생하게 전달하는 현장 보고서 스타일로",
-      "운동 습관이 없는 사람이 복싱으로 처음 운동 루틴을 만든 이야기",
-      "복싱이 정신건강, 우울감 해소, 자존감 회복에 도움 되는 이유로",
+      "복싱 스파링 없이 운동만 해도 되는지 걱정하는 초보자에게 설명하듯",
+      "처음엔 무서웠는데 다녀보니 완전 다른 분위기였다는 반전 스타일로",
     ];
     const angle = angles[Math.floor(Math.random() * angles.length)];
 
-    // 이미지 content 배열 구성
-    const imageContents = imageUrls.map((url: string) => ({
-      type: "input_image" as const,
-      image_url: url.startsWith("http") ? url : `https://strongboxing.kr${url}`,
-    }));
-
-    const response = await client.responses.create({
-      model: "gpt-4.1-mini",
-      input: [
-        {
-          role: "user",
-          content: [
-            ...imageContents,
-            {
-              type: "input_text",
-              text: `
+    const prompt = `
 너는 네이버 지역 체육관 블로그 전문 마케터야.
 
 브랜드명: 스트롱복싱
@@ -112,7 +89,6 @@ ${angle}
 - 위 "이번 글의 각도"를 글 전체 흐름의 중심으로 삼되, 사진 속 실제 장면을 소재로 쓸 것
 - "도입 → 장점 나열 → 마무리" 같은 뻔한 구성 금지
 - 글의 중심은 ${branch_name} 기준으로 작성
-- 다른 지점은 마지막 문단에서만 한 줄 자연스럽게 언급 가능
 - 동네 체육관의 친근하고 편안한 분위기
 - 과장되거나 허위 느낌 금지
 - 이모지는 문단 사이나 소제목 옆에 자연스럽게 3~5개 사용
@@ -145,19 +121,39 @@ ${angle}
   "content": "본문 전체",
   "hashtags": ["스트롱복싱", "복싱입문", "다이어트복싱"]
 }
-`,
-            },
+`;
+
+    // Chat Completions API (vision 지원)
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      max_tokens: 4000,
+      messages: [
+        {
+          role: "user",
+          content: [
+            // 이미지들
+            ...imageUrls.map((url: string) => ({
+              type: "image_url" as const,
+              image_url: {
+                url: url.startsWith("http") ? url : `https://strongboxing.kr${url}`,
+                detail: "low" as const, // 비용 절감
+              },
+            })),
+            // 프롬프트
+            { type: "text" as const, text: prompt },
           ],
         },
       ],
     });
 
-    const text = response.output_text.trim();
+    const raw = response.choices[0].message.content?.trim() || "";
+    // 코드블럭 감싸진 경우 제거
+    const text = raw.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "").trim();
     const json = JSON.parse(text);
 
     return Response.json({ ok: true, post: json });
-  } catch (error) {
-    console.error("AI 이미지 기반 생성 오류:", error);
+  } catch (error: any) {
+    console.error("AI 이미지 기반 생성 오류:", error?.message || error);
     return Response.json({ ok: false, message: "AI 생성 중 오류가 발생했습니다." }, { status: 500 });
   }
 }
