@@ -89,12 +89,13 @@ export async function POST(req: Request) {
       mediaType: isVideo ? "video" : "image",
     });
   } catch (error) {
-    console.error("업로드 실패:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("업로드 실패:", msg);
 
     return Response.json(
       {
         ok: false,
-        message: "업로드 실패",
+        message: `업로드 실패: ${msg}`,
       },
       { status: 500 }
     );
