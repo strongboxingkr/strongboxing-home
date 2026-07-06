@@ -18,12 +18,16 @@ function isNew(dateStr: string): boolean {
   return diffDays <= 14;
 }
 
-function getThumb(content: string): string | null {
-  const s = String(content || "");
-  const html = s.match(/<img[^>]+src=["']([^"']+)["']/i);
-  if (html?.[1]) return html[1];
-  const md = s.match(/!\[.*?\]\((.*?)\)/);
-  return md?.[1] || null;
+function getThumb(post: any): string | null {
+  if (post.thumbnail) return post.thumbnail;
+  const s = String(post.content || "");
+  const htmlImg = s.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if (htmlImg?.[1]) return htmlImg[1];
+  const mdImg = s.match(/!\[.*?\]\((.*?)\)/);
+  if (mdImg?.[1]) return mdImg[1];
+  const videoTag = s.match(/<video[^>]+src=["']([^"']+)["']/i);
+  if (videoTag?.[1]) return videoTag[1];
+  return null;
 }
 
 function useReveal(threshold = 0.12) {
@@ -43,7 +47,7 @@ function useReveal(threshold = 0.12) {
 }
 
 function PostCard({ post, index }: { post: any; index: number }) {
-  const thumb = getThumb(post.content);
+  const thumb = getThumb(post);
   const category = inferCategory(post);
   const fresh = isNew(post.created_at);
   const date = post.created_at

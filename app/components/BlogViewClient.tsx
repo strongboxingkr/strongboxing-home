@@ -296,12 +296,8 @@ function CardItem({ post, index }: { post: Post; index: number }) {
             {post.description}
           </p>
 
-          {/* 하단 — 읽는 시간 + 화살표 */}
-          <div className="mt-5 flex items-center justify-between gap-2">
-            <span className="flex items-center gap-1 text-[11px]" style={{ color: "#3A3A3E" }}>
-              <ClockIcon />
-              {mins}
-            </span>
+          {/* 하단 — 화살표 */}
+          <div className="mt-5 flex items-center justify-end gap-2">
             <div className="flex items-center gap-1.5">
               <span className="text-[12px] font-semibold" style={{ color: "#5A5C61" }}>자세히 보기</span>
               <span
