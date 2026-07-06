@@ -17,6 +17,7 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
+  const [loaded, setLoaded] = useState(false);
   const [regions, setRegions] = useState<Rect[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const startPos = useRef({ x: 0, y: 0 });
@@ -26,28 +27,43 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
 
   useEffect(() => { blockSizeRef.current = blockSize; }, [blockSize]);
 
-  // Load image into canvas on mount
   useEffect(() => {
+    setLoaded(false);
     setRegions([]);
     setSelectionRect(null);
+
     const img = new Image();
     const url = URL.createObjectURL(file);
+
     img.onload = () => {
       imgRef.current = img;
       const canvas = canvasRef.current;
       if (!canvas) return;
-      canvas.width = img.width;
-      canvas.height = img.height;
+
+      // Cap canvas resolution to 2400px max dimension (keeps toBlob size reasonable)
+      const MAX_DIM = 2400;
+      const ratio = Math.min(MAX_DIM / img.width, MAX_DIM / img.height, 1);
+      canvas.width = Math.round(img.width * ratio);
+      canvas.height = Math.round(img.height * ratio);
+
       const maxW = Math.min(860, window.innerWidth - 80);
-      const maxH = Math.min(560, window.innerHeight - 260);
-      const scale = Math.min(maxW / img.width, maxH / img.height, 1);
-      canvas.style.width = `${Math.round(img.width * scale)}px`;
-      canvas.style.height = `${Math.round(img.height * scale)}px`;
-      canvas.getContext("2d")!.drawImage(img, 0, 0);
+      const maxH = Math.min(520, window.innerHeight - 280);
+      const scale = Math.min(maxW / canvas.width, maxH / canvas.height, 1);
+      canvas.style.width = `${Math.round(canvas.width * scale)}px`;
+      canvas.style.height = `${Math.round(canvas.height * scale)}px`;
+
+      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      setLoaded(true);
     };
+
+    img.onerror = () => {
+      alert("이미지를 불러올 수 없습니다. 다른 파일을 선택해주세요.");
+      onCancel();
+    };
+
     img.src = url;
     return () => URL.revokeObjectURL(url);
-  }, [file]);
+  }, [file]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function getPos(e: React.MouseEvent<HTMLCanvasElement>): { x: number; y: number } {
     const canvas = canvasRef.current!;
@@ -59,8 +75,11 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
   }
 
   function applyMosaic(rect: Rect, size: number) {
-    const canvas = canvasRef.current!;
-    const ctx = canvas.getContext("2d")!;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
     const x = Math.max(0, Math.round(rect.x));
     const y = Math.max(0, Math.round(rect.y));
     const w = Math.min(Math.round(rect.w), canvas.width - x);
@@ -93,16 +112,18 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
   }
 
   function redrawAll(rects: Rect[]) {
-    const canvas = canvasRef.current!;
-    const img = imgRef.current!;
-    const ctx = canvas.getContext("2d")!;
+    const canvas = canvasRef.current;
+    const img = imgRef.current;
+    if (!canvas || !img) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
     ctx.drawImage(img, 0, 0);
     rects.forEach(r => applyMosaic(r, blockSizeRef.current));
   }
 
   function onMouseDown(e: React.MouseEvent<HTMLCanvasElement>) {
-    const pos = getPos(e);
-    startPos.current = pos;
+    if (!loaded) return;
+    startPos.current = getPos(e);
     setIsDrawing(true);
     setSelectionRect(null);
   }
@@ -142,19 +163,35 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
 
   function handleReset() {
     setRegions([]);
-    const canvas = canvasRef.current!;
-    const img = imgRef.current!;
-    canvas.getContext("2d")!.drawImage(img, 0, 0);
+    const canvas = canvasRef.current;
+    const img = imgRef.current;
+    if (!canvas || !img) return;
+    canvas.getContext("2d")?.drawImage(img, 0, 0);
   }
 
   function handleDone() {
-    canvasRef.current!.toBlob(blob => { if (blob) onDone(blob); }, "image/jpeg", 0.92);
+    const canvas = canvasRef.current;
+    if (!canvas || !loaded) {
+      onSkip(); // fallback: upload original if canvas not ready
+      return;
+    }
+    canvas.toBlob(
+      blob => {
+        if (blob && blob.size > 0) {
+          onDone(blob);
+        } else {
+          // canvas failed → upload original file instead
+          onSkip();
+        }
+      },
+      "image/jpeg",
+      0.88
+    );
   }
 
-  // Convert image-space rect to % for overlay
   function toPercent(rect: Rect) {
     const canvas = canvasRef.current;
-    if (!canvas) return null;
+    if (!canvas || canvas.width === 0) return null;
     return {
       left: `${(rect.x / canvas.width) * 100}%`,
       top: `${(rect.y / canvas.height) * 100}%`,
@@ -174,7 +211,7 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
           <div>
             <h2 className="text-xl font-black">모자이크 편집</h2>
             <p className="text-sm text-zinc-500">
-              원하는 영역을 드래그해 모자이크 적용 · 필요 없으면 &apos;그냥 업로드&apos;
+              원하는 영역을 드래그해 모자이크 적용 &middot; 필요 없으면 &apos;그냥 업로드&apos;
               {fileTotal > 1 && (
                 <span className="ml-2 rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-bold text-zinc-500">
                   {fileIndex + 1} / {fileTotal}
@@ -190,14 +227,27 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
         </div>
 
         {/* Canvas area */}
-        <div className="relative overflow-hidden rounded-xl bg-[#F0F0F0]" style={{ lineHeight: 0 }}>
+        <div
+          className="relative overflow-hidden rounded-xl bg-[#F0F0F0]"
+          style={{ lineHeight: 0, minHeight: 120 }}
+        >
+          {!loaded && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="text-sm font-bold text-zinc-400">이미지 불러오는 중...</p>
+            </div>
+          )}
           <canvas
             ref={canvasRef}
             onMouseDown={onMouseDown}
             onMouseMove={onMouseMove}
             onMouseUp={onMouseUp}
             onMouseLeave={() => { setIsDrawing(false); setSelectionRect(null); }}
-            style={{ cursor: "crosshair", display: "block", maxWidth: "100%" }}
+            style={{
+              cursor: loaded ? "crosshair" : "default",
+              display: "block",
+              maxWidth: "100%",
+              opacity: loaded ? 1 : 0,
+            }}
           />
           {/* Live selection overlay */}
           {selectionRect && (() => {
@@ -264,7 +314,8 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
           </button>
           <button
             onClick={handleDone}
-            className="rounded-full bg-[#FC5230] px-6 py-2 text-sm font-black text-white"
+            disabled={!loaded}
+            className="rounded-full bg-[#FC5230] px-6 py-2 text-sm font-black text-white disabled:opacity-40"
           >
             완료 & 업로드
           </button>
