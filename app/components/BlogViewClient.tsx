@@ -39,7 +39,6 @@ function VideoThumb({ src, className }: { src: string; className: string }) {
     video.muted = true;
     video.playsInline = true;
     video.preload = "auto";
-    video.crossOrigin = "anonymous";
 
     let captured = false;
     const capture = () => {
