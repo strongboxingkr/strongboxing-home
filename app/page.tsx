@@ -13,6 +13,7 @@ import BranchMap from "./components/BranchMap";
 import BranchHeroGrid from "./components/BranchHeroGrid";
 import SiteHeader from "./components/SiteHeader";
 import NewsReviewClient from "./components/NewsReviewClient";
+import FloatingCTA from "./components/FloatingCTA";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -156,18 +157,21 @@ export default async function HomePage() {
             HERO — 좌: 카피 / 우: 지점 Magazine Grid
         ══════════════════════════════════════ */}
         <section id="branches" className="relative overflow-hidden" style={{ background: "#0E0E10", scrollMarginTop: "120px" }}>
-          {/* 배경 텍스처 — 아주 살짝 */}
+          {/* 배경 텍스처 — 도트 그리드 */}
           <div className="pointer-events-none absolute inset-0"
-            style={{ background: "radial-gradient(ellipse 80% 60% at 30% 50%, rgba(255,255,255,0.015) 0%, transparent 70%)" }} />
+            style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px)", backgroundSize: "44px 44px" }} />
+          {/* 배경 그라디언트 — 왼쪽 빛 */}
+          <div className="pointer-events-none absolute inset-0"
+            style={{ background: "radial-gradient(ellipse 70% 55% at 28% 50%, rgba(255,255,255,0.012) 0%, transparent 65%)" }} />
           {/* 상단 레드 라인 */}
           <div className="pointer-events-none absolute left-0 top-0 h-[2px] w-full" style={{ background: "#D01E2E" }} />
 
           <div className="mx-auto max-w-[1440px] px-6 md:px-10">
-            <div className="grid min-h-screen items-center gap-12 py-28 lg:grid-cols-[1fr_1.15fr] lg:gap-8 lg:py-24">
+            <div className="grid min-h-[92vh] items-center gap-12 py-20 lg:grid-cols-[1fr_1.15fr] lg:gap-8 lg:py-16">
 
               {/* ── 왼쪽: 카피 ── */}
               <div className="flex flex-col justify-center">
-                <p className="mb-7 text-[10px] font-black tracking-[0.45em]" style={{ color: "#5A5C61" }}>
+                <p className="mb-7 text-[10px] font-black tracking-[0.45em]" style={{ color: "#8A8D91" }}>
                   STRONG BOXING — 서울 · 경기 5개 지점
                 </p>
 
@@ -183,12 +187,12 @@ export default async function HomePage() {
 
                 <p className="max-w-md text-sm leading-[2] md:text-base md:leading-[2.1]" style={{ color: "#C9C9C9", wordBreak: "keep-all" }}>
                   처음이어도 괜찮습니다.<br />
-                  <span style={{ color: "#F5F4F1", fontWeight: 700 }}>관장이 직접 진도에 맞춰 잡아드립니다.</span><br />
-                  기본기부터 미트, 샌드백까지 단계적으로 진행합니다.
+                  <span style={{ color: "#F5F4F1", fontWeight: 700 }}>관장이 기본기부터 직접 잡아드립니다.</span><br />
+                  체력이나 운동 경험 없어도 — 오늘 바로 시작할 수 있어요.
                 </p>
 
                 <div className="mt-9 flex flex-wrap gap-3">
-                  <ReservationButton className="group rounded-[10px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
+                  <ReservationButton className="btn-primary group rounded-[10px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white hover:bg-[#B71C2B]">
                     원데이 클래스 예약하기
                     <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </ReservationButton>
@@ -212,7 +216,7 @@ export default async function HomePage() {
                   {[["4.9", "평균 리뷰 평점"], ["5", "운영 지점"], ["100%", "초보자 환영"]].map(([n, t]) => (
                     <div key={n}>
                       <p className="text-2xl font-black" style={{ color: "#F5F4F1" }}>{n}</p>
-                      <p className="mt-0.5 text-[11px]" style={{ color: "#3A3A3E" }}>{t}</p>
+                      <p className="mt-0.5 text-[11px]" style={{ color: "#5A5C61" }}>{t}</p>
                     </div>
                   ))}
                 </div>
@@ -222,36 +226,79 @@ export default async function HomePage() {
               <BranchHeroGrid branches={branches} />
             </div>
           </div>
+
+          {/* 스크롤 유도 */}
+          <div className="pointer-events-none absolute bottom-7 left-0 right-0 hidden justify-center lg:flex">
+            <div className="flex animate-bounce flex-col items-center gap-1" style={{ color: "#3A3A3E" }}>
+              <span className="text-[9px] font-black tracking-[0.35em]">SCROLL</span>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 2v8M2 6.5l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
         </section>
 
         {/* ══════════════════════════════════════
-            FEATURE STRIP (아이콘 4개)
+            FEATURE STRIP
         ══════════════════════════════════════ */}
         <div style={{ background: "#141416", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
           <div className="mx-auto grid max-w-7xl grid-cols-2 gap-0 px-6 md:grid-cols-4">
-            {[
-              ["관장 직접 지도", "관장·코치가 개인 진도에 맞춰 직접 지도"],
-              ["기본기부터 차근차근", "자세, 스텝, 미트, 샌드백까지 단계적으로"],
-              ["다이어트 & 체력", "전신 운동으로 체지방 감량과 체력증진 동시에"],
-              ["초보자 환영", "운동이 처음이어도 기본기부터 편하게 시작"],
-            ].map(([title, desc], i) => (
-              <div
-                key={title}
-                className="px-8 py-7"
-                style={{ borderRight: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none" }}
-              >
-                <p className="mb-1.5 text-sm font-black" style={{ color: "#F5F4F1" }}>{title}</p>
-                <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>{desc}</p>
+
+            <div className="reveal px-8 py-8 transition-all duration-300 hover:bg-white/[0.02]"
+              style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}>
+              <div className="mb-4" style={{ color: "#D01E2E" }}>
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="11" cy="7" r="4"/>
+                </svg>
               </div>
-            ))}
+              <p className="mb-1.5 text-sm font-black" style={{ color: "#F5F4F1" }}>관장 직접 지도</p>
+              <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>관장·코치가 개인 진도에 맞춰 직접 지도</p>
+            </div>
+
+            <div className="reveal d1 px-8 py-8 transition-all duration-300 hover:bg-white/[0.02]"
+              style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}>
+              <div className="mb-4" style={{ color: "#D01E2E" }}>
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 7 12.5 14.5 7.5 9.5 1 16"/><polyline points="15 7 20 7 20 12"/>
+                </svg>
+              </div>
+              <p className="mb-1.5 text-sm font-black" style={{ color: "#F5F4F1" }}>기본기부터 차근차근</p>
+              <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>자세, 스텝, 미트, 샌드백까지 단계적으로</p>
+            </div>
+
+            <div className="reveal d2 px-8 py-8 transition-all duration-300 hover:bg-white/[0.02]"
+              style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}>
+              <div className="mb-4" style={{ color: "#D01E2E" }}>
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 2 13 11 13 10 21 20 10 11 10 12 2"/>
+                </svg>
+              </div>
+              <p className="mb-1.5 text-sm font-black" style={{ color: "#F5F4F1" }}>다이어트 &amp; 체력</p>
+              <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>전신 운동으로 체지방 감량과 체력증진 동시에</p>
+            </div>
+
+            <div className="reveal d3 px-8 py-8 transition-all duration-300 hover:bg-white/[0.02]">
+              <div className="mb-4" style={{ color: "#D01E2E" }}>
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 10v1a8 8 0 1 1-4.88-7.31"/><polyline points="19 4 10 13 7 10"/>
+                </svg>
+              </div>
+              <p className="mb-1.5 text-sm font-black" style={{ color: "#F5F4F1" }}>초보자 환영</p>
+              <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>운동이 처음이어도 기본기부터 편하게 시작</p>
+            </div>
+
           </div>
         </div>
 
 
+        <div id="reviews" style={{ scrollMarginTop: "120px" }}>
+          <NaverReviewsSection />
+        </div>
+
         {/* ══════════════════════════════════════
             HOW WE TRAIN
         ══════════════════════════════════════ */}
-        <section id="programs" className="px-6 py-32 md:px-8" style={{ background: "#141416", scrollMarginTop: "120px" }}>
+        <section id="programs" className="px-6 py-24 md:px-8" style={{ background: "#141416", scrollMarginTop: "120px" }}>
           <div className="mx-auto max-w-7xl">
             <div className="mb-16">
               <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>HOW WE TRAIN</p>
@@ -264,7 +311,7 @@ export default async function HomePage() {
             </div>
 
             <div className="grid gap-3 md:grid-cols-2">
-              <div className="flex flex-col p-8" style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
+              <div className="flex flex-col p-8 transition-all duration-300 hover:-translate-y-0.5" style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
                 <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>MY SCHEDULE</p>
                 <h3 className="mb-4 text-2xl font-black" style={{ letterSpacing: "-0.04em" }}>내 시간에 맞게</h3>
                 <p className="mb-6 leading-8 text-sm" style={{ color: "#8A8D91" }}>
@@ -293,7 +340,7 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <div className="p-8" style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
+              <div className="p-8 transition-all duration-300 hover:-translate-y-0.5" style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
                 <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>1 SESSION</p>
                 <h3 className="mb-6 text-2xl font-black" style={{ letterSpacing: "-0.04em" }}>1회 운동 구성</h3>
                 <div className="space-y-3">
@@ -321,10 +368,9 @@ export default async function HomePage() {
                 <p className="font-black text-lg" style={{ color: "#F5F4F1" }}>원데이 클래스로 먼저 경험해보세요.</p>
                 <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>30,000원 현장결제 · 당일 등록 시 회원권에서 전액 차감</p>
               </div>
-              <a href="/#branch"
-                className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] px-6 py-3 text-sm font-black transition-all duration-300 hover:bg-white/6"
-                style={{ border: "1px solid rgba(255,255,255,0.15)", color: "#F5F4F1" }}>
-                가까운 지점 보기
+              <a href="/reservation"
+                className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
+                원데이 클래스 예약하기
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>
             </div>
@@ -334,20 +380,24 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             코치 소개
         ══════════════════════════════════════ */}
-        <section id="coaches" className="px-6 py-32 md:px-8" style={{ scrollMarginTop: "120px" }}>
+        <section id="coaches" className="px-6 py-24 md:px-8" style={{ scrollMarginTop: "120px" }}>
           <div className="mx-auto max-w-7xl">
-            <div className="mb-16">
+            <div className="mb-14">
               <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>COACH</p>
               <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
                 직접 가르치는<br />전문 코치진.
               </h2>
+              <p className="reveal d2 mt-6 max-w-lg text-base leading-8" style={{ color: "#8A8D91" }}>
+                선수 출신 관장·코치가 모든 지점에서 직접 지도합니다.<br />
+                단체 수업 없이, 개인 수준에 맞춰 1:1로 진도를 잡아드립니다.
+              </p>
             </div>
 
             {/* 대표 카드 — red border 강조 */}
             <a
               href="https://www.instagram.com/strongboxing_official"
               target="_blank" rel="noopener noreferrer"
-              className="group mb-4 flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-0.5 md:flex-row"
+              className="reveal group mb-4 flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-0.5 md:flex-row"
               style={{
                 borderRadius: 16,
                 border: "1px solid rgba(208,30,46,0.45)",
@@ -394,6 +444,21 @@ export default async function HomePage() {
                 </a>
               ))}
             </div>
+
+            <div className="mt-4 flex flex-col items-center justify-between gap-4 p-7 sm:flex-row"
+              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
+              <div>
+                <p className="font-black text-base" style={{ color: "#F5F4F1" }}>직접 만나서 확인해보세요.</p>
+                <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>
+                  원데이 클래스로 부담 없이 코치진과 함께 운동해볼 수 있습니다.
+                </p>
+              </div>
+              <a href="/reservation"
+                className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
+                원데이 클래스 예약하기
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
           </div>
         </section>
 
@@ -401,20 +466,12 @@ export default async function HomePage() {
           <ReelsSection />
         </div>
 
-        <div id="reviews" style={{ scrollMarginTop: "120px" }}>
-          <NaverReviewsSection />
-        </div>
-
-        <section id="calculator" style={{ background: "#0E0E10" }}>
-          <BoxingCalculator />
-        </section>
-
         {/* ══════════════════════════════════════
             FIRST VISIT
         ══════════════════════════════════════ */}
-        <section className="px-6 py-32 md:px-8" style={{ background: "#141416" }}>
+        <section className="px-6 py-24 md:px-8" style={{ background: "#141416" }}>
           <div className="mx-auto max-w-7xl">
-            <div className="mb-16 text-center">
+            <div className="mb-12">
               <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>FIRST VISIT</p>
               <h2 className="reveal d1 font-black" style={{ fontSize: "clamp(36px, 5vw, 56px)", letterSpacing: "-0.05em" }}>
                 처음 오면 어떻게 되나요?
@@ -427,14 +484,23 @@ export default async function HomePage() {
                 ["02", "편한 복장으로", "편한 복장과 실내용 운동화만 준비해주세요"],
                 ["03", "관장과 상담", "운동 목적·체력에 맞춰 맞춤 안내해드립니다"],
                 ["04", "바로 운동 시작", "처음 오셔도 기본 자세부터 천천히 알려드립니다"],
-              ].map(([step, title, desc]) => (
-                <div key={step} className="p-7"
+              ].map(([step, title, desc], i) => (
+                <div key={step}
+                  className={`reveal d${i + 1} p-7 transition-all duration-300 hover:-translate-y-1`}
                   style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
-                  <p className="mb-6 text-2xl font-black" style={{ color: "#2A2A2E" }}>{step}</p>
+                  <p className="mb-6 text-2xl font-black" style={{ color: "#3A3A3E" }}>{step}</p>
                   <h3 className="mb-2 text-base font-black" style={{ color: "#F5F4F1" }}>{title}</h3>
                   <p className="text-sm leading-6" style={{ color: "#8A8D91" }}>{desc}</p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-10 flex justify-center">
+              <a href="/reservation"
+                className="group inline-flex items-center gap-2 rounded-[10px] bg-[#D01E2E] px-10 py-4 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
+                지금 바로 시작해보세요
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </a>
             </div>
           </div>
         </section>
@@ -442,7 +508,7 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             PROGRAM
         ══════════════════════════════════════ */}
-        <section id="program" className="px-6 py-32 md:px-8">
+        <section id="program" className="px-6 py-24 md:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
               <div>
@@ -461,51 +527,81 @@ export default async function HomePage() {
                 ["01", "복싱 입문", "기본자세, 스텝, 펀치부터 차근차근. 처음 오셔도 바로 시작할 수 있습니다."],
                 ["02", "다이어트 · 체력", "전신 운동으로 체지방 감량과 체력증진을 동시에."],
                 ["03", "관장 직접 지도", "개인 수준과 목표에 맞춰 관장·코치가 직접 잡아드립니다."],
-              ].map(([num, title, desc]) => (
-                <div key={num} className="group p-10 transition-transform hover:-translate-y-1"
+              ].map(([num, title, desc], i) => (
+                <div key={num} className={`group reveal d${i + 1} p-10 transition-all duration-300 hover:-translate-y-1`}
                   style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
-                  <p className="mb-12 text-xs font-black" style={{ color: "#3A3A3E" }}>{num}</p>
+                  <p className="mb-12 text-xs font-black" style={{ color: "rgba(208,30,46,0.25)" }}>{num}</p>
                   <h3 className="mb-3 text-2xl font-black" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>{title}</h3>
                   <p className="text-sm leading-7" style={{ color: "#8A8D91" }}>{desc}</p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-4 flex flex-col items-center justify-between gap-4 p-7 sm:flex-row"
+              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
+              <div>
+                <p className="font-black text-base" style={{ color: "#F5F4F1" }}>어떤 목적이든 시작할 수 있습니다.</p>
+                <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>
+                  입문·다이어트·체력증진 모두, 원데이 클래스로 먼저 경험해보세요.
+                </p>
+              </div>
+              <a href="/reservation"
+                className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
+                원데이 클래스 예약하기
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </a>
             </div>
           </div>
         </section>
 
         <FaqSection />
 
+        <section id="calculator" style={{ background: "#0E0E10" }}>
+          <BoxingCalculator />
+        </section>
+
         {/* ══════════════════════════════════════
             SPACE GALLERY
         ══════════════════════════════════════ */}
-        <section className="px-6 py-32 md:px-8" style={{ background: "#141416" }}>
+        <section className="px-6 py-24 md:px-8" style={{ background: "#141416" }}>
           <div className="mx-auto max-w-7xl">
-            <div className="mb-14">
+            <div className="mb-12">
               <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>STRONG SPACE</p>
               <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
                 사진으로 먼저 보는<br />스트롱복싱의 공간.
               </h2>
+              <p className="reveal d2 mt-5 text-sm leading-7" style={{ color: "#8A8D91" }}>
+                복싱 전용 링, 샌드백, 미트 트레이닝 공간. 처음 방문해도 편하게 운동할 수 있는 환경입니다.
+              </p>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
-              <div className="overflow-hidden" style={{ borderRadius: 14 }}>
+              <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
                 <img src="/images/gallery/gallery-1.jpg" alt="시설"
-                  className="h-full min-h-[500px] w-full object-cover transition duration-700 hover:scale-105"
+                  className="h-full min-h-[500px] w-full object-cover transition duration-700 group-hover:scale-105"
                   style={{ filter: "brightness(0.85)" }} />
+                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(14,14,16,0.35) 100%)" }} />
               </div>
               <div className="grid gap-3">
-                <div className="overflow-hidden" style={{ borderRadius: 14 }}>
+                <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
                   <img src="/images/gallery/gallery-2.jpg" alt="시설"
-                    className="h-[240px] w-full object-cover transition duration-700 hover:scale-105"
+                    className="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105"
                     style={{ filter: "brightness(0.85)" }} />
+                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{ background: "rgba(14,14,16,0.2)" }} />
                 </div>
                 <div className="grid gap-3 md:grid-cols-2">
-                  <div className="overflow-hidden" style={{ borderRadius: 14 }}>
+                  <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
                     <img src="/images/gallery/gallery-3.jpg" alt="시설"
-                      className="h-[240px] w-full object-cover" style={{ filter: "brightness(0.85)" }} />
+                      className="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105" style={{ filter: "brightness(0.85)" }} />
+                    <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                      style={{ background: "rgba(14,14,16,0.2)" }} />
                   </div>
-                  <div className="overflow-hidden" style={{ borderRadius: 14 }}>
+                  <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
                     <img src="/images/gallery/gallery-4.jpg" alt="시설"
-                      className="h-[240px] w-full object-cover" style={{ filter: "brightness(0.85)" }} />
+                      className="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105" style={{ filter: "brightness(0.85)" }} />
+                    <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                      style={{ background: "rgba(14,14,16,0.2)" }} />
                   </div>
                 </div>
               </div>
@@ -533,7 +629,7 @@ export default async function HomePage() {
               30,000원 현장결제 · 당일 등록 시 회원권에서 전액 차감됩니다.
             </p>
             <div className="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
-              <ReservationButton className="group rounded-[10px] bg-[#D01E2E] px-10 py-5 text-base font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
+              <ReservationButton className="btn-primary group rounded-[10px] bg-[#D01E2E] px-10 py-5 text-base font-black text-white hover:bg-[#B71C2B]">
                 원데이 클래스 예약하기
                 <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
               </ReservationButton>
@@ -550,7 +646,7 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             NEWS & REVIEW
         ══════════════════════════════════════ */}
-        <section id="news" className="px-6 py-32 md:px-8" style={{ background: "#0E0E10" }}>
+        <section id="news" className="px-6 py-20 md:px-8" style={{ background: "#0E0E10" }}>
           <div className="mx-auto max-w-7xl">
             <NewsReviewClient posts={latestPosts} />
           </div>
@@ -623,14 +719,19 @@ export default async function HomePage() {
         <section className="px-6 py-24 md:px-8" style={{ background: "#0E0E10", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <div className="mx-auto max-w-7xl">
             <div className="mb-12 text-center">
-              <p className="mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>CERTIFIED GYM</p>
-              <h2 className="font-black" style={{ fontSize: "clamp(28px, 4vw, 40px)", letterSpacing: "-0.04em", color: "#F5F4F1" }}>
+              <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>CERTIFIED GYM</p>
+              <h2 className="reveal d1 font-black" style={{ fontSize: "clamp(28px, 4vw, 40px)", letterSpacing: "-0.04em", color: "#F5F4F1" }}>
                 프로복싱 4개 단체 가입 체육관
               </h2>
               <div className="mt-4 flex flex-wrap justify-center gap-6 text-xs" style={{ color: "#5A5C61" }}>
-                <span>✔ 프로테스트 참가 가능</span>
-                <span>✔ 각종 대회 참가 가능</span>
-                <span>✔ 선수 등록 및 활동 가능</span>
+                {["프로테스트 참가 가능", "각종 대회 참가 가능", "선수 등록 및 활동 가능"].map((item) => (
+                  <span key={item} className="inline-flex items-center gap-1.5">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M2 6l3 3 5-5" stroke="#D01E2E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {item}
+                  </span>
+                ))}
               </div>
             </div>
 
@@ -640,8 +741,8 @@ export default async function HomePage() {
                 { src: "/images/boxing-orgs/kbm.jpg", name: "KBM", full: "한국복싱커미션" },
                 { src: "/images/boxing-orgs/kbc.jpg", name: "KBC", full: "한국권투위원회" },
                 { src: "/images/boxing-orgs/kba.jpg", name: "KBA", full: "한국권투협회" },
-              ].map((org) => (
-                <div key={org.name} className="flex flex-col items-center gap-3 p-6"
+              ].map((org, i) => (
+                <div key={org.name} className={`reveal d${i + 1} flex flex-col items-center gap-3 p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.15] hover:bg-[#1A1A1C]`}
                   style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
                   <img src={org.src} alt={org.full} className="h-16 w-16 rounded-full object-cover" />
                   <div className="text-center">
@@ -666,8 +767,14 @@ export default async function HomePage() {
                 승단 심사 체육관
               </span>
               <div className="flex flex-col gap-1.5 text-xs" style={{ color: "#8A8D91" }}>
-                <span>✔ 체육관 자체 승단 심사 가능</span>
-                <span>✔ 공인 단증 취득 가능</span>
+                {["체육관 자체 승단 심사 가능", "공인 단증 취득 가능"].map((item) => (
+                  <span key={item} className="inline-flex items-center gap-1.5">
+                    <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                      <path d="M2 6l3 3 5-5" stroke="#D01E2E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {item}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -678,7 +785,7 @@ export default async function HomePage() {
         ══════════════════════════════════════ */}
         <section className="px-6 py-16 md:px-8" style={{ background: "#141416" }}>
           <div className="mx-auto max-w-7xl">
-            <div className="flex flex-col items-center gap-8 p-10 text-center md:flex-row md:text-left"
+            <div className="reveal flex flex-col items-center gap-8 p-10 text-center md:flex-row md:text-left"
               style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
               <div className="flex-1">
                 <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>PRICING</p>
@@ -689,7 +796,7 @@ export default async function HomePage() {
                 </p>
               </div>
               <a href="/reservation"
-                className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
+                className="btn-primary group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black text-white hover:bg-[#B71C2B]">
                 상담 예약하고 문의하기
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>
@@ -702,6 +809,8 @@ export default async function HomePage() {
         </div>
 
         <AiCoachChat />
+
+        <FloatingCTA />
 
         {/* ══════════════════════════════════════
             FOOTER
@@ -720,15 +829,19 @@ export default async function HomePage() {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
               {branches.map((b) => (
                 <div key={b.slug}>
-                  <p className="mb-2 text-xs font-black" style={{ color: "#8A8D91" }}>{b.name}</p>
+                  <a href={`/branches/${b.slug}`}
+                    className="mb-2 block text-xs font-black transition-colors duration-200 hover:text-[#F5F4F1]"
+                    style={{ color: "#8A8D91" }}>{b.name}</a>
                   <p className="text-xs leading-5" style={{ color: "#3A3A3E" }}>{b.address}</p>
-                  <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>{b.phone}</p>
-                  <p className="text-xs" style={{ color: "#2A2A2E" }}>{b.hours.join(" / ")}</p>
+                  <a href={`tel:${b.phone.replace(/-/g, "")}`}
+                    className="mt-1 block text-xs transition-colors duration-200 hover:text-[#8A8D91]"
+                    style={{ color: "#5A5C61" }}>{b.phone}</a>
+                  <p className="text-xs" style={{ color: "#5A5C61" }}>{b.hours.join(" / ")}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-10 pt-8 text-xs" style={{ borderTop: "1px solid rgba(255,255,255,0.05)", color: "#2A2A2E" }}>
+            <div className="mt-10 pt-8 text-xs" style={{ borderTop: "1px solid rgba(255,255,255,0.05)", color: "#3A3A3E" }}>
               © 2025 STRONG BOXING. All rights reserved.
             </div>
           </div>

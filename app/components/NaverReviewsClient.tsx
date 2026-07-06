@@ -42,7 +42,7 @@ export default function NaverReviewsClient({ reviews }: { reviews: any[] }) {
         {visibleReviews.map((review) => (
           <div
             key={review.id}
-            className="rounded-[14px] border border-[#4A4C50]/25 bg-[#141416] p-6"
+            className="rounded-[14px] border border-[#4A4C50]/25 bg-[#141416] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.12]"
           >
             <div className="mb-4 flex items-center justify-between gap-3">
               <p className="text-[11px] font-semibold text-[#D01E2E]">
@@ -54,7 +54,7 @@ export default function NaverReviewsClient({ reviews }: { reviews: any[] }) {
               </p>
             </div>
 
-            <p className="text-sm font-black tracking-[0.2em] text-[#22C55E]">
+            <p className="text-[10px] font-black tracking-[0.25em]" style={{ color: "#3A3A3E" }}>
               NAVER REVIEW
             </p>
 

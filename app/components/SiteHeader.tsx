@@ -93,7 +93,7 @@ export default function SiteHeader() {
           {NAV.map((item) => {
             const active = isActive(item);
             const cls =
-              "relative pb-0.5 text-sm font-semibold transition-colors hover:text-white";
+              `nav-link${active ? " nav-active" : ""} relative pb-0.5 text-sm font-semibold transition-colors hover:text-white`;
             const color = active ? "#F5F4F1" : "#8A8D91";
             const dot = active ? (
               <span
@@ -127,7 +127,7 @@ export default function SiteHeader() {
 
         {/* Right: CTA + hamburger */}
         <div className="flex items-center gap-3">
-          <ReservationButton className="hidden rounded-[10px] bg-[#D01E2E] px-5 py-2.5 text-sm font-black text-white transition hover:bg-[#B71C2B] lg:block">
+          <ReservationButton className="btn-primary hidden rounded-[10px] bg-[#D01E2E] px-5 py-2.5 text-sm font-black text-white hover:bg-[#B71C2B] lg:block">
             방문 상담 예약
           </ReservationButton>
 
@@ -190,7 +190,7 @@ export default function SiteHeader() {
           })}
 
           <div className="pb-4 pt-3">
-            <ReservationButton className="w-full rounded-[10px] bg-[#D01E2E] py-3.5 text-sm font-black text-white transition hover:bg-[#B71C2B]">
+            <ReservationButton className="btn-primary w-full rounded-[10px] bg-[#D01E2E] py-3.5 text-sm font-black text-white hover:bg-[#B71C2B]">
               방문 상담 예약
             </ReservationButton>
           </div>

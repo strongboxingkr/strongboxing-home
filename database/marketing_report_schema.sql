@@ -1,0 +1,53 @@
+-- 월간 광고성과 리포트 헤더
+CREATE TABLE IF NOT EXISTS marketing_reports (
+  id                    BIGINT AUTO_INCREMENT PRIMARY KEY,
+  report_month          VARCHAR(7)     NOT NULL COMMENT '예: 2026-06',
+  title                 VARCHAR(100),
+  total_spend           INT            DEFAULT 0,
+  total_impressions     INT            DEFAULT 0,
+  total_clicks          INT            DEFAULT 0,
+  total_results         INT            DEFAULT 0,
+  avg_ctr               DECIMAL(10,4)  DEFAULT 0,
+  avg_cpc               DECIMAL(10,2)  DEFAULT 0,
+  avg_cost_per_result   DECIMAL(10,2)  DEFAULT 0,
+  summary_text          TEXT,
+  next_action_text      TEXT,
+  created_at            DATETIME       DEFAULT CURRENT_TIMESTAMP,
+  updated_at            DATETIME       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_report_month (report_month)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 리포트 상세 아이템 (광고 소재별)
+CREATE TABLE IF NOT EXISTS marketing_report_items (
+  id                BIGINT AUTO_INCREMENT PRIMARY KEY,
+  report_id         BIGINT        NOT NULL,
+  report_month      VARCHAR(7)    NOT NULL,
+  branch            VARCHAR(30)   NOT NULL,
+  channel           VARCHAR(30)   NOT NULL,
+  campaign_name     VARCHAR(255),
+  adset_name        VARCHAR(255),
+  ad_name           VARCHAR(255),
+  creative_name     VARCHAR(255),
+  status            VARCHAR(100),
+  impressions       INT           DEFAULT 0,
+  reach_count       INT           DEFAULT 0,
+  clicks            INT           DEFAULT 0,
+  link_clicks       INT           DEFAULT 0,
+  effective_clicks  INT           DEFAULT 0,
+  results           INT           DEFAULT 0,
+  spend             INT           DEFAULT 0,
+  ctr               DECIMAL(10,4) DEFAULT 0,
+  cpc               DECIMAL(10,2) DEFAULT 0,
+  cost_per_result   DECIMAL(10,2) DEFAULT 0,
+  judgement         VARCHAR(30)   COMMENT 'GOOD | NORMAL | WARNING | LOW_DATA',
+  source_file_name  VARCHAR(255),
+  start_date        VARCHAR(30),
+  end_date          VARCHAR(30),
+  created_at        DATETIME      DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_mri_report FOREIGN KEY (report_id) REFERENCES marketing_reports(id) ON DELETE CASCADE,
+  INDEX idx_mri_report_id   (report_id),
+  INDEX idx_mri_month       (report_month),
+  INDEX idx_mri_branch      (branch),
+  INDEX idx_mri_channel     (channel),
+  INDEX idx_mri_judgement   (judgement)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

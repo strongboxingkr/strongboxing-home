@@ -5,21 +5,22 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Building2, MessageSquare,
   Megaphone, Clapperboard, Users, Archive, Settings, Sparkles,
-  CalendarDays, BarChart2,
+  CalendarDays, BarChart2, TrendingUp,
 } from "lucide-react";
 
 const NAV = [
-  { label: "대시보드",   href: "/hq",               icon: LayoutDashboard },
-  { label: "지점 관리",  href: "/hq/branches",       icon: Building2 },
-  { label: "상담 센터",  href: "/hq/consultation",   icon: MessageSquare },
-  { label: "콘텐츠",     href: "/hq/contents",       icon: Clapperboard },
-  { label: "마케팅",     href: "/hq/marketing",      icon: Megaphone },
-  { label: "AI 콘텐츠", href: "/hq/ai-content",     icon: Sparkles },
-  { label: "일정관리",   href: "/hq/calendar",       icon: CalendarDays },
-  { label: "분석",       href: "/hq/analytics",      icon: BarChart2 },
-  { label: "직원센터",   href: "/hq/staff",          icon: Users },
-  { label: "자료실",     href: "/hq/assets",         icon: Archive },
-  { label: "설정",       href: "/hq/settings",       icon: Settings },
+  { label: "대시보드",   href: "/hq",                      icon: LayoutDashboard },
+  { label: "지점 관리",  href: "/hq/branches",              icon: Building2 },
+  { label: "상담 센터",  href: "/hq/consultation",          icon: MessageSquare },
+  { label: "콘텐츠",     href: "/hq/contents",              icon: Clapperboard },
+  { label: "마케팅",     href: "/hq/marketing",             icon: Megaphone },
+  { label: "광고성과",   href: "/hq/marketing-report",      icon: TrendingUp },
+  { label: "AI 콘텐츠", href: "/hq/ai-content",            icon: Sparkles },
+  { label: "일정관리",   href: "/hq/calendar",              icon: CalendarDays },
+  { label: "분석",       href: "/hq/analytics",             icon: BarChart2 },
+  { label: "직원센터",   href: "/hq/staff",                 icon: Users },
+  { label: "자료실",     href: "/hq/assets",                icon: Archive },
+  { label: "설정",       href: "/hq/settings",              icon: Settings },
 ];
 
 export default function HQSidebar() {
