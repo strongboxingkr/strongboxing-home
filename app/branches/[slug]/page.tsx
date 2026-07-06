@@ -319,15 +319,17 @@ export default async function BranchPage({
 
   const relatedPosts = rows;
 
-  function getFirstImage(post: any): string | null {
-    if (post.thumbnail) return post.thumbnail;
+  function getFirstImage(post: any): { url: string; isVideo: boolean } | null {
+    if (post.thumbnail) return { url: post.thumbnail, isVideo: false };
     const s = String(post.content || "");
     const htmlImg = s.match(/<img[^>]+src=["']([^"']+)["']/i);
-    if (htmlImg?.[1]) return htmlImg[1];
+    if (htmlImg?.[1]) return { url: htmlImg[1], isVideo: false };
     const mdImg = s.match(/!\[.*?\]\((.*?)\)/);
-    if (mdImg?.[1]) return mdImg[1];
+    if (mdImg?.[1]) return { url: mdImg[1], isVideo: false };
     const videoTag = s.match(/<video[^>]+src=["']([^"']+)["']/i);
-    if (videoTag?.[1]) return videoTag[1];
+    if (videoTag?.[1]) return { url: videoTag[1], isVideo: true };
+    const videoUrl = s.match(/\/uploads\/[^\s"'<>&]+\.(?:mp4|webm|ogg|mov|hevc|mkv|avi|ts)/i);
+    if (videoUrl?.[0]) return { url: videoUrl[0], isVideo: true };
     return null;
   }
 
@@ -630,11 +632,21 @@ const faqJsonLd = {
                 >
                   <div className="h-[210px] overflow-hidden bg-[#1A1A1C]">
                     {image && (
-                      <img
-                        src={encodeURI(image)}
-                        alt={post.title}
-                        className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-[1.03]"
-                      />
+                      image.isVideo ? (
+                        <video
+                          src={encodeURI(image.url)}
+                          muted
+                          playsInline
+                          preload="metadata"
+                          className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-[1.03]"
+                        />
+                      ) : (
+                        <img
+                          src={encodeURI(image.url)}
+                          alt={post.title}
+                          className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-[1.03]"
+                        />
+                      )
                     )}
                   </div>
                   <div className="p-7">

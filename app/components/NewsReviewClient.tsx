@@ -18,15 +18,19 @@ function isNew(dateStr: string): boolean {
   return diffDays <= 14;
 }
 
-function getThumb(post: any): string | null {
-  if (post.thumbnail) return post.thumbnail;
+const VIDEO_EXT = /\.(mp4|webm|ogg|mov|hevc|mkv|avi|ts)(\?|$)/i;
+
+function getThumb(post: any): { url: string; isVideo: boolean } | null {
+  if (post.thumbnail) return { url: post.thumbnail, isVideo: false };
   const s = String(post.content || "");
   const htmlImg = s.match(/<img[^>]+src=["']([^"']+)["']/i);
-  if (htmlImg?.[1]) return htmlImg[1];
+  if (htmlImg?.[1]) return { url: htmlImg[1], isVideo: false };
   const mdImg = s.match(/!\[.*?\]\((.*?)\)/);
-  if (mdImg?.[1]) return mdImg[1];
+  if (mdImg?.[1]) return { url: mdImg[1], isVideo: false };
   const videoTag = s.match(/<video[^>]+src=["']([^"']+)["']/i);
-  if (videoTag?.[1]) return videoTag[1];
+  if (videoTag?.[1]) return { url: videoTag[1], isVideo: true };
+  const videoUrl = s.match(/\/uploads\/[^\s"'<>&]+\.(?:mp4|webm|ogg|mov|hevc|mkv|avi|ts)/i);
+  if (videoUrl?.[0]) return { url: videoUrl[0], isVideo: true };
   return null;
 }
 
@@ -89,14 +93,25 @@ function PostCard({ post, index }: { post: any; index: number }) {
         {/* 썸네일 */}
         <div className="relative shrink-0 overflow-hidden" style={{ height: 200, borderRadius: "20px 20px 0 0" }}>
           {thumb ? (
-            <img
-              src={thumb}
-              alt={post.title}
-              className="h-full w-full object-cover object-[center_25%]"
-              style={{ transition: "transform 0.5s ease" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.transform = "scale(1.05)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.transform = "scale(1)"; }}
-            />
+            thumb.isVideo ? (
+              <video
+                src={thumb.url}
+                muted
+                playsInline
+                preload="metadata"
+                className="h-full w-full object-cover object-[center_25%]"
+                style={{ transition: "transform 0.5s ease" }}
+              />
+            ) : (
+              <img
+                src={thumb.url}
+                alt={post.title}
+                className="h-full w-full object-cover object-[center_25%]"
+                style={{ transition: "transform 0.5s ease" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.transform = "scale(1.05)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.transform = "scale(1)"; }}
+              />
+            )
           ) : (
             <div className="flex h-full w-full items-center justify-center" style={{ background: "#141416" }}>
               <span style={{ fontSize: 48, opacity: 0.18 }}>🥊</span>
