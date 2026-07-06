@@ -194,15 +194,27 @@ export default async function BlogDetailPage({
               ← 블로그로
             </a>
 
-            <div className="mb-5 flex items-center gap-3">
+            <div className="mb-5 flex flex-wrap items-center gap-2.5">
               <span className="rounded-full bg-[#D01E2E] px-3 py-1 text-xs font-black">
                 {post.branch_name}
               </span>
               <span className="rounded-full border border-[#4A4C50]/30 px-3 py-1 text-xs text-[#8A8D91]">
                 {post.category}
               </span>
-              <span className="text-xs text-[#4A4C50]">
+              <span className="flex items-center gap-1 text-xs text-[#4A4C50]">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <rect x="1" y="2" width="10" height="9" rx="1.8" stroke="currentColor" strokeWidth="1.15" />
+                  <path d="M4 1v2M8 1v2" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" />
+                  <path d="M1 5h10" stroke="currentColor" strokeWidth="1.15" />
+                </svg>
                 {new Date(post.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}
+              </span>
+              <span className="flex items-center gap-1 text-xs text-[#4A4C50]">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.15" />
+                  <path d="M6 3.5V6l1.5 1.5" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {Math.max(1, Math.ceil(String(post.content || "").replace(/<[^>]*>/g, "").length / 300))}분 읽기
               </span>
             </div>
 

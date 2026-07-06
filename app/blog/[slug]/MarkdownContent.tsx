@@ -2,6 +2,7 @@
 
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import remarkBreaks from "remark-breaks";
 
 const PROSE =
   "prose prose-invert prose-lg max-w-none " +
@@ -35,6 +36,7 @@ export default function MarkdownContent({ content }: { content: string }) {
   return (
     <div className={PROSE}>
       <ReactMarkdown
+        remarkPlugins={[remarkBreaks]}
         rehypePlugins={[rehypeRaw]}
         components={{
           img: ({ src, alt }) => (

@@ -12,6 +12,7 @@ interface Post {
   category: string;
   created_at: string;
   content: string;
+  is_best?: number | boolean;
 }
 
 function getFirstImage(content: string) {
@@ -29,12 +30,47 @@ function formatDate(dateStr: string) {
 }
 
 function isNew(dateStr: string) {
-  return (Date.now() - new Date(dateStr).getTime()) / 86400000 <= 14;
+  return (Date.now() - new Date(dateStr).getTime()) / 86400000 <= 7;
+}
+
+function readingTime(content: string) {
+  const text = String(content || "").replace(/<[^>]*>/g, "").replace(/!\[.*?\]\(.*?\)/g, "");
+  const minutes = Math.max(1, Math.ceil(text.length / 300));
+  return `${minutes}분 읽기`;
 }
 
 const BC: Record<string, string> = {
   개봉점: "#3B82F6", 신정점: "#10B981", 목동점: "#8B5CF6", 철산점: "#EF3B2D", 영등포점: "#F59E0B",
 };
+
+const CAT: Record<string, { bg: string; color: string }> = {
+  소식:     { bg: "rgba(138,141,145,0.14)", color: "#8A8D91" },
+  이벤트:   { bg: "rgba(208,30,46,0.14)",   color: "#D01E2E" },
+  공지:     { bg: "rgba(245,244,241,0.08)", color: "#C9C9C9" },
+  후기:     { bg: "rgba(16,185,129,0.13)",  color: "#10B981" },
+  운동팁:   { bg: "rgba(139,92,246,0.13)",  color: "#8B5CF6" },
+  키즈:     { bg: "rgba(251,191,36,0.13)",  color: "#FBB824" },
+  여성복싱: { bg: "rgba(236,72,153,0.13)",  color: "#EC4899" },
+};
+
+function CalendarIcon() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style={{ display: "inline", verticalAlign: "middle", marginTop: -1 }}>
+      <rect x="1" y="2" width="10" height="9" rx="1.8" stroke="currentColor" strokeWidth="1.15" />
+      <path d="M4 1v2M8 1v2" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" />
+      <path d="M1 5h10" stroke="currentColor" strokeWidth="1.15" />
+    </svg>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style={{ display: "inline", verticalAlign: "middle", marginTop: -1 }}>
+      <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.15" />
+      <path d="M6 3.5V6l1.5 1.5" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 function useReveal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -55,7 +91,10 @@ function useReveal() {
 function CardItem({ post, index }: { post: Post; index: number }) {
   const image = getFirstImage(post.content);
   const fresh = isNew(post.created_at);
+  const best = !!post.is_best;
   const branchColor = BC[post.branch_name] ?? "#8A8D91";
+  const catStyle = CAT[post.category] ?? { bg: "rgba(138,141,145,0.14)", color: "#8A8D91" };
+  const mins = readingTime(post.content);
   const { ref, visible } = useReveal();
 
   return (
@@ -118,16 +157,21 @@ function CardItem({ post, index }: { post: Post; index: number }) {
               className="pointer-events-none absolute inset-0"
               style={{ background: "linear-gradient(to top, rgba(28,28,31,0.65) 0%, transparent 55%)" }}
             />
-            {/* 배지 */}
-            <div className="absolute left-4 top-4 flex gap-2">
+            {/* 배지 그룹 */}
+            <div className="absolute left-4 top-4 flex flex-wrap gap-1.5">
               {fresh && (
                 <span className="rounded-full px-2.5 py-0.5 text-[10px] font-black text-white" style={{ background: "#D01E2E" }}>
                   NEW
                 </span>
               )}
+              {best && (
+                <span className="rounded-full px-2.5 py-0.5 text-[10px] font-black text-white" style={{ background: "linear-gradient(135deg, #FF6B35 0%, #D01E2E 100%)" }}>
+                  🔥 BEST
+                </span>
+              )}
               <span
                 className="rounded-full px-2.5 py-0.5 text-[10px] font-bold"
-                style={{ background: "rgba(0,0,0,0.55)", color: "#E5E7EB", backdropFilter: "blur(6px)", border: "1px solid rgba(255,255,255,0.1)" }}
+                style={{ background: catStyle.bg, color: catStyle.color, backdropFilter: "blur(6px)", border: "1px solid rgba(255,255,255,0.08)" }}
               >
                 {post.category || "소식"}
               </span>
@@ -145,7 +189,10 @@ function CardItem({ post, index }: { post: Post; index: number }) {
             >
               {post.branch_name}
             </span>
-            <span className="text-[11px]" style={{ color: "#3A3A3E" }}>{formatDate(post.created_at)}</span>
+            <span className="flex items-center gap-1 text-[11px]" style={{ color: "#3A3A3E" }}>
+              <CalendarIcon />
+              {formatDate(post.created_at)}
+            </span>
           </div>
 
           {/* 제목 */}
@@ -170,24 +217,30 @@ function CardItem({ post, index }: { post: Post; index: number }) {
             {post.description}
           </p>
 
-          {/* 화살표 */}
-          <div className="mt-5 flex items-center gap-1.5">
-            <span className="text-[12px] font-semibold" style={{ color: "#5A5C61" }}>자세히 보기</span>
-            <span
-              className="text-[12px] font-bold"
-              style={{ color: "#D01E2E", display: "inline-block", transition: "transform 0.2s ease" }}
-              ref={el => {
-                if (!el) return;
-                const card = el.closest("a");
-                if (!card) return;
-                const enter = () => { el.style.transform = "translateX(5px)"; };
-                const leave = () => { el.style.transform = "translateX(0)"; };
-                card.addEventListener("mouseenter", enter);
-                card.addEventListener("mouseleave", leave);
-              }}
-            >
-              →
+          {/* 하단 — 읽는 시간 + 화살표 */}
+          <div className="mt-5 flex items-center justify-between gap-2">
+            <span className="flex items-center gap-1 text-[11px]" style={{ color: "#3A3A3E" }}>
+              <ClockIcon />
+              {mins}
             </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[12px] font-semibold" style={{ color: "#5A5C61" }}>자세히 보기</span>
+              <span
+                className="text-[12px] font-bold"
+                style={{ color: "#D01E2E", display: "inline-block", transition: "transform 0.2s ease" }}
+                ref={el => {
+                  if (!el) return;
+                  const card = el.closest("a");
+                  if (!card) return;
+                  const enter = () => { el.style.transform = "translateX(5px)"; };
+                  const leave = () => { el.style.transform = "translateX(0)"; };
+                  card.addEventListener("mouseenter", enter);
+                  card.addEventListener("mouseleave", leave);
+                }}
+              >
+                →
+              </span>
+            </div>
           </div>
         </div>
       </a>
@@ -198,7 +251,9 @@ function CardItem({ post, index }: { post: Post; index: number }) {
 function ListItem({ post, index }: { post: Post; index: number }) {
   const thumb = getFirstImage(post.content);
   const fresh = isNew(post.created_at);
+  const best = !!post.is_best;
   const branchColor = BC[post.branch_name] ?? "#8A8D91";
+  const catStyle = CAT[post.category] ?? { bg: "rgba(138,141,145,0.14)", color: "#8A8D91" };
   const { ref, visible } = useReveal();
 
   return (
@@ -220,7 +275,7 @@ function ListItem({ post, index }: { post: Post; index: number }) {
         {/* 썸네일 */}
         <div className="relative h-[72px] w-[100px] shrink-0 overflow-hidden rounded-[12px]" style={{ background: "#141416" }}>
           {thumb ? (
-            <img src={thumb} alt="" className="h-full w-full object-cover" style={{ transition: "transform 0.4s ease" }}
+            <img src={thumb} alt="" className="h-full w-full object-cover object-[center_25%]" style={{ transition: "transform 0.4s ease" }}
               ref={el => {
                 if (!el) return;
                 const card = el.closest("a");
@@ -232,20 +287,34 @@ function ListItem({ post, index }: { post: Post; index: number }) {
           ) : (
             <div className="flex h-full w-full items-center justify-center text-2xl" style={{ opacity: 0.15 }}>🥊</div>
           )}
-          {fresh && (
-            <span className="absolute left-1.5 top-1.5 rounded-full px-1.5 py-0.5 text-[9px] font-black text-white" style={{ background: "#D01E2E" }}>
-              NEW
-            </span>
-          )}
+          {/* NEW + BEST 배지 */}
+          <div className="absolute left-1.5 top-1.5 flex flex-col gap-1">
+            {fresh && (
+              <span className="rounded-full px-1.5 py-0.5 text-[9px] font-black text-white" style={{ background: "#D01E2E" }}>
+                NEW
+              </span>
+            )}
+            {best && (
+              <span className="rounded-full px-1.5 py-0.5 text-[9px] font-black text-white" style={{ background: "linear-gradient(135deg, #FF6B35, #D01E2E)" }}>
+                BEST
+              </span>
+            )}
+          </div>
         </div>
 
         {/* 텍스트 */}
         <div className="min-w-0 flex-1">
-          <div className="mb-1 flex items-center gap-2">
+          <div className="mb-1 flex flex-wrap items-center gap-1.5">
             <span className="rounded-[6px] px-2 py-0.5 text-[10px] font-bold" style={{ background: `${branchColor}18`, color: branchColor }}>
               {post.branch_name}
             </span>
-            <span className="text-[10px]" style={{ color: "#3A3A3E" }}>{formatDate(post.created_at)}</span>
+            <span className="rounded-[6px] px-2 py-0.5 text-[10px] font-bold" style={{ background: catStyle.bg, color: catStyle.color }}>
+              {post.category || "소식"}
+            </span>
+            <span className="flex items-center gap-0.5 text-[10px]" style={{ color: "#3A3A3E" }}>
+              <CalendarIcon />
+              {formatDate(post.created_at)}
+            </span>
           </div>
           <h2
             className="truncate font-black leading-snug"
