@@ -21,10 +21,9 @@ function getFirstMedia(content: string): { url: string; type: "image" | "video" 
   if (htmlImg?.[1]) return { url: htmlImg[1], type: "image" };
   const mdImg = str.match(/!\[.*?\]\((.*?)\)/);
   if (mdImg?.[1]) return { url: mdImg[1], type: "image" };
-  // video: try <video src=...> first, then any /uploads/ video file URL
-  const htmlVideo = str.match(/<video[^>]*src=["']([^"']+)["']/i)
-    || str.match(/src=["'](\/uploads\/[^"']+\.(?:mp4|webm|ogg|mov))/i);
-  if (htmlVideo?.[1]) return { url: htmlVideo[1], type: "video" };
+  // video: find any /uploads/ video URL regardless of HTML structure or quote encoding
+  const videoUrl = str.match(/\/uploads\/[^\s"'<>&]+\.(?:mp4|webm|ogg|mov)/i);
+  if (videoUrl?.[0]) return { url: videoUrl[0], type: "video" };
   return null;
 }
 
