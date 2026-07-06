@@ -28,6 +28,7 @@ export default function AdminPage() {
 
   const [layoutMode, setLayoutMode] = useState<"1열" | "2열" | "3열">("1열");
   const [pendingImages, setPendingImages] = useState<string[]>([]);
+  const [aiImages, setAiImages] = useState<string[]>([]); // AI 글 생성용 (레이아웃 무관하게 누적)
 
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -68,7 +69,7 @@ export default function AdminPage() {
   }
 
   async function handleGenerateFromImages() {
-    if (pendingImages.length === 0) {
+    if (aiImages.length === 0) {
       alert("사진을 먼저 업로드해줘. (사진 삽입 섹션에서 업로드하면 돼)");
       return;
     }
@@ -78,7 +79,7 @@ export default function AdminPage() {
     const res = await fetch("/api/generate-post-from-images", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ imageUrls: pendingImages, branch_name: branchName }),
+      body: JSON.stringify({ imageUrls: aiImages, branch_name: branchName }),
     });
 
     setGeneratingFromImages(false);
@@ -176,6 +177,8 @@ export default function AdminPage() {
         alert(data.message || "이미지 업로드 실패 ㅠ");
         return;
       }
+
+      setAiImages((prev) => [...prev, data.url]);
 
       if (layoutMode === "1열") {
         const imageHtml = `<img src="${data.url}" style="width:100%;border-radius:16px;margin:12px 0" />`;
@@ -691,14 +694,6 @@ export default function AdminPage() {
                       초기화
                     </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={handleGenerateFromImages}
-                    disabled={generatingFromImages || pendingImages.length === 0}
-                    className="w-full rounded-full bg-violet-600 px-5 py-3 text-sm font-black text-white disabled:opacity-40"
-                  >
-                    {generatingFromImages ? "사진 보고 글 쓰는 중..." : `📸 사진 ${pendingImages.length}장 보고 AI 글 쓰기`}
-                  </button>
                 </div>
               </div>
             )}
@@ -706,6 +701,31 @@ export default function AdminPage() {
             {uploading && (
               <p className="text-sm font-bold text-[#FC5230]">업로드 중...</p>
             )}
+
+            {/* AI 글 생성 — 레이아웃 무관하게 항상 표시 */}
+            <div className="border-t border-zinc-100 pt-4">
+              <button
+                type="button"
+                onClick={handleGenerateFromImages}
+                disabled={generatingFromImages || aiImages.length === 0}
+                className="w-full rounded-full bg-violet-600 px-5 py-3 text-sm font-black text-white disabled:opacity-40"
+              >
+                {generatingFromImages
+                  ? "사진 보고 글 쓰는 중..."
+                  : aiImages.length > 0
+                  ? `📸 업로드한 사진 ${aiImages.length}장 보고 AI 글 쓰기`
+                  : "📸 사진 업로드 후 AI 글 쓰기 가능"}
+              </button>
+              {aiImages.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setAiImages([])}
+                  className="mt-2 w-full text-center text-xs text-zinc-400 underline"
+                >
+                  사진 목록 초기화
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="rounded-[28px] border border-zinc-200 bg-white p-5 space-y-4">
