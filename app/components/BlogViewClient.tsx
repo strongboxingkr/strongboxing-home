@@ -261,10 +261,10 @@ function CardItem({ post, index }: { post: Post; index: number }) {
             >
               {post.branch_name}
             </span>
-            <span className="flex items-center gap-1 text-[11px]" style={{ color: "#3A3A3E" }}>
+            <time dateTime={post.created_at} className="flex items-center gap-1 text-[11px]" style={{ color: "#3A3A3E" }}>
               <CalendarIcon />
               {formatDate(post.created_at)}
-            </span>
+            </time>
           </div>
 
           {/* 제목 */}
@@ -352,7 +352,7 @@ function ListItem({ post, index }: { post: Post; index: number }) {
             isVideo ? (
               <VideoThumb src={thumb} className="h-full w-full object-cover object-[center_25%]" />
             ) : (
-              <img src={thumb} alt="" className="h-full w-full object-cover object-[center_25%]" style={{ transition: "transform 0.4s ease" }}
+              <img src={thumb} alt={post.title} className="h-full w-full object-cover object-[center_25%]" style={{ transition: "transform 0.4s ease" }}
                 ref={el => {
                   if (!el) return;
                   const card = el.closest("a");
@@ -389,10 +389,10 @@ function ListItem({ post, index }: { post: Post; index: number }) {
             <span className="rounded-[6px] px-2 py-0.5 text-[10px] font-bold" style={{ background: catStyle.bg, color: catStyle.color }}>
               {post.category || "소식"}
             </span>
-            <span className="flex items-center gap-0.5 text-[10px]" style={{ color: "#3A3A3E" }}>
+            <time dateTime={post.created_at} className="flex items-center gap-0.5 text-[10px]" style={{ color: "#3A3A3E" }}>
               <CalendarIcon />
               {formatDate(post.created_at)}
-            </span>
+            </time>
           </div>
           <h2
             className="truncate font-black leading-snug"

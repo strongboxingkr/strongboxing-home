@@ -2,28 +2,33 @@
 import type { Metadata } from "next";
 import BlogViewClient from "@/app/components/BlogViewClient";
 
+const siteUrl = "https://strongboxing.kr";
+const PAGE_TITLE = "스트롱복싱 소식 | 목동·철산·개봉·신정 복싱 수업 이야기";
+const PAGE_DESC =
+  "목동, 철산, 개봉, 신정 스트롱복싱의 다양한 수업 이야기와 회원 운동 모습, 키즈복싱, 다이어트 복싱, 초보자 복싱 등 실제 운동 현장을 소개합니다.";
+const OG_IMAGE = `${siteUrl}/og.png`;
+
 export const metadata: Metadata = {
-  title: "스트롱복싱 소식 & 후기 | 복싱 다이어트 정보",
-  description:
-    "스트롱복싱 지점별 소식, 복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동 정보를 확인해보세요.",
+  title: PAGE_TITLE,
+  description: PAGE_DESC,
+  robots: { index: true, follow: true },
   alternates: {
-    canonical: "https://strongboxing.kr/blog",
+    canonical: `${siteUrl}/blog`,
   },
   openGraph: {
-    title: "스트롱복싱 소식 & 후기",
-    description:
-      "복싱 입문부터 다이어트 복싱까지 스트롱복싱의 지점별 소식과 운동 정보를 확인해보세요.",
-    url: "https://strongboxing.kr/blog",
+    title: PAGE_TITLE,
+    description: PAGE_DESC,
+    url: `${siteUrl}/blog`,
     siteName: "스트롱복싱",
     locale: "ko_KR",
     type: "website",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "스트롱복싱 소식" }],
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: PAGE_TITLE }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "스트롱복싱 소식 & 후기",
-    description: "복싱 입문부터 다이어트 복싱까지 스트롱복싱의 지점별 소식과 운동 정보를 확인해보세요.",
-    images: ["/og.png"],
+    title: PAGE_TITLE,
+    description: PAGE_DESC,
+    images: [OG_IMAGE],
   },
 };
 
@@ -79,8 +84,35 @@ export default async function BlogPage({
   const pillActive = "bg-[#D01E2E] text-white";
   const pillIdle = "bg-[#1C1C1F] text-[#5A5C61] hover:bg-[#252528] hover:text-[#C9C9C9]";
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: PAGE_TITLE,
+    description: PAGE_DESC,
+    url: `${siteUrl}/blog`,
+    inLanguage: "ko",
+    publisher: {
+      "@type": "Organization",
+      name: "스트롱복싱",
+      logo: { "@type": "ImageObject", url: `${siteUrl}/icon.png` },
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: posts.slice(0, 10).map((post: any, i: number) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${siteUrl}/blog/${post.slug}`,
+        name: post.title,
+      })),
+    },
+  };
+
   return (
     <main className="min-h-screen bg-[#0E0E10] text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       {/* ── 히어로 ── */}
       <section className="relative overflow-hidden px-6 pb-16 pt-20">
