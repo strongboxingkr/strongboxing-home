@@ -40,7 +40,7 @@ function readingTime(content: string) {
 }
 
 const BC: Record<string, string> = {
-  개봉점: "#3B82F6", 신정점: "#10B981", 목동점: "#8B5CF6", 철산점: "#EF3B2D", 영등포점: "#F59E0B",
+  개봉점: "#3B82F6", 신정점: "#10B981", 목동점: "#8B5CF6", 철산점: "#F59E0B", 영등포점: "#EF3B2D",
 };
 
 const CAT: Record<string, { bg: string; color: string }> = {
