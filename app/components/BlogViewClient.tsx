@@ -57,20 +57,24 @@ function VideoThumb({ src, className }: { src: string; className: string }) {
 
     const onMeta = () => { video.currentTime = 0.001; };
     const onSeeked = capture;
-    // loadeddata fires when first frame is available — fallback if seeked doesn't fire
+    // loadeddata / canplay — fallbacks for browsers that don't fire seeked (esp. iOS Safari)
     const onLoaded = () => { setTimeout(capture, 80); };
+    const onCanPlay = () => { setTimeout(capture, 80); };
     const onError = () => setFailed(true);
 
     video.addEventListener("loadedmetadata", onMeta);
     video.addEventListener("seeked", onSeeked);
     video.addEventListener("loadeddata", onLoaded);
+    video.addEventListener("canplay", onCanPlay);
     video.addEventListener("error", onError);
     video.src = src;
+    video.load(); // iOS Safari requires explicit load() call
 
     return () => {
       video.removeEventListener("loadedmetadata", onMeta);
       video.removeEventListener("seeked", onSeeked);
       video.removeEventListener("loadeddata", onLoaded);
+      video.removeEventListener("canplay", onCanPlay);
       video.removeEventListener("error", onError);
       video.src = "";
     };
