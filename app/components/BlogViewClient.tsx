@@ -15,12 +15,15 @@ interface Post {
   is_best?: number | boolean;
 }
 
-function getFirstImage(content: string) {
+function getFirstMedia(content: string): { url: string; type: "image" | "video" } | null {
   const str = String(content || "");
-  const html = str.match(/<img[^>]+src=["']([^"']+)["']/i);
-  if (html?.[1]) return html[1];
-  const md = str.match(/!\[.*?\]\((.*?)\)/);
-  return md?.[1] || null;
+  const htmlImg = str.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if (htmlImg?.[1]) return { url: htmlImg[1], type: "image" };
+  const mdImg = str.match(/!\[.*?\]\((.*?)\)/);
+  if (mdImg?.[1]) return { url: mdImg[1], type: "image" };
+  const htmlVideo = str.match(/<video[^>]+src=["']([^"']+)["']/i);
+  if (htmlVideo?.[1]) return { url: htmlVideo[1], type: "video" };
+  return null;
 }
 
 function formatDate(dateStr: string) {
@@ -89,7 +92,7 @@ function useReveal() {
 }
 
 function CardItem({ post, index }: { post: Post; index: number }) {
-  const image = getFirstImage(post.content);
+  const media = getFirstMedia(post.content);
   const fresh = isNew(post.created_at);
   const best = !!post.is_best;
   const branchColor = BC[post.branch_name] ?? "#8A8D91";
@@ -131,22 +134,42 @@ function CardItem({ post, index }: { post: Post; index: number }) {
         {/* 썸네일 — 16:9 */}
         <div className="relative w-full overflow-hidden" style={{ borderRadius: "20px 20px 0 0", paddingTop: "56.25%" }}>
           <div className="absolute inset-0">
-            {image ? (
-              <img
-                src={image}
-                alt={post.title}
-                className="h-full w-full object-cover object-[center_25%]"
-                style={{ transition: "transform 0.5s ease" }}
-                ref={el => {
-                  if (!el) return;
-                  const card = el.closest("a");
-                  if (!card) return;
-                  const enter = () => { el.style.transform = "scale(1.05)"; };
-                  const leave = () => { el.style.transform = "scale(1)"; };
-                  card.addEventListener("mouseenter", enter);
-                  card.addEventListener("mouseleave", leave);
-                }}
-              />
+            {media ? (
+              media.type === "video" ? (
+                <video
+                  src={media.url}
+                  className="h-full w-full object-cover object-[center_25%]"
+                  muted
+                  playsInline
+                  preload="metadata"
+                  style={{ transition: "transform 0.5s ease" }}
+                  ref={el => {
+                    if (!el) return;
+                    const card = el.closest("a");
+                    if (!card) return;
+                    const enter = () => { el.style.transform = "scale(1.05)"; };
+                    const leave = () => { el.style.transform = "scale(1)"; };
+                    card.addEventListener("mouseenter", enter);
+                    card.addEventListener("mouseleave", leave);
+                  }}
+                />
+              ) : (
+                <img
+                  src={media.url}
+                  alt={post.title}
+                  className="h-full w-full object-cover object-[center_25%]"
+                  style={{ transition: "transform 0.5s ease" }}
+                  ref={el => {
+                    if (!el) return;
+                    const card = el.closest("a");
+                    if (!card) return;
+                    const enter = () => { el.style.transform = "scale(1.05)"; };
+                    const leave = () => { el.style.transform = "scale(1)"; };
+                    card.addEventListener("mouseenter", enter);
+                    card.addEventListener("mouseleave", leave);
+                  }}
+                />
+              )
             ) : (
               <div className="flex h-full w-full items-center justify-center" style={{ background: "#141416" }}>
                 <span style={{ fontSize: 52, opacity: 0.15 }}>🥊</span>
@@ -249,7 +272,9 @@ function CardItem({ post, index }: { post: Post; index: number }) {
 }
 
 function ListItem({ post, index }: { post: Post; index: number }) {
-  const thumb = getFirstImage(post.content);
+  const media = getFirstMedia(post.content);
+  const thumb = media?.url ?? null;
+  const isVideo = media?.type === "video";
   const fresh = isNew(post.created_at);
   const best = !!post.is_best;
   const branchColor = BC[post.branch_name] ?? "#8A8D91";
@@ -275,15 +300,29 @@ function ListItem({ post, index }: { post: Post; index: number }) {
         {/* 썸네일 */}
         <div className="relative h-[72px] w-[100px] shrink-0 overflow-hidden rounded-[12px]" style={{ background: "#141416" }}>
           {thumb ? (
-            <img src={thumb} alt="" className="h-full w-full object-cover object-[center_25%]" style={{ transition: "transform 0.4s ease" }}
-              ref={el => {
-                if (!el) return;
-                const card = el.closest("a");
-                if (!card) return;
-                card.addEventListener("mouseenter", () => { el.style.transform = "scale(1.08)"; });
-                card.addEventListener("mouseleave", () => { el.style.transform = "scale(1)"; });
-              }}
-            />
+            isVideo ? (
+              <video src={thumb} muted playsInline preload="metadata"
+                className="h-full w-full object-cover object-[center_25%]"
+                style={{ transition: "transform 0.4s ease" }}
+                ref={el => {
+                  if (!el) return;
+                  const card = el.closest("a");
+                  if (!card) return;
+                  card.addEventListener("mouseenter", () => { el.style.transform = "scale(1.08)"; });
+                  card.addEventListener("mouseleave", () => { el.style.transform = "scale(1)"; });
+                }}
+              />
+            ) : (
+              <img src={thumb} alt="" className="h-full w-full object-cover object-[center_25%]" style={{ transition: "transform 0.4s ease" }}
+                ref={el => {
+                  if (!el) return;
+                  const card = el.closest("a");
+                  if (!card) return;
+                  card.addEventListener("mouseenter", () => { el.style.transform = "scale(1.08)"; });
+                  card.addEventListener("mouseleave", () => { el.style.transform = "scale(1)"; });
+                }}
+              />
+            )
           ) : (
             <div className="flex h-full w-full items-center justify-center text-2xl" style={{ opacity: 0.15 }}>🥊</div>
           )}

@@ -112,17 +112,20 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
             type="button"
             onMouseDown={(e) => {
               e.preventDefault();
+              editorRef.current?.focus();
               const sel = window.getSelection();
               if (!sel || sel.rangeCount === 0) return;
               const range = sel.getRangeAt(0);
+              if (range.collapsed) return;
+              const fragment = range.extractContents();
               const span = document.createElement("span");
               span.style.fontSize = size;
-              try {
-                range.surroundContents(span);
-              } catch {
-                span.appendChild(range.extractContents());
-                range.insertNode(span);
-              }
+              span.appendChild(fragment);
+              range.insertNode(span);
+              range.setStartAfter(span);
+              range.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(range);
               onChange(editorRef.current?.innerHTML || "");
             }}
             className={btnClass}
