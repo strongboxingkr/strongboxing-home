@@ -142,14 +142,6 @@ export default function BranchHeroGrid({ branches }: Props) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // 1순위: localStorage
-    const saved = localStorage.getItem("preferredBranch");
-    if (saved && branches.find((b) => b.slug === saved)) {
-      setFeaturedSlug(saved);
-      setMounted(true);
-      return;
-    }
-    // 2순위: IP 기반 지역 추정
     fetch("https://ipwho.is/")
       .then((r) => r.json())
       .then((data) => {
@@ -160,9 +152,7 @@ export default function BranchHeroGrid({ branches }: Props) {
       .finally(() => setMounted(true));
   }, [branches]);
 
-  const handleSelect = (slug: string) => {
-    localStorage.setItem("preferredBranch", slug);
-  };
+  const handleSelect = (_slug: string) => {};
 
   const featured = branches.find((b) => b.slug === featuredSlug) ?? branches[0];
   const others = branches.filter((b) => b.slug !== featured.slug);
@@ -195,10 +185,6 @@ export default function BranchHeroGrid({ branches }: Props) {
         ))}
       </div>
 
-      {/* 지점 선택 힌트 */}
-      <p className="mt-3 text-center text-[11px]" style={{ color: "#3A3A3E" }}>
-        카드를 클릭하면 다음 방문 시 해당 지점이 먼저 표시됩니다
-      </p>
     </div>
   );
 }
