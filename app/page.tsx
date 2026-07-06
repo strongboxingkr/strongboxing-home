@@ -14,6 +14,7 @@ import BranchHeroGrid from "./components/BranchHeroGrid";
 import SiteHeader from "./components/SiteHeader";
 import NewsReviewClient from "./components/NewsReviewClient";
 import FloatingCTA from "./components/FloatingCTA";
+import PopupBanner from "./components/PopupBanner";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -148,6 +149,7 @@ export default async function HomePage() {
   return (
     <>
       {/*<SplashScreen />*/}
+      <PopupBanner />
       <main style={{ background: "#0E0E10", color: "#F5F4F1" }} className="min-h-screen">
         <RevealObserver />
 

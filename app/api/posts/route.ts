@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 export async function GET() {
   try {
     const [rows]: any = await db.query(`
-      SELECT id, title, slug, description, content, branch_name, category, thumbnail, created_at
+      SELECT id, title, slug, description, content, branch_name, category, thumbnail, popup_start, popup_end, created_at
       FROM homepage_posts
       ORDER BY created_at DESC
     `);
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { title, slug, description, content, branch_name, category, thumbnail } = body;
+    const { title, slug, description, content, branch_name, category, thumbnail, popup_start, popup_end } = body;
 
     if (!title || !slug || !content) {
       return Response.json(
@@ -38,8 +38,8 @@ export async function POST(request: Request) {
     await db.query(
       `
       INSERT INTO homepage_posts
-      (title, slug, description, content, branch_name, category, thumbnail)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      (title, slug, description, content, branch_name, category, thumbnail, popup_start, popup_end)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       [
         title,
@@ -49,6 +49,8 @@ export async function POST(request: Request) {
         branch_name,
         category || "소식",
         thumbnail || null,
+        popup_start || null,
+        popup_end || null,
       ]
     );
 
@@ -67,7 +69,7 @@ export async function PUT(request: Request) {
   try {
     const body = await request.json();
 
-    const { id, title, slug, description, content, branch_name, category, thumbnail } = body;
+    const { id, title, slug, description, content, branch_name, category, thumbnail, popup_start, popup_end } = body;
 
     if (!id || !title || !slug || !content) {
       return Response.json(
@@ -85,7 +87,9 @@ export async function PUT(request: Request) {
           content = ?,
           branch_name = ?,
           category = ?,
-          thumbnail = ?
+          thumbnail = ?,
+          popup_start = ?,
+          popup_end = ?
       WHERE id = ?
       `,
       [
@@ -96,6 +100,8 @@ export async function PUT(request: Request) {
         branch_name,
         category || "소식",
         thumbnail ?? null,
+        popup_start || null,
+        popup_end || null,
         id,
       ]
     );

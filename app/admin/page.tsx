@@ -23,6 +23,8 @@ export default function AdminPage() {
   const [content, setContent] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [uploadingThumb, setUploadingThumb] = useState(false);
+  const [popupStart, setPopupStart] = useState("");
+  const [popupEnd, setPopupEnd] = useState("");
 
   const [layoutMode, setLayoutMode] = useState<"1열" | "2열" | "3열">("1열");
   const [pendingImages, setPendingImages] = useState<string[]>([]);
@@ -262,6 +264,8 @@ export default function AdminPage() {
       description,
       content,
       thumbnail: thumbnail || null,
+      popup_start: popupStart || null,
+      popup_end: popupEnd || null,
     }),
     });
 
@@ -281,6 +285,8 @@ export default function AdminPage() {
     setDescription("");
     setContent("");
     setThumbnail("");
+    setPopupStart("");
+    setPopupEnd("");
 
     loadPosts();
   }
@@ -294,7 +300,8 @@ export default function AdminPage() {
     setBranchName(post.branch_name || "철산점");
     setCategory(post.category || "소식");
     setThumbnail(post.thumbnail || "");
-    // 에디터 DOM에 직접 주입 (state update는 비동기라 useEffect로는 타이밍이 불안정)
+    setPopupStart(post.popup_start ? post.popup_start.slice(0, 10) : "");
+    setPopupEnd(post.popup_end ? post.popup_end.slice(0, 10) : "");
     editorRef.current?.setContent(post.content || "");
 
     window.scrollTo({
@@ -533,6 +540,49 @@ export default function AdminPage() {
                 <option>공지</option>
               </select>
             </div>
+
+          {category === "이벤트" && (
+            <div className="rounded-[28px] border border-orange-200 bg-orange-50 p-5 space-y-3">
+              <label className="block font-bold text-orange-700">
+                🎉 홈페이지 팝업 설정
+                <span className="ml-2 text-sm font-normal text-orange-500">(기간 설정 시 홈페이지에 팝업으로 노출)</span>
+              </label>
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <p className="mb-1 text-xs font-bold text-orange-600">시작일</p>
+                  <input
+                    type="date"
+                    value={popupStart}
+                    onChange={(e) => setPopupStart(e.target.value)}
+                    className="w-full rounded-2xl border border-orange-200 bg-white p-3 outline-none focus:border-orange-400"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="mb-1 text-xs font-bold text-orange-600">종료일</p>
+                  <input
+                    type="date"
+                    value={popupEnd}
+                    onChange={(e) => setPopupEnd(e.target.value)}
+                    className="w-full rounded-2xl border border-orange-200 bg-white p-3 outline-none focus:border-orange-400"
+                  />
+                </div>
+              </div>
+              {popupStart && popupEnd && (
+                <p className="text-xs text-orange-600 font-bold">
+                  {popupStart} ~ {popupEnd} 기간 동안 홈페이지 방문 시 팝업 노출
+                </p>
+              )}
+              {(popupStart || popupEnd) && (
+                <button
+                  type="button"
+                  onClick={() => { setPopupStart(""); setPopupEnd(""); }}
+                  className="text-xs text-orange-400 underline"
+                >
+                  팝업 설정 제거
+                </button>
+              )}
+            </div>
+          )}
 
           {/* 대표 썸네일 */}
           <div className="rounded-[28px] border border-emerald-200 bg-white p-5 space-y-3">
