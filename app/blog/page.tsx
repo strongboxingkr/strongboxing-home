@@ -45,7 +45,7 @@ export default async function BlogPage({
   const selectedCategory = params.category || "전체";
 
   const [rows]: any = await db.query(`
-    SELECT *
+    SELECT id, title, slug, description, content, branch_name, category, thumbnail, is_best, created_at
     FROM homepage_posts
     ORDER BY created_at DESC
   `);

@@ -21,6 +21,8 @@ export default function AdminPage() {
   const [category, setCategory] = useState("소식");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
+  const [uploadingThumb, setUploadingThumb] = useState(false);
 
   const [layoutMode, setLayoutMode] = useState<"1열" | "2열" | "3열">("1열");
   const [pendingImages, setPendingImages] = useState<string[]>([]);
@@ -95,6 +97,23 @@ export default function AdminPage() {
     setDescription(data.post.description);
     setContent(data.post.content);
     editorRef.current?.setContent(data.post.content || "");
+  }
+
+  async function handleThumbnailUpload(file: File) {
+    setUploadingThumb(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", "blog");
+      formData.append("branch", branchName);
+      formData.append("category", category);
+      formData.append("postNo", postNo);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok || !data.ok) { alert(data.message || "썸네일 업로드 실패"); return; }
+      setThumbnail(data.url);
+    } catch { alert("썸네일 업로드 실패"); }
+    finally { setUploadingThumb(false); }
   }
 
   async function handleImageUpload(file: File) {
@@ -206,6 +225,7 @@ export default function AdminPage() {
       category,
       description,
       content,
+      thumbnail: thumbnail || null,
     }),
     });
 
@@ -224,6 +244,7 @@ export default function AdminPage() {
     setSlug("");
     setDescription("");
     setContent("");
+    setThumbnail("");
 
     loadPosts();
   }
@@ -236,6 +257,7 @@ export default function AdminPage() {
     setContent(post.content || "");
     setBranchName(post.branch_name || "철산점");
     setCategory(post.category || "소식");
+    setThumbnail(post.thumbnail || "");
     // 에디터 DOM에 직접 주입 (state update는 비동기라 useEffect로는 타이밍이 불안정)
     editorRef.current?.setContent(post.content || "");
 
@@ -476,6 +498,35 @@ export default function AdminPage() {
               </select>
             </div>
 
+          {/* 대표 썸네일 */}
+          <div className="rounded-[28px] border border-emerald-200 bg-white p-5 space-y-3">
+            <label className="block font-bold">대표 썸네일 <span className="text-sm font-normal text-zinc-400">(없으면 본문 첫 이미지 사용)</span></label>
+            {thumbnail && (
+              <div className="relative">
+                <img src={thumbnail} alt="썸네일 미리보기" className="w-full max-h-48 object-cover rounded-2xl" />
+                <button
+                  type="button"
+                  onClick={() => setThumbnail("")}
+                  className="absolute top-2 right-2 rounded-full bg-black/60 px-3 py-1 text-xs font-black text-white"
+                >
+                  삭제
+                </button>
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              disabled={uploadingThumb}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleThumbnailUpload(file);
+                e.target.value = "";
+              }}
+              className="w-full rounded-2xl border border-zinc-200 bg-white p-4 disabled:opacity-50"
+            />
+            {uploadingThumb && <p className="text-sm font-bold text-emerald-600">썸네일 업로드 중...</p>}
+          </div>
+
           <div>
             <label className="mb-2 block font-bold">설명</label>
             <textarea
@@ -606,6 +657,7 @@ export default function AdminPage() {
                   setSlug("");
                   setDescription("");
                   setContent("");
+                  setThumbnail("");
                   editorRef.current?.setContent("");
                 }}
                 className="rounded-full border border-zinc-200 px-8 py-5 text-lg font-black"

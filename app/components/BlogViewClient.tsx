@@ -12,6 +12,7 @@ interface Post {
   category: string;
   created_at: string;
   content: string;
+  thumbnail?: string;
   is_best?: number | boolean;
 }
 
@@ -161,7 +162,9 @@ function useReveal() {
 }
 
 function CardItem({ post, index }: { post: Post; index: number }) {
-  const media = getFirstMedia(post.content);
+  const media = post.thumbnail
+    ? { url: post.thumbnail, type: "image" as const }
+    : getFirstMedia(post.content);
   const fresh = isNew(post.created_at);
   const best = !!post.is_best;
   const branchColor = BC[post.branch_name] ?? "#8A8D91";
@@ -325,7 +328,9 @@ function CardItem({ post, index }: { post: Post; index: number }) {
 }
 
 function ListItem({ post, index }: { post: Post; index: number }) {
-  const media = getFirstMedia(post.content);
+  const media = post.thumbnail
+    ? { url: post.thumbnail, type: "image" as const }
+    : getFirstMedia(post.content);
   const thumb = media?.url ?? null;
   const isVideo = media?.type === "video";
   const fresh = isNew(post.created_at);

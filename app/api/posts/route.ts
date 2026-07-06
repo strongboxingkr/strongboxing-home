@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 export async function GET() {
   try {
     const [rows]: any = await db.query(`
-      SELECT id, title, slug, description, content, branch_name, category, created_at
+      SELECT id, title, slug, description, content, branch_name, category, thumbnail, created_at
       FROM homepage_posts
       ORDER BY created_at DESC
     `);
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { title, slug, description, content, branch_name, category } = body;
+    const { title, slug, description, content, branch_name, category, thumbnail } = body;
 
     if (!title || !slug || !content) {
       return Response.json(
@@ -38,8 +38,8 @@ export async function POST(request: Request) {
     await db.query(
       `
       INSERT INTO homepage_posts
-      (title, slug, description, content, branch_name, category)
-      VALUES (?, ?, ?, ?, ?, ?)
+      (title, slug, description, content, branch_name, category, thumbnail)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
       `,
       [
         title,
@@ -48,6 +48,7 @@ export async function POST(request: Request) {
         content,
         branch_name,
         category || "소식",
+        thumbnail || null,
       ]
     );
 
@@ -66,7 +67,7 @@ export async function PUT(request: Request) {
   try {
     const body = await request.json();
 
-    const { id, title, slug, description, content, branch_name, category } = body;
+    const { id, title, slug, description, content, branch_name, category, thumbnail } = body;
 
     if (!id || !title || !slug || !content) {
       return Response.json(
@@ -83,7 +84,8 @@ export async function PUT(request: Request) {
           description = ?,
           content = ?,
           branch_name = ?,
-          category = ?
+          category = ?,
+          thumbnail = ?
       WHERE id = ?
       `,
       [
@@ -93,6 +95,7 @@ export async function PUT(request: Request) {
         content,
         branch_name,
         category || "소식",
+        thumbnail ?? null,
         id,
       ]
     );
