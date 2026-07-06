@@ -108,13 +108,13 @@ export default function AiCoachChat() {
     <>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-5 right-5 z-[9999] rounded-[10px] bg-[#D01E2E] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:bg-[#B71C2B]"
+        className="fixed bottom-32 right-4 z-[9999] rounded-[10px] bg-[#D01E2E] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:bg-[#B71C2B] md:bottom-5 md:right-5"
       >
         💬 AI 복싱 상담
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-[9999] flex h-[620px] w-[360px] max-w-[calc(100vw-40px)] flex-col overflow-hidden border border-white/10 bg-[#16171A] shadow-2xl">
+        <div className="fixed bottom-[11rem] right-4 z-[9999] flex h-[500px] w-[360px] max-w-[calc(100vw-32px)] flex-col overflow-hidden border border-white/10 bg-[#16171A] shadow-2xl md:bottom-24 md:right-5 md:h-[620px]">
           <div className="border-b border-white/10 bg-[#1d1f23] px-5 py-4">
             <p className="text-lg font-black text-white">
               🥊 스트롱 AI 상담
