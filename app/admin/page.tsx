@@ -29,6 +29,7 @@ export default function AdminPage() {
 
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [generatingFromImages, setGeneratingFromImages] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
 
@@ -62,6 +63,41 @@ export default function AdminPage() {
     if (data.ok) {
       setPosts(data.posts);
     }
+  }
+
+  async function handleGenerateFromImages() {
+    if (pendingImages.length === 0) {
+      alert("사진을 먼저 업로드해줘. (사진 삽입 섹션에서 업로드하면 돼)");
+      return;
+    }
+
+    setGeneratingFromImages(true);
+
+    const res = await fetch("/api/generate-post-from-images", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageUrls: pendingImages, branch_name: branchName }),
+    });
+
+    setGeneratingFromImages(false);
+
+    if (!res.ok) {
+      alert("AI 생성 실패 ㅠ");
+      return;
+    }
+
+    const data = await res.json();
+    if (!data.ok) {
+      alert(data.message || "AI 생성 실패 ㅠ");
+      return;
+    }
+
+    setTitle(data.post.title);
+    setSlug(data.post.slug || makeSlug(data.post.title));
+    setDescription(data.post.description);
+    setContent(data.post.content);
+    editorRef.current?.setContent(data.post.content || "");
+    alert("사진 기반 AI 글 생성 완료! 사진은 직접 본문에 삽입해줘 🙂");
   }
 
   async function handleGenerate() {
@@ -587,21 +623,31 @@ export default function AdminPage() {
                     ))}
                   </div>
                 )}
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={insertGallery}
+                      disabled={pendingImages.length === 0}
+                      className="flex-1 rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black text-white disabled:opacity-40"
+                    >
+                      {layoutMode} 갤러리 본문에 삽입
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPendingImages([])}
+                      className="rounded-full border border-zinc-200 px-5 py-3 text-sm font-black"
+                    >
+                      초기화
+                    </button>
+                  </div>
                   <button
                     type="button"
-                    onClick={insertGallery}
-                    disabled={pendingImages.length === 0}
-                    className="flex-1 rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black text-white disabled:opacity-40"
+                    onClick={handleGenerateFromImages}
+                    disabled={generatingFromImages || pendingImages.length === 0}
+                    className="w-full rounded-full bg-violet-600 px-5 py-3 text-sm font-black text-white disabled:opacity-40"
                   >
-                    {layoutMode} 갤러리 본문에 삽입
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPendingImages([])}
-                    className="rounded-full border border-zinc-200 px-5 py-3 text-sm font-black"
-                  >
-                    초기화
+                    {generatingFromImages ? "사진 보고 글 쓰는 중..." : `📸 사진 ${pendingImages.length}장 보고 AI 글 쓰기`}
                   </button>
                 </div>
               </div>
