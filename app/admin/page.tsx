@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import RichTextEditor, { RichTextEditorHandle } from "@/app/components/RichTextEditor";
+import MosaicEditor from "@/app/components/MosaicEditor";
 
 function makeSlug(text: string) {
   return text
@@ -28,6 +29,9 @@ export default function AdminPage() {
   const [generating, setGenerating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
+
+  // Mosaic editor queue
+  const [mosaicQueue, setMosaicQueue] = useState<File[]>([]);
 
   const [posts, setPosts] = useState<any[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -273,6 +277,7 @@ export default function AdminPage() {
   }
 
   return (
+    <>
     <main className="min-h-screen bg-[#F5F7FA] text-zinc-900 px-6 py-16">
       <div className="mx-auto max-w-4xl">
         <a href="/" className="mb-8 inline-block text-zinc-500">
@@ -511,7 +516,7 @@ export default function AdminPage() {
               disabled={uploading}
               onChange={(e) => {
                 const files = Array.from(e.target.files || []);
-                files.forEach(handleImageUpload);
+                if (files.length > 0) setMosaicQueue(files);
                 e.target.value = "";
               }}
               className="w-full rounded-2xl border border-zinc-200 bg-white p-4 disabled:opacity-50"
@@ -673,5 +678,26 @@ export default function AdminPage() {
         </section>
       </div>
     </main>
+
+    {/* Mosaic editor — shown for each file in queue */}
+    {mosaicQueue.length > 0 && (
+      <MosaicEditor
+        file={mosaicQueue[0]}
+        fileIndex={0}
+        fileTotal={mosaicQueue.length}
+        onDone={(blob) => {
+          const original = mosaicQueue[0];
+          const processed = new File([blob], original.name, { type: "image/jpeg" });
+          handleImageUpload(processed);
+          setMosaicQueue(prev => prev.slice(1));
+        }}
+        onSkip={() => {
+          handleImageUpload(mosaicQueue[0]);
+          setMosaicQueue(prev => prev.slice(1));
+        }}
+        onCancel={() => setMosaicQueue([])}
+      />
+    )}
+    </>
   );
 }
