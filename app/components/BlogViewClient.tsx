@@ -21,8 +21,11 @@ function getFirstMedia(content: string): { url: string; type: "image" | "video" 
   if (htmlImg?.[1]) return { url: htmlImg[1], type: "image" };
   const mdImg = str.match(/!\[.*?\]\((.*?)\)/);
   if (mdImg?.[1]) return { url: mdImg[1], type: "image" };
-  // video: find any /uploads/ video URL regardless of HTML structure or quote encoding
-  const videoUrl = str.match(/\/uploads\/[^\s"'<>&]+\.(?:mp4|webm|ogg|mov)/i);
+  // video: extract src from <video> tag directly (works regardless of attribute order or extension)
+  const videoTag = str.match(/<video[^>]+src=["']([^"']+)["']/i);
+  if (videoTag?.[1]) return { url: videoTag[1], type: "video" };
+  // fallback: /uploads/ path with any video extension
+  const videoUrl = str.match(/\/uploads\/[^\s"'<>&]+\.(?:mp4|webm|ogg|mov|hevc|mkv|avi|ts)/i);
   if (videoUrl?.[0]) return { url: videoUrl[0], type: "video" };
   return null;
 }
@@ -35,28 +38,40 @@ function VideoThumb({ src, className }: { src: string; className: string }) {
     const video = document.createElement("video");
     video.muted = true;
     video.playsInline = true;
-    video.preload = "metadata";
+    video.preload = "auto";
+    video.crossOrigin = "anonymous";
 
-    const onMeta = () => { video.currentTime = 0.001; };
-    const onSeeked = () => {
+    let captured = false;
+    const capture = () => {
+      if (captured) return;
+      captured = true;
       try {
         const canvas = document.createElement("canvas");
         canvas.width = video.videoWidth || 480;
         canvas.height = video.videoHeight || 270;
         canvas.getContext("2d")?.drawImage(video, 0, 0, canvas.width, canvas.height);
-        setDataUrl(canvas.toDataURL("image/jpeg", 0.85));
+        const url = canvas.toDataURL("image/jpeg", 0.85);
+        if (url && url.length > 6) setDataUrl(url);
+        else setFailed(true);
       } catch { setFailed(true); }
     };
+
+    const onMeta = () => { video.currentTime = 0.001; };
+    const onSeeked = capture;
+    // loadeddata fires when first frame is available — fallback if seeked doesn't fire
+    const onLoaded = () => { setTimeout(capture, 80); };
     const onError = () => setFailed(true);
 
     video.addEventListener("loadedmetadata", onMeta);
     video.addEventListener("seeked", onSeeked);
+    video.addEventListener("loadeddata", onLoaded);
     video.addEventListener("error", onError);
     video.src = src;
 
     return () => {
       video.removeEventListener("loadedmetadata", onMeta);
       video.removeEventListener("seeked", onSeeked);
+      video.removeEventListener("loadeddata", onLoaded);
       video.removeEventListener("error", onError);
       video.src = "";
     };
