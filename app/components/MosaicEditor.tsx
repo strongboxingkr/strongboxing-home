@@ -169,6 +169,21 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
     canvas.getContext("2d")?.drawImage(img, 0, 0);
   }
 
+  function handleDownload() {
+    const canvas = canvasRef.current;
+    if (!canvas || !loaded) return;
+    canvas.toBlob(blob => {
+      if (!blob) return;
+      const a = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      const base = file.name.replace(/\.[^.]+$/, "");
+      a.href = url;
+      a.download = `${base}_mosaic.jpg`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }, "image/jpeg", 0.88);
+  }
+
   function handleDone() {
     const canvas = canvasRef.current;
     if (!canvas || !loaded) {
@@ -300,6 +315,14 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
 
           <div className="flex-1" />
 
+          <button
+            onClick={handleDownload}
+            disabled={!loaded}
+            className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-bold text-zinc-600 disabled:opacity-30"
+            title="모자이크 적용된 이미지를 내 기기에 저장"
+          >
+            ↓ 저장
+          </button>
           <button
             onClick={onCancel}
             className="rounded-full border border-zinc-200 px-4 py-2 text-sm font-bold text-zinc-500"
