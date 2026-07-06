@@ -7,10 +7,30 @@ const branches = ["전체", "목동점", "철산점", "신정점", "개봉점", 
 export default function ReelsClient({ reels }: { reels: any[] }) {
   const [selectedBranch, setSelectedBranch] = useState("전체");
 
-  const filteredReels =
-    selectedBranch === "전체"
-      ? reels
-      : reels.filter((reel) => reel.branch_name === selectedBranch);
+  const filteredReels = (() => {
+    if (selectedBranch !== "전체") {
+      return reels.filter((reel) => reel.branch_name === selectedBranch);
+    }
+    // 전체: 지점별로 그룹화 후 라운드로빈으로 섞기
+    const groups: Record<string, any[]> = {};
+    for (const reel of reels) {
+      if (!groups[reel.branch_name]) groups[reel.branch_name] = [];
+      groups[reel.branch_name].push(reel);
+    }
+    const queues = Object.values(groups);
+    const result: any[] = [];
+    let hasMore = true;
+    while (hasMore) {
+      hasMore = false;
+      for (const q of queues) {
+        if (q.length > 0) {
+          result.push(q.shift());
+          hasMore = true;
+        }
+      }
+    }
+    return result;
+  })();
 
   const rows = [
     filteredReels.filter((_, i) => i % 2 === 0),

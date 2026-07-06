@@ -308,7 +308,7 @@ export default async function BranchPage({
 
   const [rows]: any = await db.query(
     `
-    SELECT id, title, slug, description, content, branch_name, created_at
+    SELECT id, title, slug, description, content, branch_name, thumbnail, created_at
     FROM homepage_posts
     WHERE branch_name = ?
     ORDER BY created_at DESC
@@ -319,9 +319,16 @@ export default async function BranchPage({
 
   const relatedPosts = rows;
 
-  function getFirstImage(content: string) {
-    const match = String(content || "").match(/!\[.*?\]\((.*?)\)/);
-    return match?.[1] || null;
+  function getFirstImage(post: any): string | null {
+    if (post.thumbnail) return post.thumbnail;
+    const s = String(post.content || "");
+    const htmlImg = s.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (htmlImg?.[1]) return htmlImg[1];
+    const mdImg = s.match(/!\[.*?\]\((.*?)\)/);
+    if (mdImg?.[1]) return mdImg[1];
+    const videoTag = s.match(/<video[^>]+src=["']([^"']+)["']/i);
+    if (videoTag?.[1]) return videoTag[1];
+    return null;
   }
 
   const [reelRows]: any = await db.query(
@@ -614,7 +621,7 @@ const faqJsonLd = {
             </div>
             <div className="grid gap-5 md:grid-cols-3">
               {relatedPosts.map((post: any) => {
-                const image = getFirstImage(post.content);
+                const image = getFirstImage(post);
                 return (
                 <a
                   key={post.id}
