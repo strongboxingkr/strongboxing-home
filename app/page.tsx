@@ -20,7 +20,7 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "스트롱복싱 | 목동 개봉 철산 신정 영등포 복싱장",
+  title: { absolute: "스트롱복싱 | 목동 개봉 철산 신정 영등포 복싱장" },
   description:
     "목동·개봉·철산·신정·영등포 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 환영.",
   keywords: [
