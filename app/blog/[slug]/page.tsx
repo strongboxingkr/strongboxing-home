@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import type { Metadata } from "next";
 import MarkdownContent from "./MarkdownContent";
+import ViewTracker from "./ViewTracker";
 
 const siteUrl = "https://strongboxing.kr";
 
@@ -216,6 +217,13 @@ export default async function BlogDetailPage({
                 </svg>
                 {Math.max(1, Math.ceil(String(post.content || "").replace(/<[^>]*>/g, "").length / 300))}분 읽기
               </span>
+              <span className="flex items-center gap-1 text-xs text-[#4A4C50]">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <ellipse cx="6" cy="6" rx="5" ry="3.5" stroke="currentColor" strokeWidth="1.15" />
+                  <circle cx="6" cy="6" r="1.5" fill="currentColor" />
+                </svg>
+                조회 {(post.views ?? 0).toLocaleString()}
+              </span>
             </div>
 
             <h1 className="text-4xl font-black leading-tight tracking-[-0.05em] md:text-6xl">
@@ -223,6 +231,8 @@ export default async function BlogDetailPage({
             </h1>
           </div>
         </section>
+
+        <ViewTracker postId={post.id} />
 
         {/* 본문 */}
         <section className="px-6 py-20">

@@ -18,7 +18,7 @@ const branches: any = {
     kakaoMap: "https://kko.to/RmPQ1W8t8g",
     kakaoChat: "https://pf.kakao.com/_uyxbnX/chat",
     description:
-      "개봉 복싱장 스트롱복싱 개봉점. 복싱 입문, 다이어트 복싱, 초보자 환영. 개봉역 근처. 월-금 13:00~23:00 운영.",
+      "구로구 개봉동에 위치한 스트롱복싱 개봉점입니다. 개봉동, 고척동 인근에서 복싱을 처음 시작하는 분들도 편하게 운동할 수 있습니다.",
   },
 
   sinjeong: {
@@ -35,7 +35,7 @@ const branches: any = {
     naverMap: "https://naver.me/5nhXvzXH",
     kakaoMap: "https://kko.to/NlN6yV0aK3",
     description:
-      "신정 복싱장 스트롱복싱 신정점. 복싱 입문, 다이어트 복싱, 여성 복싱. 신정네거리역 근처. 월-금 10:00~24:00, 토 10:00~16:00 운영.",
+      "양천구 신정동 복싱장 스트롱복싱 신정점입니다. 초보자, 학생, 여성 회원도 부담 없이 기초부터 체계적으로 운동할 수 있습니다.",
   },
 
   mokdong: {
@@ -54,7 +54,7 @@ const branches: any = {
     googleMap: "https://maps.google.com/?q=스트롱복싱+목동점",
     kakaoChat: "https://pf.kakao.com/_xfGZnX/chat",
     description:
-      "목동 복싱장 스트롱복싱 목동점. 복싱 입문, 다이어트 복싱, 여성 복싱, 직장인 운동. 오목교역 5분 거리. 월-금 14:00~24:00, 토 11:00~16:00 운영.",
+      "양천구 목동에서 복싱을 처음 시작하는 분들을 위한 스트롱복싱 목동점입니다. 초보자, 학생, 여성, 직장인 모두 목적과 진도에 맞춰 운동할 수 있습니다.",
   },
 
   cheolsan: {
@@ -65,15 +65,15 @@ const branches: any = {
     phone: "02-2066-0406",
     email: "cheolsan@strongboxing.kr",
     address: "경기도 광명시 철산동 56-14 3층",
-    hours: ["월-금 14:00~23:00", "토·일 14:00~18:00", "공휴일 휴무",],
+    hours: ["월-금 14:00~23:00", "토·일 14:00~18:00", "공휴일 휴무"],
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
     booking: "https://booking.naver.com/booking/12/bizes/1673598",
     naverMap: "https://naver.me/F8lwn3Te",
     kakaoMap: "https://place.map.kakao.com/1182676078",
     kakaoChat: "https://pf.kakao.com/_MAKnX/chat",
     description:
-      "광명헬스·철산헬스·광명운동·철산운동을 찾는다면 스트롱복싱 철산점. 광명시 철산동 위치. 복싱 입문·다이어트·여성 운동 전문. 철산역 도보 5분. 월-금 14:00~23:00, 토·일 14:00~18:00.",
-    },
+      "광명 철산동 복싱장 스트롱복싱 철산점입니다. 초보자, 여성, 직장인도 목적에 맞춰 기본기부터 안전하게 복싱을 배울 수 있습니다.",
+  },
 
   yeongdeungpo: {
     name: "영등포점",
@@ -89,7 +89,7 @@ const branches: any = {
     naverMap: "https://naver.me/G4yQwkR0",
     kakaoMap: "https://naver.me/G4yQwkR0",
     description:
-      "영등포 복싱장 스트롱복싱 영등포점. 복싱 입문, 다이어트 복싱, 직장인 운동. 도림동 위치. 월-금 13:00~23:00 운영.",
+      "영등포구 복싱장 스트롱복싱 영등포점입니다. 초보자, 학생, 직장인 모두 기초부터 체계적으로 운동할 수 있습니다.",
   },
 };
 
@@ -182,33 +182,33 @@ const branchKeywords: Record<string, string[]> = {
 
 const branchSeoContent: Record<string, any> = {
   cheolsan: {
-    title: "광명헬스 · 철산헬스 · 광명운동 · 철산운동 스트롱복싱 철산점",
+    title: "철산 복싱장, 광명에서 제대로 배우는 스트롱복싱 철산점",
     description:
-      "광명에서 운동, 헬스, 다이어트 찾고 계신가요? 스트롱복싱 철산점은 광명시 철산동에 위치한 복싱 체육관으로, 철산역 도보 5분 거리입니다. 초보자·여성·직장인 모두 환영하며, 광명헬스 · 철산헬스 · 광명다이어트를 찾는 분들이 많이 방문합니다.",
+      "광명 철산동 복싱장 스트롱복싱 철산점입니다. 철산역 도보 5분 거리에 위치하며, 초보자·여성·직장인 모두 목적에 맞춰 기본기부터 안전하게 배울 수 있습니다.",
     nearby: ["광명시", "철산동", "철산역", "광명사거리", "하안동", "소하동", "광명동", "일직동"],
   },
   mokdong: {
-    title: "목동복싱 · 오목교복싱을 찾는 분들을 위한 스트롱복싱 목동점",
+    title: "목동 복싱장, 처음이어도 괜찮은 스트롱복싱 목동점",
     description:
-      "스트롱복싱 목동점은 목동, 오목교역, 목동역, 양천구, 신정동 인근에서 복싱 입문과 다이어트 복싱을 시작하기 좋은 복싱 체육관입니다.",
+      "양천구 목동 복싱장 스트롱복싱 목동점입니다. 오목교역 인근에 위치하며, 초보자·학생·여성·직장인 모두 목적과 진도에 맞춰 운동할 수 있습니다.",
     nearby: ["목동", "오목교", "오목교역", "목동역", "양천구", "신정동"],
   },
   gaebong: {
-    title: "개봉복싱 · 고척복싱 · 구로구복싱을 찾는 분들을 위한 스트롱복싱 개봉점",
+    title: "개봉 복싱장, 고척동에서도 가까운 스트롱복싱 개봉점",
     description:
-      "스트롱복싱 개봉점은 개봉동, 개봉역, 고척동, 오류동, 천왕동, 구로구 인근에서 복싱을 시작하려는 분들이 편하게 운동할 수 있는 복싱 체육관입니다.",
+      "구로구 개봉동 복싱장 스트롱복싱 개봉점입니다. 개봉역 인근에 위치하며, 개봉동·고척동에서 복싱을 처음 시작하는 분들도 편하게 운동할 수 있습니다.",
     nearby: ["개봉동", "개봉역", "고척동", "오류동", "천왕동", "구로구"],
   },
   sinjeong: {
-    title: "신정복싱 · 신정동복싱 · 양천구복싱을 찾는 분들을 위한 스트롱복싱 신정점",
+    title: "신정동 복싱장, 기초부터 함께하는 스트롱복싱 신정점",
     description:
-      "스트롱복싱 신정점은 신정동, 신정네거리, 신월동, 까치산, 화곡동, 양천구 인근에서 복싱을 시작하기 좋은 복싱 체육관입니다.",
+      "양천구 신정동 복싱장 스트롱복싱 신정점입니다. 신정네거리 인근에 위치하며, 초보자·학생·여성 회원도 부담 없이 기초부터 체계적으로 운동할 수 있습니다.",
     nearby: ["신정동", "신정네거리", "신월동", "까치산", "화곡동", "양천구"],
   },
   yeongdeungpo: {
-    title: "영등포복싱 · 신길동복싱을 찾는 분들을 위한 스트롱복싱 영등포점",
+    title: "영등포 복싱장, 처음 시작하기 좋은 스트롱복싱 영등포점",
     description:
-      "스트롱복싱 영등포점은 영등포, 신길동, 도림동, 대림동 인근에서 복싱 입문과 다이어트 복싱을 시작하기 좋은 복싱 체육관입니다.",
+      "영등포구 복싱장 스트롱복싱 영등포점입니다. 도림동에 위치하며, 초보자·학생·직장인 모두 기초부터 체계적으로 운동할 수 있습니다.",
     nearby: ["영등포", "신길동", "도림동", "대림동"],
   },
 };
@@ -228,15 +228,28 @@ export async function generateMetadata({
     };
   }
 
-  const title = slug === "cheolsan"
-    ? `광명헬스 · 철산헬스 · 광명운동 | 스트롱복싱 철산점`
-    : `${branch.area} 복싱장 | ${branch.fullName}`;
+  const metaTitles: Record<string, string> = {
+    mokdong:      "스트롱복싱 목동점 | 목동 복싱장 오목교 복싱",
+    sinjeong:     "스트롱복싱 신정점 | 신정동 복싱장 양천구 복싱",
+    gaebong:      "스트롱복싱 개봉점 | 개봉 복싱장 고척동 복싱",
+    cheolsan:     "스트롱복싱 철산점 | 철산 복싱장 광명 복싱",
+    yeongdeungpo: "스트롱복싱 영등포점 | 영등포 복싱장 도림동 복싱",
+  };
+  const metaDescriptions: Record<string, string> = {
+    mokdong:      "목동·오목교 근처 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 맞춤 복싱 수업.",
+    sinjeong:     "신정동·양천구 복싱장. 초보자·학생·여성 회원도 편하게 배우는 스트롱복싱 신정점.",
+    gaebong:      "개봉·고척동 근처 복싱장. 초보자·다이어트·직장인 복싱을 개인별로 지도합니다.",
+    cheolsan:     "철산·광명 근처 복싱장. 관장 직접 지도, 초보자부터 실전까지 안전하게 배우는 복싱.",
+    yeongdeungpo: "영등포·도림동 복싱장. 초보자부터 체력관리, 다이어트 복싱까지 맞춤 지도합니다.",
+  };
+  const title = metaTitles[slug] ?? `${branch.area} 복싱장 | ${branch.fullName}`;
+  const metaDesc = metaDescriptions[slug] ?? branch.description;
   const url = `https://strongboxing.kr/branches/${slug}`;
 
   return {
     metadataBase: new URL("https://strongboxing.kr"),
     title,
-    description: branch.description,
+    description: metaDesc,
     keywords: [
       ...(branchKeywords[slug] || []),
       `${branch.fullName}`,
@@ -255,7 +268,7 @@ export async function generateMetadata({
     },
     openGraph: {
         title,
-        description: branch.description,
+        description: metaDesc,
         url,
         siteName: "스트롱복싱",
         locale: "ko_KR",
@@ -273,7 +286,7 @@ export async function generateMetadata({
       twitter: {
         card: "summary_large_image",
         title,
-        description: branch.description,
+        description: metaDesc,
         images: [`https://strongboxing.kr${branch.image}`],
       },
 

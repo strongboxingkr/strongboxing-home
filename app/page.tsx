@@ -20,9 +20,9 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "스트롱복싱 | 관장 직접 지도 · 초보자 환영 · 목동 개봉 철산 영등포 복싱",
+  title: "스트롱복싱 | 목동 개봉 철산 신정 영등포 복싱장",
   description:
-    "관장이 직접 가르치는 스트롱복싱. 목동·오목교·개봉·고척·오류동·구로·철산·광명·철산역·신정·영등포 5개 지점. 초보자 환영, 여성·학생·직장인 복싱, 다이어트 복싱. 원데이 클래스 30,000원.",
+    "목동·개봉·철산·신정·영등포 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 환영.",
   keywords: [
     "목동 복싱","오목교 복싱","양천구 복싱","목동 학생 복싱","목동 다이어트 복싱","목동 직장인 운동",
     "개봉 복싱","개봉동 복싱","고척 복싱","오류동 복싱","구로 복싱","구로구 복싱","개봉 여성 복싱","개봉 초보 복싱",
@@ -31,8 +31,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "https://strongboxing.kr" },
   openGraph: {
-    title: "스트롱복싱 | 관장 직접 지도 · 목동 개봉 철산 영등포 복싱",
-    description: "관장이 직접 가르치는 복싱장. 목동·개봉·고척·철산·광명·신정·영등포 5개 지점. 초보자 환영, 원데이 클래스 30,000원.",
+    title: "스트롱복싱 | 목동 개봉 철산 신정 영등포 복싱장",
+    description: "목동·개봉·철산·신정·영등포 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 환영.",
     url: "https://strongboxing.kr",
     siteName: "스트롱복싱",
     locale: "ko_KR",
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "스트롱복싱 | 관장 직접 지도 · 목동 개봉 철산 영등포 복싱",
-    description: "관장이 직접 가르치는 복싱장. 목동·개봉·고척·철산·광명·신정·영등포. 초보자 환영.",
+    title: "스트롱복싱 | 목동 개봉 철산 신정 영등포 복싱장",
+    description: "목동·개봉·철산·신정·영등포 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 환영.",
     images: ["/og.png"],
   },
 };
@@ -177,20 +177,20 @@ export default async function HomePage() {
                   STRONG BOXING — 서울 · 경기 5개 지점
                 </p>
 
-                <h1 style={{ fontSize: "clamp(56px, 8.5vw, 120px)", lineHeight: 0.87, letterSpacing: "-0.05em", fontWeight: 900 }}>
-                  <span style={{ color: "#F5F4F1" }}>STRONGER</span>
+                <h1 style={{ fontSize: "clamp(52px, 7.5vw, 108px)", lineHeight: 0.87, letterSpacing: "-0.05em", fontWeight: 900 }}>
+                  <span style={{ color: "#F5F4F1" }}>처음이어도</span>
                   <br />
                   <span style={{ WebkitTextStroke: "1.5px #F5F4F1", WebkitTextFillColor: "transparent", color: "transparent" }}>
-                    EVERY DAY
+                    괜찮습니다.
                   </span>
                 </h1>
 
                 <div className="my-7 h-[2px] w-14" style={{ background: "#D01E2E" }} />
 
                 <p className="max-w-md text-sm leading-[2] md:text-base md:leading-[2.1]" style={{ color: "#C9C9C9", wordBreak: "keep-all" }}>
-                  처음이어도 괜찮습니다.<br />
                   <span style={{ color: "#F5F4F1", fontWeight: 700 }}>관장이 기본기부터 직접 잡아드립니다.</span><br />
-                  체력이나 운동 경험 없어도 — 오늘 바로 시작할 수 있어요.
+                  자세, 스텝, 미트, 샌드백 — 진도에 맞춰 차근차근.<br />
+                  체력이나 운동 경험 없어도 오늘 바로 시작할 수 있습니다.
                 </p>
 
                 <div className="mt-9 flex flex-wrap gap-3">
@@ -210,12 +210,13 @@ export default async function HomePage() {
 
                 <p className="mt-4 text-xs leading-5" style={{ color: "#5A5C61" }}>
                   원데이 클래스 <span style={{ color: "#8A8D91", fontWeight: 700 }}>30,000원</span> 현장결제
-                  &nbsp;·&nbsp; 당일 등록 시 회원권에서 <span style={{ color: "#8A8D91", fontWeight: 700 }}>전액 페이백</span>
+                  &nbsp;·&nbsp; 당일 등록 시 회원권에서 <span style={{ color: "#8A8D91", fontWeight: 700 }}>전액 차감</span>
+                  &nbsp;·&nbsp; 편한 운동복만 챙겨오세요
                 </p>
 
                 {/* 스탯 */}
                 <div className="mt-14 flex gap-8" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 24 }}>
-                  {[["4.9", "평균 리뷰 평점"], ["5", "운영 지점"], ["100%", "초보자 환영"]].map(([n, t]) => (
+                  {[["4.9★", "네이버 평균 리뷰"], ["5개", "서울·경기 지점"], ["초보자", "언제나 환영"]].map(([n, t]) => (
                     <div key={n}>
                       <p className="text-2xl font-black" style={{ color: "#F5F4F1" }}>{n}</p>
                       <p className="mt-0.5 text-[11px]" style={{ color: "#5A5C61" }}>{t}</p>

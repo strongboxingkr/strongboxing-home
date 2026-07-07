@@ -21,11 +21,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ORDER BY created_at DESC
   `);
 
+  const branchSlugs = ["/branches/cheolsan", "/branches/gaebong", "/branches/mokdong", "/branches/sinjeong", "/branches/yeongdeungpo"];
   const staticRoutes = routes.map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "daily" as const,
-    priority: route === "" ? 1 : 0.8,
+    priority: route === "" ? 1 : branchSlugs.includes(route) ? 0.9 : 0.8,
   }));
 
   const blogRoutes = posts.map((post: any) => ({

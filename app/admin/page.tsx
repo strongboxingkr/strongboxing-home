@@ -44,6 +44,7 @@ export default function AdminPage() {
 
   const contentRef = useRef<HTMLTextAreaElement | null>(null);
   const editorRef = useRef<RichTextEditorHandle>(null);
+  const slugManuallyEdited = useRef(false);
 
   const slugSuggestions = [
     "mokdong-boxing-gym-intro",
@@ -99,23 +100,29 @@ export default function AdminPage() {
       return;
     }
 
+    if (aiImages.length > 15) {
+      if (!confirm(`사진이 ${aiImages.length}장이에요. 10장 이하 권장인데 계속 시도할까요?\n(실패하면 사진을 줄이고 다시 시도해줘요)`)) return;
+    }
+
     setGeneratingFromImages(true);
 
-    const res = await fetch("/api/generate-post-from-images", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ imageUrls: aiImages, branch_name: branchName }),
-    });
-
-    setGeneratingFromImages(false);
-
-    if (!res.ok) {
-      alert("AI 생성 실패 ㅠ");
+    let res: Response;
+    try {
+      res = await fetch("/api/generate-post-from-images", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrls: aiImages, branch_name: branchName }),
+      });
+    } catch (e: any) {
+      setGeneratingFromImages(false);
+      alert(`네트워크 오류: ${e?.message || e}`);
       return;
     }
 
-    const data = await res.json();
-    if (!data.ok) {
+    setGeneratingFromImages(false);
+
+    const data = await res.json().catch(() => ({ ok: false, message: "응답 파싱 실패" }));
+    if (!res.ok || !data.ok) {
       alert(data.message || "AI 생성 실패 ㅠ");
       return;
     }
@@ -260,9 +267,9 @@ export default function AdminPage() {
     }
     const cols = layoutMode === "2열" ? 2 : 3;
     const imgs = pendingImages
-      .map((url) => `<img src="${url}" style="width:100%;border-radius:16px;object-fit:cover" />`)
+      .map((url) => `<img src="${url}" alt="" />`)
       .join("\n");
-    const gallery = `<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:12px;margin:12px 0">${imgs}</div>`;
+    const gallery = `<div class="gallery-grid gallery-${cols}col">${imgs}</div>`;
     editorRef.current?.insertHtml(gallery);
     setPendingImages([]);
     alert(`${layoutMode} 갤러리가 본문에 추가됐어!`);
@@ -313,6 +320,7 @@ export default function AdminPage() {
     setThumbnail("");
     setPopupStart("");
     setPopupEnd("");
+    slugManuallyEdited.current = false;
 
     loadPosts();
   }
@@ -328,6 +336,7 @@ export default function AdminPage() {
     setThumbnail(post.thumbnail || "");
     setPopupStart(post.popup_start ? post.popup_start.slice(0, 10) : "");
     setPopupEnd(post.popup_end ? post.popup_end.slice(0, 10) : "");
+    slugManuallyEdited.current = true; // 수정 모드: 기존 slug 유지
     editorRef.current?.setContent(post.content || "");
 
     window.scrollTo({
@@ -487,7 +496,7 @@ export default function AdminPage() {
           <div className="rounded-[28px] border border-violet-200 bg-violet-50 p-5 space-y-4">
             <div>
               <label className="block font-bold text-violet-800">📸 사진 보고 AI 글 쓰기</label>
-              <p className="mt-1 text-sm text-violet-500">사진 여러 장 올리면 AI가 직접 보고 글을 써줘요. 장수 제한 없어요!</p>
+              <p className="mt-1 text-sm text-violet-500">사진 여러 장 올리면 AI가 직접 보고 글을 써줘요. <strong>10장 이하 권장</strong> (너무 많으면 실패할 수 있어요)</p>
             </div>
 
             <input
@@ -551,7 +560,7 @@ export default function AdminPage() {
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
-                setSlug(makeSlug(e.target.value));
+                if (!slugManuallyEdited.current) setSlug(makeSlug(e.target.value));
               }}
               className="w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
               placeholder="예: 철산 복싱 다이어트, 초보자도 가능할까요?"
@@ -562,7 +571,7 @@ export default function AdminPage() {
             <label className="mb-2 block font-bold">Slug 주소</label>
             <input
               value={slug}
-              onChange={(e) => setSlug(e.target.value)}
+              onChange={(e) => { slugManuallyEdited.current = true; setSlug(e.target.value); }}
               className="w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
               placeholder="cheolsan-boxing-diet"
             />
@@ -834,6 +843,7 @@ export default function AdminPage() {
                   setDescription("");
                   setContent("");
                   setThumbnail("");
+                  slugManuallyEdited.current = false;
                   editorRef.current?.setContent("");
                 }}
                 className="rounded-full border border-zinc-200 px-8 py-5 text-lg font-black"
@@ -871,9 +881,10 @@ export default function AdminPage() {
 
                   <h3 className="text-2xl font-black">{post.title}</h3>
 
-                  <p className="mt-2 text-sm text-zinc-500">
-                    /blog/{post.slug}
-                  </p>
+                  <div className="mt-2 flex items-center gap-3">
+                    <p className="text-sm text-zinc-500">/blog/{post.slug}</p>
+                    <span className="text-sm font-bold text-zinc-400">👁 {(post.views ?? 0).toLocaleString()}회</span>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-3">

@@ -150,3 +150,20 @@ button[type="button"] {
   display: block;
 }
 
+/* 블로그 콜라주 갤러리 */
+.gallery-grid {
+  display: grid !important;
+  gap: 12px;
+  margin: 16px 0;
+}
+.gallery-2col { grid-template-columns: repeat(2, 1fr) !important; }
+.gallery-3col { grid-template-columns: repeat(3, 1fr) !important; }
+.gallery-grid img {
+  width: 100% !important;
+  height: 200px !important;
+  object-fit: cover !important;
+  border-radius: 16px;
+  margin: 0 !important;
+  display: block;
+}
+

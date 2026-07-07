@@ -61,28 +61,33 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
     },
 
     // 현재 커서 위치에 HTML 삽입 (이미지/영상 첨부)
+    // execCommand("insertHTML")은 display:grid 같은 인라인 스타일을 날리는 버그가 있어서 DOM 직접 삽입
     insertHtml(html: string) {
-      editorRef.current?.focus();
+      const el = editorRef.current;
+      if (!el) return;
+
+      el.focus();
+
+      const tmpl = document.createElement("template");
+      tmpl.innerHTML = html;
+      const node = tmpl.content.cloneNode(true);
+
       const sel = window.getSelection();
       let range = savedRangeRef.current;
-
       if (!range && sel && sel.rangeCount > 0) {
-        range = sel.getRangeAt(0);
+        range = sel.getRangeAt(0).cloneRange();
       }
 
-      if (range) {
-        if (sel) {
-          sel.removeAllRanges();
-          sel.addRange(range);
-        }
-        document.execCommand("insertHTML", false, html);
+      if (range && el.contains(range.commonAncestorContainer)) {
+        range.collapse(false);
+        range.insertNode(node);
+        range.collapse(false);
+        if (sel) { sel.removeAllRanges(); sel.addRange(range); }
       } else {
-        if (editorRef.current) {
-          editorRef.current.innerHTML += html;
-        }
+        el.appendChild(node);
       }
 
-      onChange(editorRef.current?.innerHTML || "");
+      onChange(el.innerHTML);
     },
   }));
 

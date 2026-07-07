@@ -1,5 +1,12 @@
 import OpenAI from "openai";
 
+function mdHeadingsToHtml(content: string): string {
+  return content
+    .replace(/^### (.+)$/gm, '<h3 style="font-size:20px;font-weight:900;margin:12px 0 6px">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 style="font-size:22px;font-weight:900;margin:16px 0 8px">$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1 style="font-size:28px;font-weight:900;margin:20px 0 10px">$1</h1>');
+}
+
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -189,6 +196,7 @@ ${angle}
 
     const text = response.output_text.trim();
     const json = JSON.parse(text);
+    if (json.content) json.content = mdHeadingsToHtml(json.content);
 
     return Response.json({
       ok: true,

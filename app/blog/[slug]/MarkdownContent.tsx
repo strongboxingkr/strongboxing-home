@@ -18,6 +18,8 @@ const PROSE =
   /* 이미지: 원본 비율 유지, 잘리지 않게 */
   "[&_img]:w-full [&_img]:h-auto [&_img]:rounded-2xl [&_img]:border [&_img]:border-white/10 " +
   "[&_img]:my-10 " +
+  /* 그리드 안 이미지는 마진 제거 (콜라주 레이아웃 보호) */
+  "[&_div_img]:my-0 [&_div_img]:rounded-2xl [&_div_img]:border-0 " +
   /* video도 동일하게 */
   "[&_video]:w-full [&_video]:rounded-2xl [&_video]:my-10";
 
