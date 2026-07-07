@@ -10,7 +10,13 @@ const branches: any = {
     phone: "02-2060-1279",
     email: "gaebong@strongboxing.kr",
     address: "서울시 구로구 개봉동 166-5번지 유원빌딩 지하 1층",
+    streetAddr: "개봉동 166-5 유원빌딩 지하 1층",
+    addressLocality: "구로구",
+    addressRegion: "서울특별시",
     hours: ["월-금 13:00~23:00"],
+    openingHoursSpec: [
+      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "13:00", closes: "23:00" },
+    ],
     instagram: "https://www.instagram.com/strongboxing_gaebong",
     booking:
       "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
@@ -29,7 +35,15 @@ const branches: any = {
     phone: "02-2647-3373",
     email: "sinjeong@strongboxing.kr",
     address: "서울시 양천구 신정동 1021-7 태화상가 2층",
+    streetAddr: "신정동 1021-7 태화상가 2층",
+    addressLocality: "양천구",
+    addressRegion: "서울특별시",
     hours: ["월-금 10:00~24:00", "14:00~15:00 휴게", "토 10:00~16:00"],
+    openingHoursSpec: [
+      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "10:00", closes: "14:00" },
+      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "15:00", closes: "00:00" },
+      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday"], opens: "10:00", closes: "16:00" },
+    ],
     instagram: "https://www.instagram.com/strongboxing_sinjeong",
     booking: "https://booking.naver.com/booking/13/bizes/1367177",
     naverMap: "https://naver.me/5nhXvzXH",
@@ -46,7 +60,14 @@ const branches: any = {
     phone: "02-2643-5971",
     email: "mokdong@strongboxing.kr",
     address: "서울시 양천구 목동 909-6 우방빌딩 4층",
+    streetAddr: "목동 909-6 우방빌딩 4층",
+    addressLocality: "양천구",
+    addressRegion: "서울특별시",
     hours: ["월-금 14:00~24:00", "토 11:00~16:00"],
+    openingHoursSpec: [
+      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "14:00", closes: "00:00" },
+      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday"], opens: "11:00", closes: "16:00" },
+    ],
     instagram: "https://www.instagram.com/strongboxing_mokdong",
     booking: "https://booking.naver.com/booking/13/bizes/1510638",
     naverMap: "https://naver.me/GII8f9Qv",
@@ -65,7 +86,14 @@ const branches: any = {
     phone: "02-2066-0406",
     email: "cheolsan@strongboxing.kr",
     address: "경기도 광명시 철산동 56-14 3층",
+    streetAddr: "철산동 56-14 3층",
+    addressLocality: "광명시",
+    addressRegion: "경기도",
     hours: ["월-금 14:00~23:00", "토·일 14:00~18:00", "공휴일 휴무"],
+    openingHoursSpec: [
+      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "14:00", closes: "23:00" },
+      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday","Sunday"], opens: "14:00", closes: "18:00" },
+    ],
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
     booking: "https://booking.naver.com/booking/12/bizes/1673598",
     naverMap: "https://naver.me/F8lwn3Te",
@@ -81,8 +109,15 @@ const branches: any = {
     area: "영등포",
     image: "/images/branches/yeongdeungpo.jpg",
     phone: "02-831-9312",
+    email: "yeongdeungpo@strongboxing.kr",
     address: "서울시 영등포구 도림로 313 건영상가 2층",
+    streetAddr: "도림로 313 건영상가 2층",
+    addressLocality: "영등포구",
+    addressRegion: "서울특별시",
     hours: ["월-금 13:00~23:00"],
+    openingHoursSpec: [
+      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "13:00", closes: "23:00" },
+    ],
     instagram: "https://www.instagram.com/stron_gboxinggym",
     booking:
       "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll",
@@ -136,7 +171,7 @@ const branchFaqs: Record<string, { question: string; answer: string }[]> = {
   cheolsan: [
     { question: "광명 헬스장 찾는데 스트롱복싱이 뭔가요?", answer: "스트롱복싱 철산점은 광명시 철산동에 위치한 복싱 체육관입니다. 일반 헬스장과 달리 복싱 트레이닝으로 운동하며, 다이어트·체력 향상·스트레스 해소에 효과적입니다. 광명에서 새로운 운동을 찾는 분들께 추천합니다." },
     { question: "광명 운동 처음 시작하려는데 복싱이 괜찮을까요?", answer: "복싱은 초보자도 기초 자세와 스텝부터 차근차근 배울 수 있는 운동입니다. 광명에서 운동 시작을 고민하신다면 부담 없이 방문 상담해주세요." },
-    { question: "철산역 근처 헬스장 찾는데 여기 위치가 어떻게 되나요?", answer: "철산역 도보 5분 거리인 경기도 광명시 철산동 56-14 3층에 위치합니다. 철산동, 하안동, 소하동, 광명사거리에서 쉽게 오실 수 있습니다." },
+    { question: "철산역 근처 헬스장 찾는데 여기 위치가 어떻게 되나요?", answer: "경기도 광명시 철산동 56-14 3층에 위치합니다. 철산동, 하안동, 소하동, 광명사거리에서 가까운 거리입니다." },
     { question: "광명 다이어트 운동으로 복싱이 효과 있나요?", answer: "복싱은 유산소와 근력이 결합된 전신 운동이라 다이어트 효과가 높습니다. 광명에서 다이어트 운동을 찾고 계신 분들이 많이 등록하고 계십니다." },
     { question: "철산 헬스 대신 복싱으로 운동하면 어떤가요?", answer: "러닝머신·기구 운동이 지루하신 분들께 복싱이 좋은 대안입니다. 매번 다른 동작과 미트 트레이닝으로 지루하지 않게 운동할 수 있습니다." },
     { question: "광명 여성 운동으로 가능한가요?", answer: "여성 회원도 편하게 운동하실 수 있습니다. 다이어트, 체력 향상, 스트레스 해소 목적으로 광명·철산 지역 여성 회원분들이 많이 등록하고 계십니다." },
@@ -184,7 +219,7 @@ const branchSeoContent: Record<string, any> = {
   cheolsan: {
     title: "철산 복싱장, 광명에서 제대로 배우는 스트롱복싱 철산점",
     description:
-      "광명 철산동 복싱장 스트롱복싱 철산점입니다. 철산역 도보 5분 거리에 위치하며, 초보자·여성·직장인 모두 목적에 맞춰 기본기부터 안전하게 배울 수 있습니다.",
+      "광명 철산동 복싱장 스트롱복싱 철산점입니다. 철산동·광명 인근에서 초보자·여성·직장인 모두 목적에 맞춰 기본기부터 안전하게 배울 수 있습니다.",
     nearby: ["광명시", "철산동", "철산역", "광명사거리", "하안동", "소하동", "광명동", "일직동"],
   },
   mokdong: {
@@ -378,10 +413,12 @@ export default async function BranchPage({
     priceRange: "₩₩",
     address: {
       "@type": "PostalAddress",
-      streetAddress: branch.address,
+      streetAddress: branch.streetAddr || branch.address,
+      addressLocality: branch.addressLocality,
+      addressRegion: branch.addressRegion,
       addressCountry: "KR",
     },
-    openingHoursSpecification: branch.hours.map((h: string) => ({
+    openingHoursSpecification: branch.openingHoursSpec || branch.hours.map((h: string) => ({
       "@type": "OpeningHoursSpecification",
       description: h,
     })),
@@ -448,11 +485,13 @@ export default async function BranchPage({
         },
       },
     ],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: branch.reviewCount || 1,
-    },
+    ...(branch.reviewCount ? {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: "4.9",
+        reviewCount: branch.reviewCount,
+      },
+    } : {}),
   };
 
   const breadcrumbJsonLd = {
