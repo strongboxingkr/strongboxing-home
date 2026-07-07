@@ -37,7 +37,7 @@ export async function generateMetadata({
     : `${siteUrl}/og.png`;
 
   return {
-    title: `${post.title} | 스트롱복싱`,
+    title: { absolute: `${post.title} | 스트롱복싱` },
     description:
       post.description || `${post.branch_name} 스트롱복싱 블로그 소식입니다.`,
     alternates: {
