@@ -7,6 +7,7 @@ const branches: any = {
     fullName: "스트롱복싱 개봉점",
     area: "개봉",
     image: "/images/branches/gaebong.jpg",
+    imageAlt: "스트롱복싱 개봉점 개봉동 고척동 복싱장 내부",
     phone: "02-2060-1279",
     email: "gaebong@strongboxing.kr",
     address: "서울시 구로구 개봉동 166-5번지 유원빌딩 지하 1층",
@@ -32,6 +33,7 @@ const branches: any = {
     fullName: "스트롱복싱 신정점",
     area: "신정",
     image: "/images/branches/sinjeong.jpg",
+    imageAlt: "스트롱복싱 신정점 신정동 양천구 복싱장 내부",
     phone: "02-2647-3373",
     email: "sinjeong@strongboxing.kr",
     address: "서울시 양천구 신정동 1021-7 태화상가 2층",
@@ -57,6 +59,7 @@ const branches: any = {
     fullName: "스트롱복싱 목동점",
     area: "목동",
     image: "/images/branches/mokdong.png",
+    imageAlt: "스트롱복싱 목동점 목동 오목교 복싱장 초보자 수업",
     phone: "02-2643-5971",
     email: "mokdong@strongboxing.kr",
     address: "서울시 양천구 목동 909-6 우방빌딩 4층",
@@ -83,6 +86,7 @@ const branches: any = {
     fullName: "스트롱복싱 철산점",
     area: "철산",
     image: "/images/branches/cheolsan.jpg",
+    imageAlt: "스트롱복싱 철산점 철산동 광명 복싱장 직장인 수업",
     phone: "02-2066-0406",
     email: "cheolsan@strongboxing.kr",
     address: "경기도 광명시 철산동 56-14 3층",
@@ -108,6 +112,7 @@ const branches: any = {
     fullName: "스트롱복싱 영등포점",
     area: "영등포",
     image: "/images/branches/yeongdeungpo.jpg",
+    imageAlt: "스트롱복싱 영등포점 영등포 도림동 복싱장 체력관리 수업",
     phone: "02-831-9312",
     email: "yeongdeungpo@strongboxing.kr",
     address: "서울시 영등포구 도림로 313 건영상가 2층",
@@ -179,6 +184,57 @@ const branchFaqs: Record<string, { question: string; answer: string }[]> = {
     { question: "광명시 어느 동네에서도 오기 편한가요?", answer: "철산동, 하안동, 소하동, 광명동, 일직동, 광명사거리 인근에서 모두 가까운 거리입니다. 광명시 내 어디서든 접근이 편리합니다." },
     { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다. 복싱 장갑 등 장비는 체육관에서 안내해드립니다." },
     { question: "상담은 어떻게 신청하나요?", answer: "홈페이지 방문 상담 예약, 전화(02-2066-0406), 카카오톡 문의로 신청하실 수 있습니다." },
+  ],
+
+  yeongdeungpo: [
+    { question: "영등포 복싱 처음인데 가능할까요?", answer: "처음이신 분들도 기초 자세와 스텝부터 개인 수준에 맞춰 안내해드립니다." },
+    { question: "영등포 복싱장 찾는데 초보자도 괜찮나요?", answer: "운동 경험이 없어도 회원별 진도에 맞춰 진행되기 때문에 부담 없이 시작할 수 있습니다." },
+    { question: "여성 회원도 운동 가능한가요?", answer: "여성 회원분들도 다이어트, 체력 향상, 스트레스 해소 목적으로 많이 운동하고 계십니다." },
+    { question: "영등포 직장인도 다니기 괜찮나요?", answer: "평일 저녁 시간대에 퇴근 후 운동하시는 직장인 회원도 많습니다." },
+    { question: "다이어트 복싱도 가능한가요?", answer: "복싱은 유산소와 근력 운동이 함께 들어가 다이어트와 체력 향상에 도움이 됩니다." },
+    { question: "개인별 운동으로 진행되나요?", answer: "운영시간 내 방문하면 회원별 진도와 운동 목적에 맞춰 진행됩니다." },
+    { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 기초 체력과 운동 습관을 만들기 좋습니다." },
+    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
+    { question: "운영시간은 어떻게 되나요?", answer: "영등포점은 월~금 13:00~23:00 운영합니다." },
+    { question: "상담은 어떻게 신청하나요?", answer: "홈페이지 방문 상담 예약 또는 전화(02-831-9312), 네이버 예약으로 상담 신청이 가능합니다." },
+  ],
+};
+
+const branchTargetAudience: Record<string, string[]> = {
+  mokdong: [
+    "목동·오목교 근처 복싱장 찾는 분",
+    "양천구에서 다이어트 복싱 시작하려는 분",
+    "목동 학생·직장인으로 운동 습관 만들고 싶은 분",
+    "복싱이 처음인 초보자",
+    "여성 혼자 다니기 편한 복싱장 찾는 분",
+  ],
+  cheolsan: [
+    "철산동·광명에서 복싱 처음 시작하는 분",
+    "광명 다이어트 운동 찾는 분",
+    "철산 인근 직장인으로 퇴근 후 운동 찾는 분",
+    "광명 여성 회원으로 혼자 다니기 편한 곳 찾는 분",
+    "헬스 대신 재미있게 운동하고 싶은 분",
+  ],
+  gaebong: [
+    "개봉·고척동 근처 복싱장 찾는 분",
+    "개봉동에서 다이어트 복싱 시작하려는 분",
+    "구로구 학생·직장인으로 운동 습관 만들고 싶은 분",
+    "복싱이 처음인 초보자",
+    "여성 혼자 다니기 편한 복싱장 찾는 분",
+  ],
+  sinjeong: [
+    "신정동·양천구 복싱장 찾는 분",
+    "신정동 다이어트 복싱 시작하려는 분",
+    "양천구 학생으로 방과 후 운동 찾는 분",
+    "신정동 직장인으로 저녁 운동 찾는 분",
+    "복싱이 처음인 초보자",
+  ],
+  yeongdeungpo: [
+    "영등포·도림동 복싱장 찾는 분",
+    "영등포 다이어트 복싱 시작하려는 분",
+    "영등포 직장인으로 퇴근 후 운동 찾는 분",
+    "복싱이 처음인 초보자",
+    "여성 혼자 다니기 편한 복싱장 찾는 분",
   ],
 };
 
@@ -657,7 +713,7 @@ const faqJsonLd = {
 
           <div className="hidden md:block">
             <div className="overflow-hidden rounded-[16px]" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.08)" }}>
-              <img src={branch.image} alt={branch.fullName} className="h-[600px] w-full object-cover" style={{ filter: "brightness(0.92)" }} />
+              <img src={branch.image} alt={branch.imageAlt || branch.fullName} className="h-[600px] w-full object-cover" style={{ filter: "brightness(0.92)" }} />
             </div>
           </div>
         </div>
@@ -993,6 +1049,24 @@ const faqJsonLd = {
               )}
             </div>
           </div>
+
+          {/* 이런 분들이 많이 찾아요 */}
+          {branchTargetAudience[slug] && (
+            <div className="mb-20">
+              <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>FOR YOU</p>
+              <h2 className="mb-8 text-3xl font-black tracking-[-0.04em] text-[#F5F4F1] md:text-4xl">
+                이런 분들이 많이 찾아요
+              </h2>
+              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {branchTargetAudience[slug].map((item: string) => (
+                  <li key={item} className="flex items-start gap-3 rounded-[12px] border border-[#4A4C50]/25 bg-[#141416] px-5 py-4 text-sm text-[#8A8D91]">
+                    <span className="mt-[3px] h-2 w-2 shrink-0 rounded-full" style={{ background: "#D01E2E" }} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* FAQ */}
           <div>
