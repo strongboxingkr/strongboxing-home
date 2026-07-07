@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import type { Metadata } from "next";
+import BranchCTAButtons from "@/app/components/BranchCTAButtons";
 
 const branches: any = {
   gaebong: {
@@ -663,46 +664,13 @@ const faqJsonLd = {
               </div>
             )}
 
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a
-                href={`tel:${branch.phone.replaceAll("-", "")}`}
-                className="inline-flex items-center gap-2 rounded-[10px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white transition hover:bg-[#B71C2B]"
-              >
-                전화 문의
-              </a>
-
-              {branch.booking && (
-                <a
-                  href={branch.booking}
-                  target="_blank"
-                  className="inline-flex items-center gap-2 rounded-[10px] border border-[#4A4C50]/40 bg-white/6 px-7 py-3.5 text-sm font-black text-[#F5F4F1] transition hover:border-white/30 hover:bg-white/10"
-                >
-                  네이버 예약
-                </a>
-              )}
-
-              {branch.kakaoChat && (
-                <a
-                  href={branch.kakaoChat}
-                  target="_blank"
-                  className="inline-flex items-center gap-2 rounded-[10px] border border-[#4A4C50]/40 bg-white/6 px-7 py-3.5 text-sm font-black transition hover:border-white/30 hover:bg-white/10"
-                  style={{ color: "#F5F4F1" }}
-                >
-                  <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#FEE500" }} />
-                  카카오 문의
-                </a>
-              )}
-
-              {branch.naverMap && (
-                <a
-                  href={branch.naverMap}
-                  target="_blank"
-                  className="inline-flex items-center gap-2 rounded-[10px] border border-[#4A4C50]/40 bg-white/6 px-7 py-3.5 text-sm font-black text-[#8A8D91] transition hover:border-white/30 hover:text-white"
-                >
-                  지도 보기
-                </a>
-              )}
-            </div>
+            <BranchCTAButtons
+              branchName={branch.name}
+              phone={branch.phone}
+              booking={branch.booking}
+              kakaoChat={branch.kakaoChat}
+              naverMap={branch.naverMap}
+            />
 
             {/* 지점 기본 정보 */}
             <div className="mt-12 flex flex-col gap-2 text-sm" style={{ color: "#5A5C61" }}>

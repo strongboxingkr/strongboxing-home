@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
+import { trackReservationComplete } from "@/lib/gtag";
 
 const branchTimes: Record<string, Record<number, string[]>> = {
   목동점: {
@@ -95,15 +96,7 @@ export default function ConsultationForm() {
         return;
       }
 
-      if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-        (window as any).gtag("event", "generate_lead", {
-          branch: form.branch,
-          reservation_date: form.reservation_date,
-          reservation_time: form.reservation_time,
-          source: "website",
-          form_type: "consultation_reservation",
-        });
-      }
+      trackReservationComplete({ branch_name: form.branch });
 
       alert("방문 상담 예약이 완료되었습니다!");
 

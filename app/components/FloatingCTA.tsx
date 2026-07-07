@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { trackReservationClick } from "@/lib/gtag";
 
 export default function FloatingCTA() {
   const [visible, setVisible] = useState(false);
@@ -23,6 +24,7 @@ export default function FloatingCTA() {
     >
       <a
         href="/reservation"
+        onClick={() => trackReservationClick({ location: "floating_cta" })}
         className="flex items-center justify-center gap-2 w-full rounded-[12px] py-4 text-sm font-black text-white transition-all duration-300 active:scale-[0.98]"
         style={{ background: "#D01E2E" }}
       >
