@@ -236,10 +236,10 @@ export async function generateMetadata({
     yeongdeungpo: "스트롱복싱 영등포점 | 영등포 복싱장 도림동 복싱",
   };
   const metaDescriptions: Record<string, string> = {
-    mokdong:      "목동·오목교 근처 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 맞춤 복싱 수업.",
+    mokdong:      "목동·목5동·오목교 인근 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 맞춤 복싱 수업.",
     sinjeong:     "신정동·양천구 복싱장. 초보자·학생·여성 회원도 편하게 배우는 스트롱복싱 신정점.",
     gaebong:      "개봉·고척동 근처 복싱장. 초보자·다이어트·직장인 복싱을 개인별로 지도합니다.",
-    cheolsan:     "철산·광명 근처 복싱장. 관장 직접 지도, 초보자부터 실전까지 안전하게 배우는 복싱.",
+    cheolsan:     "철산동·광명 복싱장. 관장 직접 지도, 초보자부터 실전까지 안전하게 배우는 복싱.",
     yeongdeungpo: "영등포·도림동 복싱장. 초보자부터 체력관리, 다이어트 복싱까지 맞춤 지도합니다.",
   };
   const title = metaTitles[slug] ?? `${branch.area} 복싱장 | ${branch.fullName}`;
@@ -325,7 +325,7 @@ export default async function BranchPage({
     FROM homepage_posts
     WHERE branch_name = ?
     ORDER BY created_at DESC
-    LIMIT 3
+    LIMIT 5
     `,
     [branch.name]
   );
@@ -630,11 +630,11 @@ const faqJsonLd = {
             <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>NEWS & REVIEW</p>
             <div className="mb-10 flex items-end justify-between gap-4">
               <h2 className="font-black tracking-[-0.05em]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
-                {branch.name} 소식 & 후기
+                {branch.area} 복싱장 소식 & 후기
               </h2>
-              <a href="/blog" className="shrink-0 text-sm font-black text-[#8A8D91] transition hover:text-white">전체 글 →</a>
+              <a href="/blog" className="shrink-0 text-sm font-black text-[#8A8D91] transition hover:text-white">{branch.area} 복싱장 글 전체 보기 →</a>
             </div>
-            <div className="grid gap-5 md:grid-cols-3">
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {relatedPosts.map((post: any) => {
                 const image = getFirstImage(post);
                 return (
@@ -676,6 +676,20 @@ const faqJsonLd = {
                 </a>
                 );
               })}
+            </div>
+            <div className="mt-10 flex flex-wrap gap-3">
+              <a
+                href="/blog"
+                className="rounded-[10px] border border-[#4A4C50]/30 bg-[#141416] px-5 py-3 text-sm font-black text-[#8A8D91] transition hover:border-white/25 hover:text-white"
+              >
+                {branch.area} 복싱장 소식 더 보기 →
+              </a>
+              <a
+                href={`/branches/${slug}`}
+                className="rounded-[10px] border border-[#D01E2E]/40 bg-[#141416] px-5 py-3 text-sm font-black text-[#D01E2E] transition hover:border-[#D01E2E] hover:bg-[#D01E2E] hover:text-white"
+              >
+                {branch.area} 복싱장 상담 예약하기 →
+              </a>
             </div>
           </div>
         </section>

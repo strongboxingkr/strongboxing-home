@@ -277,6 +277,34 @@ export default async function BlogDetailPage({
               </section>
             )}
 
+            {/* ── 해당 지점 링크 ── */}
+            {(() => {
+              const branchLinkMap: Record<string, { slug: string; cta: string; sub: string }> = {
+                "목동점":    { slug: "mokdong",      cta: "목동 복싱장 수업 안내 보기",        sub: "목동·목5동·오목교 인근" },
+                "철산점":    { slug: "cheolsan",     cta: "철산 복싱장 위치와 운영시간 보기",  sub: "철산동·광명 인근" },
+                "개봉점":    { slug: "gaebong",      cta: "개봉 복싱장 상담 예약하기",         sub: "개봉·고척동 인근" },
+                "신정점":    { slug: "sinjeong",     cta: "신정동 복싱장 수업 분위기 보기",    sub: "신정·양천구" },
+                "영등포점":  { slug: "yeongdeungpo", cta: "영등포 복싱장 상담 안내 보기",      sub: "영등포·도림동 인근" },
+              };
+              const bl = branchLinkMap[post.branch_name];
+              if (!bl) return null;
+              return (
+                <section className="mt-16 border-t border-[#4A4C50]/30 pt-12">
+                  <p className="mb-2 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>THIS BRANCH</p>
+                  <a
+                    href={`/branches/${bl.slug}`}
+                    className="group flex items-center justify-between gap-4 rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] px-7 py-6 transition duration-200 hover:border-[#D01E2E]/50 hover:bg-[#1A1212]"
+                  >
+                    <div>
+                      <p className="mb-1 text-xs font-bold" style={{ color: "#5A5C61" }}>{bl.sub}</p>
+                      <p className="text-base font-black text-[#F5F4F1] transition group-hover:text-[#D01E2E]">{bl.cta}</p>
+                    </div>
+                    <span className="shrink-0 text-lg text-[#5A5C61] transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#D01E2E]">→</span>
+                  </a>
+                </section>
+              );
+            })()}
+
             {/* ── 지점 둘러보기 ── */}
             <section className="mt-16 border-t border-[#4A4C50]/30 pt-12">
               <h2 className="mb-6 text-xl font-black" style={{ color: "#8A8D91" }}>
