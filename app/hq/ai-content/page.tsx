@@ -183,16 +183,60 @@ const SEO_TOPICS = [
   "키즈/어린이 복싱",
 ];
 
-const CHECKLIST = [
-  "제목에 지역명 + 복싱장이 들어갔는가?",
-  "description이 80자 이내인가?",
-  "slug가 영어 소문자와 하이픈으로만 되어 있는가?",
-  "본문 첫 문단에 메인 키워드가 자연스럽게 들어갔는가?",
-  "H2 소제목이 3개 이상 있는가?",
-  "FAQ가 3개 포함됐는가?",
-  "이미지 alt가 비어 있지 않은가?",
-  "해당 지점 페이지 내부 링크가 포함됐는가?",
-  "sitemap에 포함될 수 있는 공개 글인가?",
+interface ChecklistItem {
+  label: string;
+  auto: ((r: SeoResult | null) => boolean | null) | null;
+}
+
+const CHECKLIST: ChecklistItem[] = [
+  {
+    label: "제목에 지역명 + 복싱장이 들어갔는가?",
+    auto: r => r ? /복싱장|복싱/.test(r.best_title) : null,
+  },
+  {
+    label: "제목이 50자 이내인가?",
+    auto: r => r ? r.best_title.length <= 50 : null,
+  },
+  {
+    label: "description이 80자 이내인가?",
+    auto: r => r ? r.description.length <= 80 : null,
+  },
+  {
+    label: "slug가 영어 소문자와 하이픈으로만 되어 있는가?",
+    auto: r => r ? /^[a-z0-9-]+$/.test(r.slug) : null,
+  },
+  {
+    label: "slug에 지점 영어명이 포함됐는가? (mokdong/cheolsan/gaebong/sinjeong/yeongdeungpo)",
+    auto: r => r ? /mokdong|cheolsan|gaebong|sinjeong|yeongdeungpo/.test(r.slug) : null,
+  },
+  {
+    label: "본문 첫 문단에 메인 키워드가 자연스럽게 들어갔는가?",
+    auto: null,
+  },
+  {
+    label: "본문이 800자 이상인가?",
+    auto: r => r ? r.body.replace(/<[^>]*>/g, "").length >= 800 : null,
+  },
+  {
+    label: "H2 소제목이 3개 이상 있는가?",
+    auto: r => r ? (r.body.match(/^##\s/gm) ?? []).length >= 3 : null,
+  },
+  {
+    label: "FAQ가 3개 이상 포함됐는가?",
+    auto: r => r ? r.faq.length >= 3 : null,
+  },
+  {
+    label: "이미지 alt가 1개 이상 있는가?",
+    auto: r => r ? r.image_alts.length > 0 && r.image_alts[0].length > 0 : null,
+  },
+  {
+    label: "해당 지점 페이지 내부 링크가 포함됐는가?",
+    auto: r => r ? !!(r.internal_link_url && r.internal_link_text) : null,
+  },
+  {
+    label: "sitemap에 포함될 수 있는 공개 글인가?",
+    auto: null,
+  },
 ];
 
 interface SeoResult {
@@ -372,13 +416,24 @@ function SeoTab() {
           </div>
 
           {/* slug */}
-          <div className="rounded-2xl p-5" style={CS}>
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-[12px] font-bold" style={{ color: "#111827" }}>🔗 Slug</p>
-              <CopyBtn text={result.slug ?? ""} />
-            </div>
-            <code className="text-[13px]" style={{ color: "#374151" }}>{result.slug}</code>
-          </div>
+          {(() => {
+            const slugOk = /^[a-z0-9-]+$/.test(result.slug ?? "");
+            return (
+              <div className="rounded-2xl p-5" style={{ ...CS, borderColor: slugOk ? "#BBF7D0" : "#FECACA" }}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <p className="text-[12px] font-bold" style={{ color: "#111827" }}>🔗 Slug</p>
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                      style={{ background: slugOk ? "#F0FDF4" : "#FEF2F2", color: slugOk ? "#059669" : "#EF3B2D" }}>
+                      {slugOk ? "✅ 유효" : "⚠️ 형식 오류 — 영어 소문자·하이픈만 사용 가능"}
+                    </span>
+                  </div>
+                  <CopyBtn text={result.slug ?? ""} />
+                </div>
+                <code className="text-[13px]" style={{ color: "#374151" }}>{result.slug}</code>
+              </div>
+            );
+          })()}
 
           {/* 본문 */}
           <ResultBox label="📝 본문 (900~1200자)" value={result.body ?? ""} />
@@ -445,21 +500,54 @@ function SeoTab() {
           {/* 발행 전 체크리스트 */}
           <div className="rounded-2xl p-5 space-y-3" style={CS}>
             <p className="text-[12px] font-bold mb-1" style={{ color: "#111827" }}>✅ 발행 전 체크리스트</p>
-            {CHECKLIST.map((item, i) => (
-              <button key={i} onClick={() => toggleCheck(i)}
-                className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-all hover:bg-gray-50"
-                style={{ border: "1px solid #E5E7EB" }}>
-                {checked[i]
-                  ? <CheckSquare size={16} color="#059669" className="shrink-0" />
-                  : <Square size={16} color="#D1D5DB" className="shrink-0" />}
-                <span className="text-[12px]" style={{ color: checked[i] ? "#059669" : "#374151", textDecoration: checked[i] ? "line-through" : "none" }}>{item}</span>
-              </button>
-            ))}
-            <div className="rounded-lg px-4 py-2 mt-1" style={{ background: "#F0FDF4" }}>
-              <span className="text-[12px] font-bold" style={{ color: "#059669" }}>
-                {checked.filter(Boolean).length} / {CHECKLIST.length} 완료
-              </span>
-            </div>
+            {CHECKLIST.map((item, i) => {
+              const autoResult = item.auto ? item.auto(result) : null;
+              const isPass = autoResult === true || (autoResult === null && checked[i]);
+              const isFail = autoResult === false;
+              return (
+                <button key={i}
+                  onClick={() => { if (item.auto === null) toggleCheck(i); }}
+                  className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-all"
+                  style={{
+                    border: `1px solid ${isPass ? "#D1FAE5" : isFail ? "#FEE2E2" : "#E5E7EB"}`,
+                    background: isPass ? "#F0FDF4" : isFail ? "#FFF5F5" : "#FAFAFA",
+                    cursor: item.auto ? "default" : "pointer",
+                  }}>
+                  {isPass
+                    ? <CheckSquare size={16} color="#059669" className="shrink-0" />
+                    : isFail
+                      ? <AlertCircle size={16} color="#DC2626" className="shrink-0" />
+                      : <Square size={16} color="#D1D5DB" className="shrink-0" />}
+                  <div className="flex-1 min-w-0">
+                    <span className="text-[12px]"
+                      style={{ color: isPass ? "#059669" : isFail ? "#DC2626" : "#374151", textDecoration: isPass ? "line-through" : "none" }}>
+                      {item.label}
+                    </span>
+                    {item.auto && autoResult === null && (
+                      <span className="ml-2 text-[10px]" style={{ color: "#9CA3AF" }}>생성 후 자동 확인</span>
+                    )}
+                    {item.auto === null && (
+                      <span className="ml-2 text-[10px]" style={{ color: "#9CA3AF" }}>수동 확인</span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+            {(() => {
+              const passCount = CHECKLIST.filter((item, i) => {
+                const auto = item.auto ? item.auto(result) : null;
+                return auto === true || (auto === null && checked[i]);
+              }).length;
+              const total = CHECKLIST.length;
+              const allPass = passCount === total;
+              return (
+                <div className="rounded-lg px-4 py-2 mt-1" style={{ background: allPass ? "#F0FDF4" : "#F9FAFB" }}>
+                  <span className="text-[12px] font-bold" style={{ color: allPass ? "#059669" : "#374151" }}>
+                    {passCount} / {total} 완료{allPass ? " — 발행 준비 완료! 🎉" : ""}
+                  </span>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}

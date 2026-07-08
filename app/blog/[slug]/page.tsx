@@ -5,6 +5,36 @@ import ViewTracker from "./ViewTracker";
 
 const siteUrl = "https://strongboxing.kr";
 
+function extractFaqFromMarkdown(content: string): Array<{ q: string; a: string }> {
+  const items: Array<{ q: string; a: string }> = [];
+
+  // FAQ 섹션 헤더 찾기
+  const sectionRx = /##\s*(?:FAQ|자주\s*묻는\s*질문|Q&A|궁금한\s*(?:점|질문))[^\n]*\n([\s\S]*?)(?=\n##|$)/i;
+  const sectionMatch = content.match(sectionRx);
+  const section = sectionMatch ? sectionMatch[1] : content;
+
+  // 굵은 글씨 질문 패턴: **Q1. 질문?** 또는 **질문?**
+  const boldQRx = /\*{1,2}(?:Q\d*[.:]\s*)?([^*\n]{5,150}(?:\?|요|까|야))\*{1,2}[^\n]*\n((?:(?!\*{1,2}|\n##)[^\n]+\n?)*)/gi;
+  let match: RegExpExecArray | null;
+  while ((match = boldQRx.exec(section)) !== null) {
+    const q = match[1].trim().replace(/\*+/g, "");
+    const a = match[2].replace(/\*{1,2}/g, "").trim().split(/\n/)[0].trim();
+    if (q.length > 4 && a.length > 4) items.push({ q, a });
+  }
+
+  // 굵은 글씨로 못 찾은 경우 Q:/ A: 패턴 시도
+  if (items.length === 0) {
+    const qaRx = /Q\d*[.:]\s*([^\n]+)\nA\d*[.:]\s*([^\n]+)/gi;
+    while ((match = qaRx.exec(section)) !== null) {
+      const q = match[1].trim();
+      const a = match[2].trim();
+      if (q.length > 4 && a.length > 4) items.push({ q, a });
+    }
+  }
+
+  return items.filter(i => i.q && i.a).slice(0, 10);
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -164,10 +194,13 @@ export default async function BlogDetailPage({
     author: {
       "@type": "Organization",
       name: "스트롱복싱",
+      url: siteUrl,
     },
     publisher: {
       "@type": "Organization",
       name: "스트롱복싱",
+      url: siteUrl,
+      logo: { "@type": "ImageObject", url: `${siteUrl}/icon.png` },
     },
     mainEntityOfPage: `${siteUrl}/blog/${post.slug}`,
     datePublished: post.created_at,
@@ -175,14 +208,43 @@ export default async function BlogDetailPage({
     image: imageUrl ? [imageUrl] : undefined,
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "스트롱복싱", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "블로그", item: `${siteUrl}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${siteUrl}/blog/${post.slug}` },
+    ],
+  };
+
+  const faqItems = extractFaqFromMarkdown(String(post.content || ""));
+  const faqJsonLd = faqItems.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map(item => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  } : null;
+
   return (
     <main className="min-h-screen bg-[#0E0E10] text-white">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(articleJsonLd),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
 
       <article>
         {/* 헤더 */}

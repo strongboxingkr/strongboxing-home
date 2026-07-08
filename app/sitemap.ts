@@ -8,6 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "",
     "/blog",
     "/reservation",
+    "/tools/boxing-calorie",
     "/branches/cheolsan",
     "/branches/gaebong",
     "/branches/mokdong",

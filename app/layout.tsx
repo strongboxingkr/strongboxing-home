@@ -192,6 +192,13 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+
+  alternates: {
+    canonical: "https://strongboxing.kr",
+    types: {
+      "application/rss+xml": "https://strongboxing.kr/feed.xml",
+    },
+  },
 };
 
 export default function RootLayout({

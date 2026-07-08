@@ -87,6 +87,9 @@ ${exclude_expr ? `추가로 제외할 표현: ${exclude_expr}` : ""}
 - 인생이 바뀝니다
 - 누구나 선수처럼
 - 무조건 살 빠집니다
+- 빠르게 살 빠지는
+- 확실한 감량
+- 최고의 다이어트
 - 도보 5분
 - 역 바로 앞
 - 역세권
@@ -126,7 +129,7 @@ ${exclude_expr ? `추가로 제외할 표현: ${exclude_expr}` : ""}
   "titles": ["제목후보1", "제목후보2", "제목후보3"],
   "best_title": "최종 추천 제목 — 지역명+복싱장 포함, 50자 이내",
   "description": "메타 description — 80자 이내",
-  "slug": "영어-소문자-하이픈 — 지점영어명-boxing-주제 형태",
+  "slug": "영어-소문자-하이픈 — 지점영어명-boxing-주제 형태. 지점 영어명 고정: 목동=mokdong, 철산=cheolsan, 개봉=gaebong, 신정=sinjeong (shinjeong 절대 금지), 영등포=yeongdeungpo",
   "body": "본문 전체 — ## H2 소제목 포함, 반드시 고정 인사 두 줄로 시작",
   "faq": [
     {"q": "질문1", "a": "답변1"},

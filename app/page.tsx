@@ -181,16 +181,14 @@ export default async function HomePage() {
                   <span style={{ color: "#F5F4F1" }}>처음이어도</span>
                   <br />
                   <span style={{ WebkitTextStroke: "1.5px #F5F4F1", WebkitTextFillColor: "transparent", color: "transparent" }}>
-                    괜찮습니다.
+                    괜찮습니다
                   </span>
                 </h1>
 
                 <div className="my-7 h-[2px] w-14" style={{ background: "#D01E2E" }} />
 
                 <p className="max-w-md text-sm leading-[2] md:text-base md:leading-[2.1]" style={{ color: "#C9C9C9", wordBreak: "keep-all" }}>
-                  <span style={{ color: "#F5F4F1", fontWeight: 700 }}>관장이 기본기부터 직접 잡아드립니다.</span><br />
-                  자세, 스텝, 미트, 샌드백 — 진도에 맞춰 차근차근.<br />
-                  체력이나 운동 경험 없어도 오늘 바로 시작할 수 있습니다.
+                  <span style={{ color: "#F5F4F1", fontWeight: 700 }}>초보부터 실력자까지, 수준에 맞춘 맞춤형 복싱</span>
                 </p>
 
                 <div className="mt-9 flex flex-wrap gap-3">

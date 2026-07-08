@@ -105,7 +105,7 @@ const branches: any = {
     kakaoMap: "https://place.map.kakao.com/1182676078",
     kakaoChat: "https://pf.kakao.com/_MAKnX/chat",
     description:
-      "광명 철산동 복싱장 스트롱복싱 철산점입니다. 초보자, 여성, 직장인도 목적에 맞춰 기본기부터 안전하게 복싱을 배울 수 있습니다.",
+      "철산동·광명 인근 복싱장. 관장 직접 지도, 초보자부터 실전까지 안전하게 배우는 복싱.",
   },
 
   yeongdeungpo: {
@@ -272,17 +272,25 @@ const branchKeywords: Record<string, string[]> = {
   ],
 };
 
+const BRANCH_AREA_SERVED: Record<string, string[]> = {
+  gaebong:      ["개봉동", "개봉역", "고척동", "오류동", "천왕동", "구로구", "구로"],
+  sinjeong:     ["신정동", "신정네거리", "신월동", "까치산", "화곡동", "양천구"],
+  mokdong:      ["목동", "목5동", "오목교", "오목교역", "목동역", "양천구"],
+  cheolsan:     ["철산동", "철산역", "광명시", "광명", "하안동", "소하동", "광명동", "일직동", "광명사거리"],
+  yeongdeungpo: ["영등포", "도림동", "신길동", "대림동", "영등포구"],
+};
+
 const branchSeoContent: Record<string, any> = {
   cheolsan: {
-    title: "철산 복싱장, 광명에서 제대로 배우는 스트롱복싱 철산점",
+    title: "철산 복싱장, 초보자도 안전하게 배우는 스트롱복싱 철산점",
     description:
-      "광명 철산동 복싱장 스트롱복싱 철산점입니다. 철산동·광명 인근에서 초보자·여성·직장인 모두 목적에 맞춰 기본기부터 안전하게 배울 수 있습니다.",
+      "철산동·광명 복싱장. 관장 직접 지도, 초보자·여성·직장인도 부담 없이 시작하는 복싱 수업.",
     nearby: ["광명시", "철산동", "철산역", "광명사거리", "하안동", "소하동", "광명동", "일직동"],
   },
   mokdong: {
     title: "목동 복싱장, 처음이어도 괜찮은 스트롱복싱 목동점",
     description:
-      "양천구 목동 복싱장 스트롱복싱 목동점입니다. 오목교역 인근에 위치하며, 초보자·학생·여성·직장인 모두 목적과 진도에 맞춰 운동할 수 있습니다.",
+      "목동·목5동·오목교 인근 복싱장. 관장 직접 지도, 초보자·학생·여성·직장인 모두 목적과 진도에 맞춰 운동할 수 있습니다.",
     nearby: ["목동", "오목교", "오목교역", "목동역", "양천구", "신정동"],
   },
   gaebong: {
@@ -331,7 +339,7 @@ export async function generateMetadata({
     mokdong:      "목동·목5동·오목교 인근 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 맞춤 복싱 수업.",
     sinjeong:     "신정동·양천구 복싱장. 초보자·학생·여성 회원도 편하게 배우는 스트롱복싱 신정점.",
     gaebong:      "개봉·고척동 근처 복싱장. 초보자·다이어트·직장인 복싱을 개인별로 지도합니다.",
-    cheolsan:     "철산동·광명 복싱장. 관장 직접 지도, 초보자부터 실전까지 안전하게 배우는 복싱.",
+    cheolsan:     "철산동·광명 복싱장. 관장 직접 지도, 초보자·여성·직장인도 부담 없이 시작하는 복싱 수업.",
     yeongdeungpo: "영등포·도림동 복싱장. 초보자부터 체력관리, 다이어트 복싱까지 맞춤 지도합니다.",
   };
   const title = metaTitles[slug] ?? `${branch.area} 복싱장 | ${branch.fullName}`;
@@ -498,14 +506,8 @@ export default async function BranchPage({
       name: "STRONG BOXING",
       url: "https://strongboxing.kr",
     },
-    areaServed: slug === "cheolsan"
-      ? ["철산동", "철산역", "광명시", "광명", "하안동", "소하동", "광명동", "일직동", "광명사거리", "경기도 광명"]
-      : [
-          branch.area,
-          slug === "gaebong" ? "구로구" : "",
-          slug === "sinjeong" || slug === "mokdong" ? "양천구" : "",
-          slug === "yeongdeungpo" ? "영등포구" : "",
-        ].filter(Boolean),
+    areaServed: BRANCH_AREA_SERVED[slug] ?? [branch.area],
+    hasMap: branch.naverMap || undefined,
     knowsAbout: [
       ...(branchKeywords[slug] || []),
       "복싱 입문",
@@ -681,7 +683,14 @@ const faqJsonLd = {
 
           <div className="hidden md:block">
             <div className="overflow-hidden rounded-[16px]" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.08)" }}>
-              <img src={branch.image} alt={branch.imageAlt || branch.fullName} className="h-[600px] w-full object-cover" style={{ filter: "brightness(0.92)" }} />
+              <img
+                src={branch.image}
+                alt={branch.imageAlt || branch.fullName}
+                className="h-[600px] w-full object-cover"
+                style={{ filter: "brightness(0.92)" }}
+                fetchPriority="high"
+                loading="eager"
+              />
             </div>
           </div>
         </div>

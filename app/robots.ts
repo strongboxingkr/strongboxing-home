@@ -1,20 +1,24 @@
 import type { MetadataRoute } from "next";
 
+const DISALLOW = ["/admin", "/admin-login", "/hq"];
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin"],
+        disallow: DISALLOW,
       },
       {
         userAgent: "Yeti",
         allow: "/",
+        disallow: DISALLOW,
       },
       {
         userAgent: "NaverBot",
         allow: "/",
+        disallow: DISALLOW,
       },
     ],
 
