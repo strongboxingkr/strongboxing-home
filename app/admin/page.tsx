@@ -782,6 +782,13 @@ export default function AdminPage() {
                     <option>여성</option>
                     <option>남성</option>
                     <option>초보자</option>
+                    <option>키즈</option>
+                    <option>가족</option>
+                    <option>커플</option>
+                    <option>부부</option>
+                    <option>부자지간</option>
+                    <option>모자지간</option>
+                    <option>친구들</option>
                   </select>
                 </div>
                 <div>
