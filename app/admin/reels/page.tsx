@@ -2,9 +2,18 @@
 
 import { useEffect, useState } from "react";
 
+function generateReelAlt(branch: string, target: string, training: string, contentType: string) {
+  const branchShort = branch.replace("점", "");
+  return [`스트롱복싱 ${branchShort}점`, target, training, contentType].filter(Boolean).join(" ");
+}
+
 export default function ReelsPage() {
   const [branchName, setBranchName] = useState("철산점");
   const [title, setTitle] = useState("");
+  const [ariaLabel, setAriaLabel] = useState("");
+  const [altTarget, setAltTarget] = useState("");
+  const [altTraining, setAltTraining] = useState("");
+  const [altContentType, setAltContentType] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [reels, setReels] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -127,6 +136,7 @@ export default function ReelsPage() {
           is_muted: isMuted ? 1 : 0,
           branch_name: branchName,
           title,
+          aria_label: ariaLabel || title,
           video_url: finalVideoUrl,
         }),
     });
@@ -143,6 +153,10 @@ export default function ReelsPage() {
     setEditingId(null);
     setIsMuted(false);
     setTitle("");
+    setAriaLabel("");
+    setAltTarget("");
+    setAltTraining("");
+    setAltContentType("");
     setVideoUrl("");
     setVideoFileName("");
     loadReels();
@@ -185,12 +199,92 @@ export default function ReelsPage() {
             <option>영등포점</option>
           </select>
 
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="짧은 제목 예: 철산점 체력운동 시간"
-            className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
-          />
+          {/* SEO 자동생성 */}
+          <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 space-y-3">
+            <p className="text-sm font-bold text-blue-700">SEO 정보 자동 생성</p>
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+                <p className="mb-1 text-xs font-bold text-blue-600">대상/목적</p>
+                <select
+                  value={altTarget}
+                  onChange={(e) => setAltTarget(e.target.value)}
+                  className="w-full rounded-xl border border-blue-200 bg-white p-2 text-sm outline-none"
+                >
+                  <option value="">선택 안함</option>
+                  <option>다이어트</option>
+                  <option>체력증진</option>
+                  <option>성인</option>
+                  <option>여성</option>
+                  <option>남성</option>
+                  <option>초보자</option>
+                </select>
+              </div>
+              <div>
+                <p className="mb-1 text-xs font-bold text-blue-600">운동종류</p>
+                <select
+                  value={altTraining}
+                  onChange={(e) => setAltTraining(e.target.value)}
+                  className="w-full rounded-xl border border-blue-200 bg-white p-2 text-sm outline-none"
+                >
+                  <option value="">선택 안함</option>
+                  <option>복싱PT</option>
+                  <option>복싱스파링</option>
+                  <option>복싱다이어트</option>
+                  <option>복싱체력운동</option>
+                </select>
+              </div>
+              <div>
+                <p className="mb-1 text-xs font-bold text-blue-600">콘텐츠유형</p>
+                <select
+                  value={altContentType}
+                  onChange={(e) => setAltContentType(e.target.value)}
+                  className="w-full rounded-xl border border-blue-200 bg-white p-2 text-sm outline-none"
+                >
+                  <option value="">선택 안함</option>
+                  <option>수업현장</option>
+                  <option>운동영상</option>
+                  <option>이벤트</option>
+                  <option>시설</option>
+                </select>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const auto = generateReelAlt(branchName, altTarget, altTraining, altContentType);
+                setTitle(auto);
+                setAriaLabel(`${auto} 영상`);
+              }}
+              className="rounded-full bg-blue-600 px-5 py-2 text-sm font-black text-white"
+            >
+              title / aria-label 자동 생성
+            </button>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-bold text-zinc-700">
+              제목 (title 속성) <span className="font-normal text-zinc-400">— 표시용 + video title=""</span>
+            </label>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="예: 철산점 복싱PT 수업현장"
+              className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-bold text-zinc-700">
+              aria-label <span className="font-normal text-zinc-400">— 스크린리더용 설명</span>
+              {!ariaLabel.trim() && <span className="ml-2 text-red-400 text-xs">필수</span>}
+            </label>
+            <input
+              value={ariaLabel}
+              onChange={(e) => setAriaLabel(e.target.value)}
+              placeholder="예: 스트롱복싱 철산점 복싱PT 수업현장 영상"
+              className={`w-full rounded-2xl border bg-white p-4 outline-none ${!ariaLabel.trim() ? "border-red-200" : "border-zinc-200"}`}
+            />
+          </div>
 
           <input
             type="file"
@@ -281,6 +375,10 @@ export default function ReelsPage() {
                       setEditingId(reel.id);
                       setBranchName(reel.branch_name);
                       setTitle(reel.title);
+                      setAriaLabel(reel.aria_label || "");
+                      setAltTarget("");
+                      setAltTraining("");
+                      setAltContentType("");
                       setVideoUrl(reel.video_url);
                       setVideoFileName("");
                       setIsMuted(reel.is_muted === 1);

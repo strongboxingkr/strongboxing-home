@@ -25,20 +25,15 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { branch_name, title, video_url, is_muted } = await req.json();
+    const { branch_name, title, aria_label, video_url, is_muted } = await req.json();
 
     await db.query(
       `
       INSERT INTO homepage_reels
-      (
-        branch_name,
-        title,
-        video_url,
-        is_muted
-      )
-      VALUES (?, ?, ?, ?)
+        (branch_name, title, aria_label, video_url, is_muted)
+      VALUES (?, ?, ?, ?, ?)
       `,
-      [branch_name, title, video_url, is_muted || 0]
+      [branch_name, title, aria_label || "", video_url, is_muted || 0]
     );
 
     return Response.json({ ok: true });
@@ -53,7 +48,7 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
-  const { id, branch_name, title, video_url, is_muted } = await req.json();
+  const { id, branch_name, title, aria_label, video_url, is_muted } = await req.json();
 
   await db.query(
     `
@@ -61,11 +56,12 @@ export async function PUT(req: Request) {
     SET
       branch_name = ?,
       title = ?,
+      aria_label = ?,
       video_url = ?,
       is_muted = ?
     WHERE id = ?
     `,
-    [branch_name, title, video_url, is_muted || 0, id]
+    [branch_name, title, aria_label || "", video_url, is_muted || 0, id]
   );
 
   return Response.json({ ok: true });

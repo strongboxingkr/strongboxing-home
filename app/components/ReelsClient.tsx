@@ -77,6 +77,8 @@ function ReelCard({ reel }: { reel: any }) {
     <div className={`shrink-0 overflow-hidden rounded-[10px] border border-white/10 bg-[#1A1A1C] ${isPortrait ? "w-[160px]" : "w-[240px]"}`}>
       <video
         src={reel.video_url}
+        title={reel.title}
+        aria-label={reel.aria_label || reel.title}
         controls={Number(reel.is_muted) !== 1}
         muted
         autoPlay={Number(reel.is_muted) === 1}

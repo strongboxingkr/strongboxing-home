@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ReelsSection() {
   const [rows]: any = await db.query(`
-    SELECT id, branch_name, title, video_url, is_muted
+    SELECT id, branch_name, title, aria_label, video_url, is_muted
     FROM homepage_reels
     WHERE is_active = 1
     ORDER BY sort_order ASC, id DESC
