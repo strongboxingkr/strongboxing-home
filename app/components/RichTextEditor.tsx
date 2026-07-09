@@ -20,12 +20,12 @@ const FONT_SIZES = [
 ];
 
 const COLORS = [
-  { label: "기본", color: "#171717" },
+  { label: "기본", color: "" },         // 색 제거 — 블로그 기본 텍스트 색 사용
   { label: "빨강", color: "#FC5230" },
   { label: "파랑", color: "#3B82F6" },
   { label: "초록", color: "#22C55E" },
   { label: "노랑", color: "#FACC15" },
-  { label: "회색", color: "#71717A" },
+  { label: "회색", color: "#A1A1AA" },  // 밝은 회색 — 검정 배경에서도 보임
 ];
 
 const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichTextEditor(
@@ -101,6 +101,19 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
     onChange(editorRef.current?.innerHTML || "");
   }
 
+  // "기본" 클릭 시 선택 영역 내 인라인 color 스타일만 제거 (bold/italic 유지)
+  function removeColor() {
+    const el = editorRef.current;
+    const sel = window.getSelection();
+    if (!el || !sel || sel.rangeCount === 0) return;
+    el.querySelectorAll<HTMLElement>("[style*='color']").forEach((node) => {
+      if (sel.containsNode(node, true)) {
+        node.style.color = "";
+      }
+    });
+    onChange(el.innerHTML || "");
+  }
+
   const btnClass =
     "rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm font-bold hover:bg-zinc-100 active:bg-zinc-200";
 
@@ -172,17 +185,21 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
         <div className="mx-1 w-px bg-zinc-300" />
         {COLORS.map(({ label, color }) => (
           <button
-            key={color}
+            key={label}
             type="button"
             onMouseDown={(e) => {
               e.preventDefault();
-              exec("foreColor", color);
+              if (color) {
+                exec("foreColor", color);
+              } else {
+                removeColor();
+              }
             }}
             className={btnClass}
-            style={{ color }}
+            style={{ color: color || "#171717" }}
             title={label}
           >
-            ■
+            {color ? "■" : "A"}
           </button>
         ))}
         <button
