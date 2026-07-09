@@ -41,7 +41,7 @@ export default function AdminPage() {
     url: string;
     videoTitle: string;
     ariaLabel: string;
-    posterAlt: string;
+    posterUrl: string;
     caption: string;
   };
   const [pendingVideo, setPendingVideo] = useState<PendingVideo | null>(null);
@@ -272,7 +272,7 @@ export default function AdminPage() {
         url: data.url,
         videoTitle: `스트롱복싱 ${branchShort}점 ${trainingPart} 영상`.trim(),
         ariaLabel: `스트롱복싱 ${branchShort}점 ${[altTarget, altTraining, altContentType || "수업 현장"].filter(Boolean).join(" ")} 영상`.trim(),
-        posterAlt: `스트롱복싱 ${branchShort}점 ${trainingPart} 영상 썸네일`.trim(),
+        posterUrl: "",
         caption: "",
       });
     } catch {
@@ -284,11 +284,19 @@ export default function AdminPage() {
 
   function insertVideo() {
     if (!pendingVideo) return;
-    const { url, videoTitle, ariaLabel, caption } = pendingVideo;
+    const { url, videoTitle, ariaLabel, posterUrl, caption } = pendingVideo;
+
+    const missing = [];
+    if (!videoTitle.trim()) missing.push("title");
+    if (!ariaLabel.trim()) missing.push("aria-label");
+    if (!caption.trim()) missing.push("caption");
+    if (missing.length > 0 && !confirm(`다음 항목이 비어 있어요: ${missing.join(", ")}\n그래도 삽입할까요?`)) return;
+
+    const posterAttr = posterUrl.trim() ? ` poster="${posterUrl.trim()}"` : "";
     const figcaptionHtml = caption.trim()
-      ? `<figcaption style="text-align:center;font-size:14px;color:#666;margin:4px 0 0">${caption.trim()}</figcaption>`
+      ? `<figcaption style="text-align:center;font-size:14px;color:#555;margin:6px 0 0">${caption.trim()}</figcaption>`
       : "";
-    const videoHtml = `<figure style="margin:12px 0"><video src="${url}" controls title="${videoTitle}" aria-label="${ariaLabel}" style="width:100%;border-radius:16px;display:block"></video>${figcaptionHtml}</figure>`;
+    const videoHtml = `<figure style="margin:12px 0"><video src="${url}" controls${posterAttr} title="${videoTitle}" aria-label="${ariaLabel}" style="width:100%;border-radius:16px;display:block"></video>${figcaptionHtml}</figure>`;
     editorRef.current?.insertHtml(videoHtml);
     setPendingVideo(null);
     alert("영상이 본문에 추가됐어!");
@@ -918,61 +926,66 @@ export default function AdminPage() {
                 <video src={pendingVideo.url} controls className="w-full rounded-2xl" style={{maxHeight: "200px"}} />
 
                 <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 space-y-3">
-                  <p className="text-sm font-bold text-amber-700">영상 SEO / 접근성 정보</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-bold text-amber-700">영상 SEO / 접근성 정보</p>
+                    <div className="flex gap-1">
+                      {[pendingVideo.videoTitle, pendingVideo.ariaLabel, pendingVideo.caption].map((v, i) => (
+                        <span key={i} className={`h-2 w-2 rounded-full ${v.trim() ? "bg-green-400" : "bg-red-300"}`} />
+                      ))}
+                    </div>
+                  </div>
 
                   <div>
-                    <label className="mb-1 block text-xs font-bold text-amber-700">
-                      title <span className="font-normal text-amber-500">— video title="" 속성 (브라우저 툴팁, SEO)</span>
+                    <label className="mb-1 flex items-center gap-1 text-xs font-bold text-amber-700">
+                      title
+                      {!pendingVideo.videoTitle.trim() && <span className="text-red-400">필수</span>}
+                      <span className="font-normal text-amber-500">— video title="" 속성 (SEO, 브라우저 툴팁)</span>
                     </label>
                     <input
                       value={pendingVideo.videoTitle}
                       onChange={(e) => setPendingVideo((p) => p ? {...p, videoTitle: e.target.value} : p)}
-                      className="w-full rounded-xl border border-amber-200 bg-white p-3 text-sm outline-none"
+                      className={`w-full rounded-xl border bg-white p-3 text-sm outline-none ${!pendingVideo.videoTitle.trim() ? "border-red-200" : "border-amber-200"}`}
                     />
                   </div>
 
                   <div>
-                    <label className="mb-1 block text-xs font-bold text-amber-700">
-                      aria-label <span className="font-normal text-amber-500">— 스크린리더용 영상 설명</span>
+                    <label className="mb-1 flex items-center gap-1 text-xs font-bold text-amber-700">
+                      aria-label
+                      {!pendingVideo.ariaLabel.trim() && <span className="text-red-400">필수</span>}
+                      <span className="font-normal text-amber-500">— 스크린리더용 영상 설명</span>
                     </label>
                     <input
                       value={pendingVideo.ariaLabel}
                       onChange={(e) => setPendingVideo((p) => p ? {...p, ariaLabel: e.target.value} : p)}
-                      className="w-full rounded-xl border border-amber-200 bg-white p-3 text-sm outline-none"
+                      className={`w-full rounded-xl border bg-white p-3 text-sm outline-none ${!pendingVideo.ariaLabel.trim() ? "border-red-200" : "border-amber-200"}`}
                     />
                   </div>
 
                   <div>
                     <label className="mb-1 block text-xs font-bold text-amber-700">
-                      poster 이미지 alt <span className="font-normal text-amber-500">— poster img를 따로 삽입할 경우 사용할 alt</span>
+                      poster URL <span className="font-normal text-amber-500">— 재생 전 표시할 썸네일 이미지 (선택)</span>
                     </label>
-                    <div className="flex gap-2 items-center">
-                      <input
-                        value={pendingVideo.posterAlt}
-                        onChange={(e) => setPendingVideo((p) => p ? {...p, posterAlt: e.target.value} : p)}
-                        className="flex-1 rounded-xl border border-amber-200 bg-white p-3 text-sm outline-none"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => { navigator.clipboard.writeText(pendingVideo.posterAlt); }}
-                        className="rounded-xl border border-amber-200 bg-white px-3 py-3 text-xs font-bold text-amber-600 whitespace-nowrap"
-                      >
-                        복사
-                      </button>
-                    </div>
-                    <p className="mt-1 text-xs text-amber-400">이 값은 HTML에 직접 삽입되지 않아요. poster img 삽입 시 복사해서 사용하세요.</p>
+                    <input
+                      value={pendingVideo.posterUrl}
+                      onChange={(e) => setPendingVideo((p) => p ? {...p, posterUrl: e.target.value} : p)}
+                      placeholder="https://... (비워두면 poster 속성 생략)"
+                      className="w-full rounded-xl border border-amber-200 bg-white p-3 text-sm outline-none"
+                    />
+                    <p className="mt-1 text-xs text-amber-400">입력 시 poster="..." 속성이 video에 추가됩니다. poster 이미지 자체의 설명은 aria-label에 포함시켜 주세요.</p>
                   </div>
 
                   <div>
-                    <label className="mb-1 block text-xs font-bold text-amber-700">
-                      caption <span className="font-normal text-amber-500">— 영상 아래 보이는 설명 문구 (선택)</span>
+                    <label className="mb-1 flex items-center gap-1 text-xs font-bold text-amber-700">
+                      caption
+                      {!pendingVideo.caption.trim() && <span className="text-amber-400">권장</span>}
+                      <span className="font-normal text-amber-500">— figcaption으로 영상 아래 노출되는 설명 문구</span>
                     </label>
                     <textarea
                       value={pendingVideo.caption}
                       onChange={(e) => setPendingVideo((p) => p ? {...p, caption: e.target.value} : p)}
                       rows={2}
-                      placeholder="예: 철산점에서 진행된 복싱 PT 수업 현장입니다."
-                      className="w-full rounded-xl border border-amber-200 bg-white p-3 text-sm outline-none resize-none"
+                      placeholder="예: 철산점에서 진행된 복싱 PT 수업 현장입니다. 기본 자세부터 미트 운동까지 진행됩니다."
+                      className={`w-full rounded-xl border bg-white p-3 text-sm outline-none resize-none ${!pendingVideo.caption.trim() ? "border-amber-300" : "border-amber-200"}`}
                     />
                   </div>
                 </div>
