@@ -4,6 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import RichTextEditor, { RichTextEditorHandle } from "@/app/components/RichTextEditor";
 import MosaicEditor from "@/app/components/MosaicEditor";
 
+function generateAlt(branch: string, target: string, training: string, contentType: string) {
+  const branchShort = branch.replace("점", "");
+  return [`스트롱복싱 ${branchShort}점`, target, training, contentType].filter(Boolean).join(" ");
+}
+
 function makeSlug(text: string) {
   return text
     .trim()
@@ -27,7 +32,10 @@ export default function AdminPage() {
   const [popupEnd, setPopupEnd] = useState("");
 
   const [layoutMode, setLayoutMode] = useState<"1열" | "2열" | "3열">("1열");
-  const [pendingImages, setPendingImages] = useState<string[]>([]);
+  const [pendingImages, setPendingImages] = useState<Array<{url: string; alt: string}>>([]);
+  const [altTarget, setAltTarget] = useState("");
+  const [altTraining, setAltTraining] = useState("");
+  const [altContentType, setAltContentType] = useState("");
   const [aiImages, setAiImages] = useState<string[]>([]); // AI 글 생성용 (레이아웃 무관하게 누적)
 
   const [saving, setSaving] = useState(false);
@@ -211,11 +219,14 @@ export default function AdminPage() {
       }
 
       if (layoutMode === "1열") {
-        const imageHtml = `<img src="${data.url}" style="width:100%;border-radius:16px;margin:12px 0" />`;
+        const autoAlt = generateAlt(branchName, altTarget, altTraining, altContentType);
+        const finalAlt = prompt("이미지 alt 텍스트 (SEO용, 수정 가능)", autoAlt) ?? autoAlt;
+        const imageHtml = `<img src="${data.url}" alt="${finalAlt}" style="width:100%;border-radius:16px;margin:12px 0" />`;
         editorRef.current?.insertHtml(imageHtml);
         alert("이미지가 본문에 추가됐어!");
       } else {
-        setPendingImages((prev) => [...prev, data.url]);
+        const autoAlt = generateAlt(branchName, altTarget, altTraining, altContentType);
+        setPendingImages((prev) => [...prev, {url: data.url, alt: autoAlt}]);
       }
     } catch (error) {
       console.error(error);
@@ -247,10 +258,12 @@ export default function AdminPage() {
       }
 
       const videoTitle = prompt("영상 제목을 입력하세요 (선택 사항)", file.name.replace(/\.[^.]+$/, ""));
+      const autoAlt = generateAlt(branchName, altTarget, altTraining, altContentType || "운동영상");
+      const videoAlt = prompt("영상 aria-label (SEO용, 수정 가능)", autoAlt) ?? autoAlt;
       const titleHtml = videoTitle?.trim()
         ? `<p style="text-align:center;font-size:14px;color:#666;margin:4px 0 12px">${videoTitle.trim()}</p>`
         : "";
-      const videoHtml = `<div style="margin:12px 0"><video src="${data.url}" controls style="width:100%;border-radius:16px;display:block"></video>${titleHtml}</div>`;
+      const videoHtml = `<div style="margin:12px 0"><video src="${data.url}" controls aria-label="${videoAlt}" style="width:100%;border-radius:16px;display:block"></video>${titleHtml}</div>`;
       editorRef.current?.insertHtml(videoHtml);
       alert("영상이 본문에 추가됐어!");
     } catch {
@@ -267,7 +280,7 @@ export default function AdminPage() {
     }
     const cols = layoutMode === "2열" ? 2 : 3;
     const imgs = pendingImages
-      .map((url) => `<img src="${url}" alt="" />`)
+      .map((img) => `<img src="${img.url}" alt="${img.alt}" />`)
       .join("\n");
     const gallery = `<div class="gallery-grid gallery-${cols}col">${imgs}</div>`;
     editorRef.current?.insertHtml(gallery);
@@ -723,6 +736,59 @@ export default function AdminPage() {
           <div className="rounded-[28px] border border-zinc-200 bg-white p-5 space-y-4">
             <label className="block font-bold">사진 삽입</label>
 
+            <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 space-y-3">
+              <p className="text-sm font-bold text-blue-700">SEO Alt 텍스트 설정 <span className="font-normal text-blue-500">(업로드 시 자동 생성됨)</span></p>
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <p className="mb-1 text-xs text-blue-600 font-bold">대상/목적</p>
+                  <select
+                    value={altTarget}
+                    onChange={(e) => setAltTarget(e.target.value)}
+                    className="w-full rounded-xl border border-blue-200 bg-white p-2 text-sm outline-none"
+                  >
+                    <option value="">선택 안함</option>
+                    <option>다이어트</option>
+                    <option>체력증진</option>
+                    <option>성인</option>
+                    <option>여성</option>
+                    <option>남성</option>
+                    <option>초보자</option>
+                  </select>
+                </div>
+                <div>
+                  <p className="mb-1 text-xs text-blue-600 font-bold">운동종류</p>
+                  <select
+                    value={altTraining}
+                    onChange={(e) => setAltTraining(e.target.value)}
+                    className="w-full rounded-xl border border-blue-200 bg-white p-2 text-sm outline-none"
+                  >
+                    <option value="">선택 안함</option>
+                    <option>복싱PT</option>
+                    <option>복싱스파링</option>
+                    <option>복싱다이어트</option>
+                    <option>복싱체력운동</option>
+                  </select>
+                </div>
+                <div>
+                  <p className="mb-1 text-xs text-blue-600 font-bold">콘텐츠유형</p>
+                  <select
+                    value={altContentType}
+                    onChange={(e) => setAltContentType(e.target.value)}
+                    className="w-full rounded-xl border border-blue-200 bg-white p-2 text-sm outline-none"
+                  >
+                    <option value="">선택 안함</option>
+                    <option>수업현장</option>
+                    <option>운동영상</option>
+                    <option>이벤트</option>
+                    <option>시설</option>
+                  </select>
+                </div>
+              </div>
+              <p className="text-xs text-blue-500">
+                미리보기: <strong>{generateAlt(branchName, altTarget, altTraining, altContentType) || `스트롱복싱 ${branchName.replace("점", "")}점`}</strong>
+              </p>
+            </div>
+
             <div>
               <p className="mb-2 text-sm text-zinc-500">레이아웃 선택</p>
               <div className="flex gap-2">
@@ -765,8 +831,16 @@ export default function AdminPage() {
                 </p>
                 {pendingImages.length > 0 && (
                   <div className={`grid gap-2 mb-3 ${layoutMode === "2열" ? "grid-cols-2" : "grid-cols-3"}`}>
-                    {pendingImages.map((url, i) => (
-                      <img key={i} src={url} className="w-full rounded-xl object-cover aspect-square" />
+                    {pendingImages.map((img, i) => (
+                      <div key={i} className="flex flex-col gap-1">
+                        <img src={img.url} className="w-full rounded-xl object-cover aspect-square" />
+                        <input
+                          value={img.alt}
+                          onChange={(e) => setPendingImages((prev) => prev.map((item, idx) => idx === i ? {...item, alt: e.target.value} : item))}
+                          className="w-full rounded-lg border border-zinc-200 bg-white px-2 py-1 text-xs outline-none"
+                          placeholder="alt 텍스트"
+                        />
+                      </div>
                     ))}
                   </div>
                 )}
