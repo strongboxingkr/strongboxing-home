@@ -154,16 +154,83 @@ button[type="button"] {
 .gallery-grid {
   display: grid !important;
   gap: 12px;
-  margin: 16px 0;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 100%;
 }
-.gallery-2col { grid-template-columns: repeat(2, 1fr) !important; }
-.gallery-3col { grid-template-columns: repeat(3, 1fr) !important; }
+/* 기존 2열/3열 — 하위 호환 유지 + minmax로 줄바꿈 버그 수정 */
+.gallery-2col { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.gallery-3col { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
 .gallery-grid img {
   width: 100% !important;
+  min-width: 0 !important;
   height: 200px !important;
   object-fit: cover !important;
   border-radius: 16px;
   margin: 0 !important;
   display: block;
+}
+
+/* 3열 콜라주 A: 위 2장 + 아래 1장 */
+/* 3열 콜라주 B: 위 1장 + 아래 2장 */
+.gallery-3col-2top,
+.gallery-3col-1top {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 100%;
+}
+.gallery-3col-2top img,
+.gallery-3col-1top img {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 200px !important;
+  object-fit: cover !important;
+  border-radius: 16px;
+  margin: 0 !important;
+  display: block;
+}
+/* A타입: 3번째 이미지가 아래 전체폭 */
+.gallery-3col-2top img:nth-child(3) {
+  grid-column: span 2;
+  height: 240px !important;
+}
+/* B타입: 1번째 이미지가 위 전체폭 */
+.gallery-3col-1top img:nth-child(1) {
+  grid-column: span 2;
+  height: 240px !important;
+}
+
+@media (max-width: 480px) {
+  .gallery-grid,
+  .gallery-3col-2top,
+  .gallery-3col-1top {
+    gap: 8px;
+  }
+  .gallery-grid img,
+  .gallery-3col-2top img,
+  .gallery-3col-1top img {
+    height: 160px !important;
+  }
+  .gallery-3col-2top img:nth-child(3),
+  .gallery-3col-1top img:nth-child(1) {
+    height: 190px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .gallery-2col,
+  .gallery-3col,
+  .gallery-3col-2top,
+  .gallery-3col-1top {
+    grid-template-columns: 1fr !important;
+  }
+  .gallery-3col-2top img:nth-child(3),
+  .gallery-3col-1top img:nth-child(1) {
+    grid-column: span 1;
+    height: 160px !important;
+  }
 }
 

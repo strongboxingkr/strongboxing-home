@@ -9,6 +9,13 @@ function generateAlt(branch: string, target: string, training: string, contentTy
   return [`스트롱복싱 ${branchShort}점`, target, training, contentType].filter(Boolean).join(" ");
 }
 
+const MEANINGLESS_ALT = /^(image|photo|img|picture|pic|screenshot|file|untitled|\d+|IMG_?\d*|DSC_?\d*|DCIM_?\d*)$/i;
+function sanitizeAlt(alt: string, fallback: string): string {
+  const t = alt.trim();
+  if (!t || MEANINGLESS_ALT.test(t)) return fallback;
+  return t;
+}
+
 function makeSlug(text: string) {
   return text
     .trim()
@@ -32,6 +39,7 @@ export default function AdminPage() {
   const [popupEnd, setPopupEnd] = useState("");
 
   const [layoutMode, setLayoutMode] = useState<"1열" | "2열" | "3열">("1열");
+  const [gallery3Mode, setGallery3Mode] = useState<"2top" | "1top">("2top");
   const [pendingImages, setPendingImages] = useState<Array<{url: string; alt: string}>>([]);
   const [altTarget, setAltTarget] = useState("");
   const [altTraining, setAltTraining] = useState("");
@@ -229,7 +237,8 @@ export default function AdminPage() {
 
       if (layoutMode === "1열") {
         const autoAlt = generateAlt(branchName, altTarget, altTraining, altContentType);
-        const finalAlt = prompt("이미지 alt 텍스트 (SEO용, 수정 가능)", autoAlt) ?? autoAlt;
+        const inputAlt = prompt("이미지 alt 텍스트 (SEO용, 수정 가능)", autoAlt) ?? autoAlt;
+        const finalAlt = sanitizeAlt(inputAlt, autoAlt);
         const imageHtml = `<img src="${data.url}" alt="${finalAlt}" style="width:100%;border-radius:16px;margin:12px 0" />`;
         editorRef.current?.insertHtml(imageHtml);
         alert("이미지가 본문에 추가됐어!");
@@ -307,14 +316,22 @@ export default function AdminPage() {
       alert("사진을 먼저 업로드해줘.");
       return;
     }
-    const cols = layoutMode === "2열" ? 2 : 3;
+    const autoAlt = generateAlt(branchName, altTarget, altTraining, altContentType);
     const imgs = pendingImages
-      .map((img) => `<img src="${img.url}" alt="${img.alt}" />`)
+      .map((img) => `<img src="${img.url}" alt="${sanitizeAlt(img.alt, autoAlt)}" />`)
       .join("\n");
-    const gallery = `<div class="gallery-grid gallery-${cols}col">${imgs}</div>`;
+
+    let galleryClass = "gallery-grid gallery-2col";
+    if (layoutMode === "3열") {
+      galleryClass = gallery3Mode === "1top"
+        ? "gallery-grid gallery-3col-1top"
+        : "gallery-grid gallery-3col-2top";
+    }
+
+    const gallery = `<div class="${galleryClass}">${imgs}</div>`;
     editorRef.current?.insertHtml(gallery);
     setPendingImages([]);
-    alert(`${layoutMode} 갤러리가 본문에 추가됐어!`);
+    alert(`갤러리가 본문에 추가됐어!`);
   }
 
   async function handleSave() {
@@ -833,24 +850,63 @@ export default function AdminPage() {
               </p>
             </div>
 
-            <div>
-              <p className="mb-2 text-sm text-zinc-500">레이아웃 선택</p>
-              <div className="flex gap-2">
-                {(["1열", "2열", "3열"] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => { setLayoutMode(mode); setPendingImages([]); }}
-                    className={`rounded-full px-5 py-2 text-sm font-black transition ${
-                      layoutMode === mode
-                        ? "bg-[#FC5230] text-white"
-                        : "border border-zinc-200 text-zinc-500"
-                    }`}
-                  >
-                    {mode}
-                  </button>
-                ))}
+            <div className="space-y-3">
+              <div>
+                <p className="mb-2 text-sm text-zinc-500">레이아웃 선택</p>
+                <div className="flex gap-2">
+                  {(["1열", "2열", "3열"] as const).map((mode) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => { setLayoutMode(mode); setPendingImages([]); }}
+                      className={`rounded-full px-5 py-2 text-sm font-black transition ${
+                        layoutMode === mode
+                          ? "bg-[#FC5230] text-white"
+                          : "border border-zinc-200 text-zinc-500"
+                      }`}
+                    >
+                      {mode}
+                    </button>
+                  ))}
+                </div>
               </div>
+
+              {layoutMode === "3열" && (
+                <div>
+                  <p className="mb-2 text-sm text-zinc-500">콜라주 형태 선택</p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setGallery3Mode("2top")}
+                      className={`flex-1 rounded-full px-4 py-2 text-xs font-black transition ${
+                        gallery3Mode === "2top"
+                          ? "bg-[#FC5230] text-white"
+                          : "border border-zinc-200 text-zinc-500"
+                      }`}
+                    >
+                      ■■ / ████ 위 2장 + 아래 1장
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGallery3Mode("1top")}
+                      className={`flex-1 rounded-full px-4 py-2 text-xs font-black transition ${
+                        gallery3Mode === "1top"
+                          ? "bg-[#FC5230] text-white"
+                          : "border border-zinc-200 text-zinc-500"
+                      }`}
+                    >
+                      ████ / ■■ 위 1장 + 아래 2장
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {layoutMode === "2열" && pendingImages.length > 0 && pendingImages.length % 2 !== 0 && (
+                <p className="text-xs text-amber-500">2열 레이아웃은 2장 또는 짝수 장을 추천합니다. (현재 {pendingImages.length}장)</p>
+              )}
+              {layoutMode === "3열" && pendingImages.length > 0 && pendingImages.length !== 3 && (
+                <p className="text-xs text-amber-500">3열 콜라주는 3장일 때 가장 예쁘게 표시됩니다. (현재 {pendingImages.length}장)</p>
+              )}
             </div>
 
             <input
@@ -874,7 +930,7 @@ export default function AdminPage() {
                   사진 {pendingImages.length}장 선택됨 — 다 올리면 아래 버튼 눌러요
                 </p>
                 {pendingImages.length > 0 && (
-                  <div className={`grid gap-2 mb-3 ${layoutMode === "2열" ? "grid-cols-2" : "grid-cols-3"}`}>
+                  <div className={`grid gap-2 mb-3 ${layoutMode === "2열" ? "grid-cols-2" : "grid-cols-2"}`}>
                     {pendingImages.map((img, i) => (
                       <div key={i} className="flex flex-col gap-1">
                         <img src={img.url} className="w-full rounded-xl object-cover aspect-square" />
@@ -896,7 +952,9 @@ export default function AdminPage() {
                       disabled={pendingImages.length === 0}
                       className="flex-1 rounded-full bg-[#FC5230] px-5 py-3 text-sm font-black text-white disabled:opacity-40"
                     >
-                      {layoutMode} 갤러리 본문에 삽입
+                      {layoutMode === "3열"
+                        ? `3열 콜라주 (${gallery3Mode === "2top" ? "위2+아래1" : "위1+아래2"}) 삽입`
+                        : `${layoutMode} 갤러리 본문에 삽입`}
                     </button>
                     <button
                       type="button"
