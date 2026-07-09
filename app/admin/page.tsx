@@ -793,7 +793,15 @@ export default function AdminPage() {
                   >
                     <option value="">선택 안함</option>
                     <option>복싱PT</option>
-                    <option>복싱스파링</option>
+                    <option>그룹수업</option>
+                    <option>미트치기</option>
+                    <option>스파링</option>
+                    <option>샌드백치기</option>
+                    <option>샌드백연습</option>
+                    <option>기초연습</option>
+                    <option>자세연습</option>
+                    <option>줄넘기</option>
+                    <option>몸풀기</option>
                     <option>복싱다이어트</option>
                     <option>복싱체력운동</option>
                   </select>
