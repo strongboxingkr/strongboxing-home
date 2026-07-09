@@ -36,6 +36,15 @@ export default function AdminPage() {
   const [altTarget, setAltTarget] = useState("");
   const [altTraining, setAltTraining] = useState("");
   const [altContentType, setAltContentType] = useState("");
+
+  type PendingVideo = {
+    url: string;
+    videoTitle: string;
+    ariaLabel: string;
+    posterAlt: string;
+    caption: string;
+  };
+  const [pendingVideo, setPendingVideo] = useState<PendingVideo | null>(null);
   const [aiImages, setAiImages] = useState<string[]>([]); // AI 글 생성용 (레이아웃 무관하게 누적)
 
   const [saving, setSaving] = useState(false);
@@ -257,20 +266,32 @@ export default function AdminPage() {
         return;
       }
 
-      const videoTitle = prompt("영상 제목을 입력하세요 (선택 사항)", file.name.replace(/\.[^.]+$/, ""));
-      const autoAlt = generateAlt(branchName, altTarget, altTraining, altContentType || "운동영상");
-      const videoAlt = prompt("영상 aria-label (SEO용, 수정 가능)", autoAlt) ?? autoAlt;
-      const titleHtml = videoTitle?.trim()
-        ? `<p style="text-align:center;font-size:14px;color:#666;margin:4px 0 12px">${videoTitle.trim()}</p>`
-        : "";
-      const videoHtml = `<div style="margin:12px 0"><video src="${data.url}" controls aria-label="${videoAlt}" style="width:100%;border-radius:16px;display:block"></video>${titleHtml}</div>`;
-      editorRef.current?.insertHtml(videoHtml);
-      alert("영상이 본문에 추가됐어!");
+      const branchShort = branchName.replace("점", "");
+      const trainingPart = [altTraining, altContentType].filter(Boolean).join(" ");
+      setPendingVideo({
+        url: data.url,
+        videoTitle: `스트롱복싱 ${branchShort}점 ${trainingPart} 영상`.trim(),
+        ariaLabel: `스트롱복싱 ${branchShort}점 ${[altTarget, altTraining, altContentType || "수업 현장"].filter(Boolean).join(" ")} 영상`.trim(),
+        posterAlt: `스트롱복싱 ${branchShort}점 ${trainingPart} 영상 썸네일`.trim(),
+        caption: "",
+      });
     } catch {
       alert("영상 업로드 실패 ㅠ");
     } finally {
       setUploadingVideo(false);
     }
+  }
+
+  function insertVideo() {
+    if (!pendingVideo) return;
+    const { url, videoTitle, ariaLabel, caption } = pendingVideo;
+    const figcaptionHtml = caption.trim()
+      ? `<figcaption style="text-align:center;font-size:14px;color:#666;margin:4px 0 0">${caption.trim()}</figcaption>`
+      : "";
+    const videoHtml = `<figure style="margin:12px 0"><video src="${url}" controls title="${videoTitle}" aria-label="${ariaLabel}" style="width:100%;border-radius:16px;display:block"></video>${figcaptionHtml}</figure>`;
+    editorRef.current?.insertHtml(videoHtml);
+    setPendingVideo(null);
+    alert("영상이 본문에 추가됐어!");
   }
 
   function insertGallery() {
@@ -873,20 +894,106 @@ export default function AdminPage() {
 
           <div className="rounded-[28px] border border-zinc-200 bg-white p-5 space-y-4">
             <label className="block font-bold">영상 삽입</label>
-            <input
-              type="file"
-              accept="video/*"
-              disabled={uploadingVideo}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleVideoUpload(file);
-                e.target.value = "";
-              }}
-              className="w-full rounded-2xl border border-zinc-200 bg-white p-4 disabled:opacity-50"
-            />
-            <p className="text-sm text-zinc-400">영상 선택하면 바로 본문에 삽입돼요</p>
-            {uploadingVideo && (
-              <p className="text-sm font-bold text-[#FC5230]">영상 업로드 중...</p>
+
+            {!pendingVideo ? (
+              <>
+                <input
+                  type="file"
+                  accept="video/*"
+                  disabled={uploadingVideo}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleVideoUpload(file);
+                    e.target.value = "";
+                  }}
+                  className="w-full rounded-2xl border border-zinc-200 bg-white p-4 disabled:opacity-50"
+                />
+                <p className="text-sm text-zinc-400">영상 선택 후 SEO 정보 입력하고 본문에 삽입해요</p>
+                {uploadingVideo && (
+                  <p className="text-sm font-bold text-[#FC5230]">영상 업로드 중...</p>
+                )}
+              </>
+            ) : (
+              <div className="space-y-3">
+                <video src={pendingVideo.url} controls className="w-full rounded-2xl" style={{maxHeight: "200px"}} />
+
+                <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 space-y-3">
+                  <p className="text-sm font-bold text-amber-700">영상 SEO / 접근성 정보</p>
+
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-amber-700">
+                      title <span className="font-normal text-amber-500">— video title="" 속성 (브라우저 툴팁, SEO)</span>
+                    </label>
+                    <input
+                      value={pendingVideo.videoTitle}
+                      onChange={(e) => setPendingVideo((p) => p ? {...p, videoTitle: e.target.value} : p)}
+                      className="w-full rounded-xl border border-amber-200 bg-white p-3 text-sm outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-amber-700">
+                      aria-label <span className="font-normal text-amber-500">— 스크린리더용 영상 설명</span>
+                    </label>
+                    <input
+                      value={pendingVideo.ariaLabel}
+                      onChange={(e) => setPendingVideo((p) => p ? {...p, ariaLabel: e.target.value} : p)}
+                      className="w-full rounded-xl border border-amber-200 bg-white p-3 text-sm outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-amber-700">
+                      poster 이미지 alt <span className="font-normal text-amber-500">— poster img를 따로 삽입할 경우 사용할 alt</span>
+                    </label>
+                    <div className="flex gap-2 items-center">
+                      <input
+                        value={pendingVideo.posterAlt}
+                        onChange={(e) => setPendingVideo((p) => p ? {...p, posterAlt: e.target.value} : p)}
+                        className="flex-1 rounded-xl border border-amber-200 bg-white p-3 text-sm outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => { navigator.clipboard.writeText(pendingVideo.posterAlt); }}
+                        className="rounded-xl border border-amber-200 bg-white px-3 py-3 text-xs font-bold text-amber-600 whitespace-nowrap"
+                      >
+                        복사
+                      </button>
+                    </div>
+                    <p className="mt-1 text-xs text-amber-400">이 값은 HTML에 직접 삽입되지 않아요. poster img 삽입 시 복사해서 사용하세요.</p>
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-amber-700">
+                      caption <span className="font-normal text-amber-500">— 영상 아래 보이는 설명 문구 (선택)</span>
+                    </label>
+                    <textarea
+                      value={pendingVideo.caption}
+                      onChange={(e) => setPendingVideo((p) => p ? {...p, caption: e.target.value} : p)}
+                      rows={2}
+                      placeholder="예: 철산점에서 진행된 복싱 PT 수업 현장입니다."
+                      className="w-full rounded-xl border border-amber-200 bg-white p-3 text-sm outline-none resize-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={insertVideo}
+                    className="flex-1 rounded-full bg-[#FC5230] py-3 text-sm font-black text-white"
+                  >
+                    본문에 삽입
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPendingVideo(null)}
+                    className="rounded-full border border-zinc-200 px-5 py-3 text-sm font-bold"
+                  >
+                    취소
+                  </button>
+                </div>
+              </div>
             )}
           </div>
 
