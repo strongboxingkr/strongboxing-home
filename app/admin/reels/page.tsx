@@ -164,25 +164,40 @@ export default function ReelsPage() {
 
   async function uploadVideo(file: File) {
     setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
 
-    const formData = new FormData();
-    formData.append("file", file);
+      const res = await fetch("/api/reels-upload", {
+        method: "POST",
+        body: formData,
+      });
 
-    const res = await fetch("/api/reels-upload", {
-      method: "POST",
-      body: formData,
-    });
+      if (res.status === 413) {
+        alert("파일이 너무 큽니다. 500MB 이하 영상만 업로드 가능합니다.");
+        return;
+      }
 
-    const data = await res.json();
-    setUploading(false);
+      if (!res.ok && res.headers.get("content-type")?.includes("text/html")) {
+        alert(`업로드 실패 (HTTP ${res.status}). 서버 설정을 확인해주세요.`);
+        return;
+      }
 
-    if (!data.ok) {
-      alert(data.message || "영상 업로드 실패");
-      return;
+      const data = await res.json();
+
+      if (!data.ok) {
+        alert(data.message || "영상 업로드 실패");
+        return;
+      }
+
+      setVideoUrl(data.url);
+      alert("영상 업로드 완료!");
+    } catch (err) {
+      alert("업로드 중 오류가 발생했습니다. 네트워크 상태를 확인해주세요.");
+      console.error("영상 업로드 오류:", err);
+    } finally {
+      setUploading(false);
     }
-
-    setVideoUrl(data.url);
-    alert("영상 업로드 완료!");
   }
 
   async function saveReel() {
