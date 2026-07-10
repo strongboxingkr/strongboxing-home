@@ -10,6 +10,7 @@ const PROSE =
   "prose-h2:text-3xl prose-h2:mt-14 prose-h2:mb-5 " +
   "prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-4 " +
   "prose-p:leading-9 prose-p:text-zinc-200 prose-p:my-6 " +
+  "[&>div:not([class])]:my-5 [&>div:not([class])]:leading-9 [&>div:not([class])]:text-zinc-200 " +
   /* 리스트 */
   "[&_ul]:my-6 [&_ul]:list-disc [&_ul]:pl-6 " +
   "[&_ol]:my-6 [&_ol]:list-decimal [&_ol]:pl-6 " +

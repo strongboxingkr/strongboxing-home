@@ -40,6 +40,7 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
   useEffect(() => {
     if (editorRef.current) {
       editorRef.current.innerHTML = value;
+      document.execCommand("defaultParagraphSeparator", false, "p");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
