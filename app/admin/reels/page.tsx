@@ -2,18 +2,98 @@
 
 import { useEffect, useState } from "react";
 
-function generateReelAlt(branch: string, target: string, training: string, contentType: string) {
-  const branchShort = branch.replace("점", "");
-  return [`스트롱복싱 ${branchShort}점`, target, training, contentType].filter(Boolean).join(" ");
+type SelectionMap = Record<string, string | string[]>;
+
+interface CategoryGroup {
+  key: string;
+  label: string;
+  mode: "single" | "multi";
+  options: string[];
+}
+
+const CATEGORY_GROUPS: CategoryGroup[] = [
+  {
+    key: "target",
+    label: "대상",
+    mode: "multi",
+    options: ["남성","여성","초보자","직장인","대학생","고등학생","중학생","초등학생","키즈","가족","커플","시니어","선수반"],
+  },
+  {
+    key: "training",
+    label: "운동 종류",
+    mode: "multi",
+    options: ["복싱기초","기본자세","자세연습","원투","잽","스트레이트","훅","어퍼컷","콤비네이션","풋워크","스텝","미트훈련","샌드백","스파링","체력운동","코어운동","인터벌","PT","그룹수업","자유운동","기술훈련","실전훈련"],
+  },
+  {
+    key: "contentType",
+    label: "콘텐츠 유형",
+    mode: "multi",
+    options: ["수업","훈련","회원영상","코치시범","운동모습","분위기","시설","이벤트","후기","릴스","쇼츠","Before & After"],
+  },
+  {
+    key: "difficulty",
+    label: "난이도",
+    mode: "single",
+    options: ["초급","중급","상급"],
+  },
+  {
+    key: "purpose",
+    label: "운동 목적",
+    mode: "multi",
+    options: ["다이어트","체력증진","스트레스해소","체형교정","건강관리","취미","선수준비","호신","자신감"],
+  },
+  {
+    key: "timeSlot",
+    label: "시간대",
+    mode: "single",
+    options: ["오전","오후","저녁","주말"],
+  },
+];
+
+const DEFAULT_SELECTIONS: SelectionMap = {
+  target: [], training: [], contentType: [], difficulty: "", purpose: [], timeSlot: "",
+};
+
+function buildTitle(branchName: string, sel: SelectionMap): string {
+  const branchShort = branchName.replace("점", "");
+  const targets = (sel.target as string[]).slice(0, 2);
+  const trainings = (sel.training as string[]).slice(0, 2);
+  return [`스트롱복싱 ${branchShort}점`, ...targets, ...trainings].filter(Boolean).join(" ");
+}
+
+function buildAriaLabel(branchName: string, sel: SelectionMap): string {
+  const branchShort = branchName.replace("점", "");
+  const targets = sel.target as string[];
+  const trainings = sel.training as string[];
+  const contentTypes = sel.contentType as string[];
+  const purposes = sel.purpose as string[];
+  const difficulty = sel.difficulty as string;
+  const parts: string[] = [`스트롱복싱 ${branchShort}점`];
+  if (targets.length) parts.push(targets.join(" "));
+  if (purposes.length) parts.push(purposes[0]);
+  if (difficulty) parts.push(difficulty);
+  if (trainings.length) parts.push(trainings.slice(0, 2).join(" "));
+  if (contentTypes.length) parts.push(contentTypes[0]);
+  parts.push("영상");
+  return parts.filter(Boolean).join(" ");
+}
+
+function buildKeywords(branchName: string, sel: SelectionMap): string[] {
+  const branchShort = branchName.replace("점", "");
+  const targets = sel.target as string[];
+  const trainings = sel.training as string[];
+  const kws: string[] = [`${branchShort} 복싱`, `${branchShort}동 복싱`];
+  targets.forEach((t) => { if (t) kws.push(`${t} 복싱`); });
+  trainings.forEach((tr) => { if (tr) kws.push(tr); });
+  kws.push("복싱 초보", `스트롱복싱 ${branchShort}점`);
+  return [...new Set(kws)].filter(Boolean);
 }
 
 export default function ReelsPage() {
   const [branchName, setBranchName] = useState("철산점");
   const [title, setTitle] = useState("");
   const [ariaLabel, setAriaLabel] = useState("");
-  const [altTarget, setAltTarget] = useState("");
-  const [altTraining, setAltTraining] = useState("");
-  const [altContentType, setAltContentType] = useState("");
+  const [selections, setSelections] = useState<SelectionMap>(DEFAULT_SELECTIONS);
   const [videoUrl, setVideoUrl] = useState("");
   const [reels, setReels] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -154,9 +234,7 @@ export default function ReelsPage() {
     setIsMuted(false);
     setTitle("");
     setAriaLabel("");
-    setAltTarget("");
-    setAltTraining("");
-    setAltContentType("");
+    setSelections(DEFAULT_SELECTIONS);
     setVideoUrl("");
     setVideoFileName("");
     loadReels();
@@ -199,76 +277,79 @@ export default function ReelsPage() {
             <option>영등포점</option>
           </select>
 
-          {/* SEO 자동생성 */}
-          <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 space-y-3">
+          {/* SEO 자동생성 — 태그(Chip) 선택 방식 */}
+          <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 space-y-4">
             <p className="text-sm font-bold text-blue-700">SEO 정보 자동 생성</p>
-            <div className="grid grid-cols-3 gap-2">
-              <div>
-                <p className="mb-1 text-xs font-bold text-blue-600">대상/목적</p>
-                <select
-                  value={altTarget}
-                  onChange={(e) => setAltTarget(e.target.value)}
-                  className="w-full rounded-xl border border-blue-200 bg-white p-2 text-sm outline-none"
-                >
-                  <option value="">선택 안함</option>
-                  <option>다이어트</option>
-                  <option>체력증진</option>
-                  <option>성인</option>
-                  <option>여성</option>
-                  <option>남성</option>
-                  <option>초보자</option>
-                  <option>키즈</option>
-                  <option>가족</option>
-                  <option>커플</option>
-                  <option>부부</option>
-                  <option>부자지간</option>
-                  <option>모자지간</option>
-                  <option>친구들</option>
-                </select>
+            {CATEGORY_GROUPS.map((cat) => (
+              <div key={cat.key}>
+                <p className="mb-2 text-xs font-bold text-blue-600">
+                  {cat.label}
+                  <span className="ml-1 font-normal text-blue-400">
+                    {cat.mode === "multi" ? "복수 선택" : "단일 선택"}
+                  </span>
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {cat.options.map((opt) => {
+                    const current = selections[cat.key];
+                    const isSelected =
+                      cat.mode === "multi"
+                        ? (current as string[]).includes(opt)
+                        : current === opt;
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() =>
+                          setSelections((prev) => {
+                            if (cat.mode === "single") {
+                              return { ...prev, [cat.key]: prev[cat.key] === opt ? "" : opt };
+                            }
+                            const arr = prev[cat.key] as string[];
+                            return {
+                              ...prev,
+                              [cat.key]: arr.includes(opt)
+                                ? arr.filter((v) => v !== opt)
+                                : [...arr, opt],
+                            };
+                          })
+                        }
+                        className={`rounded-full border px-3 py-1 text-xs font-bold transition-colors ${
+                          isSelected
+                            ? "border-blue-500 bg-blue-500 text-white"
+                            : "border-zinc-200 bg-white text-zinc-500 hover:border-blue-300"
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              <div>
-                <p className="mb-1 text-xs font-bold text-blue-600">운동종류</p>
-                <select
-                  value={altTraining}
-                  onChange={(e) => setAltTraining(e.target.value)}
-                  className="w-full rounded-xl border border-blue-200 bg-white p-2 text-sm outline-none"
-                >
-                  <option value="">선택 안함</option>
-                  <option>복싱PT</option>
-                  <option>그룹수업</option>
-                  <option>미트치기</option>
-                  <option>스파링</option>
-                  <option>샌드백치기</option>
-                  <option>샌드백연습</option>
-                  <option>기초연습</option>
-                  <option>자세연습</option>
-                  <option>줄넘기</option>
-                  <option>몸풀기</option>
-                  <option>복싱다이어트</option>
-                  <option>복싱체력운동</option>
-                </select>
+            ))}
+            {Object.values(selections).some((v) =>
+              Array.isArray(v) ? v.length > 0 : v !== ""
+            ) && (
+              <div className="rounded-xl border border-blue-200 bg-white p-3 space-y-1.5">
+                <p className="text-xs font-bold text-blue-700">자동 생성 미리보기</p>
+                <p className="text-xs text-zinc-500">
+                  <span className="font-bold text-zinc-700">title: </span>
+                  {buildTitle(branchName, selections)}
+                </p>
+                <p className="text-xs text-zinc-500">
+                  <span className="font-bold text-zinc-700">aria-label: </span>
+                  {buildAriaLabel(branchName, selections)}
+                </p>
+                <p className="text-xs text-zinc-500">
+                  <span className="font-bold text-zinc-700">keywords: </span>
+                  {buildKeywords(branchName, selections).join(", ")}
+                </p>
               </div>
-              <div>
-                <p className="mb-1 text-xs font-bold text-blue-600">콘텐츠유형</p>
-                <select
-                  value={altContentType}
-                  onChange={(e) => setAltContentType(e.target.value)}
-                  className="w-full rounded-xl border border-blue-200 bg-white p-2 text-sm outline-none"
-                >
-                  <option value="">선택 안함</option>
-                  <option>수업현장</option>
-                  <option>운동영상</option>
-                  <option>이벤트</option>
-                  <option>시설</option>
-                </select>
-              </div>
-            </div>
+            )}
             <button
               type="button"
               onClick={() => {
-                const auto = generateReelAlt(branchName, altTarget, altTraining, altContentType);
-                setTitle(auto);
-                setAriaLabel(`${auto} 영상`);
+                setTitle(buildTitle(branchName, selections));
+                setAriaLabel(buildAriaLabel(branchName, selections));
               }}
               className="rounded-full bg-blue-600 px-5 py-2 text-sm font-black text-white"
             >
@@ -391,9 +472,7 @@ export default function ReelsPage() {
                       setBranchName(reel.branch_name);
                       setTitle(reel.title);
                       setAriaLabel(reel.aria_label || "");
-                      setAltTarget("");
-                      setAltTraining("");
-                      setAltContentType("");
+                      setSelections(DEFAULT_SELECTIONS);
                       setVideoUrl(reel.video_url);
                       setVideoFileName("");
                       setIsMuted(reel.is_muted === 1);
