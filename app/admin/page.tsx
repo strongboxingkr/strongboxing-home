@@ -24,6 +24,29 @@ function makeSlug(text: string) {
     .replace(/[^\w가-힣-]/g, "");
 }
 
+function getSeoChecks(title: string, description: string, slug: string, content: string, keyword: string) {
+  const text = content.replace(/<[^>]+>/g, "");
+  const h2Count = (content.match(/<h2/gi) || []).length;
+  const questionCount = (text.match(/[^\n]{4,}\?/g) || []).length;
+  const imgWithAlt = (content.match(/<img[^>]+alt="[^"]{2,}"/gi) || []).length;
+  const hasInternalLink = /href="\//i.test(content);
+  const kw = keyword.trim().split(/\s+/)[0];
+  const hasKeyword = kw ? text.slice(0, 300).includes(kw) : false;
+  const slugOk = slug.length > 0 && /^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug);
+  return [
+    { label: "제목 40자 내외",       pass: title.length >= 20 && title.length <= 55,         hint: `${title.length}자` },
+    { label: "설명 80자 이내",       pass: description.length > 0 && description.length <= 80, hint: `${description.length}자` },
+    { label: "Slug 영어 소문자",     pass: slugOk,                                             hint: slugOk ? "OK" : "영어 소문자·하이픈만" },
+    { label: "본문 800자 이상",      pass: text.length >= 800,                                 hint: `${text.length}자` },
+    { label: "H2 소제목 3개 이상",   pass: h2Count >= 3,                                       hint: `${h2Count}개` },
+    { label: "FAQ 질문 3개 이상",    pass: questionCount >= 3,                                 hint: `${questionCount}개 감지` },
+    { label: "이미지 alt 1개 이상",  pass: imgWithAlt >= 1,                                    hint: `${imgWithAlt}개` },
+    { label: "내부 링크 포함",       pass: hasInternalLink,                                    hint: hasInternalLink ? "있음" : "본문에 내부 링크 없음" },
+    { label: "첫 문단 키워드 포함",  pass: hasKeyword,                                         hint: kw ? (hasKeyword ? `'${kw}' 포함` : `'${kw}' 없음`) : "키워드 미입력" },
+    { label: "공개 글 (sitemap 포함)", pass: true,                                             hint: "저장 시 자동 공개" },
+  ];
+}
+
 export default function AdminPage() {
   const [keyword, setKeyword] = useState("");
   const [postNo, setPostNo] = useState("");
@@ -66,6 +89,8 @@ export default function AdminPage() {
 
   const [posts, setPosts] = useState<any[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
+
+  const [savedSlug, setSavedSlug] = useState<string | null>(null);
 
   const contentRef = useRef<HTMLTextAreaElement | null>(null);
   const editorRef = useRef<RichTextEditorHandle>(null);
@@ -368,7 +393,7 @@ export default function AdminPage() {
       return;
     }
 
-    alert(editingId ? "수정 완료!" : "저장 완료!");
+    setSavedSlug(slug);
 
     setEditingId(null);
     setKeyword("");
@@ -385,6 +410,7 @@ export default function AdminPage() {
   }
 
   function handleEdit(post: any) {
+    setSavedSlug(null);
     setEditingId(post.id);
     setTitle(post.title);
     setSlug(post.slug);
@@ -1088,6 +1114,60 @@ export default function AdminPage() {
             <RichTextEditor ref={editorRef} value={content} onChange={setContent} />
           </div>
 
+          {/* SEO 발행 체크리스트 */}
+          {(() => {
+            const checks = getSeoChecks(title, description, slug, content, keyword);
+            const passed = checks.filter((c) => c.pass).length;
+            return (
+              <div className="rounded-[28px] border border-emerald-200 bg-emerald-50 p-5 space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="font-bold text-emerald-800">SEO 발행 체크리스트</p>
+                  <span className={`text-sm font-black px-3 py-1 rounded-full ${passed === 10 ? "bg-emerald-500 text-white" : "bg-white text-emerald-700 border border-emerald-200"}`}>
+                    {passed} / 10
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 gap-1.5">
+                  {checks.map(({ label, pass, hint }) => (
+                    <div key={label} className="flex items-center gap-2">
+                      <span className="flex-shrink-0 text-base">{pass ? "✅" : "❌"}</span>
+                      <span className={`text-sm font-semibold ${pass ? "text-emerald-700" : "text-red-500"}`}>{label}</span>
+                      <span className="ml-auto text-xs text-zinc-400 whitespace-nowrap">{hint}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* 발행 후 할 일 */}
+          {savedSlug && (
+            <div className="rounded-[28px] border border-blue-200 bg-blue-50 p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="font-bold text-blue-800">🎉 발행 완료! 이제 이렇게 해주세요</p>
+                <button type="button" onClick={() => setSavedSlug(null)} className="text-xs text-blue-400 underline">닫기</button>
+              </div>
+              <div className="rounded-2xl bg-white border border-blue-100 p-3">
+                <p className="text-xs font-bold text-blue-600 mb-1">발행된 글 URL</p>
+                <a href={`/blog/${savedSlug}`} target="_blank" className="text-sm text-blue-700 underline break-all">
+                  https://strongboxing.kr/blog/{savedSlug}
+                </a>
+              </div>
+              <ol className="space-y-2">
+                {[
+                  "네이버 서치어드바이저 → 웹 페이지 수집 요청",
+                  "구글 서치콘솔 → 대표 글 색인 요청",
+                  "네이버 블로그 / 플레이스 / 인스타 / 당근 / 카카오맵에 글 또는 지점 링크 연결",
+                  "3~7일 뒤 site:strongboxing.kr 검색 확인",
+                ].map((task, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-blue-700">
+                    <span className="flex-shrink-0 font-black text-blue-400">{i + 1}.</span>
+                    {task}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
               onClick={handleSave}
@@ -1104,6 +1184,7 @@ export default function AdminPage() {
             {editingId && (
               <button
                 onClick={() => {
+                  setSavedSlug(null);
                   setEditingId(null);
                   setTitle("");
                   setSlug("");
