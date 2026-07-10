@@ -21,6 +21,7 @@ const FONT_SIZES = [
 
 const COLORS = [
   { label: "기본", color: "" },         // 색 제거 — 블로그 기본 텍스트 색 사용
+  { label: "흰색", color: "#FFFFFF" },
   { label: "빨강", color: "#FC5230" },
   { label: "파랑", color: "#3B82F6" },
   { label: "초록", color: "#22C55E" },
@@ -196,10 +197,24 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
               }
             }}
             className={btnClass}
-            style={{ color: color || "#171717" }}
             title={label}
+            style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "4px 6px", minWidth: 36 }}
           >
-            {color ? "■" : "A"}
+            {color ? (
+              <span
+                style={{
+                  display: "inline-block",
+                  width: 16,
+                  height: 16,
+                  borderRadius: 3,
+                  background: color,
+                  border: "1.5px solid #d1d5db",
+                }}
+              />
+            ) : (
+              <span style={{ fontSize: 13, fontWeight: 900, color: "#171717", lineHeight: 1 }}>A</span>
+            )}
+            <span style={{ fontSize: 9, color: "#555", lineHeight: 1, letterSpacing: -0.3 }}>{label}</span>
           </button>
         ))}
         <button
@@ -262,7 +277,7 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
         onKeyUp={saveSelection}
         onMouseUp={saveSelection}
         className="min-h-[320px] p-5 text-[16px] leading-8 outline-none"
-        style={{ wordBreak: "break-word" }}
+        style={{ wordBreak: "break-word", background: "#0E0E10", color: "#F5F4F1" }}
       />
     </div>
   );
