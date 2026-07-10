@@ -1,6 +1,7 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { trackClipPlay } from "@/lib/gtag";
 
 const branches = ["전체", "목동점", "철산점", "신정점", "개봉점", "영등포점"];
 
@@ -72,6 +73,8 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
 
 function ReelCard({ reel }: { reel: any }) {
   const [isPortrait, setIsPortrait] = useState(false);
+  const playedRef = useRef(false);
+  const isAutoPlay = Number(reel.is_muted) === 1;
 
   return (
     <div className={`shrink-0 overflow-hidden rounded-[10px] border border-white/10 bg-[#1A1A1C] ${isPortrait ? "w-[160px]" : "w-[240px]"}`}>
@@ -79,15 +82,26 @@ function ReelCard({ reel }: { reel: any }) {
         src={reel.video_url}
         title={reel.title}
         aria-label={reel.aria_label || reel.title}
-        controls={Number(reel.is_muted) !== 1}
+        controls={!isAutoPlay}
         muted
-        autoPlay={Number(reel.is_muted) === 1}
-        loop={Number(reel.is_muted) === 1}
+        autoPlay={isAutoPlay}
+        loop={isAutoPlay}
         playsInline
         preload="metadata"
         onLoadedMetadata={(e) => {
           const v = e.currentTarget;
           setIsPortrait(v.videoHeight > v.videoWidth);
+        }}
+        onPlay={() => {
+          if (isAutoPlay || playedRef.current) return;
+          playedRef.current = true;
+          trackClipPlay({
+            branch_name: reel.branch_name,
+            clip_title: reel.title,
+            clip_id: reel.id,
+            page_path: window.location.pathname,
+            placement: "home",
+          });
         }}
         className={`w-full bg-[#0E0E10] object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
       />

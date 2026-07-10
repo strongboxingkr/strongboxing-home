@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import type { Metadata } from "next";
 import BranchCTAButtons from "@/app/components/BranchCTAButtons";
+import BranchReelCard from "@/app/components/BranchReelCard";
 
 const branches: any = {
   gaebong: {
@@ -710,27 +711,7 @@ const faqJsonLd = {
             <div className="overflow-x-auto pb-3" style={{ scrollbarWidth: "thin", scrollbarColor: "#4A4C50 transparent" }}>
               <div className="flex gap-4">
                 {branchReels.map((reel: any) => (
-                  <figure key={reel.id} className="group shrink-0 w-[80vw] sm:w-[260px] overflow-hidden rounded-[12px] border border-[#4A4C50]/30 bg-[#1A1A1C] transition duration-300 hover:-translate-y-1 hover:border-[#4A4C50]/60" style={{ margin: 0 }}>
-                    <div className="overflow-hidden">
-                      <video
-                        src={reel.video_url}
-                        title={reel.title}
-                        aria-label={reel.aria_label || reel.title}
-                        controls={Number(reel.is_muted) !== 1}
-                        muted
-                        autoPlay={Number(reel.is_muted) === 1}
-                        loop={Number(reel.is_muted) === 1}
-                        playsInline
-                        preload="metadata"
-                        className="w-full bg-[#0E0E10] object-cover aspect-[9/16] transition duration-500 group-hover:scale-[1.03]"
-                      />
-                    </div>
-                    {reel.title && (
-                      <figcaption className="px-4 py-3">
-                        <p className="text-sm font-bold text-[#F5F4F1] line-clamp-1">{reel.title}</p>
-                      </figcaption>
-                    )}
-                  </figure>
+                  <BranchReelCard key={reel.id} reel={reel} />
                 ))}
               </div>
             </div>

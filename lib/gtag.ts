@@ -83,10 +83,14 @@ export function trackReservationComplete(params: {
   trackEvent("reservation_complete", params);
 }
 
-/** STRONG CLIP 영상 재생 */
+/** STRONG CLIP 영상 재생 (최초 1회, 사용자 직접 재생 시) */
 export function trackClipPlay(params: {
   branch_name: string;
-  title: string;
+  clip_title: string;
+  clip_id?: number;
+  video_src?: string;
+  page_path: string;
+  placement: "home" | "branch";
 }): void {
   trackEvent("clip_play", params);
 }
