@@ -120,7 +120,7 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(function RichText
 
   return (
     <div className="rounded-2xl border border-zinc-200 bg-white overflow-hidden">
-      <div className="flex flex-wrap gap-1.5 border-b border-zinc-200 bg-zinc-50 p-3">
+      <div className="flex flex-wrap gap-1.5 border-b border-zinc-200 bg-zinc-50 p-3 sticky top-0 z-10">
         <button type="button" onClick={() => exec("bold")} className={btnClass + " font-black"}>B</button>
         <button type="button" onClick={() => exec("italic")} className={btnClass + " italic"}>I</button>
         <button type="button" onClick={() => exec("underline")} className={btnClass + " underline"}>U</button>
