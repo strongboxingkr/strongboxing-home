@@ -448,7 +448,7 @@ export default async function BranchPage({
 
   const [reelRows]: any = await db.query(
     `
-    SELECT id, branch_name, title, video_url, is_muted
+    SELECT id, branch_name, title, aria_label, video_url, is_muted
     FROM homepage_reels
     WHERE is_active = 1 AND branch_name = ?
     ORDER BY sort_order ASC, id DESC
@@ -608,26 +608,9 @@ const faqJsonLd = {
 
   return (
     <main className="min-h-screen bg-[#0E0E10] text-white">
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{
-                __html: JSON.stringify(jsonLd),
-              }}
-            />
-
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{
-                __html: JSON.stringify(breadcrumbJsonLd),
-              }}
-            />
-
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{
-                __html: JSON.stringify(faqJsonLd),
-              }}
-            />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
       <section className="relative min-h-[90vh] overflow-hidden bg-[#080808]">
         {/* 배경 이미지 */}
@@ -696,6 +679,136 @@ const faqJsonLd = {
         </div>
       </section>
 
+      {/* 2. 이런 분들이 많이 찾아요 */}
+      {branchTargetAudience[slug] && (
+        <section className="px-6 py-24">
+          <div className="mx-auto max-w-[1280px] lg:px-4">
+            <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>FOR YOU</p>
+            <h2 className="mb-8 text-3xl font-black tracking-[-0.04em] text-[#F5F4F1] md:text-4xl">
+              이런 분들이 많이 찾아요
+            </h2>
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {branchTargetAudience[slug].map((item: string) => (
+                <li key={item} className="flex items-start gap-3 rounded-[12px] border border-[#4A4C50]/25 bg-[#141416] px-5 py-4 text-sm text-[#8A8D91]">
+                  <span className="mt-[3px] h-2 w-2 shrink-0 rounded-full" style={{ background: "#D01E2E" }} />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* 3. STRONG CLIP */}
+      {branchReels.length > 0 && (
+        <section className="px-6 py-24" style={{ background: "#141416" }}>
+          <div className="mx-auto max-w-[1280px] lg:px-4">
+            <p className="mb-3 text-xs font-black tracking-[0.32em] text-[#D01E2E]">STRONG CLIP</p>
+            <h2 className="mb-10 font-black tracking-[-0.05em] text-[#F5F4F1]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
+              {branch.name} 클립
+            </h2>
+            <div className="overflow-x-auto pb-3" style={{ scrollbarWidth: "thin", scrollbarColor: "#4A4C50 transparent" }}>
+              <div className="flex gap-4">
+                {branchReels.map((reel: any) => (
+                  <figure key={reel.id} className="group shrink-0 w-[80vw] sm:w-[260px] overflow-hidden rounded-[12px] border border-[#4A4C50]/30 bg-[#1A1A1C] transition duration-300 hover:-translate-y-1 hover:border-[#4A4C50]/60" style={{ margin: 0 }}>
+                    <div className="overflow-hidden">
+                      <video
+                        src={reel.video_url}
+                        title={reel.title}
+                        aria-label={reel.aria_label || reel.title}
+                        controls={Number(reel.is_muted) !== 1}
+                        muted
+                        autoPlay={Number(reel.is_muted) === 1}
+                        loop={Number(reel.is_muted) === 1}
+                        playsInline
+                        preload="metadata"
+                        className="w-full bg-[#0E0E10] object-cover aspect-[9/16] transition duration-500 group-hover:scale-[1.03]"
+                      />
+                    </div>
+                    {reel.title && (
+                      <figcaption className="px-4 py-3">
+                        <p className="text-sm font-bold text-[#F5F4F1] line-clamp-1">{reel.title}</p>
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
+              </div>
+            </div>
+            <p className="mt-4 text-xs text-center" style={{ color: "#4A4C50" }}>← 옆으로 넘겨 수업 클립 더 보기 →</p>
+          </div>
+        </section>
+      )}
+
+      {/* 4. 프로그램 + 수업 흐름 */}
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-[1280px] lg:px-4">
+          <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>PROGRAM</p>
+          <h2 className="mb-12 font-black tracking-[-0.05em]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
+            {branch.area} 복싱 프로그램
+          </h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              ["01", "복싱 입문", "처음 배우는 분들도 스텝과 기본 자세부터 차근차근 배웁니다."],
+              ["02", "다이어트 복싱", "지루하지 않게 땀나는 복싱 트레이닝으로 운동량을 높입니다."],
+              ["03", "체력 향상", "운동 목적과 체력에 맞춰 무리 없이 꾸준히 운동할 수 있습니다."],
+            ].map(([num, title, desc]) => (
+              <div
+                key={title}
+                className="group rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9 transition duration-300 hover:-translate-y-1 hover:border-[#4A4C50]/60 hover:bg-[#1A1A1C]"
+              >
+                <p className="mb-8 text-xs font-black" style={{ color: "#2A2A2E" }}>{num}</p>
+                <h3 className="mb-3 text-2xl font-black tracking-[-0.04em] text-[#F5F4F1]">{title}</h3>
+                <p className="leading-7 text-[#8A8D91]">{desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9">
+            <p className="mb-6 text-xs font-black tracking-[0.28em]" style={{ color: "#5A5C61" }}>1회 수업 흐름</p>
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+              {[
+                ["01", "몸풀기"],
+                ["02", "줄넘기"],
+                ["03", "자세 & 스텝"],
+                ["04", "미트 트레이닝"],
+                ["05", "샌드백"],
+                ["06", "체력 운동"],
+              ].map(([n, s]) => (
+                <div key={n} className="flex flex-col items-center gap-2 rounded-[10px] border border-[#4A4C50]/20 p-4 text-center">
+                  <span className="text-[10px] font-black" style={{ color: "#5A5C61" }}>{n}</span>
+                  <span className="text-xs font-bold leading-tight text-[#8A8D91]">{s}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. FAQ */}
+      <section className="px-6 py-24" style={{ background: "#141416" }}>
+        <div className="mx-auto max-w-[1280px] lg:px-4">
+          <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>FAQ</p>
+          <h2 className="mb-10 text-3xl font-black tracking-[-0.04em] text-[#F5F4F1] md:text-4xl">
+            자주 묻는 질문
+          </h2>
+          <div className="space-y-3">
+            {faqItems.map((item, index) => (
+              <div
+                key={index}
+                className="rounded-[14px] border border-[#4A4C50]/25 bg-[#0E0E10] p-7 transition duration-250 hover:border-[#4A4C50]/55"
+              >
+                <h3 className="text-base font-black tracking-[-0.02em] text-[#F5F4F1]">
+                  {item.question}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-[#8A8D91]">
+                  {item.answer}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. 블로그/소식 */}
       {relatedPosts.length > 0 && (
         <section className="px-6 py-24">
           <div className="mx-auto max-w-[1280px] lg:px-4">
@@ -710,42 +823,42 @@ const faqJsonLd = {
               {relatedPosts.map((post: any) => {
                 const image = getFirstImage(post);
                 return (
-                <a
-                  key={post.id}
-                  href={`/blog/${post.slug}`}
-                  className="group overflow-hidden rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] transition duration-300 hover:-translate-y-1 hover:border-white/25"
-                >
-                  <div className="h-[210px] overflow-hidden bg-[#1A1A1C]">
-                    {image && (
-                      image.isVideo ? (
-                        <video
-                          src={encodeURI(image.url)}
-                          muted
-                          playsInline
-                          preload="metadata"
-                          className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-[1.03]"
-                        />
-                      ) : (
-                        <img
-                          src={encodeURI(image.url)}
-                          alt={post.title}
-                          className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-[1.03]"
-                        />
-                      )
-                    )}
-                  </div>
-                  <div className="p-7">
-                    <div className="mb-4 flex items-center gap-2">
-                      <span className="rounded-full bg-[#D01E2E] px-3 py-1 text-xs font-black">{post.branch_name}</span>
-                      <span className="text-xs text-[#8A8D91]">
-                        {new Date(post.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}
-                      </span>
+                  <a
+                    key={post.id}
+                    href={`/blog/${post.slug}`}
+                    className="group overflow-hidden rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] transition duration-300 hover:-translate-y-1 hover:border-white/25"
+                  >
+                    <div className="h-[210px] overflow-hidden bg-[#1A1A1C]">
+                      {image && (
+                        image.isVideo ? (
+                          <video
+                            src={encodeURI(image.url)}
+                            muted
+                            playsInline
+                            preload="metadata"
+                            className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-[1.03]"
+                          />
+                        ) : (
+                          <img
+                            src={encodeURI(image.url)}
+                            alt={post.title}
+                            className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-[1.03]"
+                          />
+                        )
+                      )}
                     </div>
-                    <h3 className="mb-3 text-xl font-black leading-tight tracking-[-0.03em] text-[#F5F4F1]">{post.title}</h3>
-                    <p className="line-clamp-2 text-sm leading-7 text-[#8A8D91]">{post.description}</p>
-                    <p className="mt-4 text-xs font-black text-[#D01E2E] opacity-0 transition-opacity duration-300 group-hover:opacity-100">자세히 보기 →</p>
-                  </div>
-                </a>
+                    <div className="p-7">
+                      <div className="mb-4 flex items-center gap-2">
+                        <span className="rounded-full bg-[#D01E2E] px-3 py-1 text-xs font-black">{post.branch_name}</span>
+                        <span className="text-xs text-[#8A8D91]">
+                          {new Date(post.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}
+                        </span>
+                      </div>
+                      <h3 className="mb-3 text-xl font-black leading-tight tracking-[-0.03em] text-[#F5F4F1]">{post.title}</h3>
+                      <p className="line-clamp-2 text-sm leading-7 text-[#8A8D91]">{post.description}</p>
+                      <p className="mt-4 text-xs font-black text-[#D01E2E] opacity-0 transition-opacity duration-300 group-hover:opacity-100">자세히 보기 →</p>
+                    </div>
+                  </a>
                 );
               })}
             </div>
@@ -767,182 +880,8 @@ const faqJsonLd = {
         </section>
       )}
 
-      {branchReels.length > 0 && (
-        <section className="px-6 py-24" style={{ background: "#141416" }}>
-          <div className="mx-auto max-w-[1280px] lg:px-4">
-            <p className="mb-3 text-xs font-black tracking-[0.32em] text-[#D01E2E]">STRONG CLIP</p>
-            <h2 className="mb-10 font-black tracking-[-0.05em] text-[#F5F4F1]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
-              {branch.name} 클립
-            </h2>
-            <div className="overflow-x-auto pb-3" style={{ scrollbarWidth: "thin", scrollbarColor: "#4A4C50 transparent" }}>
-              <div className="flex gap-4">
-                {branchReels.map((reel: any) => (
-                  <div key={reel.id} className="group shrink-0 w-[260px] overflow-hidden rounded-[12px] border border-[#4A4C50]/30 bg-[#1A1A1C] transition duration-300 hover:-translate-y-1 hover:border-[#4A4C50]/60">
-                    <div className="overflow-hidden">
-                      <video
-                        src={reel.video_url}
-                        controls={Number(reel.is_muted) !== 1}
-                        muted
-                        autoPlay={Number(reel.is_muted) === 1}
-                        loop={Number(reel.is_muted) === 1}
-                        playsInline
-                        preload="metadata"
-                        className="w-full bg-[#0E0E10] object-cover aspect-[9/16] transition duration-500 group-hover:scale-[1.03]"
-                      />
-                    </div>
-                    {reel.title && (
-                      <div className="px-4 py-3">
-                        <p className="text-sm font-bold text-[#F5F4F1] line-clamp-1">{reel.title}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-[1280px] lg:px-4">
-          <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>BRANCH INFO</p>
-          <div className="grid gap-5 md:grid-cols-2">
-            {/* 지점 정보 */}
-            <div className="rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9">
-              <h2 className="mb-7 text-2xl font-black tracking-[-0.03em] text-[#F5F4F1]">지점 정보</h2>
-              <div className="space-y-4 text-sm leading-7">
-                <div className="flex gap-4">
-                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>전화</span>
-                  <span style={{ color: "#F5F4F1" }}>{branch.phone}</span>
-                </div>
-                <div className="flex gap-4">
-                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>주소</span>
-                  <span style={{ color: "#8A8D91" }}>{branch.address}</span>
-                </div>
-                <div className="flex gap-4">
-                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>운영</span>
-                  <div className="flex flex-col gap-0.5">
-                    {branch.hours.map((h: string) => (
-                      <span key={h} style={{ color: "#8A8D91" }}>{h}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 바로가기 */}
-            <div className="rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9">
-              <h2 className="mb-7 text-2xl font-black tracking-[-0.03em] text-[#F5F4F1]">바로가기</h2>
-
-              {/* Primary CTA */}
-              <div className="mb-4 flex flex-wrap gap-3">
-                <a
-                  href={`tel:${branch.phone.replaceAll("-", "")}`}
-                  className="rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition hover:bg-[#B71C2B]"
-                >
-                  전화 문의
-                </a>
-
-                {branch.booking && (
-                  <a
-                    href={branch.booking}
-                    target="_blank"
-                    className="rounded-[10px] border border-[#4A4C50]/40 bg-[#0E0E10] px-6 py-3 text-sm font-black text-[#F5F4F1] transition hover:border-white/30"
-                  >
-                    네이버 예약
-                  </a>
-                )}
-
-                {branch.kakaoChat && (
-                  <a
-                    href={branch.kakaoChat}
-                    target="_blank"
-                    className="inline-flex items-center gap-2 rounded-[10px] border border-[#4A4C50]/40 bg-[#0E0E10] px-6 py-3 text-sm font-black text-[#F5F4F1] transition hover:border-white/30"
-                  >
-                    <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: "#FEE500" }} />
-                    카카오 문의
-                  </a>
-                )}
-              </div>
-
-              {/* Secondary links */}
-              <div className="flex flex-wrap gap-2">
-                {branch.naverMap && (
-                  <a href={branch.naverMap} target="_blank"
-                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
-                    네이버지도
-                  </a>
-                )}
-                {branch.kakaoMap && (
-                  <a href={branch.kakaoMap} target="_blank"
-                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
-                    카카오맵
-                  </a>
-                )}
-                {branch.googleMap && (
-                  <a href={branch.googleMap} target="_blank"
-                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
-                    구글지도
-                  </a>
-                )}
-                <a href={branch.instagram} target="_blank"
-                  className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
-                  인스타그램
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      {/* 7. CTA 배너 */}
       <section className="px-6 py-24" style={{ background: "#141416" }}>
-        <div className="mx-auto max-w-[1280px] lg:px-4">
-          <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>PROGRAM</p>
-          <h2 className="mb-12 font-black tracking-[-0.05em]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
-            {branch.area} 복싱 프로그램
-          </h2>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {[
-              ["01", "복싱 입문", "처음 배우는 분들도 스텝과 기본 자세부터 차근차근 배웁니다."],
-              ["02", "다이어트 복싱", "지루하지 않게 땀나는 복싱 트레이닝으로 운동량을 높입니다."],
-              ["03", "체력 향상", "운동 목적과 체력에 맞춰 무리 없이 꾸준히 운동할 수 있습니다."],
-            ].map(([num, title, desc]) => (
-              <div
-                key={title}
-                className="group rounded-[16px] border border-[#4A4C50]/30 bg-[#0E0E10] p-9 transition duration-300 hover:-translate-y-1 hover:border-[#4A4C50]/60 hover:bg-[#141416]"
-              >
-                <p className="mb-8 text-xs font-black" style={{ color: "#2A2A2E" }}>{num}</p>
-                <h3 className="mb-3 text-2xl font-black tracking-[-0.04em] text-[#F5F4F1]">{title}</h3>
-                <p className="leading-7 text-[#8A8D91]">{desc}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* 수업 흐름 */}
-          <div className="mt-8 rounded-[16px] border border-[#4A4C50]/30 bg-[#0E0E10] p-9">
-            <p className="mb-6 text-xs font-black tracking-[0.28em]" style={{ color: "#5A5C61" }}>1회 수업 흐름</p>
-            <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-              {[
-                ["01", "몸풀기"],
-                ["02", "줄넘기"],
-                ["03", "자세 & 스텝"],
-                ["04", "미트 트레이닝"],
-                ["05", "샌드백"],
-                ["06", "체력 운동"],
-              ].map(([n, s]) => (
-                <div key={n} className="flex flex-col items-center gap-2 rounded-[10px] border border-[#4A4C50]/20 p-4 text-center">
-                  <span className="text-[10px] font-black" style={{ color: "#5A5C61" }}>{n}</span>
-                  <span className="text-xs font-bold leading-tight text-[#8A8D91]">{s}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      <section className="px-6 py-24">
         <div className="mx-auto max-w-[1280px] lg:px-4">
           <div className="relative overflow-hidden rounded-[20px] border border-[#4A4C50]/30 bg-[#111214] p-12 text-center md:p-16">
             <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 70% 60% at 50% 100%, rgba(208,30,46,0.07) 0%, transparent 70%)" }} />
@@ -985,11 +924,94 @@ const faqJsonLd = {
         </div>
       </section>
 
+      {/* 8. 지점 정보 + 바로가기 */}
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-[1280px] lg:px-4">
+          <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>BRANCH INFO</p>
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9">
+              <h2 className="mb-7 text-2xl font-black tracking-[-0.03em] text-[#F5F4F1]">지점 정보</h2>
+              <div className="space-y-4 text-sm leading-7">
+                <div className="flex gap-4">
+                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>전화</span>
+                  <span style={{ color: "#F5F4F1" }}>{branch.phone}</span>
+                </div>
+                <div className="flex gap-4">
+                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>주소</span>
+                  <span style={{ color: "#8A8D91" }}>{branch.address}</span>
+                </div>
+                <div className="flex gap-4">
+                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>운영</span>
+                  <div className="flex flex-col gap-0.5">
+                    {branch.hours.map((h: string) => (
+                      <span key={h} style={{ color: "#8A8D91" }}>{h}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9">
+              <h2 className="mb-7 text-2xl font-black tracking-[-0.03em] text-[#F5F4F1]">바로가기</h2>
+              <div className="mb-4 flex flex-wrap gap-3">
+                <a
+                  href={`tel:${branch.phone.replaceAll("-", "")}`}
+                  className="rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition hover:bg-[#B71C2B]"
+                >
+                  전화 문의
+                </a>
+                {branch.booking && (
+                  <a
+                    href={branch.booking}
+                    target="_blank"
+                    className="rounded-[10px] border border-[#4A4C50]/40 bg-[#0E0E10] px-6 py-3 text-sm font-black text-[#F5F4F1] transition hover:border-white/30"
+                  >
+                    네이버 예약
+                  </a>
+                )}
+                {branch.kakaoChat && (
+                  <a
+                    href={branch.kakaoChat}
+                    target="_blank"
+                    className="inline-flex items-center gap-2 rounded-[10px] border border-[#4A4C50]/40 bg-[#0E0E10] px-6 py-3 text-sm font-black text-[#F5F4F1] transition hover:border-white/30"
+                  >
+                    <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: "#FEE500" }} />
+                    카카오 문의
+                  </a>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {branch.naverMap && (
+                  <a href={branch.naverMap} target="_blank"
+                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
+                    네이버지도
+                  </a>
+                )}
+                {branch.kakaoMap && (
+                  <a href={branch.kakaoMap} target="_blank"
+                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
+                    카카오맵
+                  </a>
+                )}
+                {branch.googleMap && (
+                  <a href={branch.googleMap} target="_blank"
+                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
+                    구글지도
+                  </a>
+                )}
+                <a href={branch.instagram} target="_blank"
+                  className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
+                  인스타그램
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. ABOUT — 지역 소개 */}
       <section className="px-6 py-24" style={{ background: "#0E0E10", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div className="mx-auto max-w-[1280px] lg:px-4">
-
-          {/* 지역 소개 */}
-          <div className="mb-20 grid gap-12 md:grid-cols-2">
+          <div className="grid gap-12 md:grid-cols-2">
             <div className="overflow-hidden rounded-[14px] border border-[#4A4C50]/30">
               <img
                 src={branch.image}
@@ -1026,49 +1048,6 @@ const faqJsonLd = {
               )}
             </div>
           </div>
-
-          {/* 이런 분들이 많이 찾아요 */}
-          {branchTargetAudience[slug] && (
-            <div className="mb-20">
-              <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>FOR YOU</p>
-              <h2 className="mb-8 text-3xl font-black tracking-[-0.04em] text-[#F5F4F1] md:text-4xl">
-                이런 분들이 많이 찾아요
-              </h2>
-              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {branchTargetAudience[slug].map((item: string) => (
-                  <li key={item} className="flex items-start gap-3 rounded-[12px] border border-[#4A4C50]/25 bg-[#141416] px-5 py-4 text-sm text-[#8A8D91]">
-                    <span className="mt-[3px] h-2 w-2 shrink-0 rounded-full" style={{ background: "#D01E2E" }} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* FAQ */}
-          <div>
-            <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>FAQ</p>
-            <h2 className="mb-10 text-3xl font-black tracking-[-0.04em] text-[#F5F4F1] md:text-4xl">
-              자주 묻는 질문
-            </h2>
-
-            <div className="space-y-3">
-              {faqItems.map((item, index) => (
-                <div
-                  key={index}
-                  className="rounded-[14px] border border-[#4A4C50]/25 bg-[#141416] p-7 transition duration-250 hover:border-[#4A4C50]/55"
-                >
-                  <h3 className="text-base font-black tracking-[-0.02em] text-[#F5F4F1]">
-                    {item.question}
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-[#8A8D91]">
-                    {item.answer}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
       </section>
     </main>
