@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import GATracker from "@/app/components/GATracker";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -224,7 +225,7 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'G-YG7VZ2S2Y0');
+            gtag('config', 'G-YG7VZ2S2Y0', { send_page_view: false });
           `}
         </Script>
         
@@ -235,6 +236,7 @@ export default function RootLayout({
           }}
         />
 
+        <GATracker />
         {children}
       </body>
     </html>
