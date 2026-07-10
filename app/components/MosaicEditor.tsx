@@ -28,6 +28,9 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
   const [cropRect, setCropRect] = useState<Rect | null>(null);
 
   const [isDrawing, setIsDrawing] = useState(false);
+  const isDrawingRef = useRef(false);
+  useEffect(() => { isDrawingRef.current = isDrawing; }, [isDrawing]);
+
   const startPos = useRef({ x: 0, y: 0 });
   const [selectionRect, setSelectionRect] = useState<Rect | null>(null);
 
@@ -89,7 +92,7 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
   }
 
   function moveDraw(clientX: number, clientY: number) {
-    if (!isDrawing) return;
+    if (!isDrawingRef.current) return;
     const pos = getCanvasPos(clientX, clientY);
     setSelectionRect({
       x: Math.min(startPos.current.x, pos.x),
@@ -100,7 +103,7 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
   }
 
   function endDraw(clientX: number, clientY: number) {
-    if (!isDrawing) return;
+    if (!isDrawingRef.current) return;
     setIsDrawing(false);
     setSelectionRect(null);
     const pos = getCanvasPos(clientX, clientY);
@@ -125,19 +128,31 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
   function onMouseMove(e: React.MouseEvent<HTMLCanvasElement>) { moveDraw(e.clientX, e.clientY); }
   function onMouseUp(e: React.MouseEvent<HTMLCanvasElement>) { endDraw(e.clientX, e.clientY); }
 
-  // 터치
-  function onTouchStart(e: React.TouchEvent<HTMLCanvasElement>) {
-    e.preventDefault();
-    startDraw(e.touches[0].clientX, e.touches[0].clientY);
-  }
-  function onTouchMove(e: React.TouchEvent<HTMLCanvasElement>) {
-    e.preventDefault();
-    moveDraw(e.touches[0].clientX, e.touches[0].clientY);
-  }
-  function onTouchEnd(e: React.TouchEvent<HTMLCanvasElement>) {
-    e.preventDefault();
-    endDraw(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-  }
+  // 터치 — stale closure 방지용 함수 refs
+  const startDrawRef = useRef<(x: number, y: number) => void>(() => {});
+  const moveDrawRef = useRef<(x: number, y: number) => void>(() => {});
+  const endDrawRef = useRef<(x: number, y: number) => void>(() => {});
+  // 매 렌더마다 최신 함수로 갱신
+  startDrawRef.current = startDraw;
+  moveDrawRef.current = moveDraw;
+  endDrawRef.current = endDraw;
+
+  // passive: false 네이티브 터치 리스너 — React 합성 이벤트로는 preventDefault가 무시될 수 있음
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const onTS = (e: TouchEvent) => { e.preventDefault(); startDrawRef.current(e.touches[0].clientX, e.touches[0].clientY); };
+    const onTM = (e: TouchEvent) => { e.preventDefault(); moveDrawRef.current(e.touches[0].clientX, e.touches[0].clientY); };
+    const onTE = (e: TouchEvent) => { e.preventDefault(); endDrawRef.current(e.changedTouches[0].clientX, e.changedTouches[0].clientY); };
+    canvas.addEventListener("touchstart", onTS, { passive: false });
+    canvas.addEventListener("touchmove", onTM, { passive: false });
+    canvas.addEventListener("touchend", onTE, { passive: false });
+    return () => {
+      canvas.removeEventListener("touchstart", onTS);
+      canvas.removeEventListener("touchmove", onTM);
+      canvas.removeEventListener("touchend", onTE);
+    };
+  }, []); // 마운트 1회
 
   function applyMosaic(rect: Rect, size: number) {
     const canvas = canvasRef.current;
@@ -321,9 +336,6 @@ export default function MosaicEditor({ file, fileIndex, fileTotal, onDone, onSki
             onMouseMove={onMouseMove}
             onMouseUp={onMouseUp}
             onMouseLeave={() => { setIsDrawing(false); setSelectionRect(null); }}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
             style={{
               cursor: loaded ? "crosshair" : "default",
               display: "block",
