@@ -18,7 +18,7 @@ export async function GET() {
     SELECT title, slug, description, branch_name, created_at
     FROM homepage_posts
     ORDER BY created_at DESC
-    LIMIT 20
+    LIMIT 50
   `);
 
   const items = (rows as any[])
