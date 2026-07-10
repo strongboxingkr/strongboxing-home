@@ -61,10 +61,11 @@ export async function generateMetadata({
     };
   }
 
-  const imageMatch = String(post.content || "").match(/!\[.*?\]\((.*?)\)/);
-  const imageUrl = imageMatch?.[1]
-    ? `${siteUrl}${imageMatch[1]}`
-    : `${siteUrl}/og.png`;
+  const rawContent = String(post.content || "");
+  const imgSrc =
+    rawContent.match(/!\[.*?\]\(([^)]+)\)/)?.[1] ||
+    rawContent.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1];
+  const imageUrl = imgSrc ? `${siteUrl}${imgSrc}` : `${siteUrl}/og.png`;
 
   return {
     title: { absolute: `${post.title} | 스트롱복싱` },
@@ -183,8 +184,11 @@ export default async function BlogDetailPage({
     );
   }
 
-  const imageMatch = String(post.content || "").match(/!\[.*?\]\((.*?)\)/);
-  const imageUrl = imageMatch?.[1] ? `${siteUrl}${imageMatch[1]}` : undefined;
+  const rawContent2 = String(post.content || "");
+  const imgSrc2 =
+    rawContent2.match(/!\[.*?\]\(([^)]+)\)/)?.[1] ||
+    rawContent2.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1];
+  const imageUrl = imgSrc2 ? `${siteUrl}${imgSrc2}` : undefined;
 
   const articleJsonLd = {
     "@context": "https://schema.org",
