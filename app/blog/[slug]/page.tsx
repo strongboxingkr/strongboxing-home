@@ -253,7 +253,7 @@ export default async function BlogDetailPage({
       <article>
         {/* 헤더 */}
         <section
-          className="px-6 py-24"
+          className="px-6 py-12 md:py-16"
           style={{ background: "#0E0E10", borderBottom: "1px solid rgba(255,255,255,0.07)" }}
         >
           <div className="mx-auto max-w-4xl">
@@ -292,7 +292,7 @@ export default async function BlogDetailPage({
               </span>
             </div>
 
-            <h1 className="text-4xl font-black leading-tight tracking-[-0.05em] md:text-6xl">
+            <h1 className="text-[28px] font-black leading-[1.35] tracking-[-0.04em] md:text-[36px] md:leading-[1.28]">
               {post.title}
             </h1>
           </div>
@@ -301,7 +301,7 @@ export default async function BlogDetailPage({
         <ViewTracker postId={post.id} />
 
         {/* 본문 */}
-        <section className="px-6 py-20">
+        <section className="px-6 py-10 md:py-14">
           <div className="mx-auto max-w-4xl">
             <MarkdownContent content={String(post.content || "")} />
 
