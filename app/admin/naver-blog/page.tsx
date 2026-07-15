@@ -8,6 +8,30 @@ type MediaItem = {
   name: string;
 };
 
+const BRANCH_SEO_KEYWORDS: Record<string, string[]> = {
+  목동점: [
+    "목동복싱", "목동복싱장", "양천구복싱", "오목교복싱", "오목교역복싱",
+    "목동헬스", "목동운동", "복싱다이어트", "체력관리", "학생운동",
+    "여성복싱", "직장인운동",
+  ],
+  철산점: [
+    "철산복싱", "철산복싱장", "광명복싱", "철산동복싱", "광명운동",
+    "철산운동", "광명헬스", "복싱다이어트", "여성복싱", "직장인운동",
+  ],
+  개봉점: [
+    "개봉복싱", "개봉복싱장", "구로복싱", "고척복싱", "오류동복싱",
+    "구로운동", "복싱다이어트", "여성복싱", "직장인운동",
+  ],
+  신정점: [
+    "신정복싱", "신정동복싱", "양천구복싱", "신정네거리복싱",
+    "신정운동", "복싱다이어트", "여성복싱", "직장인운동",
+  ],
+  영등포점: [
+    "영등포복싱", "영등포복싱장", "신길복싱", "대림복싱",
+    "영등포운동", "복싱다이어트", "여성복싱", "직장인운동",
+  ],
+};
+
 export default function NaverBlogPage() {
   const contentRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -19,6 +43,9 @@ export default function NaverBlogPage() {
   const [keyword, setKeyword] = useState("");
   const [topic, setTopic] = useState("");
   const [memo, setMemo] = useState("");
+  const [seoKeywords, setSeoKeywords] = useState(
+    BRANCH_SEO_KEYWORDS["철산점"].join(", ")
+  );
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -32,6 +59,13 @@ export default function NaverBlogPage() {
   useEffect(() => {
     loadPosts();
   }, []);
+
+  // 지점 변경 시 — 편집 중이 아닐 때만 기본 키워드 자동 채우기
+  useEffect(() => {
+    if (!editingId) {
+      setSeoKeywords(BRANCH_SEO_KEYWORDS[branchName]?.join(", ") ?? "");
+    }
+  }, [branchName]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function loadPosts() {
     const res = await fetch("/api/naver-blog-posts");
@@ -165,6 +199,7 @@ export default function NaverBlogPage() {
         content,
         hashtags,
         media,
+        seo_keywords: seoKeywords,
       }),
     });
 
@@ -189,6 +224,7 @@ export default function NaverBlogPage() {
     setKeyword(post.keyword || "");
     setContent(post.content || "");
     setHashtags(post.hashtags || "");
+    setSeoKeywords(post.seo_keywords || "");
 
     try {
       setMedia(typeof post.media === "string" ? JSON.parse(post.media) : post.media || []);
@@ -236,6 +272,7 @@ export default function NaverBlogPage() {
     setContent("");
     setHashtags("");
     setMedia([]);
+    setSeoKeywords(BRANCH_SEO_KEYWORDS["철산점"].join(", "));
   }
 
   function copy(text: string) {
@@ -318,6 +355,44 @@ export default function NaverBlogPage() {
                 placeholder="예: 목동점 블로그 말투처럼 자연스럽게"
                 className="h-28 w-full rounded-2xl border border-zinc-200 bg-white p-4"
               />
+            </div>
+
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <label className="font-bold">SEO 키워드</label>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSeoKeywords(BRANCH_SEO_KEYWORDS[branchName]?.join(", ") ?? "")
+                  }
+                  className="rounded-full border border-zinc-200 px-3 py-1 text-xs font-bold text-zinc-500"
+                >
+                  기본값 불러오기
+                </button>
+              </div>
+              <textarea
+                value={seoKeywords}
+                onChange={(e) => setSeoKeywords(e.target.value)}
+                placeholder="목동복싱, 목동복싱장, 양천구복싱 ..."
+                className="h-28 w-full rounded-2xl border border-zinc-200 bg-white p-4 text-sm"
+              />
+              <p className="mt-1 text-xs text-zinc-400">쉼표(,)로 구분하여 입력합니다</p>
+              {seoKeywords && (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {seoKeywords
+                    .split(",")
+                    .map((k) => k.trim())
+                    .filter(Boolean)
+                    .map((k, i) => (
+                      <span
+                        key={i}
+                        className="rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-bold text-zinc-600"
+                      >
+                        #{k}
+                      </span>
+                    ))}
+                </div>
+              )}
             </div>
 
             <button
@@ -478,6 +553,23 @@ export default function NaverBlogPage() {
                 </p>
 
                 <h3 className="mt-1 text-2xl font-black text-white">{post.title}</h3>
+
+                {post.seo_keywords && (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {post.seo_keywords
+                      .split(",")
+                      .map((k: string) => k.trim())
+                      .filter(Boolean)
+                      .map((k: string, i: number) => (
+                        <span
+                          key={i}
+                          className="rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-bold text-zinc-600"
+                        >
+                          #{k}
+                        </span>
+                      ))}
+                  </div>
+                )}
 
                 <div className="mt-4 flex flex-wrap gap-3">
                   <button

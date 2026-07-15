@@ -34,6 +34,7 @@ export async function POST(req: Request) {
       content,
       hashtags,
       media,
+      seo_keywords,
     } = await req.json();
 
     await db.query(
@@ -45,9 +46,10 @@ export async function POST(req: Request) {
         keyword,
         content,
         hashtags,
-        media
+        media,
+        seo_keywords
       )
-      VALUES (?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
       `,
       [
         title,
@@ -56,6 +58,7 @@ export async function POST(req: Request) {
         content,
         hashtags,
         JSON.stringify(media || []),
+        seo_keywords || "",
       ]
     );
 
@@ -85,6 +88,7 @@ export async function PUT(req: Request) {
       content,
       hashtags,
       media,
+      seo_keywords,
     } = await req.json();
 
     await db.query(
@@ -96,7 +100,8 @@ export async function PUT(req: Request) {
         keyword = ?,
         content = ?,
         hashtags = ?,
-        media = ?
+        media = ?,
+        seo_keywords = ?
       WHERE id = ?
       `,
       [
@@ -106,6 +111,7 @@ export async function PUT(req: Request) {
         content,
         hashtags,
         JSON.stringify(media || []),
+        seo_keywords || "",
         id,
       ]
     );
