@@ -115,7 +115,9 @@ export default function PopupBanner() {
             <span className="rounded-full bg-[#D01E2E] px-3 py-0.5 text-[11px] font-black text-white">
               이벤트
             </span>
-            <span className="text-[11px] text-[#5A5C61]">{popup.branch_name}</span>
+            <span className="text-[11px] text-[#5A5C61]">
+              {popup.branch_name === "전체" ? "스트롱복싱 전점" : popup.branch_name}
+            </span>
           </div>
           <h3 className="mb-2 text-lg font-black leading-snug tracking-tight text-[#F5F4F1]">
             {popup.title}

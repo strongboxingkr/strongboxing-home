@@ -701,6 +701,7 @@ export default function AdminPage() {
               onChange={(e) => setBranchName(e.target.value)}
               className="w-full rounded-2xl border border-zinc-200 bg-white p-4 outline-none focus:border-[#FC5230]"
             >
+              <option>전체</option>
               <option>철산점</option>
               <option>목동점</option>
               <option>신정점</option>
