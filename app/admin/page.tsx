@@ -724,7 +724,7 @@ export default function AdminPage() {
               </select>
             </div>
 
-          {category === "이벤트" && (
+          {(category === "이벤트" || category === "공지") && (
             <div className="rounded-[28px] border border-orange-200 bg-orange-50 p-5 space-y-3">
               <label className="block font-bold text-orange-700">
                 🎉 홈페이지 팝업 설정
