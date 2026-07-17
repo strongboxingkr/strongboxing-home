@@ -62,6 +62,7 @@ export default function AdminPage() {
   const [popupEnd, setPopupEnd] = useState("");
 
   const [layoutMode, setLayoutMode] = useState<"1열" | "2열" | "3열">("1열");
+  const [gallery2Mode, setGallery2Mode] = useState<"가로" | "세로">("가로");
   const [gallery3Mode, setGallery3Mode] = useState<"2top" | "1top">("2top");
   const [pendingImages, setPendingImages] = useState<Array<{url: string; alt: string}>>([]);
   const [altTarget, setAltTarget] = useState("");
@@ -346,7 +347,7 @@ export default function AdminPage() {
       .map((img) => `<img src="${img.url}" alt="${sanitizeAlt(img.alt, autoAlt)}" />`)
       .join("\n");
 
-    let galleryClass = "gallery-grid gallery-2col";
+    let galleryClass = gallery2Mode === "세로" ? "gallery-grid gallery-2col-vert" : "gallery-grid gallery-2col";
     if (layoutMode === "3열") {
       galleryClass = gallery3Mode === "1top"
         ? "gallery-grid gallery-3col-1top"
@@ -897,6 +898,36 @@ export default function AdminPage() {
                   ))}
                 </div>
               </div>
+
+              {layoutMode === "2열" && (
+                <div>
+                  <p className="mb-2 text-sm text-zinc-500">배치 방향 선택</p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setGallery2Mode("가로")}
+                      className={`flex-1 rounded-full px-4 py-2 text-xs font-black transition ${
+                        gallery2Mode === "가로"
+                          ? "bg-[#FC5230] text-white"
+                          : "border border-zinc-200 text-zinc-500"
+                      }`}
+                    >
+                      ■■ 가로 나란히
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGallery2Mode("세로")}
+                      className={`flex-1 rounded-full px-4 py-2 text-xs font-black transition ${
+                        gallery2Mode === "세로"
+                          ? "bg-[#FC5230] text-white"
+                          : "border border-zinc-200 text-zinc-500"
+                      }`}
+                    >
+                      ▬ / ▬ 세로 쌓기
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {layoutMode === "3열" && (
                 <div>

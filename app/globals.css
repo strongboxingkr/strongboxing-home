@@ -168,6 +168,7 @@ button[type="button"] {
 }
 /* 기존 2열/3열 — 하위 호환 유지 + minmax로 줄바꿈 버그 수정 */
 .gallery-2col { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.gallery-2col-vert { grid-template-columns: 1fr !important; }
 .gallery-3col { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
 .gallery-grid img {
   width: 100% !important;
