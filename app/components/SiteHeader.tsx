@@ -10,6 +10,7 @@ type NavItem =
   | { label: string; href: string };
 
 const NAV: NavItem[] = [
+  { label: "브랜드 소개", href: "/about" },
   { label: "지점",       id: "branches" },
   { label: "프로그램",   id: "programs" },
   { label: "클립",       id: "clips" },
@@ -23,6 +24,7 @@ export default function SiteHeader() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isBlog = pathname.startsWith("/blog");
+  const isAbout = pathname === "/about";
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -65,7 +67,11 @@ export default function SiteHeader() {
   };
 
   const isActive = (item: NavItem) => {
-    if ("href" in item) return isBlog;
+    if ("href" in item) {
+      if (item.href === "/about") return isAbout;
+      if (item.href === "/blog") return isBlog;
+      return false;
+    }
     return isHome && activeId === item.id;
   };
 
