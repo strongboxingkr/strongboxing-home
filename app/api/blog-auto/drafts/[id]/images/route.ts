@@ -4,7 +4,18 @@ import { imageModel, optimizeAndSave } from "@/lib/blog-auto/images";
 import { executeImageRun } from "@/lib/blog-auto/pipeline";
 import { replaceFigure } from "@/lib/blog-auto/render";
 import { createRun, getDraft, updateDraft } from "@/lib/blog-auto/repo";
+import { db } from "@/lib/db";
 import type { DraftImage, ImageRole } from "@/lib/blog-auto/types";
+
+async function syncThumbnail(draftId: number, publishedPostId: number | null | undefined) {
+  if (!publishedPostId) return;
+  const d = await getDraft(draftId);
+  if (!d) return;
+  const cover = d.images.find((i) => i.role === "cover");
+  if (cover?.url) {
+    await db.query(`UPDATE homepage_posts SET thumbnail = ? WHERE id = ?`, [cover.url, publishedPostId]);
+  }
+}
 
 export const runtime = "nodejs";
 
@@ -20,7 +31,6 @@ export async function POST(req: Request, { params }: Ctx) {
     const { id } = await params;
     const d = await getDraft(Number(id));
     if (!d) return bad("초안을 찾을 수 없습니다.", 404);
-    if (d.status === "published") return bad("발행된 초안입니다.");
 
     const type = req.headers.get("content-type") || "";
     if (type.includes("multipart/form-data")) {
@@ -52,6 +62,7 @@ export async function POST(req: Request, { params }: Ctx) {
         coachApproved: false,
       };
       await updateDraft(d.id, { images, content_html: replaceFigure(d.content_html, images[idx]) });
+      if (role === "cover") await syncThumbnail(d.id, d.published_post_id);
       return Response.json({ ok: true });
     }
 
@@ -70,7 +81,6 @@ export async function PATCH(req: Request, { params }: Ctx) {
     const { id } = await params;
     const d = await getDraft(Number(id));
     if (!d) return bad("초안을 찾을 수 없습니다.", 404);
-    if (d.status === "published") return bad("발행된 초안입니다.");
 
     const body = await req.json();
     const idx = d.images.findIndex((i) => i.role === body.role);

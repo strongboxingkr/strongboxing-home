@@ -162,8 +162,8 @@ export default function DraftEditorPage({ params }: { params: Promise<{ id: stri
   }
 
   const isPublished = draft.status === "published";
-  const locked = isPublished || draft.status === "discarded";
-  const imgLocked = draft.status === "discarded"; // 발행 후에도 이미지 재생성 허용
+  const locked = draft.status === "discarded"; // 폐기된 글만 잠금 (발행 후에도 수정 허용)
+  const imgLocked = draft.status === "discarded";
 
   return (
     <main className="min-h-screen bg-[#F5F7FA] px-6 py-16 text-zinc-900">

@@ -25,7 +25,7 @@ export async function PUT(req: Request, { params }: Ctx) {
     const { id } = await params;
     const d = await getDraft(Number(id));
     if (!d) return bad("초안을 찾을 수 없습니다.", 404);
-    if (d.status === "published") return bad("발행된 글은 기존 블로그 관리(/admin)에서 수정해 주세요.");
+    // 발행된 초안도 수정 허용 — 저장 시 homepage_posts 도 동기화
 
     const body = await req.json();
     const patch: Parameters<typeof updateDraft>[1] = {};
@@ -55,6 +55,22 @@ export async function PUT(req: Request, { params }: Ctx) {
 
     await updateDraft(d.id, patch);
     const next = (await getDraft(d.id))!;
+
+    // 발행된 글이면 homepage_posts 도 동기화
+    if (d.status === "published" && d.published_post_id) {
+      const cover = next.images.find((i) => i.role === "cover");
+      const thumbnail = cover?.url ?? null;
+      const syncPatch: Record<string, unknown> = {};
+      if (patch.title) syncPatch.title = next.title;
+      if (patch.description) syncPatch.description = next.description;
+      if (patch.content_html) syncPatch.content = stripPending(next.content_html).trim();
+      if (thumbnail) syncPatch.thumbnail = thumbnail;
+      if (Object.keys(syncPatch).length) {
+        const sets = Object.keys(syncPatch).map((k) => `${k} = ?`).join(", ");
+        await db.query(`UPDATE homepage_posts SET ${sets} WHERE id = ?`, [...Object.values(syncPatch), d.published_post_id]);
+      }
+    }
+
     return Response.json({ ok: true, draft: next, readiness: await checkReadiness(next) });
   });
 }

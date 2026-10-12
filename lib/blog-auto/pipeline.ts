@@ -216,6 +216,17 @@ export async function executeImageRun(runId: number, draftId: number, role: Imag
     }
     await updateDraft(draftId, { images, content_html: replaceFigure(draft.content_html, images[idx]) });
     await log.info("이미지 저장 완료");
+
+    // 발행된 글이고 cover 이미지면 thumbnail 동기화
+    if (role === "cover" && draft.status === "published" && draft.published_post_id) {
+      const newUrl = images[idx].url;
+      if (newUrl) {
+        const { db } = await import("@/lib/db");
+        await db.query(`UPDATE homepage_posts SET thumbnail = ? WHERE id = ?`, [newUrl, draft.published_post_id]);
+        await log.info("블로그 썸네일 동기화 완료");
+      }
+    }
+
     await finishRun(runId, "success", { draftId, usage: { images: 1, imageModel: imageModel() } });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
