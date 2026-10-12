@@ -163,6 +163,7 @@ export default function DraftEditorPage({ params }: { params: Promise<{ id: stri
 
   const isPublished = draft.status === "published";
   const locked = isPublished || draft.status === "discarded";
+  const imgLocked = draft.status === "discarded"; // 발행 후에도 이미지 재생성 허용
 
   return (
     <main className="min-h-screen bg-[#F5F7FA] px-6 py-16 text-zinc-900">
@@ -302,7 +303,7 @@ export default function DraftEditorPage({ params }: { params: Promise<{ id: stri
                   </div>
                   <textarea disabled={locked} rows={2} className={`${input} mt-2 text-xs text-zinc-500`} defaultValue={img.prompt} placeholder="생성 프롬프트" onBlur={(e) => e.target.value !== img.prompt && patchImage(img, { prompt: e.target.value })} />
 
-                  {!locked && (
+                  {!imgLocked && (
                     <div className="mt-3 flex flex-wrap items-center gap-2">
                       <button
                         disabled={!!busy || !imageModel}
