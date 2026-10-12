@@ -391,7 +391,22 @@ export default function DraftEditorPage({ params }: { params: Promise<{ id: stri
             </>
           )}
           {isPublished && (
-            <a href={`/blog/${draft.slug}`} target="_blank" className={`${btn} bg-green-600 text-white`}>공개 글 보기</a>
+            <>
+              <button
+                disabled={!!busy}
+                onClick={async () => {
+                  setBusy("sync");
+                  const r = await api(`/api/blog-auto/drafts/${id}/sync`, { method: "POST" });
+                  setBusy(null);
+                  if (!r.ok) return alert(r.message);
+                  alert("블로그에 동기화됐습니다.");
+                }}
+                className={`${btn} border border-green-600 text-green-600`}
+              >
+                {busy === "sync" ? "동기화 중..." : "블로그에 동기화"}
+              </button>
+              <a href={`/blog/${draft.slug}`} target="_blank" className={`${btn} bg-green-600 text-white`}>공개 글 보기</a>
+            </>
           )}
         </div>
       </div>
