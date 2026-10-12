@@ -236,6 +236,13 @@ export default function RootLayout({
           }}
         />
 
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5266044409030851"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+
         <GATracker />
         {children}
       </body>
