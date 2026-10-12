@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { generatePost, textModel } from "./generate";
 import { generateIllustration, imageModel } from "./images";
 import { relatedCandidates, toRelatedLinks, validateLinks } from "./links";
-import { renderContent, replaceFigure } from "./render";
+import { renderContent, replaceFigure, stripPending } from "./render";
 import { RunLogger, finishRun, getDraft, getSetting, insertDraftRow, uniqueSlug, updateDraft } from "./repo";
 import { DUP_BLOCK, DUP_WARN, postSimilarity, similarity } from "./similarity";
 import type { DraftImage, DupReportItem, ImageRole, Topic } from "./types";
@@ -217,13 +217,19 @@ export async function executeImageRun(runId: number, draftId: number, role: Imag
     await updateDraft(draftId, { images, content_html: replaceFigure(draft.content_html, images[idx]) });
     await log.info("이미지 저장 완료");
 
-    // 발행된 글이고 cover 이미지면 thumbnail 동기화
-    if (role === "cover" && draft.status === "published" && draft.published_post_id) {
-      const newUrl = images[idx].url;
-      if (newUrl) {
-        const { db } = await import("@/lib/db");
-        await db.query(`UPDATE homepage_posts SET thumbnail = ? WHERE id = ?`, [newUrl, draft.published_post_id]);
-        await log.info("블로그 썸네일 동기화 완료");
+    // 발행된 글이면 homepage_posts content + thumbnail 동기화
+    if (draft.status === "published" && draft.published_post_id) {
+      const { db } = await import("@/lib/db");
+      const updatedDraft = await getDraft(draftId);
+      if (updatedDraft) {
+        const newContent = stripPending(updatedDraft.content_html).trim();
+        const cover = updatedDraft.images.find((i) => i.role === "cover");
+        const thumbnail = cover?.url ?? null;
+        await db.query(
+          `UPDATE homepage_posts SET content = ?${thumbnail ? ", thumbnail = ?" : ""} WHERE id = ?`,
+          thumbnail ? [newContent, thumbnail, draft.published_post_id] : [newContent, draft.published_post_id]
+        );
+        await log.info("블로그 본문/썸네일 동기화 완료");
       }
     }
 
