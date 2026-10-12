@@ -2,11 +2,43 @@ import { db } from "@/lib/db";
 import type { Metadata } from "next";
 import MarkdownContent from "./MarkdownContent";
 import ViewTracker from "./ViewTracker";
+import ArticleLinkTracker from "./ArticleLinkTracker";
 
 const siteUrl = "https://strongboxing.kr";
 
+function absUrl(u: string) {
+  return /^https?:\/\//.test(u) ? u : `${siteUrl}${u.startsWith("/") ? "" : "/"}${u}`;
+}
+
+/** 대표 이미지: thumbnail 우선, 없으면 본문 첫 이미지 */
+function pickPostImage(post: any): string | undefined {
+  const raw = String(post.content || "");
+  const src =
+    post.thumbnail ||
+    raw.match(/!\[.*?\]\(([^)]+)\)/)?.[1] ||
+    raw.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1];
+  return src ? absUrl(src) : undefined;
+}
+
+function branchLabel(name: string) {
+  return name === "전체" ? "스트롱복싱" : name;
+}
+
 function extractFaqFromMarkdown(content: string): Array<{ q: string; a: string }> {
   const items: Array<{ q: string; a: string }> = [];
+
+  // 자동화 초안(HTML) 형식: <div data-faq="1"><h3>질문</h3><p>답</p>...</div>
+  const htmlFaq = content.match(/<div[^>]*data-faq="1"[^>]*>([\s\S]*?)<\/div>/i);
+  if (htmlFaq) {
+    const strip = (s: string) =>
+      s.replace(/<[^>]+>/g, "").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").trim();
+    for (const m of htmlFaq[1].matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/gi)) {
+      const q = strip(m[1]);
+      const a = strip(m[2]);
+      if (q.length > 4 && a.length > 4) items.push({ q, a });
+    }
+    if (items.length) return items.slice(0, 10);
+  }
 
   // FAQ 섹션 헤더 찾기
   const sectionRx = /##\s*(?:FAQ|자주\s*묻는\s*질문|Q&A|궁금한\s*(?:점|질문))[^\n]*\n([\s\S]*?)(?=\n##|$)/i;
@@ -61,11 +93,7 @@ export async function generateMetadata({
     };
   }
 
-  const rawContent = String(post.content || "");
-  const imgSrc =
-    rawContent.match(/!\[.*?\]\(([^)]+)\)/)?.[1] ||
-    rawContent.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1];
-  const imageUrl = imgSrc ? `${siteUrl}${imgSrc}` : `${siteUrl}/og.png`;
+  const imageUrl = pickPostImage(post) ?? `${siteUrl}/og.png`;
 
   return {
     title: { absolute: `${post.title} | 스트롱복싱` },
@@ -164,6 +192,7 @@ export default async function BlogDetailPage({
         공지: "함께 확인할 공지",
         후기: "회원 후기 더 보기",
         운동팁: "함께 보면 좋은 글",
+        복싱정보: "함께 읽으면 좋은 복싱 정보",
       };
       relatedTitle = labelMap[post.category] ?? "함께 보면 좋은 글";
     } else {
@@ -184,11 +213,7 @@ export default async function BlogDetailPage({
     );
   }
 
-  const rawContent2 = String(post.content || "");
-  const imgSrc2 =
-    rawContent2.match(/!\[.*?\]\(([^)]+)\)/)?.[1] ||
-    rawContent2.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1];
-  const imageUrl = imgSrc2 ? `${siteUrl}${imgSrc2}` : undefined;
+  const imageUrl = pickPostImage(post);
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -250,7 +275,8 @@ export default async function BlogDetailPage({
         />
       )}
 
-      <article>
+      <article data-article-root>
+        <ArticleLinkTracker slug={post.slug} category={post.category} />
         {/* 헤더 */}
         <section
           className="px-6 py-12 md:py-16"
@@ -263,7 +289,7 @@ export default async function BlogDetailPage({
 
             <div className="mb-5 flex flex-wrap items-center gap-2.5">
               <span className="rounded-full bg-[#D01E2E] px-3 py-1 text-xs font-black">
-                {post.branch_name}
+                {branchLabel(post.branch_name)}
               </span>
               <span className="rounded-full border border-[#4A4C50]/30 px-3 py-1 text-xs text-[#8A8D91]">
                 {post.category}
@@ -298,7 +324,7 @@ export default async function BlogDetailPage({
           </div>
         </section>
 
-        <ViewTracker postId={post.id} />
+        <ViewTracker postId={post.id} slug={post.slug} category={post.category} />
 
         {/* 본문 */}
         <section className="px-6 py-10 md:py-14">
@@ -307,7 +333,7 @@ export default async function BlogDetailPage({
 
             {/* ── 관련 글 ── */}
             {relatedPosts.length > 0 && (
-              <section className="mt-20" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 52 }}>
+              <section data-placement="related_list" className="mt-20" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 52 }}>
                 <p className="mb-1.5 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>
                   RELATED
                 </p>
@@ -324,7 +350,7 @@ export default async function BlogDetailPage({
                       >
                         <div className="min-w-0 flex-1">
                           <p className="mb-1.5 text-[11px] font-bold" style={{ color: "#5A5C61" }}>
-                            {rp.branch_name} · {rp.category} · {new Date(rp.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}
+                            {branchLabel(rp.branch_name)} · {rp.category} · {new Date(rp.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}
                           </p>
                           <p className="truncate text-sm font-bold transition-colors duration-200 group-hover:text-white" style={{ color: "#C8CACD" }}>
                             {rp.title}
@@ -355,7 +381,7 @@ export default async function BlogDetailPage({
               const bl = branchLinkMap[post.branch_name];
               if (!bl) return null;
               return (
-                <section className="mt-16 border-t border-[#4A4C50]/30 pt-12">
+                <section data-placement="branch_card" className="mt-16 border-t border-[#4A4C50]/30 pt-12">
                   <p className="mb-2 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>THIS BRANCH</p>
                   <a
                     href={`/branches/${bl.slug}`}
@@ -372,7 +398,7 @@ export default async function BlogDetailPage({
             })()}
 
             {/* ── 지점 둘러보기 ── */}
-            <section className="mt-16 border-t border-[#4A4C50]/30 pt-12">
+            <section data-placement="branch_list" className="mt-16 border-t border-[#4A4C50]/30 pt-12">
               <h2 className="mb-6 text-xl font-black" style={{ color: "#8A8D91" }}>
                 스트롱복싱 지점 둘러보기
               </h2>
@@ -398,6 +424,7 @@ export default async function BlogDetailPage({
 
             {/* ── CTA ── */}
             <div
+              data-placement="bottom_cta"
               className="mt-14 p-10 text-center"
               style={{ borderRadius: 16, background: "#141416", border: "1px solid rgba(255,255,255,0.08)" }}
             >

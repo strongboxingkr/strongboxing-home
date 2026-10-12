@@ -66,6 +66,7 @@ export default async function BlogPage({
     "소식",
     "이벤트",
     "공지",
+    "복싱정보",
   ];
 
   const filteredPosts = posts.filter((post: any) => {

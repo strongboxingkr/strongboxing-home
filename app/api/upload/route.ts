@@ -58,6 +58,7 @@ export async function POST(req: Request) {
       소식: "news",
       이벤트: "event",
       공지: "notice",
+      복싱정보: "info",
     };
     const categoryFolder = categorySlug[category] || "";
 

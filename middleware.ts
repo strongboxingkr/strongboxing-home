@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // 로그인 없이 접근 가능한 API
-const PUBLIC_API_PATHS = ["/api/consultation", "/api/admin/login", "/api/admin/logout"];
+// /api/blog-auto/cron 은 쿠키 대신 BLOG_AUTO_CRON_SECRET 으로 라우트 안에서 인증
+const PUBLIC_API_PATHS = ["/api/consultation", "/api/admin/login", "/api/admin/logout", "/api/blog-auto/cron"];
 
 function isAuthed(request: NextRequest): boolean {
   const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
