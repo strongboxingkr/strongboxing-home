@@ -492,6 +492,13 @@ export default function AdminPage() {
           </a>
 
           <a
+            href="/admin/blog-auto"
+            className="rounded-full border border-[#D01E2E]/30 bg-[#D01E2E]/10 px-6 py-3 font-black text-[#D01E2E]"
+          >
+            BLOG AUTO
+          </a>
+
+          <a
             href="/admin/naver-blog"
             className="rounded-full border border-[#FC5230]/30 bg-[#FC5230]/10 px-6 py-3 font-black text-[#FC5230]"
           >
@@ -722,6 +729,7 @@ export default function AdminPage() {
                 <option>소식</option>
                 <option>이벤트</option>
                 <option>공지</option>
+                <option>복싱정보</option>
               </select>
             </div>
 
