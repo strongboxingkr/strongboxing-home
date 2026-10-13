@@ -154,8 +154,8 @@ export const metadata: Metadata = {
 
   verification: {
     other: {
-      "naver-site-verification":
-        "12d1716111cc26657b03f8175e9fa67fc6c6f51b",
+      "naver-site-verification": "12d1716111cc26657b03f8175e9fa67fc6c6f51b",
+      "google-adsense-account": "ca-pub-5266044409030851",
     },
   },
 
