@@ -181,7 +181,7 @@ export default async function HomePage() {
                 <h1 style={{ fontSize: "clamp(52px, 7.5vw, 108px)", lineHeight: 0.87, letterSpacing: "-0.05em", fontWeight: 900 }}>
                   <span style={{ color: "#F5F4F1" }}>처음이어도</span>
                   <br />
-                  <span style={{ WebkitTextStroke: "1.5px #F5F4F1", WebkitTextFillColor: "transparent", color: "transparent" }}>
+                  <span style={{ color: "#F5F4F1" }}>
                     괜찮습니다
                   </span>
                 </h1>
