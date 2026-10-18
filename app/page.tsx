@@ -141,6 +141,7 @@ export default async function HomePage() {
   const [rows]: any = await db.query(`
     SELECT id, title, slug, description, branch_name, created_at, content, thumbnail
     FROM homepage_posts
+    WHERE branch_name IS NOT NULL AND branch_name NOT IN ('', '전체')
     ORDER BY created_at DESC
     LIMIT 3
   `);
