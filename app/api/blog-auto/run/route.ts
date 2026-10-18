@@ -1,4 +1,3 @@
-import { after } from "next/server";
 import { bad, handle } from "@/lib/blog-auto/api";
 import { executeRun } from "@/lib/blog-auto/pipeline";
 import { createRun, hasRunningRun } from "@/lib/blog-auto/repo";
@@ -19,7 +18,7 @@ export async function POST(req: Request) {
 
     const trigger = force ? "regenerate" : "manual";
     const runId = await createRun(trigger, topicId ?? null);
-    after(() => executeRun(runId, { trigger, topicId, force }));
+    executeRun(runId, { trigger, topicId, force }).catch(() => {});
     return Response.json({ ok: true, runId });
   });
 }

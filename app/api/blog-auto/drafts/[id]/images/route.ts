@@ -1,4 +1,3 @@
-import { after } from "next/server";
 import { bad, handle } from "@/lib/blog-auto/api";
 import { imageModel, optimizeAndSave } from "@/lib/blog-auto/images";
 import { executeImageRun } from "@/lib/blog-auto/pipeline";
@@ -70,7 +69,8 @@ export async function POST(req: Request, { params }: Ctx) {
     if (!ROLES.includes(role)) return bad("알 수 없는 이미지 항목입니다.");
     if (!imageModel()) return bad("이미지 생성 도구가 연결되어 있지 않습니다. 서버 환경변수 BLOG_AUTO_IMAGE_MODEL 을 설정하거나 사진을 직접 올려 주세요.");
     const runId = await createRun("image", d.topic_id, d.id);
-    after(() => executeImageRun(runId, d.id, role));
+    // after()가 이 환경에서 동작하지 않아 동기로 실행
+    executeImageRun(runId, d.id, role).catch(() => {});
     return Response.json({ ok: true, runId });
   });
 }

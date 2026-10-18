@@ -1,5 +1,4 @@
 import { timingSafeEqual } from "crypto";
-import { after } from "next/server";
 import { bad, handle } from "@/lib/blog-auto/api";
 import { executeRun } from "@/lib/blog-auto/pipeline";
 import { createRun, hasRunningRun } from "@/lib/blog-auto/repo";
@@ -24,7 +23,7 @@ export async function POST(req: Request) {
     if (!process.env.OPENAI_API_KEY) return bad("OPENAI_API_KEY 미설정", 503);
     if (await hasRunningRun()) return bad("이미 실행 중", 409);
     const runId = await createRun("schedule", null);
-    after(() => executeRun(runId, { trigger: "schedule" }));
+    executeRun(runId, { trigger: "schedule" }).catch(() => {});
     return Response.json({ ok: true, runId });
   });
 }
