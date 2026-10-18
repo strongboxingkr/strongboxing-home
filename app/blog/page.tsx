@@ -75,8 +75,9 @@ export default async function BlogPage({
       post.branch_name === selectedBranch;
 
     const categoryMatch =
-      selectedCategory === "전체" ||
-      post.category === selectedCategory;
+      selectedCategory === "전체"
+        ? post.category !== "복싱정보"
+        : post.category === selectedCategory;
 
     return branchMatch && categoryMatch;
   });
