@@ -506,6 +506,13 @@ export default function AdminPage() {
           </a>
 
           <a
+            href="/admin/naver-planner"
+            className="rounded-full border border-[#22C55E]/30 bg-[#22C55E]/10 px-6 py-3 font-black text-[#16A34A]"
+          >
+            BLOG PLANNER
+          </a>
+
+          <a
             href="/admin/reels"
             className="rounded-full border border-[#FC5230]/30 bg-[#FC5230]/10 px-6 py-3 font-black text-[#FC5230]"
           >
