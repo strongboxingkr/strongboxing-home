@@ -46,6 +46,9 @@ export type ScoredKeyword = KeywordRow & {
   otherRegion: boolean;
   relevance: "boxing" | "fitness" | "none";
   reasons: string[];
+  tier: "volume" | "longtail"; // 월 합계 10 이상 / 미만
+  total: number; // 정렬용 ("< 10" 은 0)
+  totalLabel: string; // 표시용
 };
 
 export type KeywordLookup = {

@@ -101,7 +101,7 @@ export default function NaverPlannerPage() {
   const [includeCombos, setIncludeCombos] = useState(true);
   const [lookup, setLookup] = useState<Lookup | null>(null);
   const [history, setHistory] = useState<{ id: number; hints: string; fetched_at: string }[]>([]);
-  const [filter, setFilter] = useState<"rec" | "region" | "all">("rec");
+  const [filter, setFilter] = useState<"rec" | "longtail" | "region" | "all">("rec");
   const [looking, setLooking] = useState(false);
   const [mainKw, setMainKw] = useState("");
   const [subKws, setSubKws] = useState<string[]>([]);
@@ -285,7 +285,8 @@ export default function NaverPlannerPage() {
 
   const rows = useMemo(() => {
     if (!lookup) return [];
-    if (filter === "rec") return lookup.rows.filter((r) => r.recommended);
+    if (filter === "rec") return lookup.rows.filter((r) => r.recommended && r.tier === "volume");
+    if (filter === "longtail") return lookup.rows.filter((r) => r.recommended && r.tier === "longtail");
     if (filter === "region") return lookup.rows.filter((r) => r.regionMatch);
     return lookup.rows;
   }, [lookup, filter]);
@@ -462,7 +463,8 @@ export default function NaverPlannerPage() {
             <div className="mb-3 flex flex-wrap gap-2">
               {(
                 [
-                  ["rec", `추천 (${lookup.rows.filter((r) => r.recommended).length})`],
+                  ["rec", `추천 · 검색량 많은 순 (${lookup.rows.filter((r) => r.recommended && r.tier === "volume").length})`],
+                  ["longtail", `롱테일 · 월 10회 미만 (${lookup.rows.filter((r) => r.recommended && r.tier === "longtail").length})`],
                   ["region", `지역 포함 (${lookup.rows.filter((r) => r.regionMatch).length})`],
                   ["all", `전체 (${lookup.rows.length})`],
                 ] as const
@@ -472,7 +474,7 @@ export default function NaverPlannerPage() {
                 </button>
               ))}
             </div>
-            <p className="mb-3 text-xs text-zinc-500">핵심 키워드 1개를 고르고, 보조 키워드는 여러 개 체크할 수 있습니다. 추천 점수는 규칙 기반이며 이유를 함께 표시합니다.</p>
+            <p className="mb-3 text-xs text-zinc-500">모든 탭은 월 검색량(PC+모바일) 많은 순입니다. 검색량 있는 추천 키워드는 제목·핵심 키워드로, 롱테일 키워드는 본문 보조 키워드로 쓰기 좋습니다. 핵심 1개, 보조는 여러 개 고를 수 있습니다.</p>
 
             <div className="overflow-x-auto">
               <table className="w-full min-w-[760px] text-sm">
@@ -483,6 +485,7 @@ export default function NaverPlannerPage() {
                     <th className="p-2">키워드</th>
                     <th className="p-2 text-right">PC</th>
                     <th className="p-2 text-right">모바일</th>
+                    <th className="p-2 text-right">월 합계</th>
                     <th className="p-2">경쟁</th>
                     <th className="p-2 text-right">점수</th>
                     <th className="p-2">이유</th>
@@ -509,6 +512,7 @@ export default function NaverPlannerPage() {
                       </td>
                       <td className="p-2 text-right tabular-nums">{r.pc.raw}</td>
                       <td className="p-2 text-right tabular-nums">{r.mobile.raw}</td>
+                      <td className="p-2 text-right font-black tabular-nums">{r.totalLabel}</td>
                       <td className="p-2">{r.compIdx || "-"}</td>
                       <td className="p-2 text-right tabular-nums">{r.score}</td>
                       <td className="p-2 text-xs text-zinc-600">
@@ -522,7 +526,7 @@ export default function NaverPlannerPage() {
                   ))}
                   {rows.length === 0 && (
                     <tr>
-                      <td colSpan={8} className="p-4 text-center text-zinc-500">
+                      <td colSpan={9} className="p-4 text-center text-zinc-500">
                         해당 조건의 키워드가 없습니다. 필터를 바꾸거나 힌트 키워드를 바꿔 다시 조회하세요.
                       </td>
                     </tr>

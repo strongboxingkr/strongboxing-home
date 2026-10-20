@@ -80,8 +80,18 @@ export async function runLookup(hints: string[], combos: string[]) {
   return { rows: [...map.values()], notReturned, errors };
 }
 
+/** 정렬용 합계. "< 10" 은 0 으로 취급 (화면에는 원래 값 표시) */
 function total(r: KeywordRow): number {
   return (r.pc.num ?? 0) + (r.mobile.num ?? 0);
+}
+
+/** 화면 표시용 월 합계. "< 10" 이 섞이면 범위로 표시 — 값을 만들지 않음 */
+function totalLabel(r: KeywordRow): string {
+  const under = [r.pc, r.mobile].filter((v) => v.num === null).length;
+  const sum = total(r);
+  if (under === 0) return sum.toLocaleString();
+  if (under === 2) return "< 20";
+  return `${sum.toLocaleString()}~${(sum + 9).toLocaleString()}`;
 }
 
 export function scoreKeywords(rows: KeywordRow[], b: Branch): ScoredKeyword[] {
@@ -120,9 +130,11 @@ export function scoreKeywords(rows: KeywordRow[], b: Branch): ScoredKeyword[] {
         reasons.push("복싱·운동과 관련성 낮음");
       }
 
+      // 지역어 안의 글자(개봉"역" 등)를 의도로 세지 않도록 지역어를 지운 뒤 검사
+      const rest = own.reduce((acc, t) => acc.split(lower(t)).join(" "), k);
       let intentHits = 0;
       for (const it of INTENTS) {
-        if (it.words.some((w) => k.includes(w))) {
+        if (it.words.some((w) => rest.includes(w))) {
           intentHits++;
           if (intentHits <= 3) score += 15;
           reasons.push(`${it.label}: ${it.reason}`);
@@ -141,7 +153,10 @@ export function scoreKeywords(rows: KeywordRow[], b: Branch): ScoredKeyword[] {
       }
 
       const recommended = regionMatch && !otherRegion && relevance !== "none" && score >= 65;
-      return { ...r, score, recommended, regionMatch, otherRegion, relevance, reasons };
+      // 월 합계 10 이상이면 "검색량 있음", 아니면 롱테일(본문 보조 키워드용)
+      const tier: ScoredKeyword["tier"] = t >= 10 ? "volume" : "longtail";
+      return { ...r, score, recommended, regionMatch, otherRegion, relevance, reasons, tier, total: t, totalLabel: totalLabel(r) };
     })
-    .sort((a, b) => Number(b.recommended) - Number(a.recommended) || b.score - a.score || total(b) - total(a));
+    // 검색량 많은 순 → 같으면 점수 순
+    .sort((a, b) => b.total - a.total || b.score - a.score);
 }
