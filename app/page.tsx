@@ -20,19 +20,20 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: { absolute: "스트롱복싱 | 목동 개봉 철산 신정 영등포 복싱장" },
+  title: { absolute: "스트롱복싱 | 서울·경기 복싱장 — 복싱 PT·다이어트 복싱·초보자 복싱" },
   description:
-    "목동·개봉·철산·신정·영등포 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 환영.",
+    "서울·경기 5개 지점 복싱장. 다이어트 복싱·복싱 PT·초보자 복싱 수업. 목동·개봉·철산·신정·영등포점 운영. 관장 직접 지도, 방문 상담 무료.",
   keywords: [
+    "복싱","복싱장","복싱 PT","다이어트 복싱","초보자 복싱","여성 복싱","복싱 다이어트","복싱 체육관",
     "목동 복싱","오목교 복싱","양천구 복싱","목동 학생 복싱","목동 다이어트 복싱","목동 직장인 운동",
-    "개봉 복싱","개봉동 복싱","고척 복싱","오류동 복싱","구로 복싱","구로구 복싱","개봉 여성 복싱","개봉 초보 복싱",
-    "철산 복싱","철산동 복싱","광명 복싱","철산역 복싱","광명 여성 복싱","철산 직장인 복싱",
-    "신정 복싱","신정동 복싱","영등포 복싱","관장 직접 지도","초보자 복싱","여성 복싱","다이어트 복싱","스트레스 해소 복싱",
+    "개봉 복싱","개봉동 복싱","고척 복싱","오류동 복싱","구로 복싱","구로구 복싱",
+    "철산 복싱","철산동 복싱","광명 복싱","광명 여성 복싱",
+    "신정 복싱","신정동 복싱","영등포 복싱","관장 직접 지도","스트레스 해소 복싱",
   ],
   alternates: { canonical: "https://strongboxing.kr" },
   openGraph: {
-    title: "스트롱복싱 | 목동 개봉 철산 신정 영등포 복싱장",
-    description: "목동·개봉·철산·신정·영등포 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 환영.",
+    title: "스트롱복싱 | 서울·경기 복싱장 — 복싱 PT·다이어트 복싱·초보자 복싱",
+    description: "서울·경기 5개 지점 복싱장. 다이어트 복싱·복싱 PT·초보자 복싱 수업. 목동·개봉·철산·신정·영등포점 운영. 관장 직접 지도, 방문 상담 무료.",
     url: "https://strongboxing.kr",
     siteName: "스트롱복싱",
     locale: "ko_KR",
@@ -41,8 +42,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "스트롱복싱 | 목동 개봉 철산 신정 영등포 복싱장",
-    description: "목동·개봉·철산·신정·영등포 복싱장. 관장 직접 지도, 초보자·여성·학생·직장인 환영.",
+    title: "스트롱복싱 | 서울·경기 복싱장 — 복싱 PT·다이어트 복싱·초보자 복싱",
+    description: "서울·경기 5개 지점 복싱장. 다이어트 복싱·복싱 PT·초보자 복싱 수업. 관장 직접 지도, 방문 상담 무료.",
     images: ["/og.png"],
   },
 };
@@ -137,6 +138,66 @@ const branches = [
    RED      #D01E2E   (CTA only — ≤5%)
 ───────────────────────────────────────────── */
 
+const homeJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "스트롱복싱",
+    url: "https://strongboxing.kr",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: { "@type": "EntryPoint", urlTemplate: "https://strongboxing.kr/blog?q={search_term_string}" },
+      "query-input": "required name=search_term_string",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "복싱 처음 시작하는데 괜찮나요?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "네, 스트롱복싱은 초보자 전용 커리큘럼을 운영합니다. 기초 자세·스텝·펀치부터 단계별로 배울 수 있어 운동 경험이 없어도 부담 없이 시작할 수 있습니다.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "복싱 다이어트 효과가 있나요?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "복싱은 1시간에 600~800kcal를 소모하는 고강도 유산소 운동입니다. 전신 근육을 사용해 체지방 감소와 기초대사량 향상에 매우 효과적입니다.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "스트롱복싱 지점은 어디에 있나요?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "서울·경기 5개 지점을 운영합니다. 개봉점(구로구), 신정점(양천구), 목동점(양천구), 철산점(광명시), 영등포점(영등포구)입니다.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "복싱 PT 수업도 받을 수 있나요?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "네, 스트롱복싱은 개인 맞춤형 복싱 PT 프로그램을 운영합니다. 다이어트·체력 증진·스파링 등 목적에 맞춰 코치가 1:1로 지도합니다.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "방문 상담은 무료인가요?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "네, 방문 상담은 무료입니다. 홈페이지에서 희망 지점과 날짜를 선택해 예약하시면 담당 코치가 운동 목적에 맞게 안내해드립니다.",
+        },
+      },
+    ],
+  },
+];
+
 export default async function HomePage() {
   const [rows]: any = await db.query(`
     SELECT id, title, slug, description, branch_name, created_at, content, thumbnail
@@ -149,6 +210,9 @@ export default async function HomePage() {
 
   return (
     <>
+      {homeJsonLd.map((ld, i) => (
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+      ))}
       {/*<SplashScreen />*/}
       <PopupBanner />
       <main style={{ background: "#0E0E10", color: "#F5F4F1" }} className="min-h-screen">
