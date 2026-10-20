@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { pingIndexNow } from "@/lib/indexnow";
 import { validateLinks } from "./links";
 import { hasFigure, isPublishable, plainText, stripPending } from "./render";
 import { rowToDraft } from "./repo";
@@ -82,6 +83,7 @@ export async function publishDraft(id: number): Promise<{ ok: true; slug: string
     await conn.query(`UPDATE blog_auto_drafts SET status = 'published', published_post_id = ? WHERE id = ?`, [res.insertId, id]);
     await conn.query(`UPDATE blog_topics SET status = '발행' WHERE id = ?`, [d.topic_id]);
     await conn.commit();
+    pingIndexNow(`https://strongboxing.kr/blog/${d.slug}`).catch(() => {});
     return { ok: true, slug: d.slug, postId: res.insertId };
   } catch (e) {
     await conn.rollback().catch(() => {});
