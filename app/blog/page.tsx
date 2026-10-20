@@ -47,6 +47,7 @@ export default async function BlogPage({
   const [rows]: any = await db.query(`
     SELECT id, title, slug, description, content, branch_name, category, thumbnail, is_best, created_at
     FROM homepage_posts
+    WHERE branch_name IS NOT NULL AND branch_name NOT IN ('', '전체')
     ORDER BY created_at DESC
   `);
 
@@ -66,7 +67,6 @@ export default async function BlogPage({
     "소식",
     "이벤트",
     "공지",
-    "복싱정보",
   ];
 
   const filteredPosts = posts.filter((post: any) => {
@@ -75,9 +75,8 @@ export default async function BlogPage({
       post.branch_name === selectedBranch;
 
     const categoryMatch =
-      selectedCategory === "전체"
-        ? post.category !== "복싱정보"
-        : post.category === selectedCategory;
+      selectedCategory === "전체" ||
+      post.category === selectedCategory;
 
     return branchMatch && categoryMatch;
   });
