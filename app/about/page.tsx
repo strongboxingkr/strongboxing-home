@@ -9,12 +9,12 @@ export const metadata: Metadata = {
   title: { absolute: "브랜드 소개 | 스트롱복싱의 운동 시스템과 복싱 코칭" },
   description:
     "정해진 수업시간 없는 자유로운 운동, 방치 없는 개인별 코칭, 6단계 복싱 루틴, 전 지점 인바디 측정과 안전한 맞춤 스파링까지. 스트롱복싱의 운동 방식과 브랜드 기준을 소개합니다.",
-  alternates: { canonical: "https://www.strongboxing.kr/about" },
+  alternates: { canonical: "https://strongboxing.kr/about" },
   openGraph: {
     title: "브랜드 소개 | 스트롱복싱",
     description:
       "정해진 수업시간 없는 자유로운 운동, 방치 없는 개인별 코칭, 6단계 복싱 루틴, 전 지점 인바디 측정과 안전한 맞춤 스파링까지.",
-    url: "https://www.strongboxing.kr/about",
+    url: "https://strongboxing.kr/about",
     siteName: "스트롱복싱",
     locale: "ko_KR",
     type: "website",
