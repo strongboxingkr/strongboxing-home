@@ -11,7 +11,12 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         has: [{ type: "host", value: "www.strongboxing.kr" }],
         destination: "https://strongboxing.kr/:path*",
-        permanent: true, // 301
+        permanent: true,
+      },
+      {
+        source: "/blog/quick-change-with-strongboxing-shinjeong-kids-boxing",
+        destination: "/blog/quick-change-with-strongboxing-sinjeong-kids-boxing",
+        permanent: true,
       },
     ];
   },
