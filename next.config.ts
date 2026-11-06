@@ -18,6 +18,27 @@ const nextConfig: NextConfig = {
         destination: "/blog/quick-change-with-strongboxing-sinjeong-kids-boxing",
         permanent: true,
       },
+      // 워드프레스 잔재 URL → 현재 페이지로 301
+      {
+        source: "/2026/:year/:month/:slug/",
+        destination: "/blog",
+        permanent: true,
+      },
+      {
+        source: "/:year(\\d{4})/:month(\\d{2})/:day(\\d{2})/:slug/",
+        destination: "/blog",
+        permanent: true,
+      },
+      {
+        source: "/위치-문의-contact/",
+        destination: "/reservation",
+        permanent: true,
+      },
+      {
+        source: "/author/:slug/",
+        destination: "/blog",
+        permanent: true,
+      },
     ];
   },
 };

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const DISALLOW = ["/admin", "/admin-login", "/hq"];
+const DISALLOW = ["/admin", "/admin-login", "/hq", "/blog?*", "/feed.xml"];
 
 export default function robots(): MetadataRoute.Robots {
   return {
