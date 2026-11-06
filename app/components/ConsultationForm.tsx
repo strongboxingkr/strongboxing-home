@@ -222,12 +222,12 @@ export default function ConsultationForm() {
           <p className="mb-4 text-[11px] font-black tracking-[0.35em] text-[#D01E2E]">
             STRONG BOXING
           </p>
-          <h1
+          <h2
             className="font-black tracking-[-0.05em] text-[#F5F4F1] mb-4"
             style={{ fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.1, wordBreak: "keep-all" }}
           >
             복싱이 처음이어도,<br />편하게 시작하세요.
-          </h1>
+          </h2>
           <p className="text-[15px] leading-7 text-[#8A8D91] mb-8" style={{ wordBreak: "keep-all" }}>
             시설을 둘러보고 나에게 맞는 운동을 상담받으세요.
           </p>

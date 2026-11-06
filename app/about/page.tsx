@@ -140,8 +140,7 @@ export default function AboutPage() {
           {/* 배경 이미지 */}
           <img
             src="/images/gallery/gallery-1.jpg"
-            alt=""
-            aria-hidden="true"
+            alt="스트롱복싱 복싱장 내부 전경"
             className="pointer-events-none absolute inset-0 h-full w-full object-cover"
             style={{ filter: "brightness(0.16) grayscale(0.25)" }}
           />
@@ -1075,8 +1074,7 @@ export default function AboutPage() {
         <section className="relative overflow-hidden px-6 py-40 text-center md:px-8">
           <img
             src="/images/gallery/moments/story5.jpg"
-            alt=""
-            aria-hidden="true"
+            alt="스트롱복싱 수업 현장"
             className="pointer-events-none absolute inset-0 h-full w-full object-cover"
             style={{ filter: "brightness(0.15) grayscale(0.3)" }}
           />
@@ -1154,8 +1152,7 @@ export default function AboutPage() {
             <div className="mb-10 flex items-center gap-2">
               <img
                 src="/icon.png"
-                alt=""
-                aria-hidden="true"
+                alt="스트롱복싱 로고"
                 className="h-6 w-6 object-contain opacity-60"
               />
               <div>

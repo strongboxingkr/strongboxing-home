@@ -679,7 +679,7 @@ export default async function HomePage() {
             CTA — 풀스크린
         ══════════════════════════════════════ */}
         <section className="relative overflow-hidden px-6 py-40 text-center md:px-8">
-          <img src="/images/gallery/gallery-1.jpg" alt=""
+          <img src="/images/gallery/gallery-1.jpg" alt="스트롱복싱 복싱장 내부 전경"
             className="pointer-events-none absolute inset-0 h-full w-full object-cover"
             style={{ filter: "brightness(0.18) grayscale(0.3)" }} />
           <div className="pointer-events-none absolute left-0 top-0 h-[1px] w-full" style={{ background: "rgba(255,255,255,0.08)" }} />

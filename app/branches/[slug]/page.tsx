@@ -638,7 +638,7 @@ const faqJsonLd = {
       <section className="relative min-h-[90vh] overflow-hidden bg-[#080808]">
         {/* 배경 이미지 */}
         <div className="absolute inset-0">
-          <img src={branch.image} alt="" aria-hidden="true" className="h-full w-full object-cover" style={{ filter: "brightness(0.18) grayscale(0.2)" }} />
+          <img src={branch.image} alt={branch.fullName} className="h-full w-full object-cover" style={{ filter: "brightness(0.18) grayscale(0.2)" }} />
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.65) 55%, rgba(8,8,8,0.15) 100%)" }} />
         </div>
 
