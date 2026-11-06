@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import type { Metadata } from "next";
 import BranchCTAButtons from "@/app/components/BranchCTAButtons";
 import BranchReelCard from "@/app/components/BranchReelCard";
+import NaverReviewsSection from "@/app/components/NaverReviewsSection";
 
 const branches: any = {
   gaebong: {
@@ -1072,6 +1073,8 @@ const faqJsonLd = {
           </div>
         </div>
       </section>
+
+      <NaverReviewsSection branchName={branch.name} />
     </main>
   );
 }

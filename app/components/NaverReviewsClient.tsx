@@ -4,12 +4,12 @@ import { useState } from "react";
 
 const branches = ["전체", "개봉점", "신정점", "목동점", "철산점"];
 
-export default function NaverReviewsClient({ reviews }: { reviews: any[] }) {
+export default function NaverReviewsClient({ reviews, branchMode = false }: { reviews: any[]; branchMode?: boolean }) {
   const [selectedBranch, setSelectedBranch] = useState("전체");
   const [visibleCount, setVisibleCount] = useState(6);
 
   const filtered =
-    selectedBranch === "전체"
+    branchMode || selectedBranch === "전체"
       ? reviews
       : reviews.filter((review) => review.branch_name === selectedBranch);
 
@@ -22,6 +22,7 @@ export default function NaverReviewsClient({ reviews }: { reviews: any[] }) {
 
   return (
     <>
+      {!branchMode && (
       <div className="mb-8 flex gap-3 overflow-x-auto pb-2">
         {branches.map((branch) => (
           <button
@@ -37,6 +38,7 @@ export default function NaverReviewsClient({ reviews }: { reviews: any[] }) {
           </button>
         ))}
       </div>
+      )}
 
       <div className="grid gap-5 md:grid-cols-3">
         {visibleReviews.map((review) => (
