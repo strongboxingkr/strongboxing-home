@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import MarkdownContent from "./MarkdownContent";
 import ViewTracker from "./ViewTracker";
@@ -160,6 +161,7 @@ export default async function BlogDetailPage({
       `SELECT id, title, slug, branch_name, category, created_at
        FROM homepage_posts
        WHERE slug != ? AND branch_name = ? AND category = ?
+         AND NOT (branch_name = '전체' AND category = '복싱정보')
        ORDER BY created_at DESC LIMIT 5`,
       [slug, post.branch_name, post.category]
     );
@@ -173,6 +175,7 @@ export default async function BlogDetailPage({
         `SELECT id, title, slug, branch_name, category, created_at
          FROM homepage_posts
          WHERE slug NOT IN (${ph1}) AND category = ?
+           AND NOT (branch_name = '전체' AND category = '복싱정보')
          ORDER BY created_at DESC LIMIT ?`,
         [...exclude1, post.category, 5 - relatedPosts.length]
       );
@@ -187,6 +190,7 @@ export default async function BlogDetailPage({
         `SELECT id, title, slug, branch_name, category, created_at
          FROM homepage_posts
          WHERE slug NOT IN (${ph2})
+           AND NOT (branch_name = '전체' AND category = '복싱정보')
          ORDER BY created_at DESC LIMIT ?`,
         [...exclude2, 5 - relatedPosts.length]
       );
@@ -211,16 +215,7 @@ export default async function BlogDetailPage({
   }
 
   if (!post) {
-    return (
-      <main className="min-h-screen bg-[#0E0E10] px-6 py-24 text-white">
-        <div className="mx-auto max-w-4xl">
-          <h1 className="text-4xl font-black">글을 찾을 수 없습니다.</h1>
-          <a href="/blog" className="mt-6 inline-block text-[#D01E2E]">
-            블로그로 돌아가기
-          </a>
-        </div>
-      </main>
-    );
+    notFound();
   }
 
   const imageUrl = pickPostImage(post);

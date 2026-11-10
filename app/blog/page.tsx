@@ -48,6 +48,7 @@ export default async function BlogPage({
     SELECT id, title, slug, description, content, branch_name, category, thumbnail, is_best, created_at
     FROM homepage_posts
     WHERE branch_name IS NOT NULL AND branch_name != ''
+      AND NOT (branch_name = '전체' AND category = '복싱정보')
     ORDER BY created_at DESC
   `);
 
@@ -67,17 +68,9 @@ export default async function BlogPage({
     "소식",
     "이벤트",
     "공지",
-    "복싱정보",
   ];
 
   const filteredPosts = posts.filter((post: any) => {
-    // 복싱정보 탭: blog-auto 글만
-    if (selectedCategory === "복싱정보") {
-      return post.category === "복싱정보";
-    }
-    // 나머지 탭: 실제 지점 글만 (blog-auto 제외)
-    if (post.branch_name === "전체") return false;
-
     const branchMatch =
       selectedBranch === "전체" ||
       post.branch_name === selectedBranch;

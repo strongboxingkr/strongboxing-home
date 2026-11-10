@@ -19,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [posts]: any = await db.query(`
     SELECT slug, created_at
     FROM homepage_posts
+    WHERE branch_name IS NOT NULL AND branch_name NOT IN ('', '전체')
     ORDER BY created_at DESC
   `);
 
