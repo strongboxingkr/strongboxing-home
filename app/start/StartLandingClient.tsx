@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   trackEvent,
   trackPhoneClick,
@@ -44,6 +44,7 @@ const BRANCHES: Branch[] = [
     phone: "02-2647-3373",
     booking: "https://booking.naver.com/booking/13/bizes/1367177",
     naverMap: "https://naver.me/5nhXvzXH",
+    kakaoChat: "http://pf.kakao.com/_rxoQxiX/chat",
     image: "/images/branches/sinjeong.jpg",
   },
   {
@@ -55,7 +56,7 @@ const BRANCHES: Branch[] = [
     phone: "02-2643-5971",
     booking: "https://booking.naver.com/booking/13/bizes/1510638",
     naverMap: "https://naver.me/GII8f9Qv",
-    kakaoChat: "https://pf.kakao.com/_xfGZnX/chat",
+    kakaoChat: "http://pf.kakao.com/_xfGZnX/chat",
     image: "/images/branches/mokdong.png",
   },
   {
@@ -133,9 +134,22 @@ const FAQS = [
 export default function StartLandingClient() {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [branchInView, setBranchInView] = useState(false);
   const branchRef = useRef<HTMLElement>(null);
 
+  useEffect(() => {
+    const el = branchRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setBranchInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const selectedBranch = BRANCHES.find((b) => b.slug === selectedSlug) ?? null;
+  const showBottomBar = !!selectedBranch || !branchInView;
 
   const scrollToBranch = () => {
     branchRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -165,121 +179,146 @@ export default function StartLandingClient() {
       </header>
 
       {/* ── HERO ── */}
-      <section
-        className="relative flex min-h-[100dvh] flex-col items-center justify-center px-5 pb-32 pt-16 text-center"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(208,30,46,0.14) 0%, transparent 60%)",
-        }}
-      >
-        <div
-          className="pointer-events-none absolute left-0 top-14 h-[1px] w-full"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, rgba(208,30,46,0.3), transparent)",
-          }}
-        />
+      <section className="relative overflow-hidden pt-14">
+        {/* 배경 사진 */}
+        <div className="absolute inset-0">
+          <img
+            src="/images/gallery/moments/story2.jpg"
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover object-center"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(14,14,16,0.82) 70%, #0E0E10 100%)",
+            }}
+          />
+        </div>
 
-        <p className="mb-5 text-[11px] font-black tracking-[0.4em] text-[#D01E2E]">
-          STRONG BOXING
-        </p>
+        {/* 콘텐츠 */}
+        <div className="relative z-10 px-5 pb-16 pt-10 text-center">
+          <p className="mb-4 text-[11px] font-black tracking-[0.4em] text-[#D01E2E]">
+            STRONG BOXING
+          </p>
 
-        <h1
-          className="mb-5 font-black tracking-[-0.04em] text-[#F5F4F1]"
-          style={{ fontSize: "clamp(44px, 11vw, 80px)", lineHeight: 1.0 }}
-        >
-          처음이어도
-          <br />
-          괜찮습니다
-        </h1>
+          <h1
+            className="mb-5 font-black tracking-[-0.03em] text-[#F5F4F1]"
+            style={{ fontSize: "clamp(32px, 9vw, 60px)", lineHeight: 1.1 }}
+          >
+            내 시간에 맞춰,
+            <br />
+            내 수준에 맞춰
+            <br />
+            배우는 복싱
+          </h1>
 
-        <p className="mb-1 text-[14px] leading-[1.7] text-[#8A8D91]">
-          초보자 맞춤 수업 · 선수 출신 지도진
-        </p>
-        <p className="mb-10 text-[14px] leading-[1.7] text-[#8A8D91]">서울 5개 지점 운영</p>
+          <p className="mb-1 text-[14px] leading-[1.75] text-[#C9C9C9]">
+            정해진 수업시간 없이 편한 시간에.
+          </p>
+          <p className="mb-2 text-[14px] leading-[1.75] text-[#C9C9C9]">
+            선수 출신 지도진에게 기본자세부터
+            <br />
+            차근차근 배웁니다.
+          </p>
+          <p className="mb-8 text-[12px] font-bold text-[#8A8D91]">서울·광명 5개 지점</p>
 
-        <button
-          onClick={scrollToBranch}
-          className="rounded-[12px] bg-[#D01E2E] px-8 py-4 text-[15px] font-black text-white transition hover:bg-[#B71C2B] active:scale-95"
-        >
-          방문 상담 신청하기 →
-        </button>
-
-        <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 text-[11px] text-[#3A3A3E]">
-          <span>아래로 스크롤</span>
-          <span>↓</span>
+          <button
+            onClick={scrollToBranch}
+            className="rounded-[12px] bg-[#D01E2E] px-8 py-4 text-[15px] font-black text-white transition hover:bg-[#B71C2B] active:scale-95"
+          >
+            가까운 지점 찾기 →
+          </button>
         </div>
       </section>
 
       {/* ── 지점 선택 ── */}
-      <section ref={branchRef} className="px-4 py-16">
+      <section ref={branchRef} className="px-4 pb-16 pt-12">
         <div className="mx-auto max-w-xl">
           <p className="mb-2 text-center text-[11px] font-black tracking-[0.3em] text-[#D01E2E]">
             LOCATION
           </p>
           <h2 className="mb-3 text-center text-[22px] font-black tracking-tight text-[#F5F4F1]">
-            가장 가까운 지점을
+            가까운 스트롱복싱을
             <br />
-            선택해 주세요
+            찾아보세요
           </h2>
-          <p className="mb-8 text-center text-[13px] text-[#5A5C61]">
-            지점 선택 후 상담 방법을 안내해 드립니다
+          <p className="mb-8 text-center text-[13px] text-[#9A9EA5]">
+            지점을 선택하면 위치와 상담·예약 방법을 확인할 수 있습니다.
           </p>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {BRANCHES.map((b) => (
-              <button
-                key={b.slug}
-                onClick={() => handleBranchSelect(b.slug)}
-                className="relative overflow-hidden rounded-[12px] text-left transition-all"
-                style={{
-                  border:
-                    selectedSlug === b.slug
-                      ? "2px solid #D01E2E"
-                      : "2px solid rgba(255,255,255,0.08)",
-                  background: "#1C1C1F",
-                }}
-              >
-                <div className="relative h-24 overflow-hidden">
-                  <img
-                    src={b.image}
-                    alt={`스트롱복싱 ${b.name}`}
-                    className="h-full w-full object-cover transition-opacity"
-                    style={{ opacity: selectedSlug === b.slug ? 1 : 0.6 }}
-                  />
-                  {selectedSlug === b.slug && (
-                    <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#D01E2E] text-[10px] font-black text-white">
-                      ✓
-                    </div>
-                  )}
-                </div>
-                <div className="p-3">
-                  <p className="text-[13px] font-black text-[#F5F4F1]">{b.name}</p>
-                  <p className="text-[11px] text-[#5A5C61]">{b.area}</p>
-                </div>
-              </button>
-            ))}
+            {BRANCHES.map((b) => {
+              const isSelected = selectedSlug === b.slug;
+              return (
+                <button
+                  key={b.slug}
+                  onClick={() => handleBranchSelect(b.slug)}
+                  className="relative overflow-hidden rounded-[12px] text-left transition-all"
+                  style={{
+                    border: isSelected ? "2px solid #D01E2E" : "2px solid rgba(255,255,255,0.1)",
+                    background: isSelected ? "#1C1C1F" : "#161618",
+                    boxShadow: isSelected ? "0 0 0 1px rgba(208,30,46,0.2)" : "none",
+                  }}
+                >
+                  <div className="relative h-24 overflow-hidden">
+                    <img
+                      src={b.image}
+                      alt={`스트롱복싱 ${b.name}`}
+                      className="h-full w-full object-cover transition-opacity"
+                      style={{ opacity: isSelected ? 1 : 0.55 }}
+                    />
+                    {isSelected && (
+                      <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#D01E2E] text-[10px] font-black text-white">
+                        ✓
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <p className="text-[13px] font-black text-[#F5F4F1]">{b.name}</p>
+                    <p className="text-[11px] text-[#9A9EA5]">{b.area}</p>
+                    <p className="mt-1.5 text-[10px] font-bold text-[#D01E2E]">
+                      위치·상담 보기
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
-          {/* 선택된 지점 CTA */}
+          {/* 선택된 지점 정보 */}
           {selectedBranch && (
             <div
-              className="mt-6 rounded-[16px] p-5"
+              className="mt-5 rounded-[16px] p-5"
               style={{
                 background: "#1C1C1F",
-                border: "1px solid rgba(208,30,46,0.3)",
+                border: "1px solid rgba(208,30,46,0.35)",
               }}
             >
-              <p className="mb-1 text-[11px] font-black tracking-[0.3em] text-[#D01E2E]">
-                선택된 지점
-              </p>
-              <p className="mb-1 text-[18px] font-black text-[#F5F4F1]">
-                스트롱복싱 {selectedBranch.name}
-              </p>
-              <p className="mb-1 text-[13px] text-[#5A5C61]">{selectedBranch.address}</p>
-              <p className="mb-5 text-[12px] text-[#5A5C61]">
-                {selectedBranch.hours.join(" / ")}
-              </p>
+              <div className="mb-4 flex items-start justify-between gap-2">
+                <div>
+                  <p className="text-[11px] font-black tracking-[0.25em] text-[#D01E2E]">
+                    선택된 지점
+                  </p>
+                  <p className="mt-0.5 text-[18px] font-black text-[#F5F4F1]">
+                    스트롱복싱 {selectedBranch.name}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelectedSlug(null)}
+                  className="mt-0.5 shrink-0 text-[12px] text-[#5A5C61] transition hover:text-[#F5F4F1]"
+                >
+                  변경
+                </button>
+              </div>
+
+              <div className="mb-5 flex flex-col gap-1">
+                <p className="text-[13px] text-[#9A9EA5]">📍 {selectedBranch.address}</p>
+                <p className="text-[12px] text-[#7A7D82]">
+                  🕐 {selectedBranch.hours.join(" / ")}
+                </p>
+              </div>
 
               <div className="flex flex-col gap-2.5">
                 <a
@@ -330,7 +369,7 @@ export default function StartLandingClient() {
                   onClick={() =>
                     trackEvent("navermap_click", { branch_name: selectedBranch.name })
                   }
-                  className="flex items-center justify-center rounded-[10px] border border-white/10 py-3.5 text-[14px] font-black text-[#8A8D91] transition hover:border-white/20 hover:text-white"
+                  className="flex items-center justify-center rounded-[10px] border border-white/10 py-3.5 text-[14px] font-black text-[#9A9EA5] transition hover:border-white/20 hover:text-white"
                 >
                   위치 보기 →
                 </a>
@@ -360,7 +399,7 @@ export default function StartLandingClient() {
                 <span className="mt-0.5 text-2xl">{b.icon}</span>
                 <div>
                   <p className="mb-1 text-[15px] font-black text-[#F5F4F1]">{b.title}</p>
-                  <p className="text-[13px] leading-[1.7] text-[#5A5C61]">{b.desc}</p>
+                  <p className="text-[13px] leading-[1.7] text-[#8A8D91]">{b.desc}</p>
                 </div>
               </div>
             ))}
@@ -377,9 +416,18 @@ export default function StartLandingClient() {
           <h2 className="mb-3 text-center text-[22px] font-black tracking-tight text-[#F5F4F1]">
             수업은 이렇게 진행됩니다
           </h2>
-          <p className="mb-10 text-center text-[13px] text-[#5A5C61]">
+          <p className="mb-10 text-center text-[13px] text-[#8A8D91]">
             처음 오신 분도 코치가 처음부터 안내해 드립니다
           </p>
+
+          {/* 코치 사진 */}
+          <div className="mb-10 overflow-hidden rounded-[14px]">
+            <img
+              src="/images/coaches/hansol.jpg"
+              alt="스트롱복싱 코치 지도 모습"
+              className="h-48 w-full object-cover object-top"
+            />
+          </div>
 
           <div className="flex flex-col">
             {STEPS.map((s, i) => (
@@ -397,7 +445,7 @@ export default function StartLandingClient() {
                 </div>
                 <div className="pb-7">
                   <p className="mb-1 text-[15px] font-black text-[#F5F4F1]">{s.title}</p>
-                  <p className="text-[13px] leading-[1.7] text-[#5A5C61]">{s.desc}</p>
+                  <p className="text-[13px] leading-[1.7] text-[#8A8D91]">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -447,18 +495,21 @@ export default function StartLandingClient() {
 
       {/* ── Final CTA ── */}
       <section
-        className="px-4 py-20 pb-36 text-center"
+        className="px-4 py-20 text-center"
         style={{
           background:
             "radial-gradient(ellipse 60% 60% at 50% 50%, rgba(208,30,46,0.08) 0%, transparent 70%)",
+          paddingBottom: "max(80px, calc(env(safe-area-inset-bottom) + 80px))",
         }}
       >
         <div className="mx-auto max-w-xl">
-          <p className="mb-4 text-[11px] font-black tracking-[0.3em] text-[#D01E2E]">GET STARTED</p>
+          <p className="mb-4 text-[11px] font-black tracking-[0.3em] text-[#D01E2E]">
+            GET STARTED
+          </p>
           <h2 className="mb-4 text-[26px] font-black tracking-tight text-[#F5F4F1]">
             지금 시작해보세요
           </h2>
-          <p className="mb-8 text-[14px] leading-[1.8] text-[#5A5C61]">
+          <p className="mb-8 text-[14px] leading-[1.8] text-[#8A8D91]">
             운동 경험이 없어도 괜찮습니다.
             <br />
             지점을 선택하고 편한 방법으로 문의해 주세요.
@@ -473,65 +524,67 @@ export default function StartLandingClient() {
       </section>
 
       {/* ── 하단 고정 바 ── */}
-      <div
-        className="fixed bottom-0 left-0 right-0 z-50 px-4 pt-2"
-        style={{
-          background: "rgba(14,14,16,0.97)",
-          backdropFilter: "blur(12px)",
-          borderTop: "1px solid rgba(255,255,255,0.08)",
-          paddingBottom: "max(16px, env(safe-area-inset-bottom))",
-        }}
-      >
-        {!selectedBranch ? (
-          <button
-            onClick={scrollToBranch}
-            className="mb-2 w-full rounded-[12px] bg-[#D01E2E] py-4 text-[15px] font-black text-white transition hover:bg-[#B71C2B] active:scale-95"
-          >
-            지점 선택하기 →
-          </button>
-        ) : (
-          <div className="mb-2 flex gap-2">
-            <a
-              href={`tel:${selectedBranch.phone.replaceAll("-", "")}`}
-              onClick={() =>
-                trackPhoneClick({
-                  branch_name: selectedBranch.name,
-                  phone: selectedBranch.phone,
-                })
-              }
-              className="flex flex-1 items-center justify-center rounded-[12px] border border-white/10 py-4 text-[14px] font-black text-[#F5F4F1] transition hover:border-white/20"
+      {showBottomBar && (
+        <div
+          className="fixed bottom-0 left-0 right-0 z-50 px-4 pt-2"
+          style={{
+            background: "rgba(14,14,16,0.97)",
+            backdropFilter: "blur(12px)",
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+            paddingBottom: "max(16px, env(safe-area-inset-bottom))",
+          }}
+        >
+          {!selectedBranch ? (
+            <button
+              onClick={scrollToBranch}
+              className="mb-2 w-full rounded-[12px] bg-[#D01E2E] py-4 text-[15px] font-black text-white transition hover:bg-[#B71C2B] active:scale-95"
             >
-              📞 전화
-            </a>
-            {selectedBranch.kakaoChat ? (
+              가까운 지점 찾기 →
+            </button>
+          ) : (
+            <div className="mb-2 flex gap-2">
               <a
-                href={selectedBranch.kakaoChat}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`tel:${selectedBranch.phone.replaceAll("-", "")}`}
                 onClick={() =>
-                  trackKakaoClick({ branch_name: selectedBranch.name })
+                  trackPhoneClick({
+                    branch_name: selectedBranch.name,
+                    phone: selectedBranch.phone,
+                  })
                 }
-                className="flex flex-1 items-center justify-center rounded-[12px] py-4 text-[14px] font-black"
-                style={{ background: "#FEE500", color: "#1C1C1F" }}
+                className="flex w-20 shrink-0 items-center justify-center rounded-[12px] border border-white/10 py-4 text-[13px] font-black text-[#F5F4F1] transition hover:border-white/20"
               >
-                카카오 상담
+                📞 전화
               </a>
-            ) : (
-              <a
-                href={selectedBranch.booking}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() =>
-                  trackNaverReservationClick({ branch_name: selectedBranch.name })
-                }
-                className="flex flex-1 items-center justify-center rounded-[12px] bg-[#D01E2E] py-4 text-[14px] font-black text-white"
-              >
-                네이버 예약
-              </a>
-            )}
-          </div>
-        )}
-      </div>
+              {selectedBranch.kakaoChat ? (
+                <a
+                  href={selectedBranch.kakaoChat}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() =>
+                    trackKakaoClick({ branch_name: selectedBranch.name })
+                  }
+                  className="flex flex-1 items-center justify-center rounded-[12px] py-4 text-[14px] font-black"
+                  style={{ background: "#FEE500", color: "#1C1C1F" }}
+                >
+                  {selectedBranch.name} 카카오 상담
+                </a>
+              ) : (
+                <a
+                  href={selectedBranch.booking}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() =>
+                    trackNaverReservationClick({ branch_name: selectedBranch.name })
+                  }
+                  className="flex flex-1 items-center justify-center rounded-[12px] bg-[#D01E2E] py-4 text-[14px] font-black text-white"
+                >
+                  {selectedBranch.name} 네이버 예약
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </main>
   );
 }
