@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "스트롱복싱 | 지점 인스타그램",
+  title: { absolute: "스트롱복싱 | 지점 인스타그램" },
   description: "스트롱복싱 각 지점 인스타그램 바로가기. 목동·신정·개봉·철산·영등포점.",
+  alternates: { canonical: "https://strongboxing.kr/links" },
   openGraph: {
     title: "스트롱복싱 | 지점 인스타그램",
     description: "스트롱복싱 각 지점 인스타그램 바로가기.",

@@ -9,7 +9,7 @@ const PAGE_DESC =
 const OG_IMAGE = `${siteUrl}/og.png`;
 
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: { absolute: PAGE_TITLE },
   description: PAGE_DESC,
   robots: { index: true, follow: true },
   alternates: {

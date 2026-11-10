@@ -10,6 +10,17 @@ function absUrl(u: string) {
   return /^https?:\/\//.test(u) ? u : `${siteUrl}${u.startsWith("/") ? "" : "/"}${u}`;
 }
 
+function pickDescription(post: any): string {
+  if (post.description?.trim()) return post.description.trim();
+  const text = String(post.content || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/[#*`\[\]!>]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const excerpt = text.slice(0, 120).trimEnd();
+  return excerpt ? `${excerpt}…` : `스트롱복싱 ${post.branch_name || ""} 소식입니다.`;
+}
+
 /** 대표 이미지: thumbnail 우선, 없으면 본문 첫 이미지 */
 function pickPostImage(post: any): string | undefined {
   const raw = String(post.content || "");
@@ -95,17 +106,16 @@ export async function generateMetadata({
 
   const imageUrl = pickPostImage(post) ?? `${siteUrl}/og.png`;
 
+  const metaDesc = pickDescription(post);
   return {
     title: { absolute: `${post.title} | 스트롱복싱` },
-    description:
-      post.description || `${post.branch_name} 스트롱복싱 블로그 소식입니다.`,
+    description: metaDesc,
     alternates: {
       canonical: `${siteUrl}/blog/${post.slug}`,
     },
     openGraph: {
       title: `${post.title} | 스트롱복싱`,
-      description:
-        post.description || `${post.branch_name} 스트롱복싱 블로그 소식입니다.`,
+      description: metaDesc,
       url: `${siteUrl}/blog/${post.slug}`,
       siteName: "스트롱복싱",
       locale: "ko_KR",
@@ -115,7 +125,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: `${post.title} | 스트롱복싱`,
-      description: post.description || `${post.branch_name} 스트롱복싱 블로그 소식입니다.`,
+      description: metaDesc,
       images: [imageUrl],
     },
   };

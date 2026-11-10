@@ -897,7 +897,7 @@ export default async function HomePage() {
                 <div key={b.slug}>
                   <a href={`/branches/${b.slug}`}
                     className="mb-2 block text-xs font-black transition-colors duration-200 hover:text-[#F5F4F1]"
-                    style={{ color: "#8A8D91" }}>{b.name}</a>
+                    style={{ color: "#8A8D91" }}>스트롱복싱 {b.name}</a>
                   <p className="text-xs leading-5" style={{ color: "#3A3A3E" }}>{b.address}</p>
                   <a href={`tel:${b.phone.replace(/-/g, "")}`}
                     className="mt-1 block text-xs transition-colors duration-200 hover:text-[#8A8D91]"

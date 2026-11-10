@@ -7,7 +7,7 @@ const PAGE_DESC =
   "복싱 1시간 칼로리 소모량을 체중·운동 시간별로 계산해보세요. 스트롱복싱 수업 기준 다이어트 복싱 효과를 직접 확인할 수 있습니다.";
 
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: { absolute: PAGE_TITLE },
   description: PAGE_DESC,
   keywords: ["복싱 칼로리", "복싱 다이어트 칼로리", "복싱 1시간 칼로리", "다이어트 복싱 효과", "복싱 칼로리 소모"],
   robots: { index: true, follow: true },

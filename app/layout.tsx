@@ -196,7 +196,6 @@ export const metadata: Metadata = {
   },
 
   alternates: {
-    canonical: "https://strongboxing.kr",
     types: {
       "application/rss+xml": "https://strongboxing.kr/feed.xml",
     },
