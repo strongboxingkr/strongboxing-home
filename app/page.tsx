@@ -357,6 +357,10 @@ export default async function HomePage() {
         </div>
 
 
+        <div id="clips" style={{ scrollMarginTop: "120px" }}>
+          <ReelsSection />
+        </div>
+
         <div id="reviews" style={{ scrollMarginTop: "120px" }}>
           <NaverReviewsSection />
         </div>
@@ -527,10 +531,6 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-
-        <div id="clips" style={{ scrollMarginTop: "120px" }}>
-          <ReelsSection />
-        </div>
 
         {/* ══════════════════════════════════════
             FIRST VISIT
