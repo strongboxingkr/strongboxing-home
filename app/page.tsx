@@ -361,6 +361,16 @@ export default async function HomePage() {
           <ReelsSection />
         </div>
 
+        {/* ══════════════════════════════════════
+            NEWS & REVIEW
+        ══════════════════════════════════════ */}
+        <section id="news" className="px-6 py-20 md:px-8" style={{ background: "#0E0E10" }}>
+          <div className="mx-auto max-w-7xl">
+            <NewsReviewClient posts={latestPosts} />
+          </div>
+        </section>
+        {/* /NEWS & REVIEW */}
+
         <div id="reviews" style={{ scrollMarginTop: "120px" }}>
           <NaverReviewsSection />
         </div>
@@ -708,16 +718,6 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* ══════════════════════════════════════
-            NEWS & REVIEW
-        ══════════════════════════════════════ */}
-        <section id="news" className="px-6 py-20 md:px-8" style={{ background: "#0E0E10" }}>
-          <div className="mx-auto max-w-7xl">
-            <NewsReviewClient posts={latestPosts} />
-          </div>
-        </section>
-        {/* /NEWS & REVIEW */}
 
         {/* SEO sr-only */}
         <section className="sr-only">
