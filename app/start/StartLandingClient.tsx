@@ -121,7 +121,7 @@ const FAQS = [
     a: "여성 회원분들도 다이어트와 체력 향상 목적으로 편하게 운동하고 계십니다. 부담 없는 환경에서 목표에 맞게 진행됩니다.",
   },
   {
-    q: "무료 체험은 어떻게 신청하나요?",
+    q: "상담은 어떻게 신청하나요?",
     a: "지점을 선택한 후 카카오 상담 또는 전화로 문의해 주세요. 방문 가능 시간을 조율해 드립니다.",
   },
   {
@@ -202,7 +202,7 @@ export default function StartLandingClient() {
           onClick={scrollToBranch}
           className="rounded-[12px] bg-[#D01E2E] px-8 py-4 text-[15px] font-black text-white transition hover:bg-[#B71C2B] active:scale-95"
         >
-          무료 체험 알아보기 →
+          방문 상담 신청하기 →
         </button>
 
         <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 text-[11px] text-[#3A3A3E]">
