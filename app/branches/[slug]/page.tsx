@@ -4,6 +4,14 @@ import BranchCTAButtons from "@/app/components/BranchCTAButtons";
 import BranchReelCard from "@/app/components/BranchReelCard";
 import NaverReviewsSection from "@/app/components/NaverReviewsSection";
 
+const branchGeo: Record<string, { latitude: number; longitude: number }> = {
+  gaebong:      { latitude: 37.4868, longitude: 126.8487 },
+  sinjeong:     { latitude: 37.5255, longitude: 126.8572 },
+  mokdong:      { latitude: 37.5278, longitude: 126.8743 },
+  cheolsan:     { latitude: 37.4785, longitude: 126.8599 },
+  yeongdeungpo: { latitude: 37.5055, longitude: 126.9052 },
+};
+
 const branches: any = {
   gaebong: {
     name: "개봉점",
@@ -530,6 +538,13 @@ export default async function BranchPage({
       name: "STRONG BOXING",
       url: "https://strongboxing.kr",
     },
+    ...(branchGeo[slug] ? {
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: branchGeo[slug].latitude,
+        longitude: branchGeo[slug].longitude,
+      },
+    } : {}),
     areaServed: BRANCH_AREA_SERVED[slug] ?? [branch.area],
     hasMap: branch.naverMap || undefined,
     knowsAbout: [
