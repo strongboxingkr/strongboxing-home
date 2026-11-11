@@ -23,7 +23,8 @@ const PROSE =
   "[&_img]:max-w-[45%] [&_img]:w-auto [&_img]:h-auto [&_img]:mx-auto [&_img]:block " +
   "[&_img]:rounded-2xl [&_img]:border [&_img]:border-white/10 " +
   "[&_img]:my-7 " +
-  /* 그리드 안 이미지는 마진 제거 (콜라주 레이아웃 보호) */
+  /* 콜라주(div 안) 이미지는 너비 제한 해제, 마진 제거 */
+  "[&_div_img]:max-w-full [&_div_img]:w-full [&_div_img]:mx-0 " +
   "[&_div_img]:my-0 [&_div_img]:rounded-2xl [&_div_img]:border-0 " +
   /* video: my-10 → my-7 */
   "[&_video]:w-full [&_video]:rounded-2xl [&_video]:my-7";
