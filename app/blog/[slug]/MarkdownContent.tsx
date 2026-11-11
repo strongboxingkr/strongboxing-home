@@ -20,7 +20,8 @@ const PROSE =
   "[&_li]:text-zinc-200 [&_li]:my-2 [&_li]:leading-[1.7] " +
   "[&_li::marker]:text-[#D01E2E] " +
   /* 이미지: 최대 높이 제한, 원본 비율 유지, 중앙 정렬 */
-  "[&_img]:w-full [&_img]:h-auto [&_img]:rounded-2xl [&_img]:border [&_img]:border-white/10 " +
+  "[&_img]:max-w-[80%] [&_img]:w-auto [&_img]:h-auto [&_img]:mx-auto [&_img]:block " +
+  "[&_img]:rounded-2xl [&_img]:border [&_img]:border-white/10 " +
   "[&_img]:my-7 " +
   /* 그리드 안 이미지는 마진 제거 (콜라주 레이아웃 보호) */
   "[&_div_img]:my-0 [&_div_img]:rounded-2xl [&_div_img]:border-0 " +
