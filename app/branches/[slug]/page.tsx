@@ -18,6 +18,7 @@ const branches: any = {
     fullName: "스트롱복싱 개봉점",
     area: "개봉",
     image: "/images/branches/gaebong.jpg",
+    ogImage: "/images/branches/gaebong.jpg",
     imageAlt: "스트롱복싱 개봉점 복싱장 내부 전경",
     phone: "02-2060-1279",
     email: "gaebong@strongboxing.kr",
@@ -44,6 +45,7 @@ const branches: any = {
     fullName: "스트롱복싱 신정점",
     area: "신정",
     image: "/images/branches/sinjeong.jpg",
+    ogImage: "/images/branches/sinjeong.jpg",
     imageAlt: "스트롱복싱 신정점 복싱장 내부 — 링과 샌드백",
     phone: "02-2647-3373",
     email: "sinjeong@strongboxing.kr",
@@ -70,6 +72,7 @@ const branches: any = {
     fullName: "스트롱복싱 목동점",
     area: "목동",
     image: "/images/branches/mokdong.png",
+    ogImage: "/images/branches/mokdong.png",
     imageAlt: "스트롱복싱 목동점 복싱장 수업 모습",
     phone: "02-2643-5971",
     email: "mokdong@strongboxing.kr",
@@ -97,6 +100,7 @@ const branches: any = {
     fullName: "스트롱복싱 철산점",
     area: "철산",
     image: "/images/branches/cheolsan.jpg",
+    ogImage: "/images/branches/cheolsan.jpg",
     imageAlt: "스트롱복싱 철산점 복싱장 내부 전경",
     phone: "02-2066-0406",
     email: "cheolsan@strongboxing.kr",
@@ -123,6 +127,7 @@ const branches: any = {
     fullName: "스트롱복싱 영등포점",
     area: "영등포",
     image: "/images/branches/yeongdeungpo.jpg",
+    ogImage: "/images/branches/yeongdeungpo.jpg",
     imageAlt: "스트롱복싱 영등포점 복싱장 내부 전경",
     phone: "02-831-9312",
     email: "yeongdeungpo@strongboxing.kr",
@@ -407,7 +412,7 @@ export async function generateMetadata({
         type: "website",
         images: [
           {
-            url: `https://strongboxing.kr${branch.image}`,
+            url: `https://strongboxing.kr${branch.ogImage || branch.image}`,
             width: 1200,
             height: 630,
             alt: branch.fullName,
@@ -419,7 +424,7 @@ export async function generateMetadata({
         card: "summary_large_image",
         title: titleStr,
         description: metaDesc,
-        images: [`https://strongboxing.kr${branch.image}`],
+        images: [`https://strongboxing.kr${branch.ogImage || branch.image}`],
       },
 
       robots: {
