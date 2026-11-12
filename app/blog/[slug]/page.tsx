@@ -287,7 +287,7 @@ export default async function BlogDetailPage({
           className="px-6 py-12 md:py-16"
           style={{ background: "#0E0E10", borderBottom: "1px solid rgba(255,255,255,0.07)" }}
         >
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-[700px]">
             <a href="/blog" className="mb-10 inline-block text-[#4A4C50] transition hover:text-white">
               ← 블로그로
             </a>
@@ -333,7 +333,7 @@ export default async function BlogDetailPage({
 
         {/* 본문 */}
         <section className="px-6 py-10 md:py-14">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-[700px]">
             <MarkdownContent content={String(post.content || "")} />
 
             {/* ── 관련 글 ── */}

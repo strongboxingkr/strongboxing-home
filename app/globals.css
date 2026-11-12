@@ -142,20 +142,33 @@ button[type="button"] {
 }
 
 /* 블로그 상세 타이포그래피 — .prose 는 블로그 본문에서만 사용됩니다 */
-.prose h2 { font-size: 22px; margin-top: 40px; margin-bottom: 16px; }
-.prose h3 { font-size: 19px; margin-top: 28px; margin-bottom: 12px; }
+.prose h2 { font-size: 22px; margin-top: 56px; margin-bottom: 20px; }
+.prose h3 { font-size: 19px; margin-top: 40px; margin-bottom: 14px; }
 @media (min-width: 768px) {
   .prose h2 { font-size: 26px; }
   .prose h3 { font-size: 21px; }
 }
 
-/* 블로그 본문 이미지 — 원본 비율 유지, 절대 잘리지 않게 */
+/* 블로그 본문 이미지 — 원본 비율 유지, 세로 사진 크기 제한 */
 .prose img {
   height: auto !important;
   aspect-ratio: auto !important;
   object-fit: initial !important;
-  max-width: 100%;
+  max-width: 65%;
+  width: auto;
   display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 갤러리/콜라주 이미지는 너비 제한 해제 */
+.gallery-grid img,
+.gallery-2col img,
+.gallery-2col-vert img,
+.gallery-3col img {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
 }
 
 /* 블로그 콜라주 갤러리 */

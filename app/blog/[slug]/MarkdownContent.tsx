@@ -19,12 +19,9 @@ const PROSE =
   "[&_ol]:my-5 [&_ol]:list-decimal [&_ol]:pl-6 " +
   "[&_li]:text-zinc-200 [&_li]:my-2 [&_li]:leading-[1.7] " +
   "[&_li::marker]:text-[#D01E2E] " +
-  /* 이미지: 최대 높이 제한, 원본 비율 유지, 중앙 정렬 */
-  "[&_img]:max-w-[45%] [&_img]:w-auto [&_img]:h-auto [&_img]:mx-auto [&_img]:block " +
-  "[&_img]:rounded-2xl [&_img]:border [&_img]:border-white/10 " +
-  "[&_img]:my-7 " +
-  /* 콜라주(div 안) 이미지는 너비 제한 해제, 마진 제거 */
-  "[&_div_img]:max-w-full [&_div_img]:w-full [&_div_img]:mx-0 " +
+  /* 이미지 시각 스타일 (크기/정렬은 globals.css .prose img 에서 처리) */
+  "[&_img]:rounded-2xl [&_img]:border [&_img]:border-white/10 [&_img]:my-8 " +
+  /* 콜라주(div 안) 이미지는 마진 제거 */
   "[&_div_img]:my-0 [&_div_img]:rounded-2xl [&_div_img]:border-0 " +
   /* video: my-10 → my-7 */
   "[&_video]:w-full [&_video]:rounded-2xl [&_video]:my-7";
