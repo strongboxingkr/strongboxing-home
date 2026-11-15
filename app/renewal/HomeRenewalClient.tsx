@@ -135,101 +135,97 @@ export function BranchSectionClient({ branches }: { branches: BranchInfo[] }) {
         )}
       </div>
 
-      {/* 오른쪽: 아코디언 목록 */}
-      <div style={{ borderTop: "1px solid #E8E6DF" }}>
-        {orderedBranches.map((b, idx) => {
-          const isOpen  = openBranch === b.slug;
-          const meta    = BRANCH_META[b.slug];
-          const dist    = distances[b.slug];
-          const nearest = geoState === "found" && idx === 0;
-
-          return (
-            <div key={b.slug} style={{ borderBottom: "1px solid #E8E6DF" }}>
-
-              {/* 행 헤더 — 클릭 시 아코디언 토글 */}
+      {/* 오른쪽: 가로 탭 + 선택된 지점 상세 */}
+      <div>
+        {/* 가로 탭 행 */}
+        <div className="flex overflow-x-auto" style={{ borderBottom: "1.5px solid #E8E6DF", gap: 0 }}>
+          {orderedBranches.map((b, idx) => {
+            const isOpen  = openBranch === b.slug;
+            const dist    = distances[b.slug];
+            const nearest = geoState === "found" && idx === 0;
+            return (
               <button
+                key={b.slug}
                 type="button"
-                className="w-full py-5 text-left"
                 onClick={() => setOpenBranch(isOpen ? null : b.slug)}
+                className="relative shrink-0 pb-4 pt-2 text-left transition-colors duration-150"
+                style={{ paddingRight: 24, paddingLeft: idx === 0 ? 0 : 24 }}
               >
-                <div className="flex items-center gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-                      <span
-                        className="font-black"
-                        style={{ fontSize: 17, color: nearest ? "#D01E2E" : isOpen ? "#D01E2E" : "#0E0E10" }}
-                      >
-                        {b.name}
-                      </span>
-                      {nearest && (
-                        <span className="rounded-[5px] px-1.5 py-0.5 text-[10px] font-black" style={{ background: "#FFF1F2", color: "#D01E2E" }}>
-                          가장 가까운 지점
-                        </span>
-                      )}
-                      <span style={{ fontSize: 13, color: "#6B6B72" }}>{b.area}</span>
-                      {dist !== undefined && (
-                        <span style={{ fontSize: 12, color: "#aaa" }}>직선거리 약 {dist}km</span>
-                      )}
-                    </div>
-                    <p style={{ fontSize: 13, color: "#6B6B72", marginTop: 2 }}>
-                      {b.hours.split("  ")[0]}
-                    </p>
-                  </div>
-
-                  {/* 펼침 아이콘 */}
-                  <span
-                    className="shrink-0 transition-transform duration-200"
-                    style={{
-                      display: "inline-block",
-                      fontSize: 18,
-                      color: isOpen ? "#D01E2E" : "#C0BDB6",
-                      transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
-                    }}
-                  >
-                    +
-                  </span>
-                </div>
+                {/* 지점명 */}
+                <span
+                  className="block font-black"
+                  style={{ fontSize: 17, color: isOpen ? "#D01E2E" : "#0E0E10", whiteSpace: "nowrap" }}
+                >
+                  {b.name}
+                  {nearest && (
+                    <span className="ml-1.5 rounded-[5px] px-1.5 py-0.5 align-middle text-[9px] font-black" style={{ background: "#FFF1F2", color: "#D01E2E" }}>
+                      가까운
+                    </span>
+                  )}
+                </span>
+                {/* 거리 or 지역 */}
+                <span className="block" style={{ fontSize: 12, color: "#aaa", whiteSpace: "nowrap" }}>
+                  {dist !== undefined ? `약 ${dist}km` : b.area}
+                </span>
+                {/* 활성 밑줄 */}
+                <span
+                  className="absolute bottom-0 left-0 w-full transition-all duration-200"
+                  style={{
+                    height: 2,
+                    background: isOpen ? "#D01E2E" : "transparent",
+                    right: 0,
+                    paddingLeft: idx === 0 ? 0 : 24,
+                  }}
+                />
               </button>
+            );
+          })}
+        </div>
 
-              {/* 확장 패널 */}
-              {isOpen && meta && (
-                <div className="pb-5" style={{ borderTop: "1px solid #F0EDE7" }}>
-                  <p className="pt-4 text-sm leading-relaxed" style={{ color: "#6B6B72" }}>
-                    {meta.address}
-                  </p>
+        {/* 선택된 지점 상세 패널 */}
+        {(() => {
+          const b    = openBranch ? orderedBranches.find((x) => x.slug === openBranch) : null;
+          const meta = b ? BRANCH_META[b.slug] : null;
+          if (!b || !meta) return (
+            <p className="pt-6 text-sm" style={{ color: "#aaa" }}>지점을 선택하면 상세 정보를 볼 수 있습니다.</p>
+          );
+          return (
+            <div className="pt-6">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="font-black" style={{ fontSize: 20, color: "#0E0E10" }}>{b.name}</p>
+                  <p className="mt-1 text-sm leading-relaxed" style={{ color: "#6B6B72" }}>{meta.address}</p>
+                  <p className="mt-0.5 text-sm" style={{ color: "#6B6B72" }}>{b.hours.split("  ")[0]}</p>
                   <a
                     href={`tel:${b.phone}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="mt-1 inline-block font-bold hover:underline"
+                    className="mt-2 inline-block font-bold hover:underline"
                     style={{ fontSize: 15, color: "#0E0E10", textDecoration: "none" }}
                   >
                     {b.phone}
                   </a>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <a
-                      href={b.naverMap}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 text-sm font-bold transition hover:opacity-80"
-                      style={{ border: "1.5px solid #D9D7CF", color: "#0E0E10", background: "#fff", whiteSpace: "nowrap" }}
-                    >
-                      네이버 길찾기
-                    </a>
-                    <a
-                      href={`/branches/${b.slug}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 text-sm font-bold transition hover:opacity-80"
-                      style={{ border: "1.5px solid #D01E2E", color: "#D01E2E", background: "#fff", whiteSpace: "nowrap" }}
-                    >
-                      지점 정보
-                    </a>
-                  </div>
                 </div>
-              )}
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href={b.naverMap}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 text-sm font-bold transition hover:opacity-80"
+                    style={{ border: "1.5px solid #D9D7CF", color: "#0E0E10", background: "#fff", whiteSpace: "nowrap" }}
+                  >
+                    네이버 길찾기
+                  </a>
+                  <a
+                    href={`/branches/${b.slug}`}
+                    className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 text-sm font-bold transition hover:opacity-80"
+                    style={{ border: "1.5px solid #D01E2E", color: "#D01E2E", background: "#fff", whiteSpace: "nowrap" }}
+                  >
+                    지점 정보
+                  </a>
+                </div>
+              </div>
             </div>
           );
-        })}
+        })()}
       </div>
     </div>
   );
