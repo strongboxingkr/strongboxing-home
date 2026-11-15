@@ -1,16 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-
-type Category = "전체" | "소식" | "후기";
-
-function inferCategory(post: any): "소식" | "후기" {
-  const text = ((post.title ?? "") + " " + (post.description ?? "")).toLowerCase();
-  if (text.includes("후기") || text.includes("리뷰") || text.includes("경험") || text.includes("다녀") || text.includes("등록")) {
-    return "후기";
-  }
-  return "소식";
-}
+import { useEffect, useRef, useState } from "react";
+// useState는 useReveal 내부에서 사용
 
 function isNew(dateStr: string): boolean {
   if (!dateStr) return false;
@@ -52,7 +43,6 @@ function useReveal(threshold = 0.12) {
 
 function PostCard({ post, index }: { post: any; index: number }) {
   const thumb = getThumb(post);
-  const category = inferCategory(post);
   const fresh = isNew(post.created_at);
   const date = post.created_at
     ? new Date(post.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })
@@ -141,7 +131,7 @@ function PostCard({ post, index }: { post: any; index: number }) {
                 border: "1px solid rgba(255,255,255,0.1)",
               }}
             >
-              {category}
+              소식
             </span>
           </div>
         </div>
@@ -216,16 +206,11 @@ function PostCard({ post, index }: { post: any; index: number }) {
 }
 
 export default function NewsReviewClient({ posts }: { posts: any[] }) {
-  const [tab, setTab] = useState<Category>("전체");
   const { ref: headerRef, visible: headerVisible } = useReveal(0.1);
-
-  const filtered = tab === "전체" ? posts : posts.filter(p => inferCategory(p) === tab);
-
-  const TABS: Category[] = ["전체", "소식", "후기"];
 
   return (
     <>
-      {/* 헤더 + 탭 */}
+      {/* 헤더 */}
       <div
         ref={headerRef}
         style={{
@@ -240,30 +225,11 @@ export default function NewsReviewClient({ posts }: { posts: any[] }) {
             NEWS & REVIEW
           </p>
           <h2 className="font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
-            지점별 소식과 후기.
+            지점별 소식.
           </h2>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* 카테고리 탭 */}
-          <div
-            className="flex overflow-hidden rounded-xl"
-            style={{ border: "1px solid rgba(255,255,255,0.08)", background: "#141416" }}
-          >
-            {TABS.map(t => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className="px-4 py-2 text-[13px] font-bold transition-all duration-200"
-                style={{
-                  background: tab === t ? "#D01E2E" : "transparent",
-                  color: tab === t ? "#FFF" : "#5A5C61",
-                }}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
           <a
             href="/blog"
             className="text-[13px] font-bold transition-opacity hover:opacity-60"
@@ -275,9 +241,9 @@ export default function NewsReviewClient({ posts }: { posts: any[] }) {
       </div>
 
       {/* 카드 그리드 */}
-      {filtered.length > 0 ? (
+      {posts.length > 0 ? (
         <div className="grid gap-5 md:grid-cols-3">
-          {filtered.map((post, i) => (
+          {posts.map((post, i) => (
             <PostCard key={post.id} post={post} index={i} />
           ))}
         </div>
