@@ -66,7 +66,7 @@ export default function RenewalHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <ReservationButton className="hidden lg:block rounded-[10px] px-5 py-2.5 text-sm font-black text-white transition-opacity hover:opacity-90" style={{ background: "#D01E2E" } as React.CSSProperties}>
+          <ReservationButton className="hidden lg:block rounded-[10px] bg-[#D01E2E] px-5 py-2.5 text-sm font-black text-white transition-opacity hover:opacity-90">
             방문 상담 예약
           </ReservationButton>
           <button
@@ -114,7 +114,7 @@ export default function RenewalHeader() {
             );
           })}
           <div className="py-4">
-            <ReservationButton className="w-full rounded-[10px] py-3.5 text-sm font-black text-white" style={{ background: "#D01E2E" } as React.CSSProperties}>
+            <ReservationButton className="w-full rounded-[10px] bg-[#D01E2E] py-3.5 text-sm font-black text-white">
               방문 상담 예약
             </ReservationButton>
           </div>
