@@ -324,6 +324,34 @@ export default async function RenewalHomePage() {
         </div>
       </section>
 
+      {/* ── 스트롱 이야기 — 왼쪽 제목 / 오른쪽 5탭 ── */}
+      <section
+        id="story"
+        className="px-6 py-20 md:px-10"
+        style={{ background: "#F9F8F5", scrollMarginTop: "72px" }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-10 lg:grid-cols-[260px_1fr] lg:gap-16">
+            <div className="lg:pt-1">
+              <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>STRONG STORY</p>
+              <h2 className="font-black leading-tight" style={{ fontSize: "clamp(28px, 3.5vw, 44px)", letterSpacing: "-0.04em", color: "#0E0E10", wordBreak: "keep-all" }}>
+                스트롱<br />이야기
+              </h2>
+            </div>
+            <TabSection
+              tabs={["클립", "시설", "활동기록", "소식", "네이버 후기"]}
+              panels={[
+                <ClipsPanel key="clips" />,
+                <FacilityPanel key="facility" />,
+                <MomentsPanel key="moments" />,
+                <NewsPanel key="news" />,
+                <ReviewsPanel key="reviews" />,
+              ]}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* ── 지점 안내 ── */}
       <section
         id="branches"
@@ -443,34 +471,6 @@ export default async function RenewalHomePage() {
                 </div>
               </a>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 스트롱 이야기 — 왼쪽 제목 / 오른쪽 5탭 ── */}
-      <section
-        id="story"
-        className="px-6 py-20 md:px-10"
-        style={{ background: "#F9F8F5", scrollMarginTop: "72px" }}
-      >
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 lg:grid-cols-[260px_1fr] lg:gap-16">
-            <div className="lg:pt-1">
-              <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>STRONG STORY</p>
-              <h2 className="font-black leading-tight" style={{ fontSize: "clamp(28px, 3.5vw, 44px)", letterSpacing: "-0.04em", color: "#0E0E10", wordBreak: "keep-all" }}>
-                스트롱<br />이야기
-              </h2>
-            </div>
-            <TabSection
-              tabs={["클립", "시설", "활동기록", "소식", "네이버 후기"]}
-              panels={[
-                <ClipsPanel key="clips" />,
-                <FacilityPanel key="facility" />,
-                <MomentsPanel key="moments" />,
-                <NewsPanel key="news" />,
-                <ReviewsPanel key="reviews" />,
-              ]}
-            />
           </div>
         </div>
       </section>
