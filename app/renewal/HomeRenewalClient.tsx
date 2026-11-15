@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import BranchMapLight from "@/app/components/BranchMapLight";
 
 /* ── 지점 타입 ── */
 interface BranchInfo {
@@ -15,7 +14,7 @@ interface BranchInfo {
   image: string;
 }
 
-/* 지점 좌표·주소 — 지오로케이션 계산용 */
+/* 지점 좌표·주소 정적 데이터 */
 const BRANCH_META: Record<string, { lat: number; lng: number; address: string }> = {
   gaebong:      { lat: 37.4982, lng: 126.8601, address: "서울 구로구 개봉동 166-5 유원빌딩 지하 1층" },
   sinjeong:     { lat: 37.5272, lng: 126.8695, address: "서울 양천구 신정동 1021-7 태화상가 2층" },
@@ -34,11 +33,12 @@ function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-/* ── 지점 안내 — 지도↔목록 연동 ── */
+/* ── 지점 안내 — 지도 없는 아코디언 목록 ── */
 export function BranchSectionClient({ branches }: { branches: BranchInfo[] }) {
-  const [activeBranch, setActiveBranch] = useState<string | null>(null);
-  const [geoState, setGeoState] = useState<"idle" | "loading" | "found" | "denied" | "error">("idle");
-  const [nearestName, setNearestName] = useState<string>("");
+  const [openBranch, setOpenBranch]   = useState<string | null>(null);
+  const [geoState, setGeoState]       = useState<"idle" | "loading" | "found" | "denied" | "error">("idle");
+  const [distances, setDistances]     = useState<Record<string, number>>({});
+  const [sortedSlugs, setSortedSlugs] = useState<string[] | null>(null);
 
   function handleGeoClick() {
     if (!navigator.geolocation) { setGeoState("error"); return; }
@@ -46,16 +46,15 @@ export function BranchSectionClient({ branches }: { branches: BranchInfo[] }) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        let nearest = branches[0];
-        let minKm = Infinity;
+        const dist: Record<string, number> = {};
         for (const b of branches) {
           const meta = BRANCH_META[b.slug];
-          if (!meta) continue;
-          const km = haversineKm(latitude, longitude, meta.lat, meta.lng);
-          if (km < minKm) { minKm = km; nearest = b; }
+          if (meta) dist[b.slug] = Math.round(haversineKm(latitude, longitude, meta.lat, meta.lng) * 10) / 10;
         }
-        setNearestName(nearest.name);
-        setActiveBranch(nearest.slug);
+        const sorted = [...branches].sort((a, b) => (dist[a.slug] ?? 99) - (dist[b.slug] ?? 99));
+        setDistances(dist);
+        setSortedSlugs(sorted.map((b) => b.slug));
+        setOpenBranch(sorted[0]?.slug ?? null);
         setGeoState("found");
       },
       () => setGeoState("denied"),
@@ -63,120 +62,165 @@ export function BranchSectionClient({ branches }: { branches: BranchInfo[] }) {
     );
   }
 
-  return (
-    <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[160px_1fr_320px] lg:gap-8">
+  function handleReset() {
+    setGeoState("idle");
+    setDistances({});
+    setSortedSlugs(null);
+    setOpenBranch(null);
+  }
 
-      {/* 왼쪽 제목 + 위치 버튼 */}
-      <div className="lg:pt-2">
+  /* 정렬된 순서 or 기본 순서 */
+  const orderedBranches = sortedSlugs
+    ? sortedSlugs.map((slug) => branches.find((b) => b.slug === slug)!).filter(Boolean)
+    : branches;
+
+  return (
+    <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[200px_1fr] lg:gap-16">
+
+      {/* 왼쪽: 제목 + 위치 버튼 */}
+      <div className="lg:pt-1">
         <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>BRANCHES</p>
-        <h2 className="mb-4 font-black leading-tight" style={{ fontSize: "clamp(24px, 2.8vw, 36px)", letterSpacing: "-0.04em", color: "#0E0E10" }}>
+        <h2 className="mb-6 font-black leading-tight" style={{ fontSize: "clamp(24px, 2.8vw, 36px)", letterSpacing: "-0.04em", color: "#0E0E10" }}>
           지점 안내
         </h2>
 
-        {/* 위치 버튼 */}
         {geoState === "idle" && (
           <button
             type="button"
             onClick={handleGeoClick}
-            className="flex items-center gap-1.5 rounded-[10px] px-3 py-2 text-xs font-bold transition hover:opacity-80"
+            className="inline-flex items-start gap-2 rounded-[12px] px-4 py-3 text-left transition hover:opacity-75 active:scale-95"
             style={{ border: "1.5px solid #E0DDD6", color: "#0E0E10", background: "#F9F8F5" }}
           >
-            <span style={{ fontSize: 14 }}>📍</span>
-            내 위치로<br />가까운 지점 찾기
+            <span className="mt-px shrink-0" style={{ fontSize: 15 }}>📍</span>
+            <span className="text-xs font-bold leading-relaxed">
+              내 위치로<br />가까운 지점 찾기
+            </span>
           </button>
         )}
+
         {geoState === "loading" && (
           <p className="text-xs" style={{ color: "#6B6B72" }}>위치 찾는 중…</p>
         )}
+
         {geoState === "found" && (
-          <div>
-            <p className="text-xs font-black" style={{ color: "#D01E2E" }}>📍 가까운 지점</p>
-            <p className="text-sm font-black" style={{ color: "#0E0E10" }}>{nearestName}</p>
+          <div className="space-y-2">
+            <p className="text-xs font-black" style={{ color: "#D01E2E" }}>📍 거리순 정렬됨</p>
             <button
               type="button"
-              onClick={() => { setGeoState("idle"); setActiveBranch(null); }}
-              className="mt-1 text-[11px] underline"
-              style={{ color: "#aaa" }}
+              onClick={handleReset}
+              className="inline-flex items-center gap-1 rounded-[8px] px-3 py-1.5 text-xs font-bold transition hover:opacity-70"
+              style={{ border: "1px solid #D9D7CF", color: "#6B6B72", background: "#fff" }}
             >
-              초기화
+              기본 순서로 보기
             </button>
           </div>
         )}
-        {(geoState === "denied" || geoState === "error") && (
-          <p className="text-xs" style={{ color: "#aaa" }}>위치 권한이 필요합니다</p>
+
+        {geoState === "denied" && (
+          <div className="space-y-2">
+            <p className="text-xs leading-relaxed" style={{ color: "#6B6B72" }}>위치 권한이 거부되었습니다.</p>
+            <button type="button" onClick={handleReset} className="text-xs underline" style={{ color: "#aaa" }}>
+              기본 목록으로
+            </button>
+          </div>
+        )}
+
+        {geoState === "error" && (
+          <div className="space-y-2">
+            <p className="text-xs leading-relaxed" style={{ color: "#6B6B72" }}>위치를 가져오지 못했습니다.</p>
+            <button type="button" onClick={handleReset} className="text-xs underline" style={{ color: "#aaa" }}>
+              기본 목록으로
+            </button>
+          </div>
         )}
       </div>
 
-      {/* 가운데 지도 */}
-      <BranchMapLight
-        activeBranch={activeBranch}
-        onBranchSelect={setActiveBranch}
-        height={360}
-      />
+      {/* 오른쪽: 아코디언 목록 */}
+      <div style={{ borderTop: "1px solid #E8E6DF" }}>
+        {orderedBranches.map((b, idx) => {
+          const isOpen  = openBranch === b.slug;
+          const meta    = BRANCH_META[b.slug];
+          const dist    = distances[b.slug];
+          const nearest = geoState === "found" && idx === 0;
 
-      {/* 오른쪽 목록 — 얇은 구분선 */}
-      <div>
-        {branches.map((b) => {
-          const isActive = activeBranch === b.slug;
-          const meta = BRANCH_META[b.slug];
           return (
             <div key={b.slug} style={{ borderBottom: "1px solid #E8E6DF" }}>
+
+              {/* 행 헤더 — 클릭 시 아코디언 토글 */}
               <button
                 type="button"
-                className="w-full py-4 text-left transition-colors duration-150"
-                onClick={() => setActiveBranch(isActive ? null : b.slug)}
+                className="w-full py-5 text-left"
+                onClick={() => setOpenBranch(isOpen ? null : b.slug)}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
                       <span
-                        className="font-black transition-colors duration-150"
-                        style={{ fontSize: 16, color: isActive ? "#D01E2E" : "#0E0E10" }}
+                        className="font-black"
+                        style={{ fontSize: 17, color: nearest ? "#D01E2E" : isOpen ? "#D01E2E" : "#0E0E10" }}
                       >
                         {b.name}
                       </span>
+                      {nearest && (
+                        <span className="rounded-[5px] px-1.5 py-0.5 text-[10px] font-black" style={{ background: "#FFF1F2", color: "#D01E2E" }}>
+                          가장 가까운 지점
+                        </span>
+                      )}
                       <span style={{ fontSize: 13, color: "#6B6B72" }}>{b.area}</span>
+                      {dist !== undefined && (
+                        <span style={{ fontSize: 12, color: "#aaa" }}>직선거리 약 {dist}km</span>
+                      )}
                     </div>
-                    <p className="truncate" style={{ fontSize: 13, color: "#6B6B72" }}>
+                    <p style={{ fontSize: 13, color: "#6B6B72", marginTop: 2 }}>
                       {b.hours.split("  ")[0]}
                     </p>
                   </div>
+
+                  {/* 펼침 아이콘 */}
                   <span
-                    className="shrink-0 font-black transition-transform duration-200"
-                    style={{ color: "#D01E2E", fontSize: 14, transform: isActive ? "rotate(90deg)" : "rotate(0deg)" }}
+                    className="shrink-0 transition-transform duration-200"
+                    style={{
+                      display: "inline-block",
+                      fontSize: 18,
+                      color: isOpen ? "#D01E2E" : "#C0BDB6",
+                      transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+                    }}
                   >
-                    →
+                    +
                   </span>
                 </div>
               </button>
 
-              {/* 선택 시 확장 패널 */}
-              {isActive && meta && (
-                <div className="pb-4" style={{ borderTop: "1px solid #F0EDE7" }}>
-                  <p className="pt-3 text-xs leading-relaxed" style={{ color: "#6B6B72" }}>{meta.address}</p>
+              {/* 확장 패널 */}
+              {isOpen && meta && (
+                <div className="pb-5" style={{ borderTop: "1px solid #F0EDE7" }}>
+                  <p className="pt-4 text-sm leading-relaxed" style={{ color: "#6B6B72" }}>
+                    {meta.address}
+                  </p>
                   <a
                     href={`tel:${b.phone}`}
-                    className="mt-1 inline-block font-bold"
-                    style={{ fontSize: 14, color: "#0E0E10", textDecoration: "none" }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="mt-1 inline-block font-bold hover:underline"
+                    style={{ fontSize: 15, color: "#0E0E10", textDecoration: "none" }}
                   >
                     {b.phone}
                   </a>
-                  <div className="mt-3 flex gap-2">
+                  <div className="mt-4 flex flex-wrap gap-2">
                     <a
                       href={b.naverMap}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="flex-1 flex items-center justify-center rounded-[9px] py-2 text-xs font-bold transition hover:opacity-80"
-                      style={{ border: "1.5px solid #D9D7CF", color: "#0E0E10", background: "#fff" }}
+                      className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 text-sm font-bold transition hover:opacity-80"
+                      style={{ border: "1.5px solid #D9D7CF", color: "#0E0E10", background: "#fff", whiteSpace: "nowrap" }}
                     >
-                      길찾기
+                      네이버 길찾기
                     </a>
                     <a
                       href={`/branches/${b.slug}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="flex-1 flex items-center justify-center rounded-[9px] py-2 text-xs font-bold transition hover:opacity-80"
-                      style={{ border: "1.5px solid #D01E2E", color: "#D01E2E", background: "#fff" }}
+                      className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 text-sm font-bold transition hover:opacity-80"
+                      style={{ border: "1.5px solid #D01E2E", color: "#D01E2E", background: "#fff", whiteSpace: "nowrap" }}
                     >
                       지점 정보
                     </a>
