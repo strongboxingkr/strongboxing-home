@@ -508,8 +508,9 @@ export default async function HomePage() {
                 { branch: "신정점", name: "유상혁", role: "관장", instagram: "robuste_hyeok" },
                 { branch: "신정점", name: "정동주", role: "코치", instagram: "jdj_00_" },
                 { branch: "목동점", name: "송재용", role: "관장", instagram: "nan_yong_" },
-                { branch: "목동점", name: "양승호", role: "코치", instagram: "qortor0_0" },
-                { branch: "철산점", name: "안도연", role: "코치", instagram: "strongboxing_andy" },
+                { branch: "목동점", name: "김민찬", role: "코치", instagram: "chan.__2" },
+                { branch: "철산점", name: "안도연", role: "관장", instagram: "strongboxing_andy" },
+                { branch: "철산점", name: "신우수", role: "코치", instagram: "ws_nakmuay" },
               ].map((coach) => (
                 <a key={coach.name}
                   href={`https://www.instagram.com/${coach.instagram}`}
