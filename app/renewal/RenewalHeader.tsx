@@ -22,7 +22,7 @@ export default function RenewalHeader() {
 
   return (
     <header
-      className="fixed left-0 top-0 z-50 w-full"
+      className="sticky top-0 z-50 w-full"
       style={{ background: "#fff", borderBottom: "1px solid #E8E6DF" }}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">

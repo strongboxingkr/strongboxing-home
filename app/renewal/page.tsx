@@ -261,11 +261,11 @@ export default async function RenewalHomePage() {
   );
 
   return (
-    <main className="min-h-screen" style={{ background: "#F9F8F5", color: "#0E0E10" }}>
+    <main className="min-h-screen" style={{ background: "#F9F8F5", color: "#0E0E10", zoom: 0.8 }}>
       <RenewalHeader />
 
       {/* ── HERO — 왼쪽 카피 / 오른쪽 사진 1장 ── */}
-      <section className="pt-[72px]" style={{ background: "#F9F8F5" }}>
+      <section style={{ background: "#F9F8F5" }}>
         <div className="mx-auto max-w-[1440px] px-6 md:px-10">
           <div className="grid min-h-[90vh] items-stretch gap-0 lg:grid-cols-2">
 
