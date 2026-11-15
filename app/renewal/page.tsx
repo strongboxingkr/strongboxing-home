@@ -377,79 +377,72 @@ export default async function RenewalHomePage() {
             </h2>
           </div>
 
-          {/* 대표 + 지점별 목록 */}
-          <div className="grid gap-10 lg:grid-cols-[280px_1fr] lg:gap-16">
-
-            {/* 왼쪽: 한솔 대표 */}
-            <div>
-              <div className="overflow-hidden rounded-[16px]" style={{ aspectRatio: "3/4", maxWidth: 280 }}>
-                <img
-                  src="/images/coaches/hansol.jpg"
-                  alt="한솔 대표"
-                  className="h-full w-full object-cover object-top"
-                />
+          {/* ① 총괄 대표 — 가로 넓은 카드 */}
+          <a
+            href="https://www.instagram.com/strongboxing_kr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group mb-6 flex overflow-hidden rounded-[16px] transition-opacity hover:opacity-90"
+            style={{ border: "1px solid #E8E6DF", background: "#F9F8F5" }}
+          >
+            {/* 사진 */}
+            <div className="shrink-0 overflow-hidden" style={{ width: "clamp(120px, 20vw, 200px)", aspectRatio: "3/4" }}>
+              <img
+                src="/images/coaches/hansol.jpg"
+                alt="한솔 대표"
+                className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+            </div>
+            {/* 정보 */}
+            <div className="flex flex-col justify-center px-8 py-6">
+              <p className="mb-1.5 text-[10px] font-black tracking-[0.3em]" style={{ color: "#D01E2E" }}>
+                대표 · 전지점 총괄
+              </p>
+              <p className="font-black" style={{ fontSize: "clamp(22px, 3vw, 36px)", letterSpacing: "-0.03em", color: "#0E0E10" }}>
+                한솔
+              </p>
+              <p className="mt-3 max-w-sm text-sm leading-6" style={{ color: "#6B6B72", wordBreak: "keep-all" }}>
+                스트롱복싱 5개 지점을 총괄하며 복싱이 처음인 분도 편하게 시작할 수 있도록 이끌고 있습니다.
+              </p>
+              <div className="mt-4 inline-flex items-center gap-1.5 text-sm" style={{ color: "#aaa" }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.8"/>
+                  <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+                </svg>
+                @strongboxing_kr
               </div>
-              <div className="mt-5">
-                <p className="text-[10px] font-black tracking-[0.25em] mb-1" style={{ color: "#D01E2E" }}>대표 · 전지점 총괄</p>
-                <p className="text-2xl font-black" style={{ color: "#0E0E10" }}>한솔</p>
-                <a
-                  href="https://www.instagram.com/strongboxing_kr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center gap-1.5 text-sm transition-opacity hover:opacity-70"
-                  style={{ color: "#6B6B72" }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            </div>
+          </a>
+
+          {/* ② 나머지 지도진 — 작은 텍스트 카드, PC 4열 (7개 = 4+3) */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {allCoaches.filter(c => c.name !== "한솔").map((c) => (
+              <a
+                key={c.name}
+                href={`https://www.instagram.com/${c.instagram}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-[12px] px-5 py-4 transition-all hover:shadow-sm"
+                style={{ border: "1px solid #E8E6DF", background: "#F9F8F5" }}
+              >
+                <p className="mb-2 text-[10px] font-black tracking-[0.2em]" style={{ color: "#aaa" }}>
+                  {c.branch}
+                </p>
+                <div className="flex items-baseline gap-1.5 mb-2">
+                  <span className="font-black text-base" style={{ color: "#0E0E10" }}>{c.name}</span>
+                  <span className="text-xs" style={{ color: "#6B6B72" }}>{c.role}</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs" style={{ color: "#aaa" }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" className="shrink-0">
                     <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.8"/>
                     <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8"/>
                     <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
                   </svg>
-                  @strongboxing_kr
-                </a>
-              </div>
-            </div>
-
-            {/* 오른쪽: 지점별 텍스트 목록 */}
-            {(() => {
-              const branchGroups = [
-                { branch: "개봉점",  members: allCoaches.filter(c => c.branch === "개봉점") },
-                { branch: "신정점",  members: allCoaches.filter(c => c.branch === "신정점") },
-                { branch: "목동점",  members: allCoaches.filter(c => c.branch === "목동점") },
-                { branch: "철산점",  members: allCoaches.filter(c => c.branch === "철산점") },
-              ].filter(g => g.members.length > 0);
-
-              return (
-                <div className="grid gap-8 sm:grid-cols-2">
-                  {branchGroups.map(({ branch, members }) => (
-                    <div key={branch}>
-                      <p className="mb-4 text-[10px] font-black tracking-[0.25em]" style={{ color: "#aaa" }}>
-                        {branch}
-                      </p>
-                      <ul className="space-y-4">
-                        {members.map((m) => (
-                          <li key={m.name} style={{ borderLeft: "2px solid #E8E6DF", paddingLeft: 14 }}>
-                            <div className="flex items-baseline gap-1.5 mb-0.5">
-                              <span className="font-black text-sm" style={{ color: "#0E0E10" }}>{m.name}</span>
-                              <span className="text-xs" style={{ color: "#aaa" }}>{m.role}</span>
-                            </div>
-                            <a
-                              href={`https://www.instagram.com/${m.instagram}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs transition-opacity hover:opacity-70"
-                              style={{ color: "#6B6B72" }}
-                            >
-                              @{m.instagram}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
+                  <span className="transition-colors group-hover:text-[#D01E2E]">@{c.instagram}</span>
                 </div>
-              );
-            })()}
-
+              </a>
+            ))}
           </div>
         </div>
       </section>
