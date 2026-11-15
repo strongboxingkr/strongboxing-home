@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const BRANCHES = [
   { name: "개봉점",    slug: "gaebong",      lat: 37.4982, lng: 126.8601, phone: "02-2060-1279", booking: "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll" },
@@ -10,9 +10,9 @@ const BRANCHES = [
   { name: "영등포점",  slug: "yeongdeungpo", lat: 37.5167, lng: 126.8982, phone: "02-831-9312",  booking: "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll" },
 ];
 
-/* CartoDB Positron 타일 — API 키 불필요 */
-const TILE_URL = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
-const TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>';
+/* OpenStreetMap 타일 — API 키 불필요, 완전 무료 */
+const TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
 
 /* 브랜드 레드 커스텀 마커 SVG */
 function markerSvg(active = false) {
@@ -28,6 +28,7 @@ function markerSvg(active = false) {
 export default function BranchMapLight() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
+  const [tileError, setTileError] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -58,7 +59,9 @@ export default function BranchMapLight() {
         attributionControl: true,
       });
 
-      L.tileLayer(TILE_URL, { attribution: TILE_ATTR, maxZoom: 19 }).addTo(map);
+      const tileLayer = L.tileLayer(TILE_URL, { attribution: TILE_ATTR, maxZoom: 19 });
+      tileLayer.on("tileerror", () => setTileError(true));
+      tileLayer.addTo(map);
 
       BRANCHES.forEach((b) => {
         const icon = L.divIcon({
@@ -138,11 +141,23 @@ export default function BranchMapLight() {
         .branch-popup .leaflet-popup-content { margin: 0 !important; }
         .leaflet-control-attribution { font-size: 9px !important; }
       `}</style>
-      <div
-        ref={containerRef}
-        className="overflow-hidden rounded-[20px]"
-        style={{ height: 420, border: "1px solid #E8E6DF" }}
-      />
+      <div className="relative overflow-hidden rounded-[20px]" style={{ height: 420, border: "1px solid #E8E6DF" }}>
+        <div ref={containerRef} className="h-full w-full" />
+        {tileError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-[20px]" style={{ background: "#F9F8F5" }}>
+            <p className="text-sm font-black" style={{ color: "#6B6B72" }}>지도를 불러오지 못했습니다</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              {BRANCHES.map((b) => (
+                <a key={b.slug} href={b.booking} target="_blank" rel="noopener noreferrer"
+                  className="rounded-[10px] px-4 py-2 text-xs font-black text-white"
+                  style={{ background: "#D01E2E" }}>
+                  {b.name} 보기
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 }

@@ -3,20 +3,21 @@
 import { useState, useRef } from "react";
 import { trackClipPlay } from "@/lib/gtag";
 
-const branches = ["전체", "목동점", "철산점", "신정점", "개봉점", "영등포점"];
+const BRANCHES = ["전체", "목동점", "철산점", "신정점", "개봉점", "영등포점"];
+const PAGE_SIZE = 4;
 
 export default function ReelsClient({ reels }: { reels: any[] }) {
   const [selectedBranch, setSelectedBranch] = useState("전체");
+  const [page, setPage] = useState(0);
 
   const filteredReels = (() => {
     if (selectedBranch !== "전체") {
-      return reels.filter((reel) => reel.branch_name === selectedBranch);
+      return reels.filter((r) => r.branch_name === selectedBranch);
     }
-    // 전체: 지점별로 그룹화 후 라운드로빈으로 섞기
     const groups: Record<string, any[]> = {};
-    for (const reel of reels) {
-      if (!groups[reel.branch_name]) groups[reel.branch_name] = [];
-      groups[reel.branch_name].push(reel);
+    for (const r of reels) {
+      if (!groups[r.branch_name]) groups[r.branch_name] = [];
+      groups[r.branch_name].push(r);
     }
     const queues = Object.values(groups);
     const result: any[] = [];
@@ -24,28 +25,29 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
     while (hasMore) {
       hasMore = false;
       for (const q of queues) {
-        if (q.length > 0) {
-          result.push(q.shift());
-          hasMore = true;
-        }
+        if (q.length > 0) { result.push(q.shift()); hasMore = true; }
       }
     }
     return result;
   })();
 
-  const rows = [
-    filteredReels.filter((_, i) => i % 2 === 0),
-    filteredReels.filter((_, i) => i % 2 === 1),
-  ];
+  const totalPages = Math.ceil(filteredReels.length / PAGE_SIZE);
+  const pageReels = filteredReels.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  function handleBranchChange(branch: string) {
+    setSelectedBranch(branch);
+    setPage(0);
+  }
 
   return (
     <>
-      <div className="mb-8 flex gap-3 overflow-x-auto pb-2">
-        {branches.map((branch) => (
+      {/* 지점 필터 */}
+      <div className="mb-6 flex gap-3 overflow-x-auto pb-1">
+        {BRANCHES.map((branch) => (
           <button
             key={branch}
-            onClick={() => setSelectedBranch(branch)}
-            className={`shrink-0 rounded-[10px] border px-5 py-2.5 text-sm font-black transition ${
+            onClick={() => handleBranchChange(branch)}
+            className={`shrink-0 rounded-[10px] border px-4 py-2 text-xs font-black transition ${
               selectedBranch === branch
                 ? "border-[#D01E2E] bg-[#D01E2E] text-white"
                 : "border-white/10 bg-[#1A1A1C] text-[#8A8D91] hover:border-white/30"
@@ -56,16 +58,59 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
         ))}
       </div>
 
-      <div className="overflow-x-auto pb-4">
-        <div className="flex flex-col gap-4">
-          {rows.map((row, ri) => (
-            <div key={ri} className="flex gap-4">
-              {row.map((reel) => (
-                <ReelCard key={reel.id} reel={reel} />
-              ))}
+      {/* PC: 4개 그리드 + 페이지네이션 / 모바일: 가로 스냅 스크롤 */}
+
+      {/* 모바일 (sm 미만): 가로 스냅 */}
+      <div className="sm:hidden overflow-x-auto pb-3" style={{ scrollSnapType: "x mandatory" }}>
+        <div className="flex gap-3" style={{ width: "max-content" }}>
+          {filteredReels.map((reel) => (
+            <div key={reel.id} style={{ scrollSnapAlign: "start", width: 180 }}>
+              <ReelCard reel={reel} />
             </div>
           ))}
         </div>
+      </div>
+
+      {/* PC (sm 이상): 4열 그리드 + 페이지네이션 */}
+      <div className="hidden sm:block">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {pageReels.map((reel) => (
+            <ReelCard key={reel.id} reel={reel} />
+          ))}
+        </div>
+
+        {/* 페이지네이션 */}
+        {totalPages > 1 && (
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="flex h-9 w-9 items-center justify-center rounded-full border transition disabled:opacity-30"
+              style={{ borderColor: "rgba(255,255,255,0.15)", color: "#8A8D91" }}
+              aria-label="이전"
+            >
+              ‹
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i)}
+                className="h-2 w-2 rounded-full transition"
+                style={{ background: i === page ? "#D01E2E" : "rgba(255,255,255,0.2)" }}
+                aria-label={`${i + 1}페이지`}
+              />
+            ))}
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={page === totalPages - 1}
+              className="flex h-9 w-9 items-center justify-center rounded-full border transition disabled:opacity-30"
+              style={{ borderColor: "rgba(255,255,255,0.15)", color: "#8A8D91" }}
+              aria-label="다음"
+            >
+              ›
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
@@ -77,7 +122,7 @@ function ReelCard({ reel }: { reel: any }) {
   const isAutoPlay = Number(reel.is_muted) === 1;
 
   return (
-    <div className={`shrink-0 overflow-hidden rounded-[10px] border border-white/10 bg-[#1A1A1C] ${isPortrait ? "w-[160px]" : "w-[240px]"}`}>
+    <div className={`overflow-hidden rounded-[10px] border border-white/10 bg-[#1A1A1C] ${isPortrait ? "w-full" : "w-full"}`}>
       <video
         src={reel.video_url}
         title={reel.title}
@@ -107,7 +152,7 @@ function ReelCard({ reel }: { reel: any }) {
       />
       <div className="px-3 py-2">
         <p className="text-[10px] font-black tracking-[0.2em] text-[#D01E2E]">{reel.branch_name}</p>
-        <p className="text-xs font-bold text-white">{reel.title}</p>
+        <p className="truncate text-xs font-bold text-white">{reel.title}</p>
       </div>
     </div>
   );
