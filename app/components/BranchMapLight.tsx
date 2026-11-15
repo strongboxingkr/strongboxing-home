@@ -40,12 +40,9 @@ const BRANCHES = [
   },
 ];
 
-/* CartoDB Positron — 밝고 단순한 스타일, API 키 불필요 */
-const CARTO_TILE = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
-const CARTO_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/" target="_blank">CARTO</a>';
-/* CartoDB 실패 시 OSM fallback */
-const OSM_TILE  = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-const OSM_ATTR  = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
+/* OpenStreetMap — 무료, API 키 불필요 / CSS 필터로 Positron 스타일 */
+const OSM_TILE = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const OSM_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
 
 interface Props {
   activeBranch?: string | null;
@@ -89,21 +86,15 @@ export default function BranchMapLight({ activeBranch, onBranchSelect, height = 
         attributionControl: true,
       }).fitBounds(bounds);
 
-      /* CartoDB Positron → OSM fallback */
-      let usingOsm = false;
-      const cartoLayer = L.tileLayer(CARTO_TILE, { attribution: CARTO_ATTR, maxZoom: 19 });
-      cartoLayer.on("tileerror", () => {
-        if (usingOsm) { setTileError(true); return; }
-        usingOsm = true;
-        cartoLayer.remove();
-        const osmLayer = L.tileLayer(OSM_TILE, { attribution: OSM_ATTR, maxZoom: 19 });
-        osmLayer.on("tileerror", () => setTileError(true));
-        osmLayer.addTo(map);
-        /* OSM을 조금 더 밝게 */
+      /* OSM 타일 — CSS 필터로 Positron 스타일 (밝고 단순) */
+      const osmLayer = L.tileLayer(OSM_TILE, { attribution: OSM_ATTR, maxZoom: 19 });
+      osmLayer.on("tileerror", () => setTileError(true));
+      osmLayer.addTo(map);
+      /* 타일 로드 후 필터 적용 */
+      osmLayer.on("load", () => {
         const pane = map.getPanes().tilePane as HTMLElement;
-        if (pane) pane.style.filter = "grayscale(0.4) brightness(1.1) saturate(0.6)";
+        if (pane) pane.style.filter = "grayscale(0.9) brightness(1.15) saturate(0.1) contrast(0.9)";
       });
-      cartoLayer.addTo(map);
 
       BRANCHES.forEach((b) => {
         /* CircleMarker */
