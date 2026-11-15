@@ -1,6 +1,97 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import BranchMapLight from "@/app/components/BranchMapLight";
+
+/* ── 지점 타입 ── */
+interface BranchInfo {
+  slug: string;
+  name: string;
+  area: string;
+  hours: string;
+  phone: string;
+  booking: string;
+  naverMap: string;
+  image: string;
+}
+
+/* ── 지점 안내 — 지도↔목록 연동 ── */
+export function BranchSectionClient({ branches }: { branches: BranchInfo[] }) {
+  const [activeBranch, setActiveBranch] = useState<string | null>(null);
+
+  /* 목록 아이템 높이에 맞춰 지도 높이 계산 (5개 × ~58px + padding) */
+  const mapHeight = Math.max(300, branches.length * 58 + 20);
+
+  return (
+    <div className="grid gap-10 lg:grid-cols-[160px_1fr_280px] lg:gap-8">
+
+      {/* 왼쪽 제목 */}
+      <div className="lg:pt-2">
+        <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>BRANCHES</p>
+        <h2 className="font-black leading-tight" style={{ fontSize: "clamp(24px, 2.8vw, 36px)", letterSpacing: "-0.04em", color: "#0E0E10" }}>
+          지점 안내
+        </h2>
+      </div>
+
+      {/* 가운데 지도 */}
+      <BranchMapLight
+        activeBranch={activeBranch}
+        onBranchSelect={setActiveBranch}
+        height={mapHeight}
+      />
+
+      {/* 오른쪽 목록 — 얇은 구분선 */}
+      <div>
+        {branches.map((b, i) => {
+          const isActive = activeBranch === b.slug;
+          return (
+            <div
+              key={b.slug}
+              style={{ borderBottom: "1px solid #E8E6DF" }}
+            >
+              <button
+                type="button"
+                className="w-full py-3.5 text-left transition-colors duration-150"
+                onClick={() => setActiveBranch(isActive ? null : b.slug)}
+              >
+                <div className="flex items-center gap-3">
+                  {/* 색 점 인디케이터 */}
+                  <span
+                    className="shrink-0 h-1.5 w-1.5 rounded-full transition-colors duration-150"
+                    style={{ background: isActive ? "#D01E2E" : "#D9D7CF" }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-1.5">
+                      <span
+                        className="font-black text-sm transition-colors duration-150"
+                        style={{ color: isActive ? "#D01E2E" : "#0E0E10" }}
+                      >
+                        {b.name}
+                      </span>
+                      <span className="text-[10px]" style={{ color: "#aaa" }}>{b.area}</span>
+                    </div>
+                    <p className="text-[11px] truncate" style={{ color: "#6B6B72" }}>
+                      {b.hours.split("  ")[0]}
+                    </p>
+                  </div>
+                  <a
+                    href={`/branches/${b.slug}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="shrink-0 text-sm font-black transition-opacity hover:opacity-60"
+                    style={{ color: "#D01E2E" }}
+                    aria-label={`${b.name} 상세 보기`}
+                  >
+                    →
+                  </a>
+                </div>
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 /* ── Tab 섹션 — 글자 + 빨간 밑줄 ── */
 export function TabSection({

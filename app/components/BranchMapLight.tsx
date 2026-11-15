@@ -25,9 +25,16 @@ function markerSvg(active = false) {
   </svg>`;
 }
 
-export default function BranchMapLight() {
+interface Props {
+  activeBranch?: string | null;
+  onBranchSelect?: (slug: string) => void;
+  height?: number;
+}
+
+export default function BranchMapLight({ activeBranch, onBranchSelect, height = 360 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
+  const markerRefs = useRef<Map<string, any>>(new Map());
   const [tileError, setTileError] = useState(false);
 
   useEffect(() => {
@@ -90,8 +97,9 @@ export default function BranchMapLight() {
 
         const marker = L.marker([b.lat, b.lng], { icon }).addTo(map);
         marker.bindPopup(popup);
+        markerRefs.current.set(b.slug, marker);
 
-        /* 마커 호버 — 크기 변환 */
+        marker.on("click", function () { onBranchSelect?.(b.slug); });
         marker.on("mouseover", function (this: any) {
           this.setIcon(L.divIcon({ html: markerSvg(true), className: "", iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20] }));
         });
@@ -128,6 +136,16 @@ export default function BranchMapLight() {
     };
   }, []);
 
+  /* activeBranch 변경 시 해당 마커 팬·팝업 열기 */
+  useEffect(() => {
+    if (!activeBranch || !mapRef.current) return;
+    const marker = markerRefs.current.get(activeBranch);
+    if (marker) {
+      mapRef.current.panTo(marker.getLatLng(), { animate: true });
+      marker.openPopup();
+    }
+  }, [activeBranch]);
+
   return (
     <>
       <style>{`
@@ -141,7 +159,7 @@ export default function BranchMapLight() {
         .branch-popup .leaflet-popup-content { margin: 0 !important; }
         .leaflet-control-attribution { font-size: 9px !important; }
       `}</style>
-      <div className="relative overflow-hidden rounded-[20px]" style={{ height: 420, border: "1px solid #E8E6DF" }}>
+      <div className="relative overflow-hidden rounded-[20px]" style={{ height, border: "1px solid #E8E6DF" }}>
         <div ref={containerRef} className="h-full w-full" />
         {tileError && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-[20px]" style={{ background: "#F9F8F5" }}>

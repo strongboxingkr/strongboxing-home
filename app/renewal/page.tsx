@@ -1,9 +1,8 @@
 import { db } from "@/lib/db";
-import BranchMapLight from "@/app/components/BranchMapLight";
 import ReelsClient from "@/app/components/ReelsClient";
 import type { Metadata } from "next";
 import RenewalHeader from "./RenewalHeader";
-import { TabSection, FirstVisitAccordion, CalorieCalcPanel } from "./HomeRenewalClient";
+import { TabSection, FirstVisitAccordion, CalorieCalcPanel, BranchSectionClient } from "./HomeRenewalClient";
 import { ConsultationModalButton } from "./ConsultationModal";
 
 export const dynamic = "force-dynamic";
@@ -325,51 +324,14 @@ export default async function RenewalHomePage() {
         </div>
       </section>
 
-      {/* ── 지점 안내 — 왼쪽 제목 / 가운데 지도 / 오른쪽 목록 ── */}
+      {/* ── 지점 안내 ── */}
       <section
         id="branches"
         className="px-6 py-20 md:px-10"
         style={{ background: "#fff", scrollMarginTop: "72px" }}
       >
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 lg:grid-cols-[200px_1fr_300px] lg:gap-8">
-
-            {/* 왼쪽 제목 */}
-            <div className="lg:pt-2">
-              <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>BRANCHES</p>
-              <h2 className="font-black leading-tight" style={{ fontSize: "clamp(24px, 3vw, 36px)", letterSpacing: "-0.04em", color: "#0E0E10", wordBreak: "keep-all" }}>
-                가까운<br />지점을<br />찾아보세요
-              </h2>
-            </div>
-
-            {/* 가운데 지도 */}
-            <BranchMapLight />
-
-            {/* 오른쪽 지점 목록 */}
-            <div className="space-y-2">
-              {branches.map((b) => (
-                <a
-                  key={b.slug}
-                  href={`/branches/${b.slug}`}
-                  className="group flex items-center gap-3 rounded-[12px] px-4 py-4 transition-all duration-200"
-                  style={{ border: "1px solid #E8E6DF", background: "#F9F8F5" }}
-                >
-                  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-[8px]">
-                    <img src={b.image} alt={b.name} className="h-full w-full object-cover" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-black text-sm" style={{ color: "#0E0E10" }}>{b.name}</span>
-                      <span className="text-[10px]" style={{ color: "#aaa" }}>{b.area}</span>
-                    </div>
-                    <p className="mt-0.5 text-xs truncate" style={{ color: "#6B6B72" }}>{b.hours.split("  ")[0]}</p>
-                  </div>
-                  <span className="shrink-0 text-sm font-black transition-transform duration-200 group-hover:translate-x-1" style={{ color: "#D01E2E" }}>→</span>
-                </a>
-              ))}
-            </div>
-
-          </div>
+          <BranchSectionClient branches={branches} />
         </div>
       </section>
 
@@ -400,56 +362,94 @@ export default async function RenewalHomePage() {
         </div>
       </section>
 
-      {/* ── 지도진 — 왼쪽 제목 / 오른쪽 균등 그리드 ── */}
+      {/* ── 지도진 ── */}
       <section
         id="coaches"
         className="px-6 py-20 md:px-10"
         style={{ background: "#fff", scrollMarginTop: "72px" }}
       >
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 lg:grid-cols-[260px_1fr] lg:gap-16">
-            <div className="lg:pt-1">
-              <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>COACHES</p>
-              <h2 className="font-black leading-tight" style={{ fontSize: "clamp(28px, 3.5vw, 44px)", letterSpacing: "-0.04em", color: "#0E0E10", wordBreak: "keep-all" }}>
-                지도진
-              </h2>
-            </div>
+          {/* 섹션 레이블 */}
+          <div className="mb-10">
+            <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>COACHES</p>
+            <h2 className="font-black leading-tight" style={{ fontSize: "clamp(28px, 3.5vw, 44px)", letterSpacing: "-0.04em", color: "#0E0E10" }}>
+              지도진
+            </h2>
+          </div>
 
-            {/* 8인 균등 그리드 */}
-            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-              {allCoaches.map((c) => (
+          {/* 대표 + 지점별 목록 */}
+          <div className="grid gap-10 lg:grid-cols-[280px_1fr] lg:gap-16">
+
+            {/* 왼쪽: 한솔 대표 */}
+            <div>
+              <div className="overflow-hidden rounded-[16px]" style={{ aspectRatio: "3/4", maxWidth: 280 }}>
+                <img
+                  src="/images/coaches/hansol.jpg"
+                  alt="한솔 대표"
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+              <div className="mt-5">
+                <p className="text-[10px] font-black tracking-[0.25em] mb-1" style={{ color: "#D01E2E" }}>대표 · 전지점 총괄</p>
+                <p className="text-2xl font-black" style={{ color: "#0E0E10" }}>한솔</p>
                 <a
-                  key={c.name}
-                  href={`https://www.instagram.com/${c.instagram}`}
+                  href="https://www.instagram.com/strongboxing_kr"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group overflow-hidden rounded-[14px] transition-opacity hover:opacity-90"
-                  style={{ border: "1px solid #E8E6DF" }}
+                  className="mt-2 inline-flex items-center gap-1.5 text-sm transition-opacity hover:opacity-70"
+                  style={{ color: "#6B6B72" }}
                 >
-                  {/* 사진 영역 */}
-                  <div className="relative overflow-hidden" style={{ aspectRatio: "1/1" }}>
-                    {c.photo ? (
-                      <img
-                        src={c.photo}
-                        alt={c.name}
-                        className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center" style={{ background: "#F0EFEC" }}>
-                        <span className="font-black text-3xl" style={{ color: "#C8C5BC" }}>
-                          {c.name.charAt(0)}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  {/* 정보 */}
-                  <div className="p-4" style={{ background: "#fff" }}>
-                    <p className="text-[10px] font-black tracking-[0.1em] mb-0.5" style={{ color: "#aaa" }}>{c.branch}</p>
-                    <p className="font-black text-sm" style={{ color: "#0E0E10" }}>{c.name} {c.role}</p>
-                  </div>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.8"/>
+                    <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8"/>
+                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+                  </svg>
+                  @strongboxing_kr
                 </a>
-              ))}
+              </div>
             </div>
+
+            {/* 오른쪽: 지점별 텍스트 목록 */}
+            {(() => {
+              const branchGroups = [
+                { branch: "개봉점",  members: allCoaches.filter(c => c.branch === "개봉점") },
+                { branch: "신정점",  members: allCoaches.filter(c => c.branch === "신정점") },
+                { branch: "목동점",  members: allCoaches.filter(c => c.branch === "목동점") },
+                { branch: "철산점",  members: allCoaches.filter(c => c.branch === "철산점") },
+              ].filter(g => g.members.length > 0);
+
+              return (
+                <div className="grid gap-8 sm:grid-cols-2">
+                  {branchGroups.map(({ branch, members }) => (
+                    <div key={branch}>
+                      <p className="mb-4 text-[10px] font-black tracking-[0.25em]" style={{ color: "#aaa" }}>
+                        {branch}
+                      </p>
+                      <ul className="space-y-4">
+                        {members.map((m) => (
+                          <li key={m.name} style={{ borderLeft: "2px solid #E8E6DF", paddingLeft: 14 }}>
+                            <div className="flex items-baseline gap-1.5 mb-0.5">
+                              <span className="font-black text-sm" style={{ color: "#0E0E10" }}>{m.name}</span>
+                              <span className="text-xs" style={{ color: "#aaa" }}>{m.role}</span>
+                            </div>
+                            <a
+                              href={`https://www.instagram.com/${m.instagram}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs transition-opacity hover:opacity-70"
+                              style={{ color: "#6B6B72" }}
+                            >
+                              @{m.instagram}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+
           </div>
         </div>
       </section>
