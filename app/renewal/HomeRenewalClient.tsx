@@ -33,9 +33,15 @@ function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-/* ── 지점 안내 — 지도 없는 아코디언 목록 ── */
-export function BranchSectionClient({ branches }: { branches: BranchInfo[] }) {
-  const [openBranch, setOpenBranch]   = useState<string | null>(null);
+/* 운영시간 파싱: "월–금 10:00~24:00  토 10:00~16:00" → {weekday, weekend} */
+function parseHours(raw: string): { weekday: string; weekend: string | null } {
+  const parts = raw.split(/\s{2,}/);
+  return { weekday: parts[0]?.trim() ?? raw, weekend: parts[1]?.trim() ?? null };
+}
+
+/* ── 지점 안내 — 지도 없는 가로 탭 목록 ── */
+export function BranchSectionClient({ branches, defaultSlug }: { branches: BranchInfo[]; defaultSlug?: string }) {
+  const [openBranch, setOpenBranch]   = useState<string | null>(defaultSlug ?? branches[0]?.slug ?? null);
   const [geoState, setGeoState]       = useState<"idle" | "loading" | "found" | "denied" | "error">("idle");
   const [distances, setDistances]     = useState<Record<string, number>>({});
   const [sortedSlugs, setSortedSlugs] = useState<string[] | null>(null);
@@ -184,21 +190,23 @@ export function BranchSectionClient({ branches }: { branches: BranchInfo[] }) {
 
         {/* 선택된 지점 상세 패널 */}
         {(() => {
-          const b    = openBranch ? orderedBranches.find((x) => x.slug === openBranch) : null;
+          const b    = openBranch ? orderedBranches.find((x) => x.slug === openBranch) : orderedBranches[0];
           const meta = b ? BRANCH_META[b.slug] : null;
-          if (!b || !meta) return (
-            <p className="pt-6 text-sm" style={{ color: "#aaa" }}>지점을 선택하면 상세 정보를 볼 수 있습니다.</p>
-          );
+          if (!b || !meta) return null;
+          const hrs  = parseHours(b.hours);
           return (
             <div className="pt-6">
-              <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="flex flex-wrap items-start justify-between gap-6">
                 <div>
                   <p className="font-black" style={{ fontSize: 20, color: "#0E0E10" }}>{b.name}</p>
-                  <p className="mt-1 text-sm leading-relaxed" style={{ color: "#6B6B72" }}>{meta.address}</p>
-                  <p className="mt-0.5 text-sm" style={{ color: "#6B6B72" }}>{b.hours.split("  ")[0]}</p>
+                  <p className="mt-2" style={{ fontSize: 14, color: "#4A4A52", lineHeight: 1.7 }}>{meta.address}</p>
+                  <div className="mt-1 space-y-0.5">
+                    <p style={{ fontSize: 14, color: "#4A4A52" }}>{hrs.weekday}</p>
+                    {hrs.weekend && <p style={{ fontSize: 14, color: "#4A4A52" }}>{hrs.weekend}</p>}
+                  </div>
                   <a
                     href={`tel:${b.phone}`}
-                    className="mt-2 inline-block font-bold hover:underline"
+                    className="mt-3 inline-block font-bold hover:underline"
                     style={{ fontSize: 15, color: "#0E0E10", textDecoration: "none" }}
                   >
                     {b.phone}
@@ -209,17 +217,17 @@ export function BranchSectionClient({ branches }: { branches: BranchInfo[] }) {
                     href={b.naverMap}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 text-sm font-bold transition hover:opacity-80"
-                    style={{ border: "1.5px solid #D9D7CF", color: "#0E0E10", background: "#fff", whiteSpace: "nowrap" }}
+                    className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 font-bold transition hover:opacity-80"
+                    style={{ fontSize: 14, border: "1.5px solid #D9D7CF", color: "#0E0E10", background: "#fff", whiteSpace: "nowrap" }}
                   >
                     네이버 길찾기
                   </a>
                   <a
                     href={`/branches/${b.slug}`}
-                    className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 text-sm font-bold transition hover:opacity-80"
-                    style={{ border: "1.5px solid #D01E2E", color: "#D01E2E", background: "#fff", whiteSpace: "nowrap" }}
+                    className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 font-bold transition hover:opacity-80"
+                    style={{ fontSize: 14, border: "1.5px solid #D01E2E", color: "#D01E2E", background: "#fff", whiteSpace: "nowrap" }}
                   >
-                    지점 정보
+                    지점 자세히 보기
                   </a>
                 </div>
               </div>
@@ -317,6 +325,56 @@ export function FirstVisitAccordion() {
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+/* ── 네이버 후기 인라인 노출 (스트롱이야기 아래) ── */
+export function InlineReviews({ reviews }: { reviews: any[] }) {
+  const [expanded, setExpanded] = useState<Record<number, boolean>>({});
+  if (!reviews || reviews.length === 0) return null;
+  const LIMIT = 90; // 90자 이상 → 접기
+
+  return (
+    <div className="mt-14 pt-10" style={{ borderTop: "1px solid #E8E6DF" }}>
+      <p className="mb-6 text-[10px] font-black tracking-[0.35em]" style={{ color: "#aaa" }}>NAVER REVIEW</p>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {reviews.map((r: any, i: number) => {
+          const text  = String(r.content || r.review || r.text || "");
+          const short = text.length > LIMIT;
+          const show  = expanded[i] ? text : (short ? text.slice(0, LIMIT) + "…" : text);
+          return (
+            <div key={i} className="rounded-[14px] p-6" style={{ border: "1px solid #E8E6DF", background: "#fff" }}>
+              <div className="mb-3 flex items-center gap-2">
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }, (_, j) => (
+                    <span key={j} style={{ color: j < (r.rating ?? 5) ? "#D01E2E" : "#E0DDD6", fontSize: 13 }}>★</span>
+                  ))}
+                </div>
+                {r.branch_name && (
+                  <span className="rounded-[5px] px-2 py-0.5 text-[11px] font-bold" style={{ background: "#FFF1F2", color: "#D01E2E" }}>
+                    {r.branch_name}
+                  </span>
+                )}
+              </div>
+              <p className="leading-6" style={{ fontSize: 14, color: "#0E0E10" }}>{show}</p>
+              {short && (
+                <button
+                  type="button"
+                  onClick={() => setExpanded((prev) => ({ ...prev, [i]: !prev[i] }))}
+                  className="mt-2"
+                  style={{ fontSize: 13, color: "#888", textDecoration: "underline" }}
+                >
+                  {expanded[i] ? "접기" : "더 보기"}
+                </button>
+              )}
+              {r.author && (
+                <p className="mt-3" style={{ fontSize: 12, color: "#aaa" }}>{r.author}</p>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import ReelsClient from "@/app/components/ReelsClient";
 import type { Metadata } from "next";
 import RenewalHeader from "./RenewalHeader";
-import { TabSection, FirstVisitAccordion, CalorieCalcPanel, BranchSectionClient } from "./HomeRenewalClient";
+import { TabSection, FirstVisitAccordion, CalorieCalcPanel, BranchSectionClient, InlineReviews } from "./HomeRenewalClient";
 import { ConsultationModalButton } from "./ConsultationModal";
 
 export const dynamic = "force-dynamic";
@@ -54,13 +54,13 @@ function WorkoutMethodPanel() {
     <div className="space-y-10">
       <div className="grid gap-6 sm:grid-cols-3">
         {[
-          ["1:1 직접 지도", "관장·코치가 개인 수준에 맞게 1:1로 직접 지도합니다."],
+          ["개인별 지도", "관장·코치가 개인 수준과 진도에 맞춰 지도합니다."],
           ["맞춤형 훈련", "초보·다이어트·실력 향상 목표에 따라 프로그램을 조정합니다."],
-          ["안전한 환경", "기초 자세부터 단계별로 배워 부상 없이 오래 운동합니다."],
+          ["안전한 환경", "기본 자세부터 익히며 체력에 맞춰 운동합니다."],
         ].map(([title, desc]) => (
           <div key={title} style={{ borderTop: "2px solid #E0DDD6", paddingTop: 16 }}>
-            <h3 className="mb-2 font-black text-sm" style={{ color: "#0E0E10" }}>{title}</h3>
-            <p className="text-sm leading-6" style={{ color: "#6B6B72" }}>{desc}</p>
+            <h3 className="mb-2 font-black" style={{ fontSize: 15, color: "#0E0E10" }}>{title}</h3>
+            <p className="leading-7" style={{ fontSize: 14, color: "#4A4A52" }}>{desc}</p>
           </div>
         ))}
       </div>
@@ -260,7 +260,7 @@ export default async function RenewalHomePage() {
   );
 
   return (
-    <main className="min-h-screen" style={{ background: "#F9F8F5", color: "#0E0E10", zoom: 0.8 }}>
+    <main className="min-h-screen" style={{ background: "#F9F8F5", color: "#0E0E10" }}>
       <RenewalHeader />
 
       {/* ── HERO — 왼쪽 카피 / 오른쪽 사진 1장 ── */}
@@ -275,7 +275,7 @@ export default async function RenewalHomePage() {
               </p>
               <h1
                 style={{
-                  fontSize: "clamp(52px, 7vw, 96px)",
+                  fontSize: "clamp(42px, 5.5vw, 76px)",
                   lineHeight: 0.9,
                   letterSpacing: "-0.05em",
                   fontWeight: 900,
@@ -286,7 +286,7 @@ export default async function RenewalHomePage() {
                 처음이어도<br />괜찮습니다
               </h1>
               <div className="my-7 h-[2px] w-14" style={{ background: "#D01E2E" }} />
-              <p className="max-w-sm text-sm leading-[1.9]" style={{ color: "#6B6B72", wordBreak: "keep-all" }}>
+              <p className="max-w-sm leading-[1.9]" style={{ fontSize: 16, color: "#4A4A52", wordBreak: "keep-all" }}>
                 초보부터 실력자까지, 수준에 맞춘 맞춤형 복싱
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -297,11 +297,19 @@ export default async function RenewalHomePage() {
                 >
                   원데이 클래스 예약하기 →
                 </a>
+                <a
+                  href="#branches"
+                  className="inline-flex items-center gap-2 rounded-[10px] px-6 py-3.5 text-sm font-black transition-opacity hover:opacity-80"
+                  style={{ border: "1.5px solid #D9D7CF", color: "#0E0E10", background: "#fff" }}
+                >
+                  가까운 지점 보기
+                </a>
               </div>
-              <p className="mt-4 text-xs" style={{ color: "#aaa" }}>
+              <p className="mt-4" style={{ fontSize: 13, color: "#888" }}>
                 원데이 클래스{" "}
-                <span style={{ color: "#0E0E10", fontWeight: 700 }}>30,000원</span> 현장결제
-                &nbsp;·&nbsp; 등록 시 회원권에서{" "}
+                <span style={{ color: "#0E0E10", fontWeight: 700 }}>30,000원</span>
+                &nbsp;·&nbsp; 현장결제
+                &nbsp;·&nbsp; 당일 등록 시 회원권에서{" "}
                 <span style={{ color: "#0E0E10", fontWeight: 700 }}>전액 차감</span>
               </p>
             </div>
@@ -324,6 +332,17 @@ export default async function RenewalHomePage() {
         </div>
       </section>
 
+      {/* ── 지점 안내 ── */}
+      <section
+        id="branches"
+        className="px-6 py-20 md:px-10"
+        style={{ background: "#fff", scrollMarginTop: "72px" }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <BranchSectionClient branches={branches} defaultSlug={branches[0]?.slug} />
+        </div>
+      </section>
+
       {/* ── 스트롱 이야기 — 왼쪽 제목 / 오른쪽 5탭 ── */}
       <section
         id="story"
@@ -334,7 +353,7 @@ export default async function RenewalHomePage() {
           <div className="grid gap-10 lg:grid-cols-[260px_1fr] lg:gap-16">
             <div className="lg:pt-1">
               <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>STRONG STORY</p>
-              <h2 className="font-black leading-tight" style={{ fontSize: "clamp(28px, 3.5vw, 44px)", letterSpacing: "-0.04em", color: "#0E0E10", wordBreak: "keep-all" }}>
+              <h2 className="font-black leading-tight" style={{ fontSize: "clamp(22px, 2.8vw, 36px)", letterSpacing: "-0.04em", color: "#0E0E10", wordBreak: "keep-all" }}>
                 스트롱<br />이야기
               </h2>
             </div>
@@ -349,17 +368,8 @@ export default async function RenewalHomePage() {
               ]}
             />
           </div>
-        </div>
-      </section>
-
-      {/* ── 지점 안내 ── */}
-      <section
-        id="branches"
-        className="px-6 py-20 md:px-10"
-        style={{ background: "#fff", scrollMarginTop: "72px" }}
-      >
-        <div className="mx-auto max-w-7xl">
-          <BranchSectionClient branches={branches} />
+          {/* 네이버 후기 2~3개 기본 노출 */}
+          {reviews.length > 0 && <InlineReviews reviews={reviews.slice(0, 3)} />}
         </div>
       </section>
 
@@ -373,9 +383,12 @@ export default async function RenewalHomePage() {
           <div className="grid gap-10 lg:grid-cols-[260px_1fr] lg:gap-16">
             <div className="lg:pt-1">
               <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>PROGRAM</p>
-              <h2 className="font-black leading-tight" style={{ fontSize: "clamp(28px, 3.5vw, 44px)", letterSpacing: "-0.04em", color: "#0E0E10", wordBreak: "keep-all" }}>
+              <h2 className="font-black leading-tight" style={{ fontSize: "clamp(22px, 2.8vw, 36px)", letterSpacing: "-0.04em", color: "#0E0E10", wordBreak: "keep-all" }}>
                 운동 안내
               </h2>
+              <p className="mt-5 leading-7" style={{ fontSize: 14, color: "#4A4A52", wordBreak: "keep-all" }}>
+                정해진 단체 수업시간 없이 운영시간 내 편한 시간에 방문할 수 있습니다.
+              </p>
             </div>
             <TabSection
               tabs={["운동 방식", "프로그램", "첫 방문", "칼로리 계산기"]}
@@ -400,7 +413,7 @@ export default async function RenewalHomePage() {
           {/* 섹션 레이블 */}
           <div className="mb-10">
             <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>COACHES</p>
-            <h2 className="font-black leading-tight" style={{ fontSize: "clamp(28px, 3.5vw, 44px)", letterSpacing: "-0.04em", color: "#0E0E10" }}>
+            <h2 className="font-black leading-tight" style={{ fontSize: "clamp(22px, 2.8vw, 36px)", letterSpacing: "-0.04em", color: "#0E0E10" }}>
               지도진
             </h2>
           </div>
@@ -486,10 +499,10 @@ export default async function RenewalHomePage() {
 
             <div>
               <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>FIRST VISIT</p>
-              <h2 className="mb-6 font-black leading-tight" style={{ fontSize: "clamp(28px, 4vw, 48px)", letterSpacing: "-0.04em", color: "#0E0E10", wordBreak: "keep-all" }}>
+              <h2 className="mb-6 font-black leading-tight" style={{ fontSize: "clamp(22px, 3vw, 38px)", letterSpacing: "-0.04em", color: "#0E0E10", wordBreak: "keep-all" }}>
                 처음<br />방문하시나요?
               </h2>
-              <p className="mb-10 text-sm leading-7" style={{ color: "#6B6B72", wordBreak: "keep-all" }}>
+              <p className="mb-10 leading-7" style={{ fontSize: 15, color: "#4A4A52", wordBreak: "keep-all" }}>
                 복싱을 처음 시작하는 분들이 가장 많이 묻는 질문을 모았습니다.
               </p>
               <ConsultationModalButton

@@ -118,38 +118,50 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
 
 function ReelCard({ reel }: { reel: any }) {
   const [isPortrait, setIsPortrait] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const playedRef = useRef(false);
   const isAutoPlay = Number(reel.is_muted) === 1;
 
   return (
-    <div className={`overflow-hidden rounded-[10px] border border-white/10 bg-[#1A1A1C] ${isPortrait ? "w-full" : "w-full"}`}>
-      <video
-        src={reel.video_url}
-        title={reel.title}
-        aria-label={reel.aria_label || reel.title}
-        controls={!isAutoPlay}
-        muted
-        autoPlay={isAutoPlay}
-        loop={isAutoPlay}
-        playsInline
-        preload="metadata"
-        onLoadedMetadata={(e) => {
-          const v = e.currentTarget;
-          setIsPortrait(v.videoHeight > v.videoWidth);
-        }}
-        onPlay={() => {
-          if (isAutoPlay || playedRef.current) return;
-          playedRef.current = true;
-          trackClipPlay({
-            branch_name: reel.branch_name,
-            clip_title: reel.title,
-            clip_id: reel.id,
-            page_path: window.location.pathname,
-            placement: "home",
-          });
-        }}
-        className={`w-full bg-[#0E0E10] object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
-      />
+    <div className="overflow-hidden rounded-[10px] border border-white/10 bg-[#1A1A1C] w-full">
+      {hasError ? (
+        <div
+          className={`flex flex-col items-center justify-center gap-2 ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
+          style={{ background: "#111113" }}
+        >
+          <span style={{ fontSize: 28, opacity: 0.3 }}>🎬</span>
+          <p className="text-center text-xs" style={{ color: "#555" }}>영상을 불러올 수 없습니다</p>
+        </div>
+      ) : (
+        <video
+          src={reel.video_url}
+          title={reel.title}
+          aria-label={reel.aria_label || reel.title}
+          controls={!isAutoPlay}
+          muted
+          autoPlay={isAutoPlay}
+          loop={isAutoPlay}
+          playsInline
+          preload="metadata"
+          onLoadedMetadata={(e) => {
+            const v = e.currentTarget;
+            setIsPortrait(v.videoHeight > v.videoWidth);
+          }}
+          onError={() => setHasError(true)}
+          onPlay={() => {
+            if (isAutoPlay || playedRef.current) return;
+            playedRef.current = true;
+            trackClipPlay({
+              branch_name: reel.branch_name,
+              clip_title: reel.title,
+              clip_id: reel.id,
+              page_path: window.location.pathname,
+              placement: "home",
+            });
+          }}
+          className={`w-full bg-[#0E0E10] object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
+        />
+      )}
       <div className="px-3 py-2">
         <p className="text-[10px] font-black tracking-[0.2em] text-[#D01E2E]">{reel.branch_name}</p>
         <p className="truncate text-xs font-bold text-white">{reel.title}</p>
