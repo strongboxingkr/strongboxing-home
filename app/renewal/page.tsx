@@ -291,7 +291,7 @@ export default async function RenewalHomePage() {
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
-                  href="/reservation"
+                  href="/renewal/reservation"
                   className="inline-flex items-center gap-2 rounded-[10px] px-7 py-3.5 text-sm font-black text-white transition-opacity hover:opacity-90"
                   style={{ background: "#D01E2E" }}
                 >

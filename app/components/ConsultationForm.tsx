@@ -108,12 +108,51 @@ function getAvailableTimes(branch: string, dateString: string): string[] {
   return allTimes;
 }
 
-/* ── 스타일 상수 ─────────────────────────────────────────── */
-const inputCls =
-  "w-full rounded-[10px] border border-[#2C2C30] bg-[#0E0E10] px-4 py-3.5 text-[#F5F4F1] placeholder-[#5A5C61] outline-none transition focus:border-[#D01E2E]";
-const labelCls = "block text-[12px] font-bold tracking-[0.08em] text-[#8A8D91] mb-1.5";
+/* ── 테마 상수 ─────────────────────────────────────────── */
+const DARK = {
+  page:        "bg-[#0E0E10]",
+  section:     "bg-[#0E0E10] text-white",
+  card:        "border border-[#2C2C30] bg-[#141416]",
+  cardHover:   "hover:border-[#4A4C50]",
+  badge:       "border border-[#2C2C30] bg-[#141416]",
+  input:       "w-full rounded-[10px] border border-[#2C2C30] bg-[#0E0E10] px-4 py-3.5 text-[#F5F4F1] placeholder-[#5A5C61] outline-none transition focus:border-[#D01E2E]",
+  label:       "block text-[12px] font-bold tracking-[0.08em] text-[#8A8D91] mb-1.5",
+  heading:     "text-[#F5F4F1]",
+  sub:         "text-[#8A8D91]",
+  muted:       "text-[#5A5C61]",
+  goalDefault: "bg-[#1C1C1F] text-[#8A8D91] hover:bg-[#252528] hover:text-[#F5F4F1]",
+  resetBtn:    "bg-[#1C1C1F] text-[#F5F4F1] hover:bg-[#252528]",
+  branchBox:   "rounded-xl border border-[#2C2C30] bg-[#141416] px-4 py-3 text-[13px] space-y-1.5",
+  branchMuted: "text-[#8A8D91]",
+  branchLink:  "text-[#8A8D91] hover:text-[#F5F4F1]",
+  colorScheme: "dark" as "dark" | "light",
+  imgGrad:     "bg-gradient-to-t from-black/50 to-transparent",
+  doneBtn:     "bg-[#1C1C1F] text-[#F5F4F1] hover:bg-[#252528]",
+};
 
-export default function ConsultationForm() {
+const LIGHT = {
+  page:        "bg-[#F9F8F5]",
+  section:     "bg-[#F9F8F5] text-[#0E0E10]",
+  card:        "border border-[#E0DDD6] bg-[#fff]",
+  cardHover:   "hover:border-[#C8C5BD]",
+  badge:       "border border-[#E8E6DF] bg-[#F3F1EC]",
+  input:       "w-full rounded-[10px] border border-[#E0DDD6] bg-[#fff] px-4 py-3.5 text-[#0E0E10] placeholder-[#aaa] outline-none transition focus:border-[#D01E2E]",
+  label:       "block text-[12px] font-bold tracking-[0.08em] text-[#6B6B72] mb-1.5",
+  heading:     "text-[#0E0E10]",
+  sub:         "text-[#4A4A52]",
+  muted:       "text-[#888]",
+  goalDefault: "bg-[#F0EEE9] text-[#4A4A52] hover:bg-[#E8E6DF] hover:text-[#0E0E10]",
+  resetBtn:    "bg-[#F0EEE9] text-[#0E0E10] hover:bg-[#E8E6DF]",
+  branchBox:   "rounded-xl border border-[#E0DDD6] bg-[#F9F8F5] px-4 py-3 text-[13px] space-y-1.5",
+  branchMuted: "text-[#6B6B72]",
+  branchLink:  "text-[#6B6B72] hover:text-[#0E0E10]",
+  colorScheme: "light" as "dark" | "light",
+  imgGrad:     "bg-gradient-to-t from-black/30 to-transparent",
+  doneBtn:     "bg-[#F0EEE9] text-[#0E0E10] hover:bg-[#E8E6DF]",
+};
+
+export default function ConsultationForm({ theme = "dark" }: { theme?: "dark" | "light" }) {
+  const t = theme === "light" ? LIGHT : DARK;
   const [reservationType, setReservationType] = useState<"방문 상담" | "일일 체험">("방문 상담");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -188,7 +227,7 @@ export default function ConsultationForm() {
   /* ── 완료 화면 ── */
   if (done) {
     return (
-      <section className="min-h-screen bg-[#0E0E10] flex items-center justify-center px-6 py-20">
+      <section className={`min-h-screen ${t.page} flex items-center justify-center px-6 py-20`}>
         <div className="text-center max-w-sm">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#D01E2E]/10">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
@@ -196,15 +235,15 @@ export default function ConsultationForm() {
             </svg>
           </div>
           <p className="text-[11px] font-black tracking-[0.3em] text-[#D01E2E] mb-3">예약 접수 완료</p>
-          <h2 className="text-3xl font-black tracking-tight text-[#F5F4F1] mb-4">
+          <h2 className={`text-3xl font-black tracking-tight ${t.heading} mb-4`}>
             신청이 완료되었습니다
           </h2>
-          <p className="text-[15px] leading-7 text-[#8A8D91] mb-8">
+          <p className={`text-[15px] leading-7 ${t.sub} mb-8`}>
             {form.branch} 담당자가 확인 후<br />연락처로 안내드립니다.
           </p>
           <button
             onClick={() => { setDone(false); setForm({ name:"", phone:"", branch:"목동점", reservation_date:"", reservation_time:"", goal:"", message:"" }); }}
-            className="rounded-[10px] bg-[#1C1C1F] px-8 py-3.5 text-sm font-bold text-[#F5F4F1] hover:bg-[#252528] transition"
+            className={`rounded-[10px] ${t.doneBtn} px-8 py-3.5 text-sm font-bold transition`}
           >
             다시 예약하기
           </button>
@@ -214,7 +253,7 @@ export default function ConsultationForm() {
   }
 
   return (
-    <section className="bg-[#0E0E10] text-white">
+    <section className={t.section}>
       <div className="mx-auto max-w-6xl px-5 py-16 md:py-24 lg:grid lg:grid-cols-[1fr_480px] lg:gap-16 xl:gap-24">
 
         {/* ── 왼쪽: 소개 ── */}
@@ -223,12 +262,12 @@ export default function ConsultationForm() {
             STRONG BOXING
           </p>
           <h2
-            className="font-black tracking-[-0.05em] text-[#F5F4F1] mb-4"
+            className={`font-black tracking-[-0.05em] ${t.heading} mb-4`}
             style={{ fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.1, wordBreak: "keep-all" }}
           >
             복싱이 처음이어도,<br />편하게 시작하세요.
           </h2>
-          <p className="text-[15px] leading-7 text-[#8A8D91] mb-8" style={{ wordBreak: "keep-all" }}>
+          <p className={`text-[15px] leading-7 ${t.sub} mb-8`} style={{ wordBreak: "keep-all" }}>
             시설을 둘러보고 나에게 맞는 운동을 상담받으세요.
           </p>
 
@@ -241,7 +280,7 @@ export default function ConsultationForm() {
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+            <div className={`absolute inset-0 ${t.imgGrad}`} />
           </div>
 
           {/* 하단 배지 */}
@@ -251,9 +290,9 @@ export default function ConsultationForm() {
               { icon: "🥊", label: "개별 지도" },
               { icon: "📅", label: "편한 시간 방문" },
             ].map(({ icon, label }) => (
-              <div key={label} className="rounded-xl border border-[#2C2C30] bg-[#141416] px-3 py-3 text-center">
+              <div key={label} className={`rounded-xl ${t.badge} px-3 py-3 text-center`}>
                 <div className="text-xl mb-1">{icon}</div>
-                <div className="text-[11px] font-bold text-[#8A8D91]">{label}</div>
+                <div className={`text-[11px] font-bold ${t.sub}`}>{label}</div>
               </div>
             ))}
           </div>
@@ -273,7 +312,7 @@ export default function ConsultationForm() {
                   className={`rounded-2xl border p-4 text-left transition ${
                     active
                       ? "border-[#D01E2E] bg-[#D01E2E]/10"
-                      : "border-[#2C2C30] bg-[#141416] hover:border-[#4A4C50]"
+                      : `${t.card} ${t.cardHover}`
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -284,15 +323,15 @@ export default function ConsultationForm() {
                     >
                       {active && <span className="h-2 w-2 rounded-full bg-[#D01E2E]" />}
                     </span>
-                    <span className={`text-[13px] font-black ${active ? "text-[#F5F4F1]" : "text-[#8A8D91]"}`}>
+                    <span className={`text-[13px] font-black ${active ? t.heading : t.sub}`}>
                       {type}
                     </span>
                   </div>
                   {type === "방문 상담" ? (
-                    <p className="ml-6 text-[18px] font-black text-[#F5F4F1]">무료</p>
+                    <p className={`ml-6 text-[18px] font-black ${t.heading}`}>무료</p>
                   ) : (
                     <>
-                      <p className="ml-6 text-[18px] font-black text-[#F5F4F1]">30,000원</p>
+                      <p className={`ml-6 text-[18px] font-black ${t.heading}`}>30,000원</p>
                       <p className="ml-6 text-[11px] font-semibold text-[#D01E2E]">당일 등록 시 전액 페이백</p>
                     </>
                   )}
@@ -304,20 +343,20 @@ export default function ConsultationForm() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* 방문 지점 */}
             <div>
-              <label className={labelCls}>방문 지점</label>
+              <label className={t.label}>방문 지점</label>
               <select
                 value={form.branch}
                 onChange={(e) => handleBranchChange(e.target.value)}
-                className={inputCls}
-                style={{ colorScheme: "dark" }}
+                className={t.input}
+                style={{ colorScheme: t.colorScheme }}
               >
                 {Object.keys(branchData).map((b) => (
                   <option key={b}>{b}</option>
                 ))}
               </select>
               {/* 지점 정보 */}
-              <div className="mt-2 rounded-xl border border-[#2C2C30] bg-[#141416] px-4 py-3 text-[13px] space-y-1.5">
-                <div className="flex items-start gap-2 text-[#8A8D91]">
+              <div className={`mt-2 ${t.branchBox}`}>
+                <div className={`flex items-start gap-2 ${t.branchMuted}`}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="shrink-0 mt-0.5">
                     <path d="M12 21s-7-6.2-7-11.5a7 7 0 1 1 14 0C19 14.8 12 21 12 21Z" stroke="currentColor" strokeWidth="1.8"/>
                     <circle cx="12" cy="9.5" r="2.5" stroke="currentColor" strokeWidth="1.8"/>
@@ -338,7 +377,7 @@ export default function ConsultationForm() {
                     href={branchInfo.naverUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-[#8A8D91] hover:text-[#F5F4F1] transition"
+                    className={`flex items-center gap-1.5 ${t.branchLink} transition`}
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.8"/>
@@ -353,24 +392,24 @@ export default function ConsultationForm() {
             {/* 이름 / 연락처 */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className={labelCls}>이름 <span className="text-[#D01E2E]">*</span></label>
+                <label className={t.label}>이름 <span className="text-[#D01E2E]">*</span></label>
                 <input
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="이름 입력"
-                  className={inputCls}
+                  className={t.input}
                 />
               </div>
               <div>
-                <label className={labelCls}>연락처 <span className="text-[#D01E2E]">*</span></label>
+                <label className={t.label}>연락처 <span className="text-[#D01E2E]">*</span></label>
                 <input
                   required
                   type="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   placeholder="010-0000-0000"
-                  className={inputCls}
+                  className={t.input}
                 />
               </div>
             </div>
@@ -378,32 +417,30 @@ export default function ConsultationForm() {
             {/* 희망 날짜 / 시간 */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className={labelCls}>희망 날짜 <span className="text-[#D01E2E]">*</span></label>
-                <div className="relative">
-                  <input
-                    required
-                    type="date"
-                    min={getToday()}
-                    value={form.reservation_date}
-                    onChange={(e) => handleDateChange(e.target.value)}
-                    style={{ colorScheme: "dark" }}
-                    className={inputCls + " cursor-pointer"}
-                  />
-                </div>
+                <label className={t.label}>희망 날짜 <span className="text-[#D01E2E]">*</span></label>
+                <input
+                  required
+                  type="date"
+                  min={getToday()}
+                  value={form.reservation_date}
+                  onChange={(e) => handleDateChange(e.target.value)}
+                  style={{ colorScheme: t.colorScheme }}
+                  className={t.input + " cursor-pointer"}
+                />
               </div>
               <div>
-                <label className={labelCls}>희망 시간 <span className="text-[#D01E2E]">*</span></label>
+                <label className={t.label}>희망 시간 <span className="text-[#D01E2E]">*</span></label>
                 <select
                   required
                   value={form.reservation_time}
                   onChange={(e) => setForm({ ...form, reservation_time: e.target.value })}
-                  style={{ colorScheme: "dark" }}
-                  className={inputCls}
+                  style={{ colorScheme: t.colorScheme }}
+                  className={t.input}
                   disabled={times.length === 0}
                 >
                   <option value="">{form.reservation_date ? "시간 선택" : "날짜 먼저 선택"}</option>
-                  {times.map((t) => (
-                    <option key={t}>{t}</option>
+                  {times.map((ti) => (
+                    <option key={ti}>{ti}</option>
                   ))}
                 </select>
               </div>
@@ -411,7 +448,7 @@ export default function ConsultationForm() {
 
             {/* 운동 목적 */}
             <div>
-              <label className={labelCls}>운동 목적 <span className="text-[#5A5C61] font-normal">(선택)</span></label>
+              <label className={t.label}>운동 목적 <span className={`${t.muted} font-normal`}>(선택)</span></label>
               <div className="flex flex-wrap gap-2">
                 {GOALS.map((g) => {
                   const active = form.goal === g;
@@ -421,9 +458,7 @@ export default function ConsultationForm() {
                       type="button"
                       onClick={() => setForm({ ...form, goal: active ? "" : g })}
                       className={`rounded-full px-4 py-2 text-[13px] font-bold transition ${
-                        active
-                          ? "bg-[#D01E2E] text-white"
-                          : "bg-[#1C1C1F] text-[#8A8D91] hover:bg-[#252528] hover:text-[#F5F4F1]"
+                        active ? "bg-[#D01E2E] text-white" : t.goalDefault
                       }`}
                     >
                       {g}
@@ -435,13 +470,13 @@ export default function ConsultationForm() {
 
             {/* 문의사항 */}
             <div>
-              <label className={labelCls}>문의사항 <span className="text-[#5A5C61] font-normal">(선택)</span></label>
+              <label className={t.label}>문의사항 <span className={`${t.muted} font-normal`}>(선택)</span></label>
               <textarea
                 rows={3}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 placeholder="궁금한 점을 남겨주세요."
-                className={inputCls + " resize-none"}
+                className={t.input + " resize-none"}
               />
             </div>
 
@@ -454,7 +489,7 @@ export default function ConsultationForm() {
 
             {/* 체험 결제 안내 */}
             {reservationType === "일일 체험" && (
-              <p className="text-[12px] text-[#5A5C61] leading-5">
+              <p className={`text-[12px] ${t.muted} leading-5`}>
                 체험비(30,000원)는 방문 후 현장에서 결제합니다. 당일 정식 등록 시 전액 차감됩니다.
               </p>
             )}
@@ -472,7 +507,7 @@ export default function ConsultationForm() {
                 : "일일 체험 신청하기"}
             </button>
 
-            <p className="text-center text-[12px] text-[#5A5C61]">
+            <p className={`text-center text-[12px] ${t.muted}`}>
               예약 확정 방식은 실제 운영 절차에 맞춰 안내해드립니다.
             </p>
           </form>
