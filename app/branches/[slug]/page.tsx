@@ -34,7 +34,7 @@ const branches: any = {
     booking:
       "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
     naverMap: "https://naver.me/5aFquqcz",
-    kakaoMap: "https://kko.to/RmPQ1W8t8g",
+    kakaoMap: "https://place.map.kakao.com/1456783450",
     kakaoChat: "https://pf.kakao.com/_uyxbnX/chat",
     description:
       "개봉 복싱 체육관 스트롱복싱 개봉점. 개봉동·고척동 인근에서 복싱 운동을 처음 시작하는 분들도 편하게 시작할 수 있습니다. 헬스 대신 복싱으로 다이어트·체력 향상.",

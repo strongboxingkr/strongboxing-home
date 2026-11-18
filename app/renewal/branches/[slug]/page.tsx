@@ -35,7 +35,7 @@ const branches: Record<string, Branch> = {
     booking: "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
     naverMap: "https://naver.me/5aFquqcz", kakaoChat: "https://pf.kakao.com/_uyxbnX/chat",
     address: "(08274) 서울시 구로구 개봉동 166-5번지 (유원빌딩) 지하 1층",
-    kakaoMap: "https://kko.to/RmPQ1W8t8g",
+    kakaoMap: "https://place.map.kakao.com/1456783450",
     description: "구로구 개봉동에 위치한 스트롱복싱 개봉점입니다. 개봉동, 고척동 인근에서 복싱을 처음 시작하는 분들도 편하게 운동할 수 있습니다.",
     highlights: ["관장 직접 지도", "개봉·고척 복싱", "초보자 환영"],
   },
