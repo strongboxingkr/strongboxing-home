@@ -151,7 +151,9 @@ const LIGHT = {
   doneBtn:     "bg-[#F0EEE9] text-[#0E0E10] hover:bg-[#E8E6DF]",
 };
 
-export default function ConsultationForm({ theme = "dark" }: { theme?: "dark" | "light" }) {
+type PreviewBranch = { name: string; address: string; phone: string; naverUrl: string };
+
+export default function ConsultationForm({ theme = "dark", previewBranch }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch }) {
   const t = theme === "light" ? LIGHT : DARK;
   const [reservationType, setReservationType] = useState<"방문 상담" | "일일 체험">("방문 상담");
   const [loading, setLoading] = useState(false);
@@ -161,7 +163,7 @@ export default function ConsultationForm({ theme = "dark" }: { theme?: "dark" | 
   const [form, setForm] = useState({
     name: "",
     phone: "",
-    branch: "목동점",
+    branch: previewBranch?.name ?? "목동점",
     reservation_date: "",
     reservation_time: "",
     goal: "",
@@ -173,7 +175,7 @@ export default function ConsultationForm({ theme = "dark" }: { theme?: "dark" | 
     [form.branch, form.reservation_date]
   );
 
-  const branchInfo = branchData[form.branch];
+  const branchInfo = previewBranch?.name === form.branch ? previewBranch : branchData[form.branch];
 
   function handleBranchChange(branch: string) {
     // 지점 변경 시 선택된 날짜·시간이 유효한지 재검증

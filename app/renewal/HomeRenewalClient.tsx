@@ -223,7 +223,7 @@ export function BranchSectionClient({ branches, defaultSlug }: { branches: Branc
                     네이버 길찾기
                   </a>
                   <a
-                    href={`/branches/${b.slug}`}
+                    href={b.slug === "yeongdeungpo" ? `/branches/${b.slug}` : `/renewal/branches/${b.slug}`}
                     className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 font-bold transition hover:opacity-80"
                     style={{ fontSize: 14, border: "1.5px solid #D01E2E", color: "#D01E2E", background: "#fff", whiteSpace: "nowrap" }}
                   >

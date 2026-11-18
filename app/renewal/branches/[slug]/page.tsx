@@ -1,9 +1,11 @@
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 import SiteHeader from "@/app/components/SiteHeader";
 import BranchReelCard from "@/app/components/BranchReelCard";
-import NaverReviewsSection from "@/app/components/NaverReviewsSection";
+import BranchPreview, { type PreviewPost, type PreviewReel, type PreviewReview } from "./BranchPreview";
+import type { RowDataPacket } from "mysql2";
 import ConsultationForm from "@/app/components/ConsultationForm";
 import { BranchTabSection, FaqAccordion } from "./BranchRenewalClient";
 
@@ -14,7 +16,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const branches: Record<string, any> = {
+type Branch = Parameters<typeof BranchPreview>[0]["branch"] & { image: string };
+
+const branches: Record<string, Branch> = {
   gaebong: {
     name: "개봉점", fullName: "스트롱복싱 개봉점", area: "개봉",
     image: "/images/branches/gaebong.jpg",
@@ -22,18 +26,20 @@ const branches: Record<string, any> = {
     instagram: "https://www.instagram.com/strongboxing_gaebong",
     booking: "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
     naverMap: "https://naver.me/5aFquqcz", kakaoChat: "https://pf.kakao.com/_uyxbnX/chat",
-    address: "서울시 구로구 개봉동 166-5 유원빌딩 지하 1층",
+    address: "(08274) 서울시 구로구 개봉동 166-5번지 (유원빌딩) 지하 1층",
+    kakaoMap: "https://kko.to/RmPQ1W8t8g",
     description: "구로구 개봉동에 위치한 스트롱복싱 개봉점입니다. 개봉동, 고척동 인근에서 복싱을 처음 시작하는 분들도 편하게 운동할 수 있습니다.",
     highlights: ["관장 직접 지도", "개봉·고척 복싱", "초보자 환영"],
   },
   sinjeong: {
     name: "신정점", fullName: "스트롱복싱 신정점", area: "신정",
     image: "/images/branches/sinjeong.jpg",
-    phone: "02-2647-3373", hours: ["월-금 10:00~24:00", "토 10:00~16:00"],
-    instagram: "https://www.instagram.com/strongboxing_sinjeong",
+    phone: "02-2647-3373", hours: ["월-금 10:00~24:00 (14:00~15:00 휴게)", "토 10:00~16:00"],
+    instagram: "https://www.instagram.com/strongboxing.sinjeong",
     booking: "https://booking.naver.com/booking/13/bizes/1367177",
-    naverMap: "https://naver.me/5nhXvzXH", kakaoChat: null,
-    address: "서울시 양천구 신정동 1021-7 태화상가 2층",
+    naverMap: "https://naver.me/5nhXvzXH", kakaoChat: "https://pf.kakao.com/_rxoQxiX/chat",
+    address: "(08087) 서울시 양천구 신정동 1021-7 (태화상가) 2층",
+    kakaoMap: "https://kko.to/NlN6yV0aK3",
     description: "양천구 신정네거리·신정동 복싱장입니다. 초보자, 학생, 여성 회원도 부담 없이 기초부터 체계적으로 운동할 수 있습니다.",
     highlights: ["오전 10시 오픈", "주 6일 운영", "초보자 환영"],
   },
@@ -44,7 +50,8 @@ const branches: Record<string, any> = {
     instagram: "https://www.instagram.com/strongboxing_mokdong",
     booking: "https://booking.naver.com/booking/13/bizes/1510638",
     naverMap: "https://naver.me/GII8f9Qv", kakaoChat: "https://pf.kakao.com/_xfGZnX/chat",
-    address: "서울시 양천구 목동 909-6 우방빌딩 4층",
+    address: "(07984) 서울시 양천구 목동 909-6 (우방빌딩) 4층",
+    kakaoMap: "https://place.map.kakao.com/1917925446",
     description: "양천구 목동에서 복싱을 처음 시작하는 분들을 위한 스트롱복싱 목동점입니다.",
     highlights: ["밤 12시까지 운영", "관장 직접 지도", "학생·초보자 환영"],
   },
@@ -55,7 +62,8 @@ const branches: Record<string, any> = {
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
     booking: "https://booking.naver.com/booking/12/bizes/1673598",
     naverMap: "https://naver.me/F8lwn3Te", kakaoChat: "https://pf.kakao.com/_MAKnX/chat",
-    address: "경기도 광명시 철산동 56-14 3층",
+    address: "(14209) 경기도 광명시 철산동 56-14 3층",
+    kakaoMap: "https://place.map.kakao.com/1182676078",
     description: "철산동·광명 인근 복싱장. 관장 직접 지도, 초보자부터 실전까지 안전하게 배우는 복싱.",
     highlights: ["토·일 운영", "광명시 복싱", "관장 직접 지도"],
   },
@@ -99,7 +107,7 @@ const branchFaqs: Record<string, { question: string; answer: string }[]> = {
   sinjeong: [
     { question: "신정 복싱 처음인데 가능할까요?", answer: "처음이신 분들도 기초 자세, 스텝, 펀치부터 차근차근 안내해드립니다." },
     { question: "여성 회원도 운동 가능한가요?", answer: "여성 회원분들도 다이어트, 체력 향상, 스트레스 해소 목적으로 많이 운동하고 계십니다." },
-    { question: "운영시간은 어떻게 되나요?", answer: "신정점은 월~금 10:00~24:00, 토요일 10:00~16:00 운영합니다." },
+    { question: "운영시간은 어떻게 되나요?", answer: "신정점은 월~금 10:00~24:00(14:00~15:00 휴게), 토요일 10:00~16:00 운영합니다." },
     { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
   ],
   mokdong: [
@@ -122,6 +130,40 @@ const branchFaqs: Record<string, { question: string; answer: string }[]> = {
   ],
 };
 
+const workout = {
+  program: [
+    ["복싱 입문", "처음 배우는 분도 스텝과 기본 자세부터 차근차근 익힙니다."],
+    ["다이어트 복싱", "지루하지 않게 땀 흘리는 복싱 트레이닝으로 운동량을 높입니다."],
+    ["체력 향상", "운동 목적과 체력에 맞춰 무리 없이 꾸준히 운동할 수 있습니다."],
+  ],
+  flow: [
+    ["01", "몸풀기"],
+    ["02", "줄넘기"],
+    ["03", "자세 & 스텝"],
+    ["04", "미트 트레이닝"],
+    ["05", "샌드백"],
+    ["06", "체력 운동"],
+  ],
+  firstVisit: [
+    ["01", "예약 또는 방문", "네이버·홈페이지로 예약하거나 바로 방문해도 됩니다"],
+    ["02", "편한 복장으로", "편한 운동복과 실내용 운동화만 준비해주세요"],
+    ["03", "관장과 상담", "운동 목적·체력에 맞춰 맞춤 안내해드립니다"],
+    ["04", "바로 운동 시작", "처음 오셔도 기본 자세부터 천천히 알려드립니다"],
+  ],
+};
+
+const previewSlugs = new Set(["gaebong", "sinjeong", "mokdong", "cheolsan"]);
+
+function getLocalClips(slug: string, branchName: string): PreviewReel[] {
+  return [1, 2, 3].map((id) => ({
+    id,
+    title: `${branchName} 운동 영상 ${id}`,
+    aria_label: null,
+    poster: `/images/${slug}/clip-${id}.jpg`,
+    video_url: `/videos/${slug}/${String(id).padStart(3, "0")}.mp4`,
+  }));
+}
+
 const galleryImages = [
   "/images/gallery/moments/story1.jpg",
   "/images/gallery/moments/story2.jpg",
@@ -138,42 +180,55 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
   const audience = branchTargetAudience[slug] ?? [];
   const faqItems = branchFaqs[slug] ?? [];
 
-  let relatedPosts: any[] = [];
-  let branchReels: any[] = [];
+  const [relatedPosts, branchReels, reviews] = await Promise.all([
+    db.query<(PreviewPost & RowDataPacket)[]>(`SELECT id, title, slug, description, content, branch_name, thumbnail, created_at
+      FROM homepage_posts WHERE branch_name = ? ORDER BY created_at DESC LIMIT 5`, [branch.name])
+      .then(([rows]) => rows).catch(() => []),
+    db.query<(Parameters<typeof BranchReelCard>[0]["reel"] & RowDataPacket)[]>(`SELECT id, branch_name, title, aria_label, video_url, is_muted
+      FROM homepage_reels WHERE is_active = 1 AND branch_name = ? ORDER BY sort_order ASC, id DESC LIMIT 8`, [branch.name])
+      .then(([rows]) => rows).catch(() => []),
+    previewSlugs.has(slug)
+      ? db.query<(PreviewReview & RowDataPacket)[]>(`SELECT id, reviewer_name, content, image_url, review_date
+        FROM homepage_naver_reviews WHERE is_active = 1 AND branch_name = ? ORDER BY review_date DESC, id DESC`, [branch.name])
+        .then(([rows]) => rows).catch(() => [])
+      : Promise.resolve([]),
+  ]);
 
-  try {
-    const [rows]: any = await db.query(
-      `SELECT id, title, slug, description, content, branch_name, thumbnail, created_at
-       FROM homepage_posts WHERE branch_name = ? ORDER BY created_at DESC LIMIT 5`,
-      [branch.name]
-    );
-    relatedPosts = rows;
-  } catch {}
-
-  try {
-    const [rows]: any = await db.query(
-      `SELECT id, branch_name, title, aria_label, video_url, is_muted
-       FROM homepage_reels WHERE is_active = 1 AND branch_name = ? ORDER BY sort_order ASC, id DESC LIMIT 8`,
-      [branch.name]
-    );
-    branchReels = rows;
-  } catch {}
-
-  function getThumb(post: any): string | null {
+  function getThumb(post: PreviewPost): string | null {
     if (post.thumbnail) return post.thumbnail;
     const s = String(post.content || "");
     const m = s.match(/<img[^>]+src=["']([^"']+)["']/i) || s.match(/!\[.*?\]\((.*?)\)/);
     return m?.[1] ?? null;
   }
 
+  if (previewSlugs.has(slug)) {
+    const mediaRoot = `/images/${slug}`;
+    const isMokdong = slug === "mokdong";
+    return (
+      <BranchPreview
+        branch={branch}
+        photos={[
+          { src: `${mediaRoot}/${isMokdong ? "mokdong-training" : "training"}.jpg`, label: `${branch.name} 운동 모습` },
+          { src: `${mediaRoot}/${isMokdong ? "mokdong-main" : "gym"}.jpg`, label: `${branch.name} 체육관 내부` },
+          { src: branch.image, label: `${branch.name} 대표 사진` },
+        ]}
+        coaches={coaches}
+        posts={relatedPosts}
+        reels={branchReels.length ? branchReels : getLocalClips(slug, branch.name)}
+        reviews={reviews}
+        audience={audience}
+        faq={faqItems}
+        workout={workout}
+        galleryImages={isMokdong ? galleryImages : [`${mediaRoot}/facility.jpg`]}
+        getThumb={getThumb}
+      />
+    );
+  }
+
   /* ── 운동 안내 패널들 ── */
-  const ProgramPanel = () => (
+  const programPanel = (
     <div className="grid gap-4 md:grid-cols-3">
-      {[
-        ["복싱 입문", "처음 배우는 분도 스텝과 기본 자세부터 차근차근 익힙니다."],
-        ["다이어트 복싱", "지루하지 않게 땀 흘리는 복싱 트레이닝으로 운동량을 높입니다."],
-        ["체력 향상", "운동 목적과 체력에 맞춰 무리 없이 꾸준히 운동할 수 있습니다."],
-      ].map(([title, desc]) => (
+      {workout.program.map(([title, desc]) => (
         <div key={title} className="rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] p-7 hover:-translate-y-1 transition-transform duration-200">
           <h3 className="mb-3 font-black text-base" style={{ color: "#F5F4F1" }}>{title}</h3>
           <p className="text-sm leading-7" style={{ color: "#8A8D91" }}>{desc}</p>
@@ -182,11 +237,11 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
     </div>
   );
 
-  const WorkoutFlowPanel = () => (
+  const workoutFlowPanel = (
     <div className="rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] p-8">
       <p className="mb-6 text-xs font-black tracking-[0.25em]" style={{ color: "#5A5C61" }}>1회 수업 흐름</p>
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-        {[["01","몸풀기"],["02","줄넘기"],["03","자세 & 스텝"],["04","미트 트레이닝"],["05","샌드백"],["06","체력 운동"]].map(([n,s]) => (
+        {workout.flow.map(([n,s]) => (
           <div key={n} className="flex flex-col items-center gap-2 rounded-[10px] border border-[#4A4C50]/20 bg-[#1A1A1C] p-4 text-center">
             <span className="text-[10px] font-black" style={{ color: "#5A5C61" }}>{n}</span>
             <span className="text-xs font-bold leading-tight" style={{ color: "#8A8D91" }}>{s}</span>
@@ -196,14 +251,9 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
     </div>
   );
 
-  const FirstVisitPanel = () => (
+  const firstVisitPanel = (
     <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
-      {[
-        ["01","예약 또는 방문","네이버·홈페이지로 예약하거나 바로 방문해도 됩니다"],
-        ["02","편한 복장으로","편한 운동복과 실내용 운동화만 준비해주세요"],
-        ["03","관장과 상담","운동 목적·체력에 맞춰 맞춤 안내해드립니다"],
-        ["04","바로 운동 시작","처음 오셔도 기본 자세부터 천천히 알려드립니다"],
-      ].map(([step, title, desc]) => (
+      {workout.firstVisit.map(([step, title, desc]) => (
         <div key={step} className="rounded-[14px] border border-[#4A4C50]/25 bg-[#141416] p-6">
           <p className="mb-4 text-xl font-black" style={{ color: "#2A2A2E" }}>{step}</p>
           <h3 className="mb-2 font-black text-sm" style={{ color: "#F5F4F1" }}>{title}</h3>
@@ -214,7 +264,7 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
   );
 
   /* ── 지점 이야기 패널들 ── */
-  const NewsPanel = () => (
+  const newsPanel = (
     <div>
       {relatedPosts.length === 0 ? (
         <p className="py-12 text-center text-sm" style={{ color: "#5A5C61" }}>등록된 소식이 없습니다.</p>
@@ -238,13 +288,13 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
         </div>
       )}
       <div className="mt-8 text-center">
-        <a href="/blog" className="inline-flex items-center gap-2 rounded-[10px] px-6 py-3 text-sm font-black transition-all"
-          style={{ border: "1px solid rgba(255,255,255,0.1)", color: "#8A8D91" }}>전체 소식 보기 →</a>
+        <Link href="/blog" className="inline-flex items-center gap-2 rounded-[10px] px-6 py-3 text-sm font-black transition-all"
+          style={{ border: "1px solid rgba(255,255,255,0.1)", color: "#8A8D91" }}>전체 소식 보기 →</Link>
       </div>
     </div>
   );
 
-  const GalleryPanel = () => (
+  const galleryPanel = (
     <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
       {galleryImages.map((src, i) => (
         <div key={i} className="overflow-hidden rounded-[12px]" style={{ aspectRatio: "4/3" }}>
@@ -268,7 +318,7 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
 
         <div className="relative z-10 mx-auto grid max-w-[1280px] items-center gap-10 px-6 py-20 md:min-h-[70vh] md:grid-cols-[1fr_420px] lg:px-10">
           <div>
-            <a href="/" className="mb-8 inline-block text-xs text-[#4A4C50] transition hover:text-white">← 메인으로</a>
+            <Link href="/" className="mb-8 inline-block text-xs text-[#4A4C50] transition hover:text-white">← 메인으로</Link>
             <p className="mb-5 text-[10px] font-black tracking-[0.38em] text-[#D01E2E]">STRONG BOXING BRANCH</p>
             <h1 className="font-black leading-[0.9] tracking-[-0.05em] text-[#F5F4F1]" style={{ fontSize: "clamp(36px, 5vw, 68px)" }}>
               {branch.area} 복싱장<br />{branch.fullName}
@@ -372,7 +422,7 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
             </h2>
             <div className="overflow-x-auto pb-3" style={{ scrollbarWidth: "thin", scrollbarColor: "#4A4C50 transparent" }}>
               <div className="flex gap-4">
-                {branchReels.map((reel: any) => (
+                {branchReels.map((reel) => (
                   <BranchReelCard key={reel.id} reel={reel} />
                 ))}
               </div>
@@ -412,9 +462,9 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
           <BranchTabSection
             tabs={["프로그램", "수업 흐름", "첫 방문"]}
             panels={[
-              <ProgramPanel key="prog" />,
-              <WorkoutFlowPanel key="flow" />,
-              <FirstVisitPanel key="first" />,
+              programPanel,
+              workoutFlowPanel,
+              firstVisitPanel,
             ]}
           />
         </div>
@@ -430,8 +480,8 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
           <BranchTabSection
             tabs={["소식", "시설"]}
             panels={[
-              <NewsPanel key="news" />,
-              <GalleryPanel key="gallery" />,
+              newsPanel,
+              galleryPanel,
             ]}
           />
         </div>

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const branches = [
   { slug: "gaebong",      name: "개봉점",   area: "구로·개봉",   image: "/images/branches/gaebong.jpg",      phone: "02-2060-1279", hours: "월–금 13:00~23:00",               booking: "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll", naverMap: "https://naver.me/5aFquqcz" },
-  { slug: "sinjeong",     name: "신정점",   area: "양천·신정",   image: "/images/branches/sinjeong.jpg",     phone: "02-2647-3373", hours: "월–금 10:00~24:00  토 10:00~16:00", booking: "https://booking.naver.com/booking/13/bizes/1367177",                                         naverMap: "https://naver.me/5nhXvzXH" },
+  { slug: "sinjeong",     name: "신정점",   area: "양천·신정",   image: "/images/branches/sinjeong.jpg",     phone: "02-2647-3373", hours: "월–금 10:00~24:00 (14:00~15:00 휴게)  토 10:00~16:00", booking: "https://booking.naver.com/booking/13/bizes/1367177",                                         naverMap: "https://naver.me/5nhXvzXH" },
   { slug: "mokdong",      name: "목동점",   area: "양천·목동",   image: "/images/branches/mokdong.png",      phone: "02-2643-5971", hours: "월–금 14:00~24:00  토 11:00~16:00", booking: "https://booking.naver.com/booking/13/bizes/1510638",                                         naverMap: "https://naver.me/GII8f9Qv" },
   { slug: "cheolsan",     name: "철산점",   area: "광명·철산",   image: "/images/branches/cheolsan.jpg",     phone: "02-2066-0406", hours: "월–금 14:00~23:00  토일 14:00~18:00",booking: "https://booking.naver.com/booking/12/bizes/1673598",                                         naverMap: "https://naver.me/F8lwn3Te" },
   { slug: "yeongdeungpo", name: "영등포점", area: "영등포",      image: "/images/branches/yeongdeungpo.jpg", phone: "02-831-9312",  hours: "월–금 13:00~23:00",               booking: "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll", naverMap: "https://naver.me/G4yQwkR0" },
@@ -182,11 +182,11 @@ export default async function RenewalHomePage() {
     return m?.[1] ?? null;
   }
 
-  /* 소식 패널 */
+  /* 블로그 패널 */
   const NewsPanel = () => (
     <div>
       {latestPosts.length === 0 ? (
-        <p className="py-12 text-center text-sm" style={{ color: "#aaa" }}>소식이 없습니다.</p>
+        <p className="py-12 text-center text-sm" style={{ color: "#aaa" }}>블로그이 없습니다.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {latestPosts.map((post) => {
@@ -218,7 +218,7 @@ export default async function RenewalHomePage() {
       )}
       <div className="mt-8">
         <a href="/blog" className="text-sm font-black transition-colors hover:text-[#0E0E10]" style={{ color: "#6B6B72" }}>
-          전체 소식 보기 →
+          전체 블로그 보기 →
         </a>
       </div>
     </div>
@@ -358,7 +358,7 @@ export default async function RenewalHomePage() {
               </h2>
             </div>
             <TabSection
-              tabs={["클립", "시설", "활동기록", "소식", "네이버 후기"]}
+              tabs={["클립", "시설", "활동기록", "블로그", "네이버 후기"]}
               panels={[
                 <ClipsPanel key="clips" />,
                 <FacilityPanel key="facility" />,
@@ -541,7 +541,7 @@ export default async function RenewalHomePage() {
             {/* 지점 링크 */}
             <div className="flex flex-wrap gap-4 text-xs">
               {branches.map((b) => (
-                <a key={b.slug} href={`/branches/${b.slug}`} className="transition-colors hover:text-white">
+                <a key={b.slug} href={b.slug === "yeongdeungpo" ? `/branches/${b.slug}` : `/renewal/branches/${b.slug}`} className="transition-colors hover:text-white">
                   {b.name}
                 </a>
               ))}

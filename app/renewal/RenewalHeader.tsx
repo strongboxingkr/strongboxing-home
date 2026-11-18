@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import ReservationButton from "@/app/components/ReservationButton";
 
@@ -8,7 +9,7 @@ const NAV = [
   { label: "소개", href: "/about" },
   { label: "지점", anchor: "branches" },
   { label: "운동", anchor: "workout" },
-  { label: "소식", href: "/blog" },
+  { label: "블로그", href: "/blog" },
   { label: "상담", anchor: "contact" },
 ] as const;
 
@@ -27,7 +28,7 @@ export default function RenewalHeader() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* 로고: 기존 에셋 그대로, 흰 배경이므로 STRONG 글자색만 어둡게 */}
-        <a href="/" className="flex shrink-0 items-center gap-2.5">
+        <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <img src="/icon.png" alt="스트롱복싱" className="h-7 w-7 object-contain" />
           <div className="flex flex-col leading-none">
             <span className="text-[15px] font-black tracking-[0.08em]" style={{ color: "#0E0E10" }}>
@@ -37,7 +38,7 @@ export default function RenewalHeader() {
               — BOXING —
             </span>
           </div>
-        </a>
+        </Link>
 
         {/* 데스크탑 nav */}
         <nav className="hidden items-center gap-7 lg:flex">
