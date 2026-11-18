@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { generateMetadata as generateOfficialMetadata } from "@/app/branches/[slug]/page";
 import SiteHeader from "@/app/components/SiteHeader";
 import BranchReelCard from "@/app/components/BranchReelCard";
 import BranchPreview, { type PreviewPost, type PreviewReel, type PreviewReview } from "./BranchPreview";
@@ -11,10 +12,17 @@ import { BranchTabSection, FaqAccordion } from "./BranchRenewalClient";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "지점 리뉴얼 미리보기",
-  robots: { index: false, follow: false },
-};
+const previewRobots = { index: false, follow: false };
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  if (!previewSlugs.has(slug)) {
+    return { title: "지점 리뉴얼 미리보기", robots: previewRobots };
+  }
+
+  const officialMetadata = await generateOfficialMetadata({ params });
+  return { ...officialMetadata, robots: previewRobots };
+}
 
 type Branch = Parameters<typeof BranchPreview>[0]["branch"] & { image: string };
 
@@ -204,24 +212,46 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
   if (previewSlugs.has(slug)) {
     const mediaRoot = `/images/${slug}`;
     const isMokdong = slug === "mokdong";
+    const officialUrl = `https://strongboxing.kr/branches/${slug}`;
+    const branchSchema = {
+      "@context": "https://schema.org",
+      "@type": ["ExerciseGym", "SportsActivityLocation", "LocalBusiness"],
+      "@id": `${officialUrl}#localbusiness`,
+      name: branch.fullName,
+      description: branch.description,
+      url: officialUrl,
+      image: `https://strongboxing.kr${branch.image}`,
+      telephone: branch.phone,
+      address: { "@type": "PostalAddress", streetAddress: branch.address, addressCountry: "KR" },
+      openingHoursSpecification: branch.hours.map((hours) => ({
+        "@type": "OpeningHoursSpecification",
+        description: hours,
+      })),
+      hasMap: branch.naverMap,
+      sameAs: [branch.instagram, branch.naverMap, branch.kakaoMap, branch.booking].filter(Boolean),
+    };
+
     return (
-      <BranchPreview
-        branch={branch}
-        photos={[
-          { src: `${mediaRoot}/${isMokdong ? "mokdong-training" : "training"}.jpg`, label: `${branch.name} 운동 모습` },
-          { src: `${mediaRoot}/${isMokdong ? "mokdong-main" : "gym"}.jpg`, label: `${branch.name} 체육관 내부` },
-          { src: branch.image, label: `${branch.name} 대표 사진` },
-        ]}
-        coaches={coaches}
-        posts={relatedPosts}
-        reels={branchReels.length ? branchReels : getLocalClips(slug, branch.name)}
-        reviews={reviews}
-        audience={audience}
-        faq={faqItems}
-        workout={workout}
-        galleryImages={isMokdong ? galleryImages : [`${mediaRoot}/facility.jpg`]}
-        getThumb={getThumb}
-      />
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(branchSchema).replace(/</g, "\\u003c") }} />
+        <BranchPreview
+          branch={branch}
+          photos={[
+            { src: `${mediaRoot}/${isMokdong ? "mokdong-training" : "training"}.jpg`, label: `${branch.name} 운동 모습` },
+            { src: `${mediaRoot}/${isMokdong ? "mokdong-main" : "gym"}.jpg`, label: `${branch.name} 체육관 내부` },
+            { src: branch.image, label: `${branch.name} 대표 사진` },
+          ]}
+          coaches={coaches}
+          posts={relatedPosts}
+          reels={branchReels.length ? branchReels : getLocalClips(slug, branch.name)}
+          reviews={reviews}
+          audience={audience}
+          faq={faqItems}
+          workout={workout}
+          galleryImages={isMokdong ? galleryImages : [`${mediaRoot}/facility.jpg`]}
+          getThumb={getThumb}
+        />
+      </>
     );
   }
 
