@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element -- Branch photos and CMS media retain their original URLs. */
 import Link from "next/link";
+import type { BranchLocalContent } from "@/lib/branch-introductions";
 import { CalendarDays, Camera, MapPin, MessageCircle, Phone } from "lucide-react";
 import type { ReactNode } from "react";
 import ConsultationForm from "@/app/components/ConsultationForm";
@@ -22,6 +23,8 @@ type Props = {
   posts: PreviewPost[];
   reels: PreviewReel[];
   reviews: PreviewReview[];
+  introduction: string;
+  localContent: BranchLocalContent;
   audience: string[];
   faq: { question: string; answer: string }[];
   workout: { program: string[][]; flow: string[][]; firstVisit: string[][] };
@@ -87,7 +90,7 @@ function TrialTerms() {
   return <p className="rounded-md bg-[#fff1f2] p-3 text-sm leading-relaxed text-[#59343a]">체험비(30,000원)는 방문 후 현장에서 결제합니다. 당일 정식 등록 시 전액 차감됩니다.</p>;
 }
 
-export default function BranchPreview({ branch, photos, coaches, posts, reels, reviews, audience, faq, workout, galleryImages, getThumb }: Props) {
+export default function BranchPreview({ branch, photos, coaches, posts, reels, reviews, introduction, localContent, audience, faq, workout, galleryImages, getThumb }: Props) {
   const firstPost = posts[0];
   const firstReview = reviews[0];
   const sidebar = (
@@ -190,6 +193,16 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
                 </a>)}
               </div>
             </Card>}
+
+            <Card title={localContent.heading}>
+              <p className="text-sm leading-7 break-keep text-[#55535a]">{introduction}</p>
+              <details className={`${detailsClass} mt-3`}>
+                <summary className={summaryClass}>인근 지역과 복싱 수업 안내</summary>
+                <div className="mt-2 space-y-3 text-sm leading-7 break-keep text-[#55535a]">
+                  {localContent.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                </div>
+              </details>
+            </Card>
 
             <Card title="이런 분들이 많이 찾아요">
               <ul className="flex flex-wrap gap-2">{audience.map((item) => <li key={item} className="rounded bg-[#f6f4f1] px-2 py-1 text-sm">{item}</li>)}</ul>

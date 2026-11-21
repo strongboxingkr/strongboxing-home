@@ -1,3 +1,4 @@
+import { branchDescriptions, branchLocalContent } from "@/lib/branch-introductions";
 import { db } from "@/lib/db";
 import type { Metadata } from "next";
 import BranchCTAButtons from "@/app/components/BranchCTAButtons";
@@ -36,8 +37,7 @@ const branches: any = {
     naverMap: "https://naver.me/5aFquqcz",
     kakaoMap: "https://place.map.kakao.com/1456783450",
     kakaoChat: "https://pf.kakao.com/_uyxbnX/chat",
-    description:
-      "개봉 복싱 체육관 스트롱복싱 개봉점. 개봉동·고척동 인근에서 복싱 운동을 처음 시작하는 분들도 편하게 시작할 수 있습니다. 헬스 대신 복싱으로 다이어트·체력 향상.",
+    description: branchDescriptions.gaebong,
   },
 
   sinjeong: {
@@ -63,8 +63,7 @@ const branches: any = {
     booking: "https://booking.naver.com/booking/13/bizes/1367177",
     naverMap: "https://naver.me/5nhXvzXH",
     kakaoMap: "https://kko.to/NlN6yV0aK3",
-    description:
-      "신정동 복싱 체육관 스트롱복싱 신정점. 신정네거리역 인근 위치, 초보자·학생·여성 회원도 부담 없이 기초부터 운동할 수 있습니다. 헬스 대신 복싱으로 다이어트·체력 향상.",
+    description: branchDescriptions.sinjeong,
   },
 
   mokdong: {
@@ -91,8 +90,7 @@ const branches: any = {
     kakaoMap: "https://place.map.kakao.com/1917925446",
     googleMap: "https://maps.google.com/?q=스트롱복싱+목동점",
     kakaoChat: "https://pf.kakao.com/_xfGZnX/chat",
-    description:
-      "목동 복싱 체육관 스트롱복싱 목동점. 목동·오목교 인근, 초보자·학생·여성·직장인 모두 목적과 진도에 맞춰 운동할 수 있습니다. 목동 헬스 대신 복싱으로 다이어트·체력 향상.",
+    description: branchDescriptions.mokdong,
   },
 
   cheolsan: {
@@ -118,8 +116,7 @@ const branches: any = {
     naverMap: "https://naver.me/F8lwn3Te",
     kakaoMap: "https://place.map.kakao.com/1182676078",
     kakaoChat: "https://pf.kakao.com/_MAKnX/chat",
-    description:
-      "광명 복싱 체육관 스트롱복싱 철산점. 광명시 철산동 위치, 관장 직접 지도, 초보자부터 안전하게 배우는 복싱 운동. 광명 헬스 대신 복싱으로 다이어트·체력 향상.",
+    description: branchDescriptions.cheolsan,
   },
 
   yeongdeungpo: {
@@ -144,8 +141,7 @@ const branches: any = {
       "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll",
     naverMap: "https://naver.me/G4yQwkR0",
     kakaoMap: "https://place.map.kakao.com/251044807",
-    description:
-      "영등포 복싱 체육관 스트롱복싱 영등포점. 도림동 위치, 초보자·직장인 모두 기초부터 운동할 수 있습니다. 영등포 헬스 대신 복싱으로 다이어트·체력 향상.",
+    description: branchDescriptions.yeongdeungpo,
   },
 };
 
@@ -313,49 +309,6 @@ const branchSeoContent: Record<string, any> = {
     description:
       "영등포 복싱장 스트롱복싱 영등포점. 도림동 위치, 초보자·직장인 모두 기초부터 체계적으로 운동할 수 있는 영등포 복싱 체육관.",
     nearby: ["영등포", "신길동", "도림동", "대림동"],
-  },
-};
-
-const branchLocalContent: Record<string, { heading: string; paragraphs: string[] }> = {
-  mokdong: {
-    heading: "목동 복싱장 스트롱복싱 목동점",
-    paragraphs: [
-      "목동 복싱을 찾고 계신다면 스트롱복싱 목동점입니다. 목동역과 오목교역 사이에 위치한 복싱 체육관으로, 목동·목5동·오목교 인근 주민분들이 편하게 이용하고 계십니다.",
-      "목동 복싱 처음이어도 걱정 없습니다. 운동 경험 없이 시작해도 기초 자세와 스텝부터 관장이 직접 개인별로 지도합니다. 다이어트 목적의 여성 회원, 방과 후 운동을 찾는 학생, 퇴근 후 운동하는 직장인 모두 환영합니다.",
-      "목동 복싱장을 찾고 계신다면 방문 상담으로 운동 목표에 맞는 안내를 받아보세요. 양천구에서 꾸준히 운동하고 싶은 분들이 많이 찾는 목동 복싱 체육관입니다.",
-    ],
-  },
-  cheolsan: {
-    heading: "광명 복싱장 스트롱복싱 철산점",
-    paragraphs: [
-      "광명 복싱을 찾고 계신다면 스트롱복싱 철산점입니다. 경기도 광명시 철산동에 위치한 복싱 체육관으로, 철산역 인근 철산동·하안동·소하동·광명사거리·광명동 주민분들이 주로 이용하고 계십니다.",
-      "광명 복싱 처음이어도 걱정 없습니다. 관장이 직접 1:1로 기초 자세와 스텝부터 체계적으로 지도해드립니다. 다이어트, 체력 향상 목적의 여성 회원, 퇴근 후 운동하는 직장인까지 목적에 맞게 운동하고 있습니다.",
-      "광명시 복싱장을 찾고 계신다면 철산점을 방문해보세요. 토·일요일에도 운영해 주말에만 시간이 나는 분들도 편하게 다닐 수 있는 광명 복싱 체육관입니다.",
-    ],
-  },
-  gaebong: {
-    heading: "개봉 복싱장 스트롱복싱 개봉점",
-    paragraphs: [
-      "개봉 복싱을 찾고 계신다면 스트롱복싱 개봉점입니다. 서울 구로구 개봉동에 위치한 복싱 체육관으로, 개봉역 인근 개봉동·고척동·오류동·천왕동 주민분들이 편하게 이용하고 계십니다.",
-      "개봉 복싱 처음이어도 기초부터 체계적으로 배울 수 있습니다. 다이어트 복싱, 여성 복싱, 직장인 운동 목적으로 오시는 분들 모두 환영하며 관장이 직접 개인별 목적과 진도에 맞춰 지도합니다.",
-      "개봉 복싱장을 찾고 계신다면 개봉역에서 걸어서 방문 가능한 거리에 있습니다. 구로구에서 복싱을 시작하고 싶은 분들은 방문 상담을 통해 안내받아보세요.",
-    ],
-  },
-  sinjeong: {
-    heading: "신정네거리 복싱장 스트롱복싱 신정점",
-    paragraphs: [
-      "신정동 복싱을 찾고 계신다면 스트롱복싱 신정점입니다. 양천구 신정동에 위치한 복싱 체육관으로, 신정네거리역 인근 신정동·신월동·까치산·화곡동 주민분들이 주로 이용하고 계십니다.",
-      "신정 복싱 처음이어도 초보자, 학생, 여성 회원 모두 기초부터 체계적으로 배울 수 있도록 관장이 직접 지도합니다. 다이어트를 목표로 하시는 분들, 직장인 저녁 운동을 찾는 분들도 편하게 시작하실 수 있습니다.",
-      "신정동 복싱장을 찾고 계신다면 대중교통으로도 접근하기 좋은 신정점을 방문해보세요. 복싱을 처음 시작하고 싶으신 분들은 방문 상담으로 운동 목표에 맞는 안내를 받아보세요.",
-    ],
-  },
-  yeongdeungpo: {
-    heading: "영등포 복싱장 스트롱복싱 영등포점",
-    paragraphs: [
-      "영등포 복싱을 찾고 계신다면 스트롱복싱 영등포점입니다. 서울 영등포구 도림동에 위치한 복싱 체육관으로, 영등포·도림동·신길동·대림동 인근 주민분들이 편하게 이용하고 계십니다.",
-      "영등포 복싱 처음이어도 기초 자세와 스텝부터 개인별로 지도받을 수 있습니다. 다이어트, 체력 향상 목적의 여성 회원, 퇴근 후 운동을 찾는 직장인도 환영합니다.",
-      "영등포 복싱장을 찾고 계신다면 매 수업마다 다른 동작과 미트 트레이닝으로 지루하지 않게 꾸준히 운동할 수 있는 영등포점을 방문해보세요.",
-    ],
   },
 };
 

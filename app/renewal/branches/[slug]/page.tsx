@@ -1,3 +1,4 @@
+import { branchDescriptions, branchLocalContent } from "@/lib/branch-introductions";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -245,6 +246,8 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
           posts={relatedPosts}
           reels={branchReels.length ? branchReels : getLocalClips(slug, branch.name)}
           reviews={reviews}
+          introduction={branchDescriptions[slug]}
+          localContent={branchLocalContent[slug]}
           audience={audience}
           faq={faqItems}
           workout={workout}
