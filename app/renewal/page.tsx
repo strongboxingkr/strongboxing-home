@@ -22,7 +22,7 @@ const branches = [
 
 /* 코치 사진: hansol만 존재, 나머지 7명은 이니셜 플레이스홀더 */
 const allCoaches = [
-  { name: "한솔",   role: "대표",   branch: "전지점 총괄", instagram: "strongboxing_kr",  photo: "/images/coaches/hansol.jpg" },
+  { name: "한솔",   role: "대표",   branch: "전지점 총괄", instagram: "strongboxing_official",  photo: "/images/coaches/hansol.jpg" },
   { name: "안진호", role: "관장",   branch: "개봉점",      instagram: "dkswkd3",           photo: null },
   { name: "유상혁", role: "관장",   branch: "신정점",      instagram: "robuste_hyeok",     photo: null },
   { name: "정동주", role: "코치",   branch: "신정점",      instagram: "jdj_00_",           photo: null },
@@ -420,7 +420,7 @@ export default async function RenewalHomePage() {
 
           {/* ① 총괄 대표 — 가로 넓은 카드 */}
           <a
-            href="https://www.instagram.com/strongboxing_kr"
+            href="https://www.instagram.com/strongboxing_official"
             target="_blank"
             rel="noopener noreferrer"
             className="group mb-6 flex overflow-hidden rounded-[16px] transition-opacity hover:opacity-90"
@@ -451,7 +451,7 @@ export default async function RenewalHomePage() {
                   <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8"/>
                   <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
                 </svg>
-                @strongboxing_kr
+                @strongboxing_official
               </div>
             </div>
           </a>
@@ -518,49 +518,36 @@ export default async function RenewalHomePage() {
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <footer
-        id="contact"
-        className="px-6 py-14 md:px-10"
-        style={{ background: "#0E0E10", color: "#5A5C61", scrollMarginTop: "72px" }}
-      >
+      <footer id="contact" className="scroll-mt-[72px] border-t border-[#E8E6DF] bg-[#F9F8F5] px-6 py-9 text-[#0E0E10] md:px-10">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-10 flex flex-wrap items-start justify-between gap-8">
-            {/* 로고 */}
+          <div className="grid gap-x-7 gap-y-5 md:grid-cols-[auto_1fr_auto] md:items-start">
             <div>
-              <div className="flex items-center gap-2.5 mb-3">
-                <img src="/icon.png" alt="스트롱복싱" className="h-7 w-7 object-contain" />
-                <div className="flex flex-col leading-none">
-                  <span className="text-[15px] font-black tracking-[0.08em]" style={{ color: "#F5F4F1" }}>STRONG</span>
-                  <span className="text-[9px] font-black tracking-[0.22em]" style={{ color: "#D01E2E" }}>— BOXING —</span>
-                </div>
+              <div className="flex items-center gap-2.5">
+                <img src="/icon.png" alt="" className="size-7 object-contain [clip-path:inset(0_2%)]" />
+                <p className="text-sm font-black tracking-wide">STRONG <span className="text-[#B81933]">BOXING</span></p>
               </div>
-              <p className="text-xs" style={{ color: "#5A5C61" }}>서울·경기 5개 지점 복싱장</p>
+              <p className="mt-2 text-sm text-[#606069]">서울·경기 5개 지점 복싱장</p>
             </div>
 
-            {/* 지점 링크 */}
-            <div className="flex flex-wrap gap-4 text-xs">
-              {branches.map((b) => (
-                <a key={b.slug} href={b.slug === "yeongdeungpo" ? `/branches/${b.slug}` : `/renewal/branches/${b.slug}`} className="transition-colors hover:text-white">
-                  {b.name}
+            <nav aria-label="하단 지점 안내" className="flex flex-wrap gap-x-5 gap-y-1 md:justify-center">
+              {branches.map((branch) => (
+                <a key={branch.slug} href={branch.slug === "yeongdeungpo" ? `/branches/${branch.slug}` : `/renewal/branches/${branch.slug}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-[#4A4A52] hover:text-[#B81933]">
+                  {branch.name}
                 </a>
               ))}
-            </div>
+            </nav>
 
-            {/* 상담 CTA */}
-            <ConsultationModalButton
-              className="inline-flex items-center gap-2 rounded-[10px] px-5 py-3 text-sm font-black text-white transition-opacity hover:opacity-90"
-              style={{ background: "#D01E2E" }}
-            >
+            <ConsultationModalButton className="inline-flex min-h-11 w-fit items-center text-sm font-bold text-[#B81933] underline-offset-4 hover:underline">
               방문 상담 신청 →
             </ConsultationModalButton>
           </div>
 
-          <div
-            className="text-xs"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: 20 }}
-          >
-            <p>strongboxing.kr@gmail.com · © 2024 STRONG BOXING. All rights reserved.</p>
+          <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-5 gap-y-2 border-t border-[#E0DDD6] pt-4 text-xs text-[#606069]">
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              <a href="mailto:strongboxing.kr@gmail.com" className="underline-offset-4 hover:underline">strongboxing.kr@gmail.com</a>
+              <a href="https://www.instagram.com/strongboxing_official" target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">@strongboxing_official</a>
+            </div>
+            <p>© {new Date().getFullYear()} STRONG BOXING. All rights reserved.</p>
           </div>
         </div>
       </footer>

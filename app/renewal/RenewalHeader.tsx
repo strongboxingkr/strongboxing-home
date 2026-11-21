@@ -29,7 +29,7 @@ export default function RenewalHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* 로고: 기존 에셋 그대로, 흰 배경이므로 STRONG 글자색만 어둡게 */}
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
-          <img src="/icon.png" alt="스트롱복싱" className="h-7 w-7 object-contain" />
+          <img src="/icon.png" alt="스트롱복싱" className="h-7 w-7 object-contain [clip-path:inset(0_2%)]" />
           <div className="flex flex-col leading-none">
             <span className="text-[15px] font-black tracking-[0.08em]" style={{ color: "#0E0E10" }}>
               STRONG

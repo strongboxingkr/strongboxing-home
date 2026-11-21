@@ -180,9 +180,9 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
 
             {coaches.length > 0 && <Card title={`${branch.name} 지도진`}>
               <div className="grid gap-2 sm:grid-cols-2">
-                <a href="https://www.instagram.com/strongboxing_kr" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-md bg-[#f6f4f1] p-3">
+                <a href="https://www.instagram.com/strongboxing_official" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-md bg-[#f6f4f1] p-3">
                   <img src="/images/coaches/hansol.jpg" alt="" className="h-10 w-10 shrink-0 rounded-full object-cover object-top" />
-                  <span className="min-w-0 break-words text-sm"><strong>한솔 대표</strong><br /><span className="text-xs text-[#55535a]">@strongboxing_kr</span></span>
+                  <span className="min-w-0 break-words text-sm"><strong>한솔 대표</strong><br /><span className="text-xs text-[#55535a]">@strongboxing_official</span></span>
                 </a>
                 {coaches.map((coach) => <a key={coach.name} href={`https://www.instagram.com/${coach.instagram}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-md bg-[#f6f4f1] p-3">
                   <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white font-bold">{coach.name[0]}</span>

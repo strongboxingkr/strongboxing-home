@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useId } from "react";
+import Image from "next/image";
+import { ArrowRight, LocateFixed, MapPin } from "lucide-react";
 
 /* ── 지점 타입 ── */
 interface BranchInfo {
@@ -39,7 +41,7 @@ function parseHours(raw: string): { weekday: string; weekend: string | null } {
   return { weekday: parts[0]?.trim() ?? raw, weekend: parts[1]?.trim() ?? null };
 }
 
-/* ── 지점 안내 — 지도 없는 가로 탭 목록 ── */
+/* ── 지점 안내 ── */
 export function BranchSectionClient({ branches, defaultSlug }: { branches: BranchInfo[]; defaultSlug?: string }) {
   const [openBranch, setOpenBranch]   = useState<string | null>(defaultSlug ?? branches[0]?.slug ?? null);
   const [geoState, setGeoState]       = useState<"idle" | "loading" | "found" | "denied" | "error">("idle");
@@ -81,26 +83,23 @@ export function BranchSectionClient({ branches, defaultSlug }: { branches: Branc
     : branches;
 
   return (
-    <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[200px_1fr] lg:gap-16">
-
-      {/* 왼쪽: 제목 + 위치 버튼 */}
-      <div className="lg:pt-1">
-        <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>BRANCHES</p>
-        <h2 className="mb-6 font-black leading-tight" style={{ fontSize: "clamp(24px, 2.8vw, 36px)", letterSpacing: "-0.04em", color: "#0E0E10" }}>
-          지점 안내
-        </h2>
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="mb-2 text-[10px] font-black tracking-[0.35em]" style={{ color: "#D01E2E" }}>BRANCHES</p>
+          <h2 className="font-black leading-tight" style={{ fontSize: "clamp(24px, 2.8vw, 36px)", letterSpacing: "-0.04em", color: "#0E0E10" }}>
+            지점 안내
+          </h2>
+        </div>
 
         {geoState === "idle" && (
           <button
             type="button"
             onClick={handleGeoClick}
-            className="inline-flex items-start gap-2 rounded-[12px] px-4 py-3 text-left transition hover:opacity-75 active:scale-95"
-            style={{ border: "1.5px solid #E0DDD6", color: "#0E0E10", background: "#F9F8F5" }}
+            className="inline-flex min-h-11 items-center gap-2 text-left text-sm font-bold text-[#4A4A52] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D01E2E]"
           >
-            <span className="mt-px shrink-0" style={{ fontSize: 15 }}>📍</span>
-            <span className="text-xs font-bold leading-relaxed">
-              내 위치로<br />가까운 지점 찾기
-            </span>
+            <LocateFixed aria-hidden="true" className="size-4 shrink-0 text-[#B81933]" />
+            내 위치로 가까운 지점 찾기
           </button>
         )}
 
@@ -141,48 +140,36 @@ export function BranchSectionClient({ branches, defaultSlug }: { branches: Branc
         )}
       </div>
 
-      {/* 오른쪽: 가로 탭 + 선택된 지점 상세 */}
       <div>
-        {/* 가로 탭 행 */}
-        <div className="flex overflow-x-auto" style={{ borderBottom: "1.5px solid #E8E6DF", gap: 0 }}>
-          {orderedBranches.map((b, idx) => {
-            const isOpen  = openBranch === b.slug;
-            const dist    = distances[b.slug];
-            const nearest = geoState === "found" && idx === 0;
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 md:gap-3.5">
+          {orderedBranches.map((branch, index) => {
+            const selected = (openBranch ?? orderedBranches[0]?.slug) === branch.slug;
+            const distance = distances[branch.slug];
             return (
               <button
-                key={b.slug}
+                key={branch.slug}
                 type="button"
-                onClick={() => setOpenBranch(isOpen ? null : b.slug)}
-                className="relative shrink-0 pb-4 pt-2 text-left transition-colors duration-150"
-                style={{ paddingRight: 24, paddingLeft: idx === 0 ? 0 : 24 }}
+                aria-pressed={selected}
+                aria-controls="renewal-branch-details"
+                onClick={() => setOpenBranch(branch.slug)}
+                className="group min-w-0 overflow-hidden rounded-md border border-[#E8E6DF] bg-white text-left transition-colors hover:border-[#AAA59C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D01E2E] aria-pressed:border-b-[#D01E2E]"
               >
-                {/* 지점명 */}
-                <span
-                  className="block font-black"
-                  style={{ fontSize: 17, color: isOpen ? "#D01E2E" : "#0E0E10", whiteSpace: "nowrap" }}
-                >
-                  {b.name}
-                  {nearest && (
-                    <span className="ml-1.5 rounded-[5px] px-1.5 py-0.5 align-middle text-[9px] font-black" style={{ background: "#FFF1F2", color: "#D01E2E" }}>
-                      가까운
-                    </span>
+                <span className="relative block aspect-[5/4] overflow-hidden bg-[#EEECE6]">
+                  <Image
+                    src={branch.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1280px) 240px, (min-width: 768px) 20vw, (min-width: 640px) 33vw, 50vw"
+                    className="object-cover motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.04]"
+                  />
+                  {geoState === "found" && index === 0 && (
+                    <span className="absolute left-2 top-2 rounded bg-white px-2 py-1 text-[11px] font-bold text-[#B81933]">가장 가까운 지점</span>
                   )}
                 </span>
-                {/* 거리 or 지역 */}
-                <span className="block" style={{ fontSize: 12, color: "#aaa", whiteSpace: "nowrap" }}>
-                  {dist !== undefined ? `약 ${dist}km` : b.area}
+                <span className="block border-b border-transparent px-3 py-2.5 group-aria-pressed:border-[#D01E2E] sm:px-3.5">
+                  <span className="block text-base font-black text-[#0E0E10] group-aria-pressed:text-[#B81933]">{branch.name}</span>
+                  <span className="mt-0.5 block text-xs text-[#606069]">{distance !== undefined ? `약 ${distance}km` : branch.area}</span>
                 </span>
-                {/* 활성 밑줄 */}
-                <span
-                  className="absolute bottom-0 left-0 w-full transition-all duration-200"
-                  style={{
-                    height: 2,
-                    background: isOpen ? "#D01E2E" : "transparent",
-                    right: 0,
-                    paddingLeft: idx === 0 ? 0 : 24,
-                  }}
-                />
               </button>
             );
           })}
@@ -195,7 +182,7 @@ export function BranchSectionClient({ branches, defaultSlug }: { branches: Branc
           if (!b || !meta) return null;
           const hrs  = parseHours(b.hours);
           return (
-            <div className="pt-6">
+            <div id="renewal-branch-details" className="mt-5 border-t border-[#E8E6DF] pt-4 sm:pt-5">
               <div className="flex flex-wrap items-start justify-between gap-6">
                 <div>
                   <p className="font-black" style={{ fontSize: 20, color: "#0E0E10" }}>{b.name}</p>
@@ -212,22 +199,22 @@ export function BranchSectionClient({ branches, defaultSlug }: { branches: Branc
                     {b.phone}
                   </a>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-0.5 sm:gap-x-5">
                   <a
                     href={b.naverMap}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 font-bold transition hover:opacity-80"
-                    style={{ fontSize: 14, border: "1.5px solid #D9D7CF", color: "#0E0E10", background: "#fff", whiteSpace: "nowrap" }}
+                    className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold whitespace-nowrap text-[#4A4A52] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D01E2E]"
                   >
+                    <MapPin aria-hidden="true" className="size-4" />
                     네이버 길찾기
                   </a>
                   <a
                     href={b.slug === "yeongdeungpo" ? `/branches/${b.slug}` : `/renewal/branches/${b.slug}`}
-                    className="inline-flex items-center justify-center rounded-[10px] px-5 py-2.5 font-bold transition hover:opacity-80"
-                    style={{ fontSize: 14, border: "1.5px solid #D01E2E", color: "#D01E2E", background: "#fff", whiteSpace: "nowrap" }}
+                    className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold whitespace-nowrap text-[#B81933] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D01E2E]"
                   >
                     지점 자세히 보기
+                    <ArrowRight aria-hidden="true" className="size-4" />
                   </a>
                 </div>
               </div>
@@ -384,36 +371,46 @@ export function CalorieCalcPanel() {
   const [weight, setWeight] = useState(65);
   const [minutes, setMinutes] = useState(60);
   const kcal = Math.round(weight * 0.085 * minutes);
+  const weightId = useId();
+  const minutesId = useId();
   return (
-    <div className="rounded-[16px] border border-[#E0DDD6] bg-white p-8">
-      <div className="mb-6 grid gap-6 sm:grid-cols-2">
+    <div className="grid gap-x-8 gap-y-5 sm:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+      <div className="space-y-5 py-1">
         <div>
-          <label className="mb-2 block text-xs font-black tracking-[0.1em]" style={{ color: "#6B6B72" }}>체중 (kg)</label>
+          <div className="flex items-baseline justify-between gap-3">
+            <label htmlFor={weightId} className="text-sm font-bold text-[#0E0E10]">체중</label>
+            <span className="text-sm font-black tabular-nums text-[#0E0E10]">{weight} <span className="font-medium text-[#606069]">kg</span></span>
+          </div>
           <input
+            id={weightId}
             type="range" min={40} max={120} step={1} value={weight}
+            aria-valuetext={`${weight}킬로그램`}
             onChange={e => setWeight(+e.target.value)}
-            className="w-full accent-[#D01E2E]"
+            className="mt-1 block h-9 w-full cursor-pointer accent-[#D01E2E] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D01E2E]"
           />
-          <p className="mt-1 text-right text-sm font-black" style={{ color: "#0E0E10" }}>{weight} kg</p>
         </div>
         <div>
-          <label className="mb-2 block text-xs font-black tracking-[0.1em]" style={{ color: "#6B6B72" }}>운동 시간 (분)</label>
+          <div className="flex items-baseline justify-between gap-3">
+            <label htmlFor={minutesId} className="text-sm font-bold text-[#0E0E10]">운동 시간</label>
+            <span className="text-sm font-black tabular-nums text-[#0E0E10]">{minutes} <span className="font-medium text-[#606069]">분</span></span>
+          </div>
           <input
+            id={minutesId}
             type="range" min={30} max={120} step={10} value={minutes}
+            aria-valuetext={`${minutes}분`}
             onChange={e => setMinutes(+e.target.value)}
-            className="w-full accent-[#D01E2E]"
+            className="mt-1 block h-9 w-full cursor-pointer accent-[#D01E2E] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D01E2E]"
           />
-          <p className="mt-1 text-right text-sm font-black" style={{ color: "#0E0E10" }}>{minutes} 분</p>
         </div>
       </div>
-      <div className="rounded-[12px] p-6 text-center" style={{ background: "#FFF1F2" }}>
-        <p className="text-xs font-black tracking-[0.15em] mb-2" style={{ color: "#D01E2E" }}>예상 소모 칼로리</p>
-        <p className="font-black" style={{ fontSize: "clamp(48px, 8vw, 72px)", color: "#D01E2E", lineHeight: 1 }}>
-          {kcal.toLocaleString()}
-        </p>
-        <p className="mt-1 text-sm" style={{ color: "#6B6B72" }}>kcal</p>
+      <div className="flex flex-col justify-center border-t border-[#D9D7CF] pt-4 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-7">
+        <p className="text-sm font-bold text-[#0E0E10]">예상 소모 칼로리</p>
+        <output htmlFor={`${weightId} ${minutesId}`} className="mt-1 flex flex-wrap items-baseline gap-x-2">
+          <span className="text-5xl leading-none font-black tracking-tight tabular-nums text-[#B81933]">{kcal.toLocaleString()}</span>
+          <span className="text-sm font-medium text-[#606069]">kcal</span>
+        </output>
       </div>
-      <p className="mt-4 text-xs text-center" style={{ color: "#aaa" }}>※ 실제 소모량은 운동 강도·체형에 따라 다를 수 있습니다.</p>
+      <p className="text-xs leading-relaxed text-[#606069] sm:col-span-2">※ 실제 소모량은 운동 강도·체형에 따라 다를 수 있습니다.</p>
     </div>
   );
 }

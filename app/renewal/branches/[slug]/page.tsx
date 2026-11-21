@@ -412,7 +412,7 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
             </h2>
             <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
               {/* 한솔 대표 */}
-              <a href="https://www.instagram.com/strongboxing_kr" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.instagram.com/strongboxing_official" target="_blank" rel="noopener noreferrer"
                 className="group flex items-center gap-4 rounded-[14px] border border-[rgba(74,76,80,0.3)] bg-[#1A1A1C] px-6 py-5 transition hover:border-[rgba(208,30,46,0.4)]">
                 <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-[#D01E2E]/30">
                   <img src="/images/coaches/hansol.jpg" alt="한솔 대표" className="h-full w-full object-cover object-top" />
@@ -420,7 +420,7 @@ export default async function RenewalBranchPage({ params }: { params: Promise<{ 
                 <div>
                   <p className="text-[10px] font-black tracking-[0.15em]" style={{ color: "#D01E2E" }}>DIRECTOR</p>
                   <p className="font-black" style={{ color: "#F5F4F1" }}>한솔 대표</p>
-                  <p className="text-xs" style={{ color: "#5A5C61" }}>@strongboxing_kr</p>
+                  <p className="text-xs" style={{ color: "#5A5C61" }}>@strongboxing_official</p>
                 </div>
               </a>
 
