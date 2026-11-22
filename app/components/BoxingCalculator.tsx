@@ -116,11 +116,11 @@ export default function BoxingCalculator() {
           <div className="mt-12 grid gap-3 md:grid-cols-3">
             {[
               [
-                "주 3회 기준",
+                `주 3회 추정 (${minutes}분씩)`,
                 `${Math.round(calories * 3)} kcal`,
               ],
               [
-                "60분 기준",
+                `1회 계산 기준 (${minutes}분)`,
                 "고강도 복싱",
               ],
               [
@@ -142,6 +142,8 @@ export default function BoxingCalculator() {
               </div>
             ))}
           </div>
+
+          <p className="mt-4 text-sm text-zinc-400">실제 소모 칼로리는 운동 강도와 개인차에 따라 달라질 수 있습니다.</p>
 
           <ReservationButton className="mt-10 inline-flex w-full justify-center rounded-[10px] bg-[#D01E2E] px-8 py-5 text-lg font-black transition hover:bg-[#B71C2B]">
             가까운 지점에서 시작하기

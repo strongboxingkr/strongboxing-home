@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
@@ -326,11 +326,11 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
                       {active && <span className="h-2 w-2 rounded-full bg-[#D01E2E]" />}
                     </span>
                     <span className={`text-[13px] font-black ${active ? t.heading : t.sub}`}>
-                      {type}
+                      {type === "일일 체험" ? "원데이 클래스" : type}
                     </span>
                   </div>
                   {type === "방문 상담" ? (
-                    <p className={`ml-6 text-[18px] font-black ${t.heading}`}>무료</p>
+                    <p className={`ml-6 text-[18px] font-black ${t.heading}`}>시설·수업 안내</p>
                   ) : (
                     <>
                       <p className={`ml-6 text-[18px] font-black ${t.heading}`}>30,000원</p>
@@ -431,7 +431,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
                 />
               </div>
               <div>
-                <label className={t.label}>희망 시간 <span className="text-[#D01E2E]">*</span></label>
+                <label className={t.label}>희망 시간 <span aria-hidden="true" className="text-[#D01E2E]">*</span></label>
                 <select
                   required
                   value={form.reservation_time}
@@ -492,7 +492,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
             {/* 체험 결제 안내 */}
             {reservationType === "일일 체험" && (
               <p className={`text-[12px] ${t.muted} leading-5`}>
-                체험비(30,000원)는 방문 후 현장에서 결제합니다. 당일 정식 등록 시 전액 차감됩니다.
+                원데이 클래스 30,000원은 현장에서 결제합니다. 당일 등록 시 전액 페이백됩니다.
               </p>
             )}
 
@@ -505,12 +505,12 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
               {loading
                 ? "접수 중..."
                 : reservationType === "방문 상담"
-                ? "무료 상담 신청하기"
-                : "일일 체험 신청하기"}
+                ? "방문 상담 예약"
+                : "원데이 클래스 예약"}
             </button>
 
             <p className={`text-center text-[12px] ${t.muted}`}>
-              예약 확정 방식은 실제 운영 절차에 맞춰 안내해드립니다.
+              신청 후 지점 담당자가 남겨주신 연락처로 전화 또는 문자로 예약 확정 안내를 드립니다.
             </p>
           </form>
         </div>

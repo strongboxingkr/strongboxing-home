@@ -11,7 +11,13 @@ export default async function ReelsSection() {
     ORDER BY sort_order ASC, id DESC
   `);
 
-  const reels = rows;
+  const seenVideoUrls = new Set<string>();
+  const reels = rows.filter((reel: { video_url: string }) => {
+    const url = reel.video_url.trim();
+    if (seenVideoUrls.has(url)) return false;
+    seenVideoUrls.add(url);
+    return true;
+  });
 
   if (reels.length === 0) {
     return null;

@@ -5,9 +5,10 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   branchName?: string;
+  reviewUrl?: string;
 }
 
-export default async function NaverReviewsSection({ branchName }: Props = {}) {
+export default async function NaverReviewsSection({ branchName, reviewUrl }: Props = {}) {
   const [rows]: any = branchName
     ? await db.query(
         `SELECT * FROM homepage_naver_reviews WHERE is_active = 1 AND branch_name = ? ORDER BY review_date DESC, id DESC`,
@@ -19,7 +20,7 @@ export default async function NaverReviewsSection({ branchName }: Props = {}) {
 
   const reviews = rows;
 
-  if (reviews.length === 0) {
+  if (reviews.length === 0 && !reviewUrl) {
     return null;
   }
 
@@ -45,6 +46,13 @@ export default async function NaverReviewsSection({ branchName }: Props = {}) {
         </div>
 
         <NaverReviewsClient reviews={reviews} branchMode={!!branchName} />
+        {reviewUrl && (
+          <div className="mt-10 text-center">
+            <a href={reviewUrl} target="_blank" rel="noopener noreferrer" className="inline-block rounded-[10px] border border-[#03C75A]/50 px-8 py-3.5 font-black text-[#03C75A]">
+              네이버 리뷰 더보기 →
+            </a>
+          </div>
+        )}
 
       </div>
     </section>

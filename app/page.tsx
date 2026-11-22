@@ -1,4 +1,4 @@
-﻿import BoxingCalculator from "./components/BoxingCalculator";
+import BoxingCalculator from "./components/BoxingCalculator";
 import { db } from "@/lib/db";
 import ConsultationForm from "./components/ConsultationForm";
 import ReservationButton from "./components/ReservationButton";
@@ -22,7 +22,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: { absolute: "스트롱복싱 | 서울·경기 복싱장 — 복싱 PT·다이어트 복싱·초보자 복싱" },
   description:
-    "서울·경기 5개 지점 복싱장. 다이어트 복싱·복싱 PT·초보자 복싱 수업. 목동·개봉·철산·신정·영등포점 운영. 관장 직접 지도, 방문 상담 무료.",
+    "서울·경기 5개 지점 복싱장. 다이어트 복싱·복싱 PT·초보자 복싱 수업. 목동·개봉·철산·신정·영등포점 운영. 관장 직접 지도. 원데이 클래스 30,000원.",
   keywords: [
     "복싱","복싱장","복싱 PT","다이어트 복싱","초보자 복싱","여성 복싱","복싱 다이어트","복싱 체육관",
     "목동 복싱","오목교 복싱","양천구 복싱","목동 학생 복싱","목동 다이어트 복싱","목동 직장인 운동",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://strongboxing.kr" },
   openGraph: {
     title: "스트롱복싱 | 서울·경기 복싱장 — 복싱 PT·다이어트 복싱·초보자 복싱",
-    description: "서울·경기 5개 지점 복싱장. 다이어트 복싱·복싱 PT·초보자 복싱 수업. 목동·개봉·철산·신정·영등포점 운영. 관장 직접 지도, 방문 상담 무료.",
+    description: "서울·경기 5개 지점 복싱장. 다이어트 복싱·복싱 PT·초보자 복싱 수업. 목동·개봉·철산·신정·영등포점 운영. 관장 직접 지도. 원데이 클래스 30,000원.",
     url: "https://strongboxing.kr",
     siteName: "스트롱복싱",
     locale: "ko_KR",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "스트롱복싱 | 서울·경기 복싱장 — 복싱 PT·다이어트 복싱·초보자 복싱",
-    description: "서울·경기 5개 지점 복싱장. 다이어트 복싱·복싱 PT·초보자 복싱 수업. 관장 직접 지도, 방문 상담 무료.",
+    description: "서울·경기 5개 지점 복싱장. 다이어트 복싱·복싱 PT·초보자 복싱 수업. 관장 직접 지도. 원데이 클래스 30,000원.",
     images: ["/og.png"],
   },
 };
@@ -55,7 +55,7 @@ const branches = [
     image: "/images/branches/gaebong.jpg",
     phone: "02-2060-1279",
     address: "서울시 구로구 개봉동 166-5번지 유원빌딩 지하 1층",
-    hours: ["월-금 13:00~23:00"],
+    hours: ["평일 13:00–23:00", "토·일 휴무"],
     review: "관장 직접 지도 · 고척동에서도 가까운 개봉동 복싱장",
     score: "4.9",
     reviewCount: 229,
@@ -70,7 +70,7 @@ const branches = [
     image: "/images/branches/sinjeong.jpg",
     phone: "02-2647-3373",
     address: "서울시 양천구 신정동 1021-7 태화상가 2층",
-    hours: ["월-금 10:00~24:00", "토 10:00~16:00"],
+    hours: ["평일 10:00–24:00 (14:00–15:00 휴게)", "토 10:00–16:00"],
     review: "초보자 · 다이어트 · 꾸준히 다니기 좋은 신정동 복싱장",
     score: "4.9",
     reviewCount: 277,
@@ -85,7 +85,7 @@ const branches = [
     image: "/images/branches/mokdong.png",
     phone: "02-2643-5971",
     address: "서울시 양천구 목동 909-6 우방빌딩 4층",
-    hours: ["월-금 14:00~24:00", "토 11:00~16:00"],
+    hours: ["평일 14:00–24:00 (밤 12시까지)", "토 11:00–16:00", "일 휴무"],
     review: "학생 · 키즈 · 방학특강 · 목동 복싱장",
     score: "4.9",
     reviewCount: 106,
@@ -273,7 +273,7 @@ export default async function HomePage() {
 
                 <p className="mt-4 text-xs leading-5" style={{ color: "#5A5C61" }}>
                   원데이 클래스 <span style={{ color: "#8A8D91", fontWeight: 700 }}>30,000원</span> 현장결제
-                  &nbsp;·&nbsp; 당일 등록 시 회원권에서 <span style={{ color: "#8A8D91", fontWeight: 700 }}>전액 차감</span>
+                  &nbsp;·&nbsp; 당일 등록 시 <span style={{ color: "#8A8D91", fontWeight: 700 }}>전액 페이백</span>
                   &nbsp;·&nbsp; 편한 운동복만 챙겨오세요
                 </p>
 
@@ -446,7 +446,7 @@ export default async function HomePage() {
               style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
               <div>
                 <p className="font-black text-lg" style={{ color: "#F5F4F1" }}>원데이 클래스로 먼저 경험해보세요.</p>
-                <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>30,000원 현장결제 · 당일 등록 시 회원권에서 전액 차감</p>
+                <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>30,000원 현장결제 · 당일 등록 시 전액 페이백</p>
               </div>
               <a href="/reservation"
                 className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
@@ -653,7 +653,7 @@ export default async function HomePage() {
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
-                <img src="/images/gallery/gallery-1.jpg" alt="시설"
+                <img src="/images/gallery/gallery-1.jpg" alt="스트롱복싱 신정점 샌드백과 복싱 링"
                   className="h-full min-h-[500px] w-full object-cover transition duration-700 group-hover:scale-105"
                   style={{ filter: "brightness(0.85)" }} />
                 <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -661,7 +661,7 @@ export default async function HomePage() {
               </div>
               <div className="grid gap-3">
                 <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
-                  <img src="/images/gallery/gallery-2.jpg" alt="시설"
+                  <img src="/images/gallery/gallery-2.jpg" alt="창가 복싱 링과 샌드백"
                     className="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105"
                     style={{ filter: "brightness(0.85)" }} />
                   <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -669,13 +669,13 @@ export default async function HomePage() {
                 </div>
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
-                    <img src="/images/gallery/gallery-3.jpg" alt="시설"
+                    <img src="/images/gallery/gallery-3.jpg" alt="벽면을 따라 배치된 샌드백 훈련 공간"
                       className="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105" style={{ filter: "brightness(0.85)" }} />
                     <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                       style={{ background: "rgba(14,14,16,0.2)" }} />
                   </div>
                   <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
-                    <img src="/images/gallery/gallery-4.jpg" alt="시설"
+                    <img src="/images/gallery/gallery-4.jpg" alt="샌드백과 바닥 매트를 갖춘 복싱 훈련 공간"
                       className="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105" style={{ filter: "brightness(0.85)" }} />
                     <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                       style={{ background: "rgba(14,14,16,0.2)" }} />
@@ -690,7 +690,7 @@ export default async function HomePage() {
             CTA — 풀스크린
         ══════════════════════════════════════ */}
         <section className="relative overflow-hidden px-6 py-40 text-center md:px-8">
-          <img src="/images/gallery/gallery-1.jpg" alt="스트롱복싱 복싱장 내부 전경"
+          <img src="/images/mokdong/mokdong-training.jpg" alt="스트롱복싱 목동점 링에서 미트 훈련하는 모습"
             className="pointer-events-none absolute inset-0 h-full w-full object-cover"
             style={{ filter: "brightness(0.18) grayscale(0.3)" }} />
           <div className="pointer-events-none absolute left-0 top-0 h-[1px] w-full" style={{ background: "rgba(255,255,255,0.08)" }} />
@@ -703,7 +703,7 @@ export default async function HomePage() {
               가까운 지점에서<br />원데이 클래스로 시작해보세요.
             </h2>
             <p className="reveal d2 mx-auto mt-8 max-w-lg text-base leading-8" style={{ color: "#8A8D91" }}>
-              30,000원 현장결제 · 당일 등록 시 회원권에서 전액 차감됩니다.
+              30,000원 현장결제 · 당일 등록 시 전액 페이백됩니다.
             </p>
             <div className="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
               <ReservationButton className="btn-primary group rounded-[10px] bg-[#D01E2E] px-10 py-5 text-base font-black text-white hover:bg-[#B71C2B]">
@@ -727,7 +727,7 @@ export default async function HomePage() {
             스트롱복싱은 목동점, 개봉점, 철산점, 신정점, 영등포점으로 운영되는 복싱 체육관입니다.
             관장이 직접 지도하는 정통 복싱장으로, 초보자도 기본기부터 편하게 시작할 수 있습니다.
             운동이 처음이어도 자유롭게 방문할 수 있고, 시간을 맞출 필요 없이 운영시간 내 언제든 이용 가능합니다.
-            원데이 클래스 30,000원 현장결제, 당일 등록 시 회원권에서 전액 차감됩니다.
+            원데이 클래스 30,000원 현장결제, 당일 등록 시 전액 페이백됩니다.
           </p>
 
           <h3>목동점 — 목동 복싱 · 오목교 복싱 · 양천구 복싱</h3>
@@ -788,7 +788,7 @@ export default async function HomePage() {
             <div className="mb-12 text-center">
               <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>CERTIFIED GYM</p>
               <h2 className="reveal d1 font-black" style={{ fontSize: "clamp(28px, 4vw, 40px)", letterSpacing: "-0.04em", color: "#F5F4F1" }}>
-                프로복싱 4개 단체 가입 체육관
+                프로복싱 4개 단체 및 KABA 가입 체육관
               </h2>
               <div className="mt-4 flex flex-wrap justify-center gap-6 text-xs" style={{ color: "#5A5C61" }}>
                 {["프로테스트 참가 가능", "각종 대회 참가 가능", "선수 등록 및 활동 가능"].map((item) => (
@@ -856,15 +856,14 @@ export default async function HomePage() {
               style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
               <div className="flex-1">
                 <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>PRICING</p>
-                <h2 className="mb-3 text-2xl font-black" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>수강료가 궁금하신가요?</h2>
+                <h2 className="mb-3 text-2xl font-black" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>회원권 가격 문의</h2>
                 <p className="text-sm leading-7" style={{ color: "#8A8D91" }}>
-                  수강료는 지점별·프로그램별로 다르게 운영됩니다.<br />
-                  방문 상담 시 목적에 맞는 플랜을 안내해드립니다.
+                  회원권 가격은 이용하실 지점에 직접 문의해 주세요.
                 </p>
               </div>
-              <a href="/reservation"
+              <a href="#branches"
                 className="btn-primary group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black text-white hover:bg-[#B71C2B]">
-                상담 예약하고 문의하기
+                지점 연락처 보기
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>
             </div>
@@ -909,7 +908,7 @@ export default async function HomePage() {
             </div>
 
             <div className="mt-10 pt-8 text-xs" style={{ borderTop: "1px solid rgba(255,255,255,0.05)", color: "#3A3A3E" }}>
-              © 2025 STRONG BOXING. All rights reserved.
+              © 2026 STRONG BOXING. All rights reserved.
             </div>
           </div>
         </footer>
