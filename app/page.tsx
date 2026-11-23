@@ -245,7 +245,7 @@ export default async function HomePage() {
         <SiteHeader />
 
         {/* ══════════════════════════════════════
-            HERO — 좌: 카피 / 우: 지점 Magazine Grid
+            HERO — 좌: 카피 / 우: 소개 영상
         ══════════════════════════════════════ */}
         <section className="relative overflow-hidden" style={{ background: "#0E0E10", scrollMarginTop: "120px" }}>
           {/* 배경 텍스처 — 도트 그리드 */}
@@ -314,9 +314,8 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <figure className="relative m-0 overflow-hidden rounded-[4px] border border-white/10 bg-[#141416]">
-                <video className="aspect-[16/10] w-full bg-black object-contain" src="/videos/brand/home-hero.mp4" autoPlay controls muted playsInline preload="metadata" aria-label="스트롱복싱 소개 영상" />
-                <figcaption className="border-t border-white/10 px-4 py-2.5 text-xs text-[#B5B5BC]">스트롱복싱 소개 영상</figcaption>
+              <figure className="m-0 overflow-hidden rounded-[4px]">
+                <video className="block aspect-video w-full bg-black object-contain" src="/videos/brand/home-hero.mp4?v=2" autoPlay controls muted playsInline preload="metadata" aria-label="스트롱복싱 소개 영상" />
               </figure>
             </div>
           </div>
