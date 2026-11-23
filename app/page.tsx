@@ -315,7 +315,7 @@ export default async function HomePage() {
               </div>
 
               <figure className="relative m-0 overflow-hidden rounded-[4px] border border-white/10 bg-[#141416]">
-                <video className="aspect-[16/10] w-full bg-black object-contain" src="/videos/brand/home-hero.mp4" controls muted playsInline preload="metadata" aria-label="스트롱복싱 소개 영상" />
+                <video className="aspect-[16/10] w-full bg-black object-contain" src="/videos/brand/home-hero.mp4" autoPlay controls muted playsInline preload="metadata" aria-label="스트롱복싱 소개 영상" />
                 <figcaption className="border-t border-white/10 px-4 py-2.5 text-xs text-[#B5B5BC]">스트롱복싱 소개 영상</figcaption>
               </figure>
             </div>
