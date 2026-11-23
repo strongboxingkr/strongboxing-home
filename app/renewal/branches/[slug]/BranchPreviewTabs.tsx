@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useRef, useState, type ReactNode } from "react";
 
-const labels = { home: "홈", blog: "블로그", videos: "영상", pricing: "이용요금", reviews: "리뷰", location: "시설·위치" };
+const labels = { home: "홈", workout: "운동 안내", blog: "블로그", videos: "영상", reviews: "리뷰", location: "시설·위치" };
 type Tab = keyof typeof labels;
 const tabs = Object.keys(labels) as Tab[];
 const Navigate = createContext<(tab: Tab) => void>(() => {});
@@ -18,7 +18,7 @@ export function ConsultationLink({ className, children }: { className: string; c
 
 export function TabLink({ tab, children }: { tab: Tab; children: ReactNode }) {
   const navigate = useContext(Navigate);
-  return <button type="button" onClick={() => navigate(tab)} className="text-sm font-bold text-[#b81933] hover:underline">{children}</button>;
+  return <button type="button" onClick={() => navigate(tab)} className="text-sm font-bold text-[#D01E2E] hover:underline">{children}</button>;
 }
 
 export default function BranchPreviewTabs({ panels, sidebar }: { panels: Record<Tab, ReactNode>; sidebar: ReactNode }) {
@@ -32,7 +32,7 @@ export default function BranchPreviewTabs({ panels, sidebar }: { panels: Record<
 
   return (
     <Navigate.Provider value={navigate}>
-      <div role="tablist" aria-label="지점 정보" className="grid grid-cols-3 border-y border-[#deddd8] bg-white sm:grid-cols-6">
+      <div role="tablist" aria-label="지점 정보" className="grid grid-cols-3 border-y border-[#29292D] bg-[#0E0E10] sm:grid-cols-6">
         {tabs.map((tab, index) => (
           <button
             key={tab}
@@ -50,7 +50,7 @@ export default function BranchPreviewTabs({ panels, sidebar }: { panels: Record<
               event.preventDefault();
               navigate(tabs[next]);
             }}
-            className="min-h-12 border-b-2 border-transparent px-1 text-sm font-semibold text-[#55535a] hover:text-[#b81933] aria-selected:border-[#c8102e] aria-selected:text-[#b81933]"
+            className="min-h-12 border-b-2 border-transparent px-1 text-sm font-semibold text-[#B5B5BC] hover:text-[#D01E2E] aria-selected:border-[#D01E2E] aria-selected:text-[#F5F4F1]"
           >{labels[tab]}</button>
         ))}
       </div>

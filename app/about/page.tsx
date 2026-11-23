@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import SiteHeader from "@/app/components/SiteHeader";
 import RevealObserver from "@/app/components/RevealObserver";
@@ -137,28 +138,11 @@ export default function AboutPage() {
             SECTION 1 · HERO
         ════════════════════════════════════════ */}
         <section className="relative overflow-hidden" style={{ minHeight: "92vh" }}>
-          {/* 배경 이미지 */}
-          <img
-            src="/images/gallery/gallery-1.jpg"
-            alt="스트롱복싱 복싱장 내부 전경"
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-            style={{ filter: "brightness(0.16) grayscale(0.25)" }}
-          />
-          {/* 상단 레드 라인 */}
-          <div
-            className="pointer-events-none absolute left-0 top-0 h-[2px] w-full"
-            style={{ background: "#D01E2E" }}
-          />
-          {/* 도트 그리드 텍스처 */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle, rgba(255,255,255,0.022) 1px, transparent 1px)",
-              backgroundSize: "44px 44px",
-            }}
-          />
-
+          <div className="absolute inset-0 lg:left-[42%]">
+            <Image src="/images/about/guard-coaching.webp" alt="코치가 회원의 복싱 가드 자세를 살피는 모습" fill priority sizes="(min-width: 1024px) 58vw, 100vw" className="object-cover object-[center_42%] saturate-[.87]" />
+          </div>
+          <div className="pointer-events-none absolute inset-0 bg-[#0E0E10]/75 lg:bg-transparent lg:bg-[linear-gradient(90deg,#0E0E10_38%,rgba(14,14,16,.88)_46%,rgba(14,14,16,.16)_73%),linear-gradient(0deg,#0E0E10,transparent_28%)]" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-[#D01E2E]" />
           <div className="relative z-10 mx-auto flex max-w-7xl flex-col justify-center px-6 md:px-8"
             style={{ minHeight: "92vh" }}>
             <div className="max-w-2xl pt-32 pb-24">
@@ -207,16 +191,20 @@ export default function AboutPage() {
                 배우는 과정과 운동하는 환경을 함께 준비합니다.
               </p>
 
+              <p className="mt-5 max-w-[60ch] break-keep text-sm leading-7 text-[#E5E5E8]">
+                서울·경기 5개 지점을 모두 직영합니다. 어느 지점에서든 몸풀기, 기본 자세와 스텝, 미트, 샌드백, 체력 운동으로 이어지는 공통 흐름을 따라 배웁니다. 관장과 코치는 같은 공간에서 운동하는 회원을 한 명씩 살피며, 자세와 운동 강도는 각자의 진도와 체력에 맞춥니다.
+              </p>
+
               <div className="reveal d4 mt-10 flex flex-wrap gap-3">
                 <a
                   href="#locations"
-                  className="group inline-flex items-center gap-2 rounded-[10px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]"
+                  className="group inline-flex items-center gap-2 rounded-[4px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]"
                 >
                   가까운 지점 찾기
                   <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                 </a>
                 <ReservationButton
-                  className="group inline-flex items-center gap-2 rounded-[10px] border border-white/[0.12] px-7 py-3.5 text-sm font-black text-[#8A8D91] transition-all duration-300 hover:bg-white/5"
+                  className="group inline-flex items-center gap-2 rounded-[4px] border border-white/[0.12] px-7 py-3.5 text-sm font-black text-[#8A8D91] transition-all duration-300 hover:bg-white/5"
                   location="about_hero"
                 >
                   방문 상담 예약
@@ -290,7 +278,7 @@ export default function AboutPage() {
                   스트롱복싱이 생각하는 좋은 복싱장의 기준입니다.
                 </p>
                 <div
-                  className="rounded-[14px] p-6"
+                  className="rounded-[4px] p-6"
                   style={{
                     border: "1px solid rgba(255,255,255,0.07)",
                     background: "#1A1A1C",
@@ -347,7 +335,7 @@ export default function AboutPage() {
               {/* 강조 카드 */}
               <div className="reveal d3">
                 <div
-                  className="flex h-full flex-col justify-center rounded-[20px] p-10"
+                  className="flex h-full flex-col justify-center rounded-[4px] p-10"
                   style={{
                     border: "1px solid rgba(208,30,46,0.2)",
                     background: "#141416",
@@ -399,12 +387,13 @@ export default function AboutPage() {
             <div className="grid gap-14 lg:grid-cols-[1fr_1fr] lg:gap-16">
               {/* 이미지 */}
               <div className="reveal group relative order-2 overflow-hidden lg:order-1"
-                style={{ borderRadius: 20, minHeight: 400 }}>
-                <img
-                  src="/images/gallery/moments/story1.jpg"
-                  alt="스트롱복싱 지도진의 개인별 복싱 코칭 장면"
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
-                  style={{ filter: "brightness(0.88)", minHeight: 400 }}
+                style={{ borderRadius: 4, minHeight: 400 }}>
+                <Image
+                  src="/images/about/mitt-practice.webp"
+                  alt="회원들이 각자 운동하는 공간에서 진행하는 미트 훈련"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover object-[center_57%] saturate-[.87]"
                 />
                 <div
                   className="pointer-events-none absolute inset-0"
@@ -438,7 +427,7 @@ export default function AboutPage() {
                   style={{ color: "#8A8D91" }}>
                   <p>
                     같은 공간에서 함께 운동하더라도 배우는 내용과 운동 강도는
-                    한 사람씩 다르게 진행됩니다.
+                    한 사람씩 다르게 진행됩니다. 일반 회원 운동 중에 받는 자세 교정과 피드백으로, 별도로 시간을 잡아 진행하는 개인 PT와 구분됩니다.
                   </p>
                   <p>
                     선수 출신 지도진이 상주하며 자세와 거리, 타이밍, 힘 전달을 확인하고,
@@ -451,7 +440,7 @@ export default function AboutPage() {
                 </div>
 
                 <div
-                  className="reveal d3 mt-8 inline-flex items-center gap-3 rounded-[10px] px-5 py-3.5"
+                  className="reveal d3 mt-8 inline-flex items-center gap-3 rounded-[4px] px-5 py-3.5"
                   style={{
                     border: "1px solid rgba(208,30,46,0.25)",
                     background: "rgba(208,30,46,0.06)",
@@ -521,7 +510,7 @@ export default function AboutPage() {
                     key={step.num}
                     className={`reveal d${Math.min(i + 1, 5)} p-6 transition-all duration-300 hover:-translate-y-0.5`}
                     style={{
-                      borderRadius: 14,
+                      borderRadius: 4,
                       border: `1px solid ${i === 3 ? "rgba(208,30,46,0.2)" : "rgba(255,255,255,0.07)"}`,
                       background: "#141416",
                     }}
@@ -553,7 +542,7 @@ export default function AboutPage() {
                   key={step.num}
                   className="flex items-start gap-5 p-5 transition-all"
                   style={{
-                    borderRadius: 12,
+                    borderRadius: 4,
                     border: `1px solid ${i === 3 ? "rgba(208,30,46,0.18)" : "rgba(255,255,255,0.07)"}`,
                     background: "#141416",
                   }}
@@ -630,7 +619,7 @@ export default function AboutPage() {
               {/* 시설 목록 */}
               <div className="reveal d2">
                 <div
-                  className="rounded-[20px] p-8"
+                  className="rounded-[4px] p-8"
                   style={{
                     border: "1px solid rgba(255,255,255,0.07)",
                     background: "#1A1A1C",
@@ -684,7 +673,7 @@ export default function AboutPage() {
         <section className="px-6 py-20 md:px-8" style={{ background: "#0E0E10" }}>
           <div className="mx-auto max-w-7xl">
             <div
-              className="reveal relative overflow-hidden rounded-[24px] p-10 md:p-14"
+              className="reveal relative overflow-hidden rounded-[4px] p-10 md:p-14"
               style={{
                 border: "1px solid rgba(255,255,255,0.07)",
                 background: "#141416",
@@ -728,7 +717,7 @@ export default function AboutPage() {
                     자신에게 필요한 운동 방향을 잡을 수 있습니다.
                   </p>
                   <div
-                    className="inline-flex items-center gap-3 rounded-[10px] px-5 py-3"
+                    className="inline-flex items-center gap-3 rounded-[4px] px-5 py-3"
                     style={{
                       border: "1px solid rgba(208,30,46,0.3)",
                       background: "rgba(208,30,46,0.07)",
@@ -749,7 +738,7 @@ export default function AboutPage() {
 
                 {/* 지점 목록 */}
                 <div
-                  className="shrink-0 rounded-[16px] p-7"
+                  className="shrink-0 rounded-[4px] p-7"
                   style={{
                     border: "1px solid rgba(255,255,255,0.07)",
                     background: "#1A1A1C",
@@ -843,7 +832,7 @@ export default function AboutPage() {
                   ].map((item) => (
                     <div
                       key={item}
-                      className="flex items-center gap-4 rounded-[10px] px-5 py-3.5"
+                      className="flex items-center gap-4 rounded-[4px] px-5 py-3.5"
                       style={{
                         border: "1px solid rgba(255,255,255,0.07)",
                         background: "#1A1A1C",
@@ -863,12 +852,13 @@ export default function AboutPage() {
 
               {/* 이미지 */}
               <div className="reveal group relative overflow-hidden"
-                style={{ borderRadius: 20, minHeight: 360 }}>
-                <img
-                  src="/images/gallery/moments/story3.jpg"
-                  alt="스트롱복싱 안전한 스파링 훈련 장면"
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
-                  style={{ filter: "brightness(0.85)", minHeight: 360 }}
+                style={{ borderRadius: 4, minHeight: 360 }}>
+                <Image
+                  src="/images/about/ring-coaching.webp"
+                  alt="보호장비를 착용한 회원들을 링 위에서 지켜보는 코치"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover object-[center_60%] saturate-[.87]"
                 />
                 <div
                   className="pointer-events-none absolute inset-0"
@@ -904,13 +894,27 @@ export default function AboutPage() {
               괜찮습니다.
             </h2>
 
+            <div className="mb-9 grid gap-5 sm:grid-cols-2">
+              <figure className="m-0 border-b border-white/10 pb-3">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[4px]">
+                  <Image src="/images/about/bag-practice.webp" alt="샌드백 앞에서 복싱 가드를 잡는 여성 회원" fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover object-[center_52%] saturate-[.87]" />
+                </div>
+                <figcaption className="mt-3 text-sm font-semibold">가드와 스텝부터, 내 속도로</figcaption>
+              </figure>
+              <figure className="m-0 border-b border-white/10 pb-3">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[4px]">
+                  <Image src="/images/about/junior-basics.webp" alt="코치 앞에서 기본 펀치 자세를 연습하는 학생 회원들" fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover object-[center_61%] saturate-[.87]" />
+                </div>
+                <figcaption className="mt-3 text-sm font-semibold">학생도 기본 자세부터 차근차근</figcaption>
+              </figure>
+            </div>
             <div className="reveal d2 mb-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {audiences.map((item, i) => (
                 <div
                   key={item}
                   className={`flex items-start gap-3 p-5 reveal d${Math.min(i + 1, 5)} transition-all duration-300 hover:-translate-y-0.5`}
                   style={{
-                    borderRadius: 12,
+                    borderRadius: 4,
                     border: "1px solid rgba(255,255,255,0.07)",
                     background: "#141416",
                   }}
@@ -928,7 +932,7 @@ export default function AboutPage() {
 
             {/* 마무리 문구 */}
             <div
-              className="reveal rounded-[20px] px-10 py-10 text-center"
+              className="reveal rounded-[4px] px-10 py-10 text-center"
               style={{
                 border: "1px solid rgba(255,255,255,0.07)",
                 background: "#141416",
@@ -985,7 +989,7 @@ export default function AboutPage() {
                   key={b.slug}
                   className={`reveal d${Math.min(i + 1, 5)} group flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-0.5`}
                   style={{
-                    borderRadius: 16,
+                    borderRadius: 4,
                     border: "1px solid rgba(255,255,255,0.07)",
                     background: "#1A1A1C",
                   }}
@@ -1035,7 +1039,7 @@ export default function AboutPage() {
                     <div className="mt-auto flex gap-2">
                       <a
                         href={`/branches/${b.slug}`}
-                        className="flex-1 rounded-[10px] py-2.5 text-center text-xs font-black transition-all duration-200 hover:bg-white/5"
+                        className="flex-1 rounded-[4px] py-2.5 text-center text-xs font-black transition-all duration-200 hover:bg-white/5"
                         style={{
                           border: "1px solid rgba(255,255,255,0.1)",
                           color: "#8A8D91",
@@ -1048,14 +1052,14 @@ export default function AboutPage() {
                           href={b.booking}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 rounded-[10px] bg-[#D01E2E] py-2.5 text-center text-xs font-black text-white transition-colors hover:bg-[#B71C2B]"
+                          className="flex-1 rounded-[4px] bg-[#D01E2E] py-2.5 text-center text-xs font-black text-white transition-colors hover:bg-[#B71C2B]"
                         >
                           상담 예약
                         </a>
                       ) : (
                         <a
                           href={`/branches/${b.slug}`}
-                          className="flex-1 rounded-[10px] bg-[#D01E2E] py-2.5 text-center text-xs font-black text-white transition-colors hover:bg-[#B71C2B]"
+                          className="flex-1 rounded-[4px] bg-[#D01E2E] py-2.5 text-center text-xs font-black text-white transition-colors hover:bg-[#B71C2B]"
                         >
                           지점 보기
                         </a>
@@ -1122,13 +1126,13 @@ export default function AboutPage() {
             <div className="reveal d4 flex flex-col justify-center gap-4 sm:flex-row">
               <a
                 href="/reservation"
-                className="group inline-flex items-center justify-center gap-2 rounded-[10px] bg-[#D01E2E] px-10 py-4 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]"
+                className="group inline-flex items-center justify-center gap-2 rounded-[4px] bg-[#D01E2E] px-10 py-4 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]"
               >
                 원데이 클래스로 경험하기
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </a>
               <ReservationButton
-                className="group inline-flex items-center justify-center gap-2 rounded-[10px] border border-white/[0.15] px-10 py-4 text-sm font-black text-[#F5F4F1] transition-all duration-300 hover:bg-white/5"
+                className="group inline-flex items-center justify-center gap-2 rounded-[4px] border border-white/[0.15] px-10 py-4 text-sm font-black text-[#F5F4F1] transition-all duration-300 hover:bg-white/5"
                 location="about_final_cta"
               >
                 방문 상담 예약하기
@@ -1199,7 +1203,7 @@ export default function AboutPage() {
                 color: "#3A3A3E",
               }}
             >
-              © 2025 STRONG BOXING. All rights reserved.
+              © 2026 STRONG BOXING. All rights reserved.
             </div>
           </div>
         </footer>

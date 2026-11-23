@@ -33,7 +33,7 @@ export function middleware(request: NextRequest) {
   }
 
   // API 보호 - 공개 API 및 /api/hq/* 는 인증된 세션이면 허용
-  if (pathname.startsWith("/api/") && !PUBLIC_API_PATHS.includes(pathname)) {
+  if (pathname.startsWith("/api/") && !PUBLIC_API_PATHS.includes(pathname) && !(pathname === "/api/popups" && request.method === "GET")) {
     if (!isAuthed(request)) {
       return NextResponse.json(
         { ok: false, message: "인증이 필요합니다." },

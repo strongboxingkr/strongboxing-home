@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const branches = ["전체", "개봉점", "신정점", "목동점", "철산점"];
+const branches = ["전체", "개봉점", "신정점", "목동점", "철산점", "영등포점"];
 
 export default function NaverReviewsClient({ reviews, branchMode = false }: { reviews: any[]; branchMode?: boolean }) {
   const [selectedBranch, setSelectedBranch] = useState("전체");
@@ -85,7 +85,7 @@ export default function NaverReviewsClient({ reviews, branchMode = false }: { re
             onClick={() => setVisibleCount((prev) => prev + 6)}
             className="rounded-[10px] border border-[#D01E2E]/40 px-8 py-3.5 font-black text-[#D01E2E] transition hover:bg-[#D01E2E]/8"
           >
-            리뷰 더보기
+            리뷰 더 불러오기
           </button>
         </div>
       )}

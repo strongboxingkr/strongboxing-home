@@ -1,1102 +1,350 @@
-import { branchDescriptions, branchLocalContent } from "@/lib/branch-introductions";
 import { db } from "@/lib/db";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import BranchCTAButtons from "@/app/components/BranchCTAButtons";
-import BranchReelCard from "@/app/components/BranchReelCard";
-import NaverReviewsSection from "@/app/components/NaverReviewsSection";
+import BranchPreview, { type PreviewPost, type PreviewReel, type PreviewReview } from "@/app/renewal/branches/[slug]/BranchPreview";
+import type { RowDataPacket } from "mysql2";
 
-const branchGeo: Record<string, { latitude: number; longitude: number }> = {
-  gaebong:      { latitude: 37.4868, longitude: 126.8487 },
-  sinjeong:     { latitude: 37.5255, longitude: 126.8572 },
-  mokdong:      { latitude: 37.5278, longitude: 126.8743 },
-  cheolsan:     { latitude: 37.4785, longitude: 126.8599 },
-  yeongdeungpo: { latitude: 37.5055, longitude: 126.9052 },
-};
+export const dynamic = "force-dynamic";
 
-const branches: any = {
+type Branch = Parameters<typeof BranchPreview>[0]["branch"] & { image: string; searchTitle: string; streetAddr: string; addressLocality: string; addressRegion: string; openingHoursSpec: { "@type": string; dayOfWeek: string[]; opens: string; closes: string }[] };
+
+const branches: Record<string, Branch> = {
   gaebong: {
-    name: "개봉점",
-    fullName: "스트롱복싱 개봉점",
-    area: "개봉",
-    image: "/images/branches/gaebong.jpg",
-    ogImage: "/images/branches/gaebong-og.png",
-    imageAlt: "스트롱복싱 개봉점 복싱장 내부 전경",
-    phone: "02-2060-1279",
-    email: "gaebong@strongboxing.kr",
-    address: "서울시 구로구 개봉동 166-5번지 유원빌딩 지하 1층",
+    directions: "개봉역에서 걸어올 수 있어요. 구로구 개봉동에 있으며 고척동·오류동·천왕동에서도 찾아오기 편합니다.",
     streetAddr: "개봉동 166-5 유원빌딩 지하 1층",
     addressLocality: "구로구",
     addressRegion: "서울특별시",
-    hours: ["월-금 13:00~23:00"],
     openingHoursSpec: [
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "13:00", closes: "23:00" },
     ],
+    name: "개봉점", fullName: "스트롱복싱 개봉점", area: "개봉",
+    image: "/images/branches/gaebong.jpg",
+    phone: "02-2060-1279", hours: ["월-금 13:00~23:00"],
     instagram: "https://www.instagram.com/strongboxing_gaebong",
-    booking:
-      "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
-    naverMap: "https://naver.me/5aFquqcz",
-    kakaoMap: "https://place.map.kakao.com/1456783450",
-    kakaoChat: "https://pf.kakao.com/_uyxbnX/chat",
-    description: branchDescriptions.gaebong,
+    booking: "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
+    naverMap: "https://naver.me/5aFquqcz", kakaoChat: "https://pf.kakao.com/_uyxbnX/chat",
+    address: "(08274) 서울시 구로구 개봉동 166-5번지 (유원빌딩) 지하 1층",
+    kakaoMap: "https://kko.to/RmPQ1W8t8g",
+    region: "구로 개봉·고척",
+    searchTitle: "개봉·고척 복싱장 | 여성 복싱·퇴근 후 운동 · 스트롱복싱",
+    intro: "개봉·고척에서 퇴근 후 배우는 복싱. 처음 오셔도 관장이 자세와 스텝부터 봐드려요.",
+    description: "구로구 개봉·고척에서 여성 복싱이나 퇴근 후 할 운동을 찾는다면 기본 자세와 스텝부터 시작해 보세요. 평일 밤 11시까지 운영하며, 관장이 운동 중 자세를 살피고 개인 진도에 맞춰 다음 동작을 안내합니다.",
+    highlights: ["여성 복싱", "퇴근 후 운동", "관장 직접 지도"],
   },
-
   sinjeong: {
-    name: "신정점",
-    fullName: "스트롱복싱 신정점",
-    area: "신정",
-    image: "/images/branches/sinjeong.jpg",
-    ogImage: "/images/branches/sinjeong-og.png",
-    imageAlt: "스트롱복싱 신정점 복싱장 내부 — 링과 샌드백",
-    phone: "02-2647-3373",
-    email: "sinjeong@strongboxing.kr",
-    address: "서울시 양천구 신정동 1021-7 태화상가 2층",
+    directions: "신정네거리역 인근 양천구 신정동에 있어요. 신월동·까치산·화곡동에서 오시는 분은 길찾기에서 방문 경로를 확인할 수 있어요.",
     streetAddr: "신정동 1021-7 태화상가 2층",
     addressLocality: "양천구",
     addressRegion: "서울특별시",
-    hours: ["월-금 10:00~24:00", "14:00~15:00 휴게", "토 10:00~16:00"],
     openingHoursSpec: [
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "10:00", closes: "14:00" },
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "15:00", closes: "00:00" },
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday"], opens: "10:00", closes: "16:00" },
     ],
-    instagram: "https://www.instagram.com/strongboxing_sinjeong",
+    name: "신정점", fullName: "스트롱복싱 신정점", area: "신정",
+    image: "/images/branches/sinjeong.jpg",
+    phone: "02-2647-3373", hours: ["월-금 10:00~24:00 (14:00~15:00 휴게)", "토 10:00~16:00"],
+    instagram: "https://www.instagram.com/strongboxing.sinjeong",
     booking: "https://booking.naver.com/booking/13/bizes/1367177",
-    naverMap: "https://naver.me/5nhXvzXH",
+    naverMap: "https://naver.me/5nhXvzXH", kakaoChat: "https://pf.kakao.com/_rxoQxiX/chat",
+    address: "(08087) 서울시 양천구 신정동 1021-7 (태화상가) 2층",
     kakaoMap: "https://kko.to/NlN6yV0aK3",
-    description: branchDescriptions.sinjeong,
+    region: "양천구 신정네거리",
+    searchTitle: "신정네거리 복싱장 | 키즈 복싱·오전 운동 · 스트롱복싱",
+    intro: "신정네거리에서 시작하는 키즈·여성 복싱. 평일 오전 10시부터 운동할 수 있어요.",
+    description: "양천구 신정네거리에서 초등학생 키즈 복싱을 찾는 분은 아이가 줄넘기, 기본 자세, 스텝부터 배울 수 있어요. 성인도 평일 오전 10시부터 여성 복싱과 체력 운동을 각자의 진도에 맞춰 시작할 수 있습니다.",
+    highlights: ["키즈 복싱", "여성 복싱", "평일 오전 10시부터", "토요일 운영"],
   },
-
   mokdong: {
-    name: "목동점",
-    fullName: "스트롱복싱 목동점",
-    area: "목동",
-    image: "/images/branches/mokdong.png",
-    ogImage: "/images/branches/mokdong-og.png",
-    imageAlt: "스트롱복싱 목동점 복싱장 수업 모습",
-    phone: "02-2643-5971",
-    email: "mokdong@strongboxing.kr",
-    address: "서울특별시 양천구 목동 909-6 우방빌딩 4층",
+    directions: "목동역과 오목교역 사이에 있어요. 목동동로의 우방빌딩 4층으로 오시면 됩니다.",
     streetAddr: "목동 909-6 우방빌딩 4층",
     addressLocality: "양천구",
     addressRegion: "서울특별시",
-    hours: ["평일 14:00–24:00 (밤 12시까지)", "토 11:00–16:00", "일 휴무"],
     openingHoursSpec: [
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "14:00", closes: "00:00" },
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday"], opens: "11:00", closes: "16:00" },
     ],
+    googleMap: "https://maps.google.com/?q=스트롱복싱+목동점",
+    reviewUrl: "https://m.place.naver.com/place/2036376446/review/visitor",
+    name: "목동점", fullName: "스트롱복싱 목동점", area: "목동",
+    image: "/images/branches/mokdong.png",
+    phone: "02-2643-5971", hours: ["월-금 14:00~24:00", "토 11:00~16:00"],
     instagram: "https://www.instagram.com/strongboxing_mokdong",
     booking: "https://booking.naver.com/booking/13/bizes/1510638",
-    naverMap: "https://naver.me/GII8f9Qv",
+    naverMap: "https://naver.me/GII8f9Qv", kakaoChat: "https://pf.kakao.com/_xfGZnX/chat",
+    address: "(07984) 서울시 양천구 목동 909-6 (우방빌딩) 4층",
     kakaoMap: "https://place.map.kakao.com/1917925446",
-    googleMap: "https://maps.google.com/?q=스트롱복싱+목동점",
-    kakaoChat: "https://pf.kakao.com/_xfGZnX/chat",
-    description: branchDescriptions.mokdong,
+    region: "양천구 목동",
+    searchTitle: "목동 복싱장 | 학생·키즈 복싱, 평일 밤 12시까지 · 스트롱복싱",
+    intro: "목동 학생·키즈 복싱부터 직장인 운동까지. 평일 밤 12시까지 운영해요.",
+    description: "양천구 목동에서 학생 운동이나 키즈 복싱을 찾는 분들을 위한 체육관입니다. 관장이 자세와 스텝부터 지도하고, 평일 밤 12시까지 운영해 퇴근 후에도 들르기 좋아요.",
+    highlights: ["학생·키즈 복싱","평일 밤 12시까지","관장 직접 지도"],
   },
-
   cheolsan: {
-    name: "철산점",
-    fullName: "스트롱복싱 철산점",
-    area: "철산",
-    image: "/images/branches/cheolsan.jpg",
-    ogImage: "/images/branches/cheolsan-og.jpg",
-    imageAlt: "스트롱복싱 철산점 복싱장 내부 전경",
-    phone: "02-2066-0406",
-    email: "cheolsan@strongboxing.kr",
-    address: "경기도 광명시 철산동 56-14 3층",
+    directions: "광명시 철산동에 있어요. 철산역·광명사거리·하안동·소하동 방면에서 오시는 분은 길찾기에서 방문 경로를 확인해 주세요.",
     streetAddr: "철산동 56-14 3층",
     addressLocality: "광명시",
     addressRegion: "경기도",
-    hours: ["월-금 14:00~23:00", "토·일 14:00~18:00", "공휴일 휴무"],
     openingHoursSpec: [
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "14:00", closes: "23:00" },
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday","Sunday"], opens: "14:00", closes: "18:00" },
     ],
+    reviewUrl: "https://m.place.naver.com/place/2037244259/review/visitor",
+    name: "철산점", fullName: "스트롱복싱 철산점", area: "철산",
+    image: "/images/branches/cheolsan.jpg",
+    phone: "02-2066-0406", hours: ["월-금 14:00~23:00", "토·일 14:00~18:00", "공휴일 휴무"],
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
     booking: "https://booking.naver.com/booking/12/bizes/1673598",
-    naverMap: "https://naver.me/F8lwn3Te",
+    naverMap: "https://naver.me/F8lwn3Te", kakaoChat: "https://pf.kakao.com/_MAKnX/chat",
+    address: "(14209) 경기도 광명시 철산동 56-14 3층",
     kakaoMap: "https://place.map.kakao.com/1182676078",
-    kakaoChat: "https://pf.kakao.com/_MAKnX/chat",
-    description: branchDescriptions.cheolsan,
+    region: "광명 철산동",
+    searchTitle: "철산·광명 복싱장 | 여성 복싱·주말 운동 · 스트롱복싱",
+    intro: "광명 철산동에서 퇴근 후나 주말에 배우는 복싱. 처음 오셔도 기본 자세부터 시작해요.",
+    description: "광명시 철산동에서 여성 복싱, 주말 운동, 직장인 퇴근 후 운동을 시작할 수 있어요. 평일 저녁과 토·일에 운영하며, 복싱이 처음이라면 관장·코치가 운동 중 가드와 스텝을 살펴보고 미트 훈련을 진도에 맞춰 안내합니다.",
+    highlights: ["여성 복싱", "토·일 운영", "직장인 운동", "운동 중 자세 코칭"],
   },
-
   yeongdeungpo: {
-    name: "영등포점",
-    fullName: "스트롱복싱 영등포점",
-    area: "영등포",
-    image: "/images/branches/yeongdeungpo.jpg",
-    ogImage: "/images/branches/yeongdeungpo.jpg",
-    imageAlt: "스트롱복싱 영등포점 복싱장 내부 전경",
-    phone: "02-831-9312",
-    email: "yeongdeungpo@strongboxing.kr",
-    address: "서울시 영등포구 도림로 313 건영상가 2층",
+    directions: "영등포구 도림동 도림로 313, 건영상가 2층에 있어요. 신길동·대림동에서 오시는 분은 길찾기에서 방문 경로를 확인할 수 있어요.",
     streetAddr: "도림로 313 건영상가 2층",
     addressLocality: "영등포구",
     addressRegion: "서울특별시",
-    hours: ["월-금 13:00~23:00"],
     openingHoursSpec: [
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "13:00", closes: "23:00" },
     ],
+    name: "영등포점", fullName: "스트롱복싱 영등포점", area: "영등포",
+    image: "/images/branches/yeongdeungpo.jpg",
+    phone: "02-831-9312", hours: ["월-금 13:00~23:00"],
     instagram: "https://www.instagram.com/stron_gboxinggym",
-    booking:
-      "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll",
-    naverMap: "https://naver.me/G4yQwkR0",
-    kakaoMap: "https://place.map.kakao.com/251044807",
-    description: branchDescriptions.yeongdeungpo,
+    booking: "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll",
+    naverMap: "https://naver.me/G4yQwkR0", kakaoChat: null,
+    address: "서울시 영등포구 도림로 313 건영상가 2층",
+    region: "영등포구 도림동",
+    searchTitle: "영등포 도림동 복싱장 | 학생·직장인 운동 · 스트롱복싱",
+    intro: "영등포 도림동에서 방과 후나 퇴근 후에 배우는 복싱. 자세와 미트 훈련부터 시작해요.",
+    description: "영등포구 도림동에서 방과 후 학생 운동이나 퇴근 후 체력 관리를 시작해 보세요. 헬스와 다른 전신 운동을 찾는 분도 기본 자세와 미트 훈련부터 배울 수 있어요.",
+    highlights: ["방과 후 학생 운동","직장인 복싱","기초부터 지도"],
   },
+};
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const branch = branches[slug];
+  return {
+    title: { absolute: branch?.searchTitle ?? "스트롱복싱 지점 안내" },
+    description: branch?.description,
+    robots: { index: true, follow: true },
+    alternates: branch ? { canonical: `https://strongboxing.kr/branches/${slug}` } : undefined,
+    openGraph: branch ? { title: branch.searchTitle, description: branch.description, url: `https://strongboxing.kr/branches/${slug}`, images: [branch.image] } : undefined,
+    twitter: branch ? { card: "summary_large_image", title: branch.searchTitle, description: branch.description, images: [branch.image] } : undefined,
+  };
+}
+
+const branchCoaches: Record<string, { name: string; role: string; instagram: string }[]> = {
+  gaebong:      [{ name: "안진호", role: "관장", instagram: "dkswkd3" }],
+  sinjeong:     [{ name: "유상혁", role: "관장", instagram: "robuste_hyeok" }, { name: "정동주", role: "코치", instagram: "jdj_00_" }],
+  mokdong:      [{ name: "송재용", role: "관장", instagram: "nan_yong_" }, { name: "김민찬", role: "코치", instagram: "chan.__2" }],
+  cheolsan:     [{ name: "안도연", role: "관장", instagram: "strongboxing_andy" }, { name: "신우수", role: "코치", instagram: "ws_nakmuay" }],
+  yeongdeungpo: [],
+};
+
+const branchTargetAudience: Record<string, string[]> = {
+  gaebong:      ["개봉·고척동 복싱장 찾는 분", "다이어트 복싱 시작하려는 분", "복싱이 처음인 초보자", "여성 혼자 다니기 편한 곳 찾는 분", "직장인 퇴근 후 운동 찾는 분"],
+  sinjeong:     ["신정네거리 복싱장 찾는 분", "오전 운동 찾는 분", "양천구 초보자", "직장인 저녁 운동 찾는 분", "여성 회원"],
+  mokdong:      ["목동·오목교 복싱장 찾는 분", "다이어트 복싱 하고 싶은 분", "목동 학생·키즈", "직장인", "초보자"],
+  cheolsan:     ["철산동·광명 복싱장 찾는 분", "광명 다이어트 운동 찾는 분", "직장인 퇴근 후 운동", "광명 여성 회원", "주말 운동 찾는 분"],
+  yeongdeungpo: ["영등포 복싱장 찾는 분", "다이어트 복싱 하고 싶은 분", "영등포 직장인", "초보자", "여성 회원"],
 };
 
 const branchFaqs: Record<string, { question: string; answer: string }[]> = {
   gaebong: [
     { question: "개봉 복싱 처음인데 가능할까요?", answer: "처음이신 분들도 기초 자세와 스텝부터 개인 수준에 맞춰 안내해드립니다." },
-    { question: "개봉동 복싱장 찾는데 초보자도 괜찮나요?", answer: "운동 경험이 없어도 회원별 진도에 맞춰 진행되기 때문에 부담 없이 시작할 수 있습니다." },
-    { question: "여성 회원도 많이 다니나요?", answer: "여성 회원분들도 다이어트와 체력 향상 목적으로 편하게 운동하고 계십니다." },
-    { question: "개인별 운동으로 진행되나요?", answer: "운영시간 내 방문하면 회원별 목적과 진도에 맞춰 운동이 진행됩니다." },
+    { question: "여성 회원도 많이 다니나요?", answer: "네. 혼자 방문하는 여성 회원도 기본 자세와 스텝부터 시작할 수 있어요. 체력 관리가 목표라면 미트와 샌드백 훈련을 중심으로 운동 강도를 맞춰드립니다." },
+    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화만 준비해주시면 됩니다." },
+    { question: "운영시간은 어떻게 되나요?", answer: "개봉점은 월~금 13:00~23:00 운영합니다." },
+    { question: "상담 예약은 어떻게 하나요?", answer: "홈페이지 방문 상담 예약, 전화, 카카오톡 문의로 신청하실 수 있습니다." },
+    { question: "개인별 운동으로 진행되나요?", answer: "네. 운영시간 내 편한 시간에 오시면 관장·코치가 개인별 진도에 맞춰 다음 동작을 알려드려요. 새 동작을 배울 때마다 자세를 봐드리고, 필요한 부분은 바로 잡아드려요." },
+    { question: "네이버로 예약할 수 있나요?", answer: "네. 아래 네이버 예약 버튼에서 이 지점의 예약 가능한 날짜와 시간을 확인하고 신청할 수 있어요." },
     { question: "다이어트 복싱도 가능한가요?", answer: "복싱은 전신 운동이라 체중 관리와 체력 향상에 도움이 됩니다." },
     { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 체력 향상과 운동 습관을 만들기 좋습니다." },
-    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
-    { question: "운영시간은 어떻게 되나요?", answer: "개봉점은 월~금 13:00~23:00 운영합니다." },
     { question: "직장인 회원도 많이 다니나요?", answer: "퇴근 후 운동하시는 직장인 회원분들도 많이 이용하고 있습니다." },
-    { question: "상담 예약은 어떻게 하나요?", answer: "홈페이지 방문 상담 예약, 전화, 카카오톡 문의로 신청하실 수 있습니다." },
   ],
-
   sinjeong: [
-    { question: "신정네거리 복싱장이 어디 있나요?", answer: "스트롱복싱 신정점은 신정네거리역 인근 양천구 신정동 1021-7 태화상가 2층에 위치합니다. 신정네거리에서 걸어서 접근 가능합니다." },
+    { question: "초등학생도 키즈 복싱을 배울 수 있나요?", answer: "네. 줄넘기와 균형 잡기, 기본 자세와 스텝부터 시작합니다. 방문 전에 아이의 학년과 운동 경험을 알려주시면 참여 가능한 시간대를 안내해 드려요." },
     { question: "신정 복싱 처음인데 가능할까요?", answer: "처음이신 분들도 기초 자세, 스텝, 펀치부터 차근차근 안내해드립니다." },
-    { question: "신정동 복싱장 찾는데 초보자도 괜찮나요?", answer: "회원별 수준과 목적에 맞춰 진행되기 때문에 초보자도 부담 없이 시작할 수 있습니다." },
     { question: "여성 회원도 운동 가능한가요?", answer: "여성 회원분들도 다이어트, 체력 향상, 스트레스 해소 목적으로 많이 운동하고 계십니다." },
+    { question: "운영시간은 어떻게 되나요?", answer: "신정점은 월~금 10:00~24:00(14:00~15:00 휴게), 토요일 10:00~16:00 운영합니다." },
+    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
     { question: "직장인도 다니기 괜찮나요?", answer: "평일 저녁 시간대에 퇴근 후 운동하시는 직장인 회원도 많습니다." },
     { question: "다이어트 복싱도 가능한가요?", answer: "복싱은 유산소와 근력 운동이 함께 들어가 다이어트와 체력 향상에 도움이 됩니다." },
-    { question: "개인별 운동으로 진행되나요?", answer: "운영시간 내 방문하면 회원별 진도와 운동 목적에 맞춰 진행됩니다." },
-    { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 기초 체력과 운동 습관을 만들기 좋습니다." },
-    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
-    { question: "운영시간은 어떻게 되나요?", answer: "신정점은 월~금 10:00~24:00, 토요일 10:00~16:00 운영합니다. 14:00~15:00는 휴게시간입니다." },
+    { question: "개인별 운동으로 진행되나요?", answer: "네. 운영시간 내 편한 시간에 오시면 관장·코치가 개인별 진도에 맞춰 다음 동작을 알려드려요. 새 동작을 배울 때마다 자세를 봐드리고, 필요한 부분은 바로 잡아드려요." },
+    { question: "네이버로 예약할 수 있나요?", answer: "네. 아래 네이버 예약 버튼에서 이 지점의 예약 가능한 날짜와 시간을 확인하고 신청할 수 있어요." },
     { question: "상담은 어떻게 신청하나요?", answer: "홈페이지 방문 상담 예약 또는 전화 문의로 상담 신청이 가능합니다." },
   ],
-
   mokdong: [
-    { question: "복싱이 처음인데 배울 수 있나요?", answer: "처음이신 분들도 기초 자세와 스텝부터 개인 수준에 맞춰 안내해드립니다." },
+    { question: "목동 복싱 처음인데 가능할까요?", answer: "처음이신 분들도 기초 자세와 스텝부터 개인 수준에 맞춰 안내해드립니다." },
+    { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 체력 향상과 기초 운동 습관을 만들기 좋습니다." },
+    { question: "운영시간은 어떻게 되나요?", answer: "평일 14:00–24:00, 토요일 11:00–16:00에 운영하며 일요일은 휴무입니다." },
+    { question: "준비물은 무엇이 필요한가요?", answer: "편한 운동복과 실내용 운동화만 준비해주시면 됩니다." },
     { question: "원데이 클래스는 얼마인가요?", answer: "30,000원 현장결제이며, 당일 등록 시 전액 페이백됩니다. 회원권 가격은 목동점에 직접 문의해 주세요." },
     { question: "여성 회원도 많이 다니나요?", answer: "여성 회원분들도 다이어트, 체력 향상, 스트레스 해소 목적으로 많이 운동하고 계십니다." },
-    { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 체력 향상과 기초 운동 습관을 만들기 좋습니다." },
-    { question: "개인별 운동으로 진행되나요?", answer: "운영시간 내 방문하면 회원별 운동 목적과 진도에 맞춰 운동이 진행됩니다." },
+    { question: "개인별 운동으로 진행되나요?", answer: "네. 운영시간 내 편한 시간에 오시면 관장·코치가 개인별 진도에 맞춰 다음 동작을 알려드려요. 새 동작을 배울 때마다 자세를 봐드리고, 필요한 부분은 바로 잡아드려요." },
+    { question: "네이버로 예약할 수 있나요?", answer: "네. 아래 네이버 예약 버튼에서 이 지점의 예약 가능한 날짜와 시간을 확인하고 신청할 수 있어요." },
     { question: "다이어트 효과가 있나요?", answer: "복싱은 전신 운동이라 꾸준히 하면 체중 관리와 체력 향상에 도움이 됩니다." },
-    { question: "준비물은 무엇이 필요한가요?", answer: "편한 운동복과 실내용 운동화만 준비해주시면 됩니다. 장비는 체육관에서 안내드립니다." },
-    { question: "운영시간은 어떻게 되나요?", answer: "평일 14:00–24:00 (밤 12시까지) · 토 11:00–16:00 · 일 휴무입니다." },
     { question: "직장인도 운동하기 괜찮나요?", answer: "평일 늦은 시간까지 운영해 퇴근 후 운동하시는 직장인 회원도 많습니다." },
     { question: "상담은 어떻게 신청하나요?", answer: "홈페이지 방문 상담 예약, 전화, 카카오톡 문의로 상담 신청이 가능합니다." },
   ],
-
   cheolsan: [
-    { question: "철산점은 어디에 위치하나요?", answer: "경기도 광명시 철산동 56-14 3층에 위치합니다. 철산역 인근 철산동·하안동·소하동·광명사거리에서 모두 가까운 거리입니다." },
-    { question: "복싱 처음인데 괜찮을까요?", answer: "복싱은 초보자도 기초 자세와 스텝부터 차근차근 배울 수 있습니다. 운동 경험이 없어도 관장이 직접 개인 수준에 맞춰 지도해드립니다." },
-    { question: "광명 다이어트 운동으로 복싱이 효과 있나요?", answer: "복싱은 유산소와 근력이 결합된 전신 운동이라 다이어트 효과가 높습니다. 매 수업마다 다양한 동작과 미트 트레이닝으로 지루하지 않게 운동할 수 있습니다." },
+    { question: "복싱 처음인데 괜찮을까요?", answer: "초보자도 기초 자세와 스텝부터 차근차근 배울 수 있습니다." },
+    { question: "광명 다이어트 운동으로 복싱이 효과 있나요?", answer: "복싱은 유산소와 근력이 결합된 전신 운동이라 다이어트 효과가 높습니다." },
+    { question: "주말에도 운영하나요?", answer: "네, 토·일요일 14:00~18:00 운영합니다." },
+    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
     { question: "광명 여성 운동으로 가능한가요?", answer: "여성 회원도 편하게 운동하실 수 있습니다. 다이어트, 체력 향상, 스트레스 해소 목적으로 여성 회원분들이 많이 등록하고 계십니다." },
     { question: "직장인도 다니기 괜찮나요?", answer: "평일 저녁 늦게까지 운영하며 토·일요일도 운영합니다. 퇴근 후 또는 주말에 운동하시는 직장인 회원도 많습니다." },
-    { question: "주말에도 운영하나요?", answer: "네, 토·일요일 14:00~18:00 운영합니다. 평일 월~금은 14:00~23:00입니다. 공휴일은 휴무입니다." },
-    { question: "철산점에서 오기 편한 동네는 어디인가요?", answer: "철산동, 하안동, 소하동, 광명동, 일직동, 광명사거리 인근에서 모두 편하게 오실 수 있습니다." },
-    { question: "개인별 운동으로 진행되나요?", answer: "운영시간 내 방문하면 회원별 운동 목적과 진도에 맞춰 관장이 직접 1:1로 지도합니다." },
-    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다. 복싱 장갑 등 장비는 체육관에서 안내해드립니다." },
+    { question: "개인별 운동으로 진행되나요?", answer: "네. 운영시간 내 편한 시간에 오시면 관장·코치가 개인별 진도에 맞춰 다음 동작을 알려드려요. 새 동작을 배울 때마다 자세를 봐드리고, 필요한 부분은 바로 잡아드려요." },
+    { question: "네이버로 예약할 수 있나요?", answer: "네. 아래 네이버 예약 버튼에서 이 지점의 예약 가능한 날짜와 시간을 확인하고 신청할 수 있어요." },
     { question: "상담은 어떻게 신청하나요?", answer: "홈페이지 방문 상담 예약, 전화(02-2066-0406), 카카오톡 문의로 신청하실 수 있습니다." },
   ],
-
   yeongdeungpo: [
-    { question: "영등포 복싱 처음인데 가능할까요?", answer: "처음이신 분들도 기초 자세와 스텝부터 개인 수준에 맞춰 안내해드립니다." },
-    { question: "영등포 복싱장 찾는데 초보자도 괜찮나요?", answer: "운동 경험이 없어도 회원별 진도에 맞춰 진행되기 때문에 부담 없이 시작할 수 있습니다." },
-    { question: "여성 회원도 운동 가능한가요?", answer: "여성 회원분들도 다이어트, 체력 향상, 스트레스 해소 목적으로 많이 운동하고 계십니다." },
-    { question: "영등포 직장인도 다니기 괜찮나요?", answer: "평일 저녁 시간대에 퇴근 후 운동하시는 직장인 회원도 많습니다." },
-    { question: "다이어트 복싱도 가능한가요?", answer: "복싱은 유산소와 근력 운동이 함께 들어가 다이어트와 체력 향상에 도움이 됩니다." },
-    { question: "개인별 운동으로 진행되나요?", answer: "운영시간 내 방문하면 회원별 진도와 운동 목적에 맞춰 진행됩니다." },
-    { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 기초 체력과 운동 습관을 만들기 좋습니다." },
-    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
+    { question: "영등포 복싱 처음인데 가능할까요?", answer: "처음이신 분들도 기초부터 개인 수준에 맞춰 안내해드립니다." },
+    { question: "직장인도 다니기 괜찮나요?", answer: "평일 저녁 시간대에 퇴근 후 운동하시는 직장인 회원도 많습니다." },
     { question: "운영시간은 어떻게 되나요?", answer: "영등포점은 월~금 13:00~23:00 운영합니다." },
+    { question: "준비물은 무엇인가요?", answer: "편한 운동복과 실내용 운동화를 준비해주시면 됩니다." },
+    { question: "여성 회원도 운동 가능한가요?", answer: "여성 회원분들도 다이어트, 체력 향상, 스트레스 해소 목적으로 많이 운동하고 계십니다." },
+    { question: "다이어트 복싱도 가능한가요?", answer: "복싱은 유산소와 근력 운동이 함께 들어가 다이어트와 체력 향상에 도움이 됩니다." },
+    { question: "개인별 운동으로 진행되나요?", answer: "네. 운영시간 내 편한 시간에 오시면 관장·코치가 개인별 진도에 맞춰 다음 동작을 알려드려요. 새 동작을 배울 때마다 자세를 봐드리고, 필요한 부분은 바로 잡아드려요." },
+    { question: "네이버로 예약할 수 있나요?", answer: "네. 아래 네이버 예약 버튼에서 이 지점의 예약 가능한 날짜와 시간을 확인하고 신청할 수 있어요." },
+    { question: "학생 회원도 등록 가능한가요?", answer: "학생 회원도 등록 가능하며 기초 체력과 운동 습관을 만들기 좋습니다." },
     { question: "상담은 어떻게 신청하나요?", answer: "홈페이지 방문 상담 예약 또는 전화(02-831-9312), 네이버 예약으로 상담 신청이 가능합니다." },
   ],
 };
 
-const branchTargetAudience: Record<string, string[]> = {
-  mokdong: [
-    "목동·오목교 근처 복싱장·운동 찾는 분",
-    "양천구에서 다이어트 복싱 시작하려는 분",
-    "목동 학생·직장인으로 운동 습관 만들고 싶은 분",
-    "복싱이 처음인 초보자",
-    "목동 헬스 대신 색다른 운동 원하는 분",
-    "여성 혼자 다니기 편한 복싱장 찾는 분",
+const workout = {
+  program: [
+    ["복싱 입문", "처음 배우는 분도 스텝과 기본 자세부터 차근차근 익힙니다."],
+    ["다이어트 복싱", "지루하지 않게 땀 흘리는 복싱 트레이닝으로 운동량을 높입니다."],
+    ["체력 향상", "운동 목적과 체력에 맞춰 무리 없이 꾸준히 운동할 수 있습니다."],
   ],
-  cheolsan: [
-    "광명·철산동에서 복싱 처음 시작하는 분",
-    "광명 다이어트 운동 찾는 분",
-    "광명 헬스 대신 재미있게 운동하고 싶은 분",
-    "철산 인근 직장인으로 퇴근 후 운동 찾는 분",
-    "광명 여성 회원으로 혼자 다니기 편한 곳 찾는 분",
+  flow: [
+    ["01", "몸풀기"],
+    ["02", "줄넘기"],
+    ["03", "자세 & 스텝"],
+    ["04", "미트 트레이닝"],
+    ["05", "샌드백"],
+    ["06", "체력 운동"],
   ],
-  gaebong: [
-    "개봉·고척동 근처 복싱장·운동 찾는 분",
-    "개봉동에서 다이어트 복싱 시작하려는 분",
-    "개봉 헬스 대신 색다른 운동 원하는 분",
-    "구로구 학생·직장인으로 운동 습관 만들고 싶은 분",
-    "복싱이 처음인 초보자",
-    "여성 혼자 다니기 편한 복싱장 찾는 분",
-  ],
-  sinjeong: [
-    "신정네거리·신정동 복싱장 찾는 분",
-    "신정동 다이어트 복싱 시작하려는 분",
-    "신정 헬스 대신 색다른 운동 원하는 분",
-    "양천구 학생으로 방과 후 운동 찾는 분",
-    "신정동 직장인으로 저녁 운동 찾는 분",
-    "복싱이 처음인 초보자",
-  ],
-  yeongdeungpo: [
-    "영등포·도림동 복싱장·운동 찾는 분",
-    "영등포 다이어트 복싱 시작하려는 분",
-    "영등포 헬스 대신 색다른 운동 원하는 분",
-    "영등포 직장인으로 퇴근 후 운동 찾는 분",
-    "복싱이 처음인 초보자",
-    "여성 혼자 다니기 편한 복싱장 찾는 분",
+  firstVisit: [
+    ["01", "예약 또는 방문", "네이버·홈페이지로 예약하거나 바로 방문해도 됩니다"],
+    ["02", "편한 복장으로", "편한 운동복과 실내용 운동화만 준비해주세요"],
+    ["03", "관장과 상담", "운동 목적·체력에 맞춰 맞춤 안내해드립니다"],
+    ["04", "바로 운동 시작", "처음 오셔도 기본 자세부터 천천히 알려드립니다"],
   ],
 };
 
-const branchKeywords: Record<string, string[]> = {
-  gaebong:      ["개봉 복싱", "개봉동 복싱", "개봉 복싱장", "고척동 복싱", "구로 복싱", "개봉 다이어트 복싱", "개봉 운동", "개봉 헬스", "개봉 체육관", "구로 헬스", "고척 운동"],
-  sinjeong:     ["신정 복싱", "신정동 복싱", "신정네거리 복싱", "신정 복싱장", "양천구 복싱", "신정동 다이어트 복싱", "신정동 운동", "신정 헬스", "양천구 헬스", "신정 체육관"],
-  mokdong:      ["목동 복싱", "목동 복싱장", "오목교 복싱", "양천구 복싱", "목동 다이어트 복싱", "목동 운동", "목동 헬스", "오목교 헬스", "목동 체육관", "목동역 운동"],
-  cheolsan:     ["철산 복싱", "광명 복싱", "철산 복싱장", "광명 복싱장", "철산동 복싱", "광명 다이어트 복싱", "광명 운동", "광명 헬스", "철산 헬스", "광명시 체육관", "철산역 운동"],
-  yeongdeungpo: ["영등포 복싱", "영등포 복싱장", "도림동 복싱", "영등포 다이어트 복싱", "영등포 직장인 복싱", "영등포 운동", "영등포 헬스", "도림동 헬스", "영등포 체육관"],
-};
-
-const branchHighlights: Record<string, string[]> = {
-  mokdong:      ["평일 밤 12시까지", "관장 직접 1:1 지도", "초보자 환영"],
-  sinjeong:     ["오전 10시 오픈", "주 6일 운영", "신정동 복싱·운동 초보자 환영"],
-  cheolsan:     ["토·일 운영", "초보자 환영", "관장 직접 1:1 지도"],
-  gaebong:      ["개봉역 도보 거리", "관장 직접 1:1 지도", "개봉 복싱·운동 초보자 환영"],
-  yeongdeungpo: ["영등포 도심 위치", "관장 직접 1:1 지도", "영등포 복싱·운동 환영"],
-};
-
-const BRANCH_AREA_SERVED: Record<string, string[]> = {
-  gaebong:      ["개봉동", "개봉역", "고척동", "오류동", "천왕동", "구로구", "구로"],
-  sinjeong:     ["신정동", "신정네거리", "신월동", "까치산", "화곡동", "양천구"],
-  mokdong:      ["목동", "목5동", "오목교", "오목교역", "목동역", "양천구"],
-  cheolsan:     ["철산동", "철산역", "광명시", "광명", "하안동", "소하동", "광명동", "일직동", "광명사거리"],
-  yeongdeungpo: ["영등포", "도림동", "신길동", "대림동", "영등포구"],
-};
-
-const branchSeoContent: Record<string, any> = {
-  cheolsan: {
-    title: "광명 복싱 · 광명 복싱장 스트롱복싱 철산점",
-    description:
-      "광명 복싱장 스트롱복싱 철산점. 광명시 철산동 위치, 관장 직접 지도, 초보자·여성·직장인도 부담 없이 시작하는 복싱 수업.",
-    nearby: ["광명시", "철산동", "철산역", "광명사거리", "하안동", "소하동", "광명동", "일직동"],
-  },
-  mokdong: {
-    title: "목동 복싱 · 목동 복싱장 스트롱복싱 목동점",
-    description:
-      "목동 복싱장 스트롱복싱 목동점. 목동·오목교 인근, 관장 직접 지도, 초보자·학생·여성·직장인 모두 목적에 맞춰 운동할 수 있습니다.",
-    nearby: ["목동", "오목교", "오목교역", "목동역", "양천구", "신정동"],
-  },
-  gaebong: {
-    title: "개봉 복싱 · 개봉 복싱장 스트롱복싱 개봉점",
-    description:
-      "개봉 복싱장 스트롱복싱 개봉점. 개봉역 인근 구로구 위치, 고척동에서도 가깝고 초보자·여성도 편하게 시작할 수 있는 복싱 체육관.",
-    nearby: ["개봉동", "개봉역", "고척동", "오류동", "천왕동", "구로구"],
-  },
-  sinjeong: {
-    title: "신정동 복싱 · 신정네거리 복싱장 스트롱복싱 신정점",
-    description:
-      "신정동 복싱장 스트롱복싱 신정점. 신정네거리역 인근 양천구 위치, 초보자·학생·여성도 기초부터 체계적으로 배울 수 있습니다.",
-    nearby: ["신정네거리", "신정동", "신월동", "까치산", "화곡동", "양천구"],
-  },
-  yeongdeungpo: {
-    title: "영등포 복싱 · 영등포 복싱장 스트롱복싱 영등포점",
-    description:
-      "영등포 복싱장 스트롱복싱 영등포점. 도림동 위치, 초보자·직장인 모두 기초부터 체계적으로 운동할 수 있는 영등포 복싱 체육관.",
-    nearby: ["영등포", "신길동", "도림동", "대림동"],
-  },
-};
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const branch = branches[slug];
-
-  if (!branch) {
-    return {
-      title: "스트롱복싱",
-      description: "스트롱복싱 지점 안내",
-    };
-  }
-
-  const metaTitles: Record<string, { absolute: string }> = {
-    mokdong:      { absolute: "목동 복싱장 | 밤 12시까지 · 관장 1:1 지도 – 스트롱복싱" },
-    sinjeong:     { absolute: "신정동 복싱 | 신정네거리 복싱장 스트롱복싱 신정점 양천구" },
-    gaebong:      { absolute: "개봉 복싱 | 개봉 복싱장 스트롱복싱 개봉점 고척동 구로" },
-    cheolsan:     { absolute: "철산·광명 복싱 | 주말 운영 · 초보 1:1 – 스트롱복싱" },
-    yeongdeungpo: { absolute: "영등포 복싱 | 영등포 복싱장 스트롱복싱 영등포점 도림동" },
-  };
-  const metaDescriptions: Record<string, string> = {
-    mokdong:      "스트롱복싱 목동점은 평일 밤 12시까지 운영합니다. 정해진 수업 시간표 없이 운영시간 내 방문해 선수 출신 지도진의 1:1 코칭으로 복싱을 시작하세요.",
-    sinjeong:     "신정동 복싱, 신정네거리 복싱장 스트롱복싱 신정점. 초보자·학생·여성 회원도 편하게 배우는 양천구 복싱 체육관.",
-    gaebong:      "개봉 복싱, 개봉 복싱장 스트롱복싱 개봉점. 개봉역 인근, 고척동에서도 가까운 구로구 복싱 체육관.",
-    cheolsan:     "스트롱복싱 철산점은 토·일에도 운영합니다. 처음 배우는 분과 여성 회원도 관장 1:1 지도로 기본 자세와 스텝부터 배울 수 있습니다.",
-    yeongdeungpo: "영등포 복싱, 영등포 복싱장 스트롱복싱 영등포점. 도림동 위치, 초보자부터 다이어트 복싱까지 맞춤 지도.",
-  };
-  const title = metaTitles[slug] ?? { absolute: `${branch.fullName} | ${branch.area} 복싱장` };
-  const metaDesc = metaDescriptions[slug] ?? branch.description;
-  const url = `https://strongboxing.kr/branches/${slug}`;
-
-  const titleStr = title.absolute;
-  return {
-    metadataBase: new URL("https://strongboxing.kr"),
-    title,
-    description: metaDesc,
-    keywords: [
-      ...(branchKeywords[slug] || []),
-      branch.fullName,
-      "스트롱복싱",
-      "초보자 복싱",
-      "다이어트 복싱",
-    ],
-    alternates: {
-      canonical: url,
-    },
-    openGraph: {
-        title: titleStr,
-        description: metaDesc,
-        url,
-        siteName: "스트롱복싱",
-        locale: "ko_KR",
-        type: "website",
-        images: [
-          {
-            url: `https://strongboxing.kr${branch.ogImage || branch.image}`,
-            width: 1200,
-            height: branch.ogImage ? 1200 : 630,
-            alt: branch.fullName,
-          },
-        ],
-      },
-
-      twitter: {
-        card: "summary_large_image",
-        title: titleStr,
-        description: metaDesc,
-        images: [`https://strongboxing.kr${branch.ogImage || branch.image}`],
-      },
-
-      robots: {
-      index: true,
-      follow: true,
-    },
-  };
+function getLocalClips(slug: string, branchName: string): PreviewReel[] {
+  return (slug === "yeongdeungpo" ? [1, 2] : [1, 2, 3]).map((id) => ({
+    id,
+    title: `${branchName} 운동 영상 ${id}`,
+    aria_label: null,
+    poster: slug === "yeongdeungpo" ? "/images/branches/yeongdeungpo.jpg" : `/images/${slug}/clip-${id}.jpg`,
+    video_url: `/videos/${slug}/${String(id).padStart(3, "0")}.mp4`,
+  }));
 }
 
-export default async function BranchPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const branch = branches[slug];
-
-  if (!branch) {
-    return (
-      <main className="min-h-screen bg-[#0E0E10] px-6 py-24 text-white">
-        <div className="mx-auto max-w-5xl">
-          <h1 className="text-4xl font-black">지점을 찾을 수 없습니다.</h1>
-
-          <a href="/" className="mt-6 inline-block text-[#D01E2E]">
-            메인으로 돌아가기
-          </a>
-        </div>
-      </main>
-    );
-  }
-
-  const [rows]: any = await db.query(
-    `
-    SELECT id, title, slug, description, content, branch_name, thumbnail, created_at
-    FROM homepage_posts
-    WHERE branch_name = ?
-    ORDER BY created_at DESC
-    LIMIT 5
-    `,
-    [branch.name]
-  );
-
-  const relatedPosts = rows;
-
-  function getFirstImage(post: any): { url: string; isVideo: boolean } | null {
-    if (post.thumbnail) return { url: post.thumbnail, isVideo: false };
-    const s = String(post.content || "");
-    const htmlImg = s.match(/<img[^>]+src=["']([^"']+)["']/i);
-    if (htmlImg?.[1]) return { url: htmlImg[1], isVideo: false };
-    const mdImg = s.match(/!\[.*?\]\((.*?)\)/);
-    if (mdImg?.[1]) return { url: mdImg[1], isVideo: false };
-    const videoTag = s.match(/<video[^>]+src=["']([^"']+)["']/i);
-    if (videoTag?.[1]) return { url: videoTag[1], isVideo: true };
-    const videoUrl = s.match(/\/uploads\/[^\s"'<>&]+\.(?:mp4|webm|ogg|mov|hevc|mkv|avi|ts)/i);
-    if (videoUrl?.[0]) return { url: videoUrl[0], isVideo: true };
-    return null;
-  }
-
-  const [reelRows]: any = await db.query(
-    `
-    SELECT id, branch_name, title, aria_label, video_url, is_muted
-    FROM homepage_reels
-    WHERE is_active = 1 AND branch_name = ?
-    ORDER BY sort_order ASC, id DESC
-    LIMIT 8
-    `,
-    [branch.name]
-  );
-
-  const branchReels = reelRows;
-  const seoContent = branchSeoContent[slug];
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": ["ExerciseGym", "SportsActivityLocation", "LocalBusiness"],
-    "@id": `https://strongboxing.kr/branches/${slug}#localbusiness`,
-    name: branch.fullName,
-    alternateName: [
-      `${branch.area} 복싱장`,
-      `${branch.area} 복싱`,
-      `스트롱복싱 ${branch.name}`,
-    ],
-    description: branch.description,
-    url: `https://strongboxing.kr/branches/${slug}`,
-    telephone: branch.phone,
-    image: `https://strongboxing.kr${branch.image}`,
-    logo: "https://strongboxing.kr/icon.png",
-    priceRange: "₩₩",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: branch.streetAddr || branch.address,
-      addressLocality: branch.addressLocality,
-      addressRegion: branch.addressRegion,
-      addressCountry: "KR",
-    },
-    openingHoursSpecification: branch.openingHoursSpec || branch.hours.map((h: string) => ({
-      "@type": "OpeningHoursSpecification",
-      description: h,
-    })),
-    sameAs: [
-      branch.instagram,
-      branch.naverMap,
-      branch.kakaoMap,
-      branch.googleMap,
-      branch.booking,
-    ].filter(Boolean),
-    brand: {
-      "@type": "Brand",
-      name: "STRONG BOXING",
-      alternateName: "스트롱복싱",
-      url: "https://strongboxing.kr",
-      logo: "https://strongboxing.kr/icon.png",
-    },
-    parentOrganization: {
-      "@type": "Organization",
-      name: "STRONG BOXING",
-      url: "https://strongboxing.kr",
-    },
-    ...(branchGeo[slug] ? {
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: branchGeo[slug].latitude,
-        longitude: branchGeo[slug].longitude,
-      },
-    } : {}),
-    areaServed: BRANCH_AREA_SERVED[slug] ?? [branch.area],
-    hasMap: branch.naverMap || undefined,
-    knowsAbout: [
-      ...(branchKeywords[slug] || []),
-      "복싱 입문",
-      "초보자 복싱",
-      "다이어트 복싱",
-      "여성 복싱",
-      "직장인 운동",
-      "체력 향상",
-      "스트레스 해소",
-    ],
-    makesOffer: [
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "복싱 입문 수업",
-          description: "처음 시작하는 회원을 위한 기초 자세, 스텝, 펀치 지도",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "다이어트 복싱",
-          description: "체력 향상과 체중 관리를 위한 복싱 트레이닝",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "개인별 복싱 지도",
-          description: "회원 운동 목적과 실력에 맞춘 코치 직접 지도",
-        },
-      },
-    ],
-    ...(branch.reviewCount ? {
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: "4.9",
-        reviewCount: branch.reviewCount,
-      },
-    } : {}),
-  };
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "스트롱복싱",
-        item: "https://strongboxing.kr",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "지점 안내",
-        item: "https://strongboxing.kr/branches",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: branch.fullName,
-        item: `https://strongboxing.kr/branches/${slug}`,
-      },
-    ],
-  };
-
-  const faqItems = branchFaqs[slug] || [
-  {
-    question: `${branch.area} 복싱 처음인데 가능할까요?`,
-    answer: `${branch.fullName}은 처음 시작하는 분들도 기초부터 개인 수준에 맞춰 안내합니다.`,
-  },
-  {
-    question: `${branch.name}은 여성 회원도 운동 가능한가요?`,
-    answer: "여성 회원도 편하게 운동할 수 있으며 다이어트와 체력 향상 목적으로 많이 시작합니다.",
-  },
-  {
-    question: "운영시간 안에 자유롭게 방문 가능한가요?",
-    answer: "운영시간 내 방문 가능하며 운동 목적과 진도에 맞춰 지도합니다.",
-  },
+const galleryImages = [
+  "/images/gallery/moments/story1.jpg",
+  "/images/gallery/moments/story2.jpg",
+  "/images/gallery/moments/story3.jpg",
+  "/images/gallery/moments/story4.jpg",
 ];
 
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqItems.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: item.answer,
-    },
-  })),
-};
+function branchStructuredData(slug: string, branch: Branch, faq: { question: string; answer: string }[]) {
+  const origin = "https://strongboxing.kr";
+  const url = origin + "/branches/" + slug;
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ExerciseGym",
+        "@id": url + "#localbusiness",
+        name: branch.fullName,
+        url,
+        description: branch.description,
+        image: origin + branch.image,
+        telephone: branch.phone,
+        hasMap: branch.naverMap,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: branch.streetAddr,
+          addressLocality: branch.addressLocality,
+          addressRegion: branch.addressRegion,
+          addressCountry: "KR",
+        },
+        openingHoursSpecification: branch.openingHoursSpec,
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: faq.map(({ question, answer }) => ({
+          "@type": "Question",
+          name: question,
+          acceptedAnswer: { "@type": "Answer", text: answer },
+        })),
+      },
+    ],
+  }).replace(/</g, "\u003c");
+}
 
-  return (
-    <main className="min-h-screen bg-[#0E0E10] text-white">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+export default async function BranchPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const branch = branches[slug];
+  if (!branch) return notFound();
 
-      <section className="relative min-h-[90vh] overflow-hidden bg-[#080808]">
-        {/* 배경 이미지 */}
-        <div className="absolute inset-0">
-          <img src={slug === "mokdong" ? "/images/mokdong/mokdong-main.jpg" : slug === "cheolsan" ? "/images/cheolsan/gym.jpg" : branch.image} alt="" className="h-full w-full object-cover" style={{ filter: "brightness(0.18) grayscale(0.2)" }} />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.65) 55%, rgba(8,8,8,0.15) 100%)" }} />
-        </div>
+  const coaches = branchCoaches[slug] ?? [];
+  const audience = branchTargetAudience[slug] ?? [];
+  const faqItems = branchFaqs[slug] ?? [];
 
-        <div className="relative z-10 mx-auto grid max-w-[1280px] items-center gap-14 px-6 py-28 md:min-h-[90vh] md:grid-cols-[1fr_500px] lg:px-10">
-          <div>
-            <a href="/" className="mb-10 inline-block text-[#4A4C50] transition hover:text-white text-sm">
-              ← 메인으로
-            </a>
+  const [relatedPosts, branchReels, reviews] = await Promise.all([
+    db.query<(PreviewPost & RowDataPacket)[]>(`SELECT id, title, slug, description, content, branch_name, thumbnail, created_at
+      FROM homepage_posts WHERE branch_name = ? ORDER BY created_at DESC LIMIT 5`, [branch.name])
+      .then(([rows]) => rows).catch(() => []),
+    db.query<(PreviewReel & RowDataPacket)[]>(`SELECT id, branch_name, title, aria_label, video_url, is_muted
+      FROM homepage_reels WHERE is_active = 1 AND branch_name = ? ORDER BY sort_order ASC, id DESC LIMIT 8`, [branch.name])
+      .then(([rows]) => rows).catch(() => []),
+    db.query<(PreviewReview & RowDataPacket)[]>(`SELECT id, reviewer_name, content, image_url, review_date
+        FROM homepage_naver_reviews WHERE is_active = 1 AND branch_name = ? ORDER BY review_date DESC, id DESC`, [branch.name])
+        .then(([rows]) => rows).catch(() => [])
 
-            <p className="mb-6 text-xs font-black tracking-[0.38em] text-[#D01E2E]">
-              STRONG BOXING BRANCH
-            </p>
+  ]);
 
-            <h1 className="break-keep font-black leading-[0.88] tracking-[-0.05em] text-[#F5F4F1]" style={{ fontSize: "clamp(40px, 5.5vw, 80px)" }}>
-              {seoContent?.title || `${branch.area} 복싱장 ${branch.fullName}`}
-            </h1>
+  function getThumb(post: PreviewPost): string | null {
+    if (post.thumbnail) return post.thumbnail;
+    const s = String(post.content || "");
+    const m = s.match(/<img[^>]+src=["']([^"']+)["']/i) || s.match(/!\[.*?\]\((.*?)\)/);
+    return m?.[1] ?? null;
+  }
 
-            <div className="my-7 h-[2px] w-12" style={{ background: "#D01E2E" }} />
-
-            <p className="max-w-lg text-base leading-8 text-[#8A8D91]">
-              {branch.description}
-            </p>
-
-            {branchHighlights[slug] && (
-              <div className="mt-7 flex flex-wrap gap-2">
-                {branchHighlights[slug].map((tag: string) => (
-                  <span key={tag} className="rounded-full border border-[#D01E2E]/30 bg-[#D01E2E]/10 px-3 py-1 text-xs font-bold text-[#D01E2E]">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <BranchCTAButtons
-              branchName={branch.name}
-              phone={branch.phone}
-              booking={branch.booking}
-              kakaoChat={branch.kakaoChat}
-              naverMap={slug === "mokdong" ? undefined : branch.naverMap}
-            />
-
-            {/* 지점 기본 정보 */}
-            <div className="mt-12 flex flex-col gap-2 text-sm" style={{ color: "#5A5C61" }}>
-              <span>{branch.phone}</span>
-              <span>{branch.hours.join(" · ")}</span>
-            </div>
-          </div>
-
-          <div className="hidden md:block">
-            <div className="overflow-hidden rounded-[16px]" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.08)" }}>
-              <img
-                src={branch.image}
-                alt={branch.imageAlt || branch.fullName}
-                className="h-[600px] w-full object-cover"
-                style={{ filter: "brightness(0.92)" }}
-                fetchPriority="high"
-                loading="eager"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. 이런 분들이 많이 찾아요 */}
-      {branchTargetAudience[slug] && (
-        <section className="px-6 py-24">
-          <div className="mx-auto max-w-[1280px] lg:px-4">
-            <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>FOR YOU</p>
-            <h2 className="mb-8 text-3xl font-black tracking-[-0.04em] text-[#F5F4F1] md:text-4xl">
-              이런 분들이 많이 찾아요
-            </h2>
-            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {branchTargetAudience[slug].map((item: string) => (
-                <li key={item} className="flex items-start gap-3 rounded-[12px] border border-[#4A4C50]/25 bg-[#141416] px-5 py-4 text-sm text-[#8A8D91]">
-                  <span className="mt-[3px] h-2 w-2 shrink-0 rounded-full" style={{ background: "#D01E2E" }} />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
-
-      {(slug === "mokdong" || slug === "cheolsan") && (
-        <section className="px-6 py-16">
-          <div className="mx-auto max-w-[1280px] lg:px-4">
-            <h2 className="mb-6 text-3xl font-black text-[#F5F4F1]">{branch.name} 지도진</h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {(slug === "mokdong"
-                ? [
-                    { name: "송재용", role: "관장", instagram: "nan_yong_" },
-                    { name: "김민찬", role: "코치", instagram: "chan.__2" },
-                  ]
-                : [
-                    { name: "안도연", role: "관장", instagram: "strongboxing_andy" },
-                    { name: "신우수", role: "코치", instagram: "ws_nakmuay" },
-                  ]
-              ).map(({ name, role, instagram }) => (
-                <article key={name} className="rounded-[14px] border border-white/10 bg-[#141416] p-6">
-                  <h3 className="text-xl font-black text-[#F5F4F1]">{name} {role}</h3>
-                  <a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm font-bold text-[#F16B76]">
-                    인스타그램 @{instagram}
-                  </a>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 3. STRONG CLIP */}
-      {branchReels.length > 0 && (
-        <section className="px-6 py-24" style={{ background: "#141416" }}>
-          <div className="mx-auto max-w-[1280px] lg:px-4">
-            <p className="mb-3 text-xs font-black tracking-[0.32em] text-[#D01E2E]">STRONG CLIP</p>
-            <h2 className="mb-10 font-black tracking-[-0.05em] text-[#F5F4F1]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
-              {branch.name} 클립
-            </h2>
-            <div className="overflow-x-auto pb-3" style={{ scrollbarWidth: "thin", scrollbarColor: "#4A4C50 transparent" }}>
-              <div className="flex gap-4">
-                {branchReels.map((reel: any) => (
-                  <BranchReelCard key={reel.id} reel={reel} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 4. 프로그램 + 수업 흐름 */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-[1280px] lg:px-4">
-          <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>PROGRAM</p>
-          <h2 className="mb-12 font-black tracking-[-0.05em]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
-            {branch.area} 복싱 프로그램
-          </h2>
-          <div className="grid gap-4 md:grid-cols-3">
-            {[
-              ["01", "복싱 입문", "처음 배우는 분들도 스텝과 기본 자세부터 차근차근 배웁니다."],
-              ["02", "다이어트 복싱", "지루하지 않게 땀나는 복싱 트레이닝으로 운동량을 높입니다."],
-              ["03", "체력 향상", "운동 목적과 체력에 맞춰 무리 없이 꾸준히 운동할 수 있습니다."],
-            ].map(([num, title, desc]) => (
-              <div
-                key={title}
-                className="group rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9 transition duration-300 hover:-translate-y-1 hover:border-[#4A4C50]/60 hover:bg-[#1A1A1C]"
-              >
-                <p className="mb-8 text-xs font-black" style={{ color: "#2A2A2E" }}>{num}</p>
-                <h3 className="mb-3 text-2xl font-black tracking-[-0.04em] text-[#F5F4F1]">{title}</h3>
-                <p className="leading-7 text-[#8A8D91]">{desc}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9">
-            <p className="mb-6 text-xs font-black tracking-[0.28em]" style={{ color: "#5A5C61" }}>1회 수업 흐름</p>
-            <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-              {[
-                ["01", "몸풀기"],
-                ["02", "줄넘기"],
-                ["03", "자세 & 스텝"],
-                ["04", "미트 트레이닝"],
-                ["05", "샌드백"],
-                ["06", "체력 운동"],
-              ].map(([n, s]) => (
-                <div key={n} className="flex flex-col items-center gap-2 rounded-[10px] border border-[#4A4C50]/20 p-4 text-center">
-                  <span className="text-[10px] font-black" style={{ color: "#5A5C61" }}>{n}</span>
-                  <span className="text-xs font-bold leading-tight text-[#8A8D91]">{s}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. 지역 안내 */}
-      {branchLocalContent[slug] && (
-        <section className="px-6 py-24">
-          <div className="mx-auto max-w-[1280px] lg:px-4">
-            <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>LOCATION</p>
-            <h2 className="mb-10 font-black tracking-[-0.04em] text-[#F5F4F1]" style={{ fontSize: "clamp(24px, 3vw, 36px)" }}>
-              {branchLocalContent[slug].heading}
-            </h2>
-            <div className="grid gap-5 md:grid-cols-3">
-              {branchLocalContent[slug].paragraphs.map((text, i) => (
-                <p key={i} className="rounded-[14px] border border-[#4A4C50]/20 bg-[#141416] p-7 text-sm leading-8 text-[#8A8D91]">
-                  {text}
-                </p>
-              ))}
-            </div>
-            {slug === "mokdong" && (
-              <a href={branch.booking} target="_blank" rel="noopener noreferrer" className="mt-6 inline-block rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white">
-                목동점 네이버 예약 →
-              </a>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* 6. FAQ */}
-      <section className="px-6 py-24" style={{ background: "#141416" }}>
-        <div className="mx-auto max-w-[1280px] lg:px-4">
-          <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>FAQ</p>
-          <h2 className="mb-10 text-3xl font-black tracking-[-0.04em] text-[#F5F4F1] md:text-4xl">
-            자주 묻는 질문
-          </h2>
-          <div className="space-y-3">
-            {faqItems.map((item, index) => (
-              <div
-                key={index}
-                className="rounded-[14px] border border-[#4A4C50]/25 bg-[#0E0E10] p-7 transition duration-250 hover:border-[#4A4C50]/55"
-              >
-                <h3 className="text-base font-black tracking-[-0.02em] text-[#F5F4F1]">
-                  {item.question}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-[#8A8D91]">
-                  {item.answer}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 7. 블로그/소식 */}
-      {relatedPosts.length > 0 && (
-        <section className="px-6 py-24">
-          <div className="mx-auto max-w-[1280px] lg:px-4">
-            <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>NEWS & REVIEW</p>
-            <div className="mb-10 flex items-end justify-between gap-4">
-              <h2 className="font-black tracking-[-0.05em]" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
-                {branch.name} 소식 & 후기
-              </h2>
-              <a href="/blog" className="shrink-0 text-sm font-black text-[#8A8D91] transition hover:text-white">{branch.area} 복싱장 글 전체 보기 →</a>
-            </div>
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {relatedPosts.map((post: any) => {
-                const image = getFirstImage(post);
-                return (
-                  <a
-                    key={post.id}
-                    href={`/blog/${post.slug}`}
-                    className="group overflow-hidden rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] transition duration-300 hover:-translate-y-1 hover:border-white/25"
-                  >
-                    <div className="h-[210px] overflow-hidden bg-[#1A1A1C]">
-                      {image && (
-                        image.isVideo ? (
-                          <video
-                            src={encodeURI(image.url)}
-                            muted
-                            playsInline
-                            preload="metadata"
-                            className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-[1.03]"
-                          />
-                        ) : (
-                          <img
-                            src={encodeURI(image.url)}
-                            alt={post.title}
-                            className="h-full w-full object-cover object-[center_30%] transition duration-500 group-hover:scale-[1.03]"
-                          />
-                        )
-                      )}
-                    </div>
-                    <div className="p-7">
-                      <div className="mb-4 flex items-center gap-2">
-                        <span className="rounded-full bg-[#D01E2E] px-3 py-1 text-xs font-black">{post.branch_name}</span>
-                        <span className="text-xs text-[#8A8D91]">
-                          {new Date(post.created_at).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}
-                        </span>
-                      </div>
-                      <h3 className="mb-3 text-xl font-black leading-tight tracking-[-0.03em] text-[#F5F4F1]">{post.title}</h3>
-                      <p className="line-clamp-2 text-sm leading-7 text-[#8A8D91]">{post.description}</p>
-                      <p className="mt-4 text-xs font-black text-[#D01E2E] opacity-0 transition-opacity duration-300 group-hover:opacity-100">자세히 보기 →</p>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a
-                href="/blog"
-                className="rounded-[10px] border border-[#4A4C50]/30 bg-[#141416] px-5 py-3 text-sm font-black text-[#8A8D91] transition hover:border-white/25 hover:text-white"
-              >
-                {branch.area} 복싱장 소식 더 보기 →
-              </a>
-              <a
-                href={branch.booking}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-[10px] border border-[#D01E2E]/40 bg-[#141416] px-5 py-3 text-sm font-black text-[#D01E2E] transition hover:border-[#D01E2E] hover:bg-[#D01E2E] hover:text-white"
-              >
-                네이버 방문 상담 예약 →
-              </a>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 7. CTA 배너 */}
-      <section className="px-6 py-24" style={{ background: "#141416" }}>
-        <div className="mx-auto max-w-[1280px] lg:px-4">
-          <div className="relative overflow-hidden rounded-[20px] border border-[#4A4C50]/30 bg-[#111214] p-12 text-center md:p-16">
-            <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 70% 60% at 50% 100%, rgba(208,30,46,0.07) 0%, transparent 70%)" }} />
-            <p className="relative mb-4 text-xs font-black tracking-[0.38em]" style={{ color: "#5A5C61" }}>STRONG BOXING</p>
-            <h2 className="relative mb-4 font-black tracking-[-0.05em] text-[#F5F4F1]" style={{ fontSize: "clamp(32px, 5vw, 64px)" }}>
-              {branch.name}에서 시작해볼까요?
-            </h2>
-            <p className="relative mb-10 text-base leading-8 text-[#8A8D91]">
-              {slug === "cheolsan"
-                ? "원데이 클래스 30,000원 현장결제 · 당일 등록 시 전액 페이백"
-                : "처음이어도 괜찮습니다. 운동 목적에 맞춰 상담 후 안내해드립니다."}
-            </p>
-            <p className="relative mb-6 text-sm text-[#8A8D91]">회원권 가격은 {branch.name}에 직접 문의해 주세요.</p>
-            <div className="relative flex flex-col justify-center gap-3 sm:flex-row">
-              <a
-                href={`tel:${branch.phone.replaceAll("-", "")}`}
-                className="group inline-flex items-center justify-center gap-2 rounded-[10px] bg-[#D01E2E] px-9 py-4 font-black text-white transition hover:bg-[#B71C2B]"
-              >
-                전화 문의
-                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </a>
-              {branch.booking && (
-                <a
-                  href={branch.booking}
-                  target="_blank"
-                  className="rounded-[10px] border border-[#4A4C50]/40 px-9 py-4 font-black text-[#F5F4F1] transition hover:border-white/30 hover:bg-white/6"
-                >
-                  {slug === "cheolsan" ? "원데이 클래스 네이버 예약" : "네이버 예약"}
-                </a>
-              )}
-              {branch.kakaoChat && (
-                <a
-                  href={branch.kakaoChat}
-                  target="_blank"
-                  className="inline-flex items-center justify-center gap-2 rounded-[10px] border border-[#4A4C50]/40 px-9 py-4 font-black text-[#F5F4F1] transition hover:border-white/30 hover:bg-white/6"
-                >
-                  <span className="inline-block h-3 w-3 rounded-full" style={{ background: "#FEE500" }} />
-                  카카오 문의
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 8. 지점 정보 + 바로가기 */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-[1280px] lg:px-4">
-          <p className="mb-3 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>BRANCH INFO</p>
-          <div className="grid gap-5 md:grid-cols-2">
-            <div className="rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9">
-              <h2 className="mb-7 text-2xl font-black tracking-[-0.03em] text-[#F5F4F1]">지점 정보</h2>
-              <div className="space-y-4 text-sm leading-7">
-                <div className="flex gap-4">
-                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>전화</span>
-                  <span style={{ color: "#F5F4F1" }}>{branch.phone}</span>
-                </div>
-                <div className="flex gap-4">
-                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>주소</span>
-                  <span style={{ color: "#8A8D91" }}>{branch.address}</span>
-                </div>
-                <div className="flex gap-4">
-                  <span style={{ color: "#4A4C50", flexShrink: 0, width: 48 }}>운영</span>
-                  <div className="flex flex-col gap-0.5">
-                    {branch.hours.map((h: string) => (
-                      <span key={h} style={{ color: "#8A8D91" }}>{h}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-[16px] border border-[#4A4C50]/30 bg-[#141416] p-9">
-              <h2 className="mb-7 text-2xl font-black tracking-[-0.03em] text-[#F5F4F1]">바로가기</h2>
-              <div className="mb-4 flex flex-wrap gap-3">
-                <a
-                  href={`tel:${branch.phone.replaceAll("-", "")}`}
-                  className="rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition hover:bg-[#B71C2B]"
-                >
-                  전화 문의
-                </a>
-                {branch.booking && (
-                  <a
-                    href={branch.booking}
-                    target="_blank"
-                    className="rounded-[10px] border border-[#4A4C50]/40 bg-[#0E0E10] px-6 py-3 text-sm font-black text-[#F5F4F1] transition hover:border-white/30"
-                  >
-                    네이버 예약
-                  </a>
-                )}
-                {branch.kakaoChat && (
-                  <a
-                    href={branch.kakaoChat}
-                    target="_blank"
-                    className="inline-flex items-center gap-2 rounded-[10px] border border-[#4A4C50]/40 bg-[#0E0E10] px-6 py-3 text-sm font-black text-[#F5F4F1] transition hover:border-white/30"
-                  >
-                    <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: "#FEE500" }} />
-                    카카오 문의
-                  </a>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {branch.naverMap && (
-                  <a href={branch.naverMap} target="_blank"
-                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
-                    네이버지도
-                  </a>
-                )}
-                {branch.kakaoMap && (
-                  <a href={branch.kakaoMap} target="_blank"
-                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
-                    카카오맵
-                  </a>
-                )}
-                {branch.googleMap && (
-                  <a href={branch.googleMap} target="_blank"
-                    className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
-                    구글지도
-                  </a>
-                )}
-                <a href={branch.instagram} target="_blank"
-                  className="rounded-[8px] border border-[#4A4C50]/25 px-4 py-2 text-xs font-bold text-[#8A8D91] transition hover:text-white">
-                  인스타그램
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 9. ABOUT — 지역 소개 */}
-      <section className="px-6 py-24" style={{ background: "#0E0E10", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div className="mx-auto max-w-[1280px] lg:px-4">
-          <div className="grid gap-12 md:grid-cols-2">
-            <div className="overflow-hidden rounded-[14px] border border-[#4A4C50]/30">
-              <img
-                src={slug === "mokdong" ? "/images/mokdong/mokdong-training.jpg" : slug === "cheolsan" ? "/images/cheolsan/training.jpg" : branch.image}
-                alt={branch.name + (slug === "mokdong" || slug === "cheolsan" ? " 복싱 훈련 모습" : " 복싱장 내부")}
-                className="h-[380px] w-full object-cover"
-                style={{ filter: "brightness(0.9)" }}
-              />
-            </div>
-            <div className="flex flex-col justify-center">
-              <p className="mb-4 text-xs font-black tracking-[0.32em]" style={{ color: "#5A5C61" }}>ABOUT</p>
-              <h2 className="mb-2 break-keep font-black tracking-[-0.04em] text-[#F5F4F1]" style={{ fontSize: "clamp(28px, 3.5vw, 44px)" }}>
-                {slug === "mokdong" ? "퇴근 후 내 시간에 시작하는 복싱" : slug === "cheolsan" ? "첫 복싱, 기본 자세부터" : seoContent?.title || `${branch.area} 복싱 입문 전문 체육관`}
-              </h2>
-              <div className="my-5 h-[2px] w-10" style={{ background: "#D01E2E" }} />
-              <p className="max-w-lg break-keep text-base leading-8 text-[#8A8D91]">
-                {slug === "mokdong"
-                  ? "퇴근 후 운동을 시작하려는 직장인과 복싱이 처음인 여성 회원도 편한 시간에 방문할 수 있어요. 체력과 목표에 맞춰 스텝과 미트 훈련을 진행합니다."
-                  : slug === "cheolsan"
-                    ? "운동 경험이 적어도 자세와 스텝부터 개인 진도에 맞춰 시작할 수 있어요. 체력 향상이나 스트레스 해소를 목표로 하는 여성 회원도 환영합니다."
-                    : seoContent?.description || branch.description}
-              </p>
-              <div className="mt-8 grid grid-cols-2 gap-3">
-                {["초보자 개인지도", "여성 회원 환영", "다이어트 복싱", "직장인 야간 운동"].map((t) => (
-                  <div key={t} className="flex items-center gap-2 text-sm" style={{ color: "#8A8D91" }}>
-                    <span className="h-1 w-1 rounded-full shrink-0" style={{ background: "#D01E2E" }} />
-                    {t}
-                  </div>
-                ))}
-              </div>
-              {seoContent?.nearby && (
-                <div className="mt-8 flex flex-wrap gap-2">
-                  {seoContent.nearby.map((area: string) => (
-                    <span key={area} className="rounded-full border border-[#4A4C50]/30 px-3 py-1 text-xs font-bold text-[#8A8D91]">
-                      {area} 인근
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <NaverReviewsSection
-        branchName={branch.name}
-        reviewUrl={slug === "mokdong"
-          ? "https://m.place.naver.com/place/2036376446/review/visitor"
-          : slug === "cheolsan" ? "https://m.place.naver.com/place/2037244259/review/visitor" : undefined}
+    const mediaRoot = `/images/${slug}`;
+    const isMokdong = slug === "mokdong";
+    return (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: branchStructuredData(slug, branch, faqItems) }} />
+      <BranchPreview
+        branch={branch}
+        photos={slug === "yeongdeungpo" ? [{ src: branch.image, label: "영등포점 체육관 내부" }] : [
+          { src: `${mediaRoot}/${isMokdong ? "mokdong-training" : "training"}.jpg`, label: `${branch.name} 운동 모습` },
+          { src: `${mediaRoot}/${isMokdong ? "mokdong-main" : "gym"}.jpg`, label: `${branch.name} 체육관 내부` },
+          { src: branch.image, label: `${branch.name} 대표 사진` },
+        ]}
+        coaches={coaches}
+        posts={relatedPosts}
+        reels={branchReels.length ? branchReels : getLocalClips(slug, branch.name)}
+        reviews={reviews}
+        audience={audience}
+        faq={faqItems}
+        workout={workout}
+        galleryImages={slug === "yeongdeungpo" ? [branch.image] : isMokdong ? galleryImages : [`${mediaRoot}/facility.jpg`]}
+        getThumb={getThumb}
       />
-    </main>
-  );
+      </>
+    );
 }

@@ -366,6 +366,12 @@ export default function AdminPage() {
       return;
     }
 
+    const supportsPopup = category === "이벤트" || category === "공지";
+    if (supportsPopup && (popupStart || popupEnd) && (!popupStart || !popupEnd || popupStart > popupEnd)) {
+      alert("팝업 시작일과 종료일을 순서대로 입력해 주세요.");
+      return;
+    }
+
     setSaving(true);
 
     const res = await fetch("/api/posts", {
@@ -382,8 +388,8 @@ export default function AdminPage() {
       description,
       content,
       thumbnail: thumbnail || null,
-      popup_start: popupStart || null,
-      popup_end: popupEnd || null,
+      popup_start: supportsPopup ? popupStart || null : null,
+      popup_end: supportsPopup ? popupEnd || null : null,
     }),
     });
 

@@ -1,18 +1,16 @@
-import BoxingCalculator from "./components/BoxingCalculator";
 import { db } from "@/lib/db";
+import type { RowDataPacket } from "mysql2";
+import NaverReviewsClient from "./components/NaverReviewsClient";
+import { TabSection } from "./renewal/HomeRenewalClient";
+import ReelsClient from "./components/ReelsClient";
 import ConsultationForm from "./components/ConsultationForm";
 import ReservationButton from "./components/ReservationButton";
 import AiCoachChat from "./components/AiCoachChat";
 import FaqSection from "./components/FaqSection";
-import ReelsSection from "./components/ReelsSection";
 //import SplashScreen from "./components/SplashScreen";
-import NaverReviewsSection from "./components/NaverReviewsSection";
 import GallerySection from "./components/GallerySection";
 import RevealObserver from "./components/RevealObserver";
-import BranchMap from "./components/BranchMap";
-import BranchHeroGrid from "./components/BranchHeroGrid";
 import SiteHeader from "./components/SiteHeader";
-import NewsReviewClient from "./components/NewsReviewClient";
 import FloatingCTA from "./components/FloatingCTA";
 import PopupBanner from "./components/PopupBanner";
 import type { Metadata } from "next";
@@ -180,14 +178,6 @@ const homeJsonLd = [
       },
       {
         "@type": "Question",
-        name: "복싱 PT 수업도 받을 수 있나요?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "네, 스트롱복싱은 개인 맞춤형 복싱 PT 프로그램을 운영합니다. 다이어트·체력 증진·스파링 등 목적에 맞춰 코치가 1:1로 지도합니다.",
-        },
-      },
-      {
-        "@type": "Question",
         name: "방문 상담은 무료인가요?",
         acceptedAnswer: {
           "@type": "Answer",
@@ -198,15 +188,49 @@ const homeJsonLd = [
   },
 ];
 
+type StoryPost = RowDataPacket & { id: number; title: string; slug: string; description: string | null; branch_name: string; category: string | null };
+type StoryReel = RowDataPacket & { id: number; branch_name: string; title: string; aria_label: string | null; video_url: string; is_muted: number };
+type StoryReview = RowDataPacket & { id: number; branch_name: string; reviewer_name: string | null; content: string; image_url: string | null; review_date: string | null };
+
+async function loadStoryRows<T extends RowDataPacket>(sql: string, legacySql?: string): Promise<T[]> {
+  if (!process.env.DB_HOST) return [];
+  try {
+    const [rows] = await db.query<T[]>(sql);
+    return rows;
+  } catch (error) {
+    if (legacySql && (error as { code?: string }).code === "ER_BAD_FIELD_ERROR") {
+      return loadStoryRows<T>(legacySql);
+    }
+    console.error("스트롱 이야기 콘텐츠를 불러오지 못했습니다.", error);
+    return [];
+  }
+}
+
 export default async function HomePage() {
-  const [rows]: any = await db.query(`
-    SELECT id, title, slug, description, branch_name, created_at, content, thumbnail
-    FROM homepage_posts
-    WHERE branch_name IS NOT NULL AND branch_name NOT IN ('', '전체')
-    ORDER BY created_at DESC
-    LIMIT 3
-  `);
-  const latestPosts = rows;
+  const [posts, reels, reviews] = await Promise.all([
+    loadStoryRows<StoryPost>(`
+      SELECT id, title, slug, description, branch_name, category
+      FROM homepage_posts
+      WHERE branch_name IS NOT NULL AND branch_name != ''
+        AND NOT (branch_name = '전체' AND COALESCE(category, '') = '복싱정보')
+      ORDER BY created_at DESC, id DESC LIMIT 6
+    `, `
+      SELECT id, title, slug, description, branch_name, NULL AS category
+      FROM homepage_posts
+      WHERE branch_name IS NOT NULL AND branch_name != ''
+      ORDER BY created_at DESC, id DESC LIMIT 6
+    `),
+    loadStoryRows<StoryReel>(`
+      SELECT id, branch_name, title, aria_label, video_url, is_muted
+      FROM homepage_reels WHERE is_active = 1
+      ORDER BY sort_order ASC, id DESC
+    `),
+    loadStoryRows<StoryReview>(`
+      SELECT id, branch_name, reviewer_name, content, image_url, review_date
+      FROM homepage_naver_reviews WHERE is_active = 1
+      ORDER BY review_date DESC, id DESC
+    `),
+  ]);
 
   return (
     <>
@@ -223,7 +247,7 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════
             HERO — 좌: 카피 / 우: 지점 Magazine Grid
         ══════════════════════════════════════ */}
-        <section id="branches" className="relative overflow-hidden" style={{ background: "#0E0E10", scrollMarginTop: "120px" }}>
+        <section className="relative overflow-hidden" style={{ background: "#0E0E10", scrollMarginTop: "120px" }}>
           {/* 배경 텍스처 — 도트 그리드 */}
           <div className="pointer-events-none absolute inset-0"
             style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px)", backgroundSize: "44px 44px" }} />
@@ -234,15 +258,15 @@ export default async function HomePage() {
           <div className="pointer-events-none absolute left-0 top-0 h-[2px] w-full" style={{ background: "#D01E2E" }} />
 
           <div className="mx-auto max-w-[1440px] px-6 md:px-10">
-            <div className="grid min-h-[92vh] items-center gap-12 py-20 lg:grid-cols-[1fr_1.15fr] lg:gap-8 lg:py-16">
+            <div className="grid min-h-[70vh] items-center gap-9 pb-12 pt-28 lg:grid-cols-[1fr_1.15fr] lg:gap-8 lg:pb-14 lg:pt-32">
 
               {/* ── 왼쪽: 카피 ── */}
               <div className="flex flex-col justify-center">
-                <p className="mb-7 text-[10px] font-black tracking-[0.45em]" style={{ color: "#8A8D91" }}>
-                  STRONG BOXING — 서울 · 경기 5개 지점
+                <p className="mb-4 text-xs font-semibold tracking-wide" style={{ color: "#8A8D91" }}>
+                  서울·경기 5개 지점 직영
                 </p>
 
-                <h1 style={{ fontSize: "clamp(52px, 7.5vw, 108px)", lineHeight: 0.87, letterSpacing: "-0.05em", fontWeight: 900 }}>
+                <h1 style={{ fontSize: "clamp(46px, 6.5vw, 88px)", lineHeight: 1.04, letterSpacing: "-0.05em", fontWeight: 900 }}>
                   <span style={{ color: "#F5F4F1" }}>처음이어도</span>
                   <br />
                   <span style={{ color: "#F5F4F1" }}>
@@ -256,14 +280,16 @@ export default async function HomePage() {
                   <span style={{ color: "#F5F4F1", fontWeight: 700 }}>초보부터 실력자까지, 수준에 맞춘 맞춤형 복싱</span>
                 </p>
 
+                <p className="mt-3 text-sm font-semibold text-[#C9C9C9] md:text-base">어느 스트롱에 가도, 같은 기준으로 배웁니다.</p>
+                <a href="/about" className="mt-2 w-fit text-sm font-semibold text-[#F5F4F1] underline decoration-[#D01E2E] underline-offset-4">스트롱복싱이 가르치는 방식 ↗</a>
                 <div className="mt-9 flex flex-wrap gap-3">
-                  <ReservationButton className="btn-primary group rounded-[10px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white hover:bg-[#B71C2B]">
+                  <ReservationButton className="btn-primary group rounded-[4px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white hover:bg-[#B71C2B]">
                     원데이 클래스 예약하기
                     <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </ReservationButton>
                   <a
-                    href="#branch"
-                    className="group inline-flex items-center gap-2 rounded-[10px] px-7 py-3.5 text-sm font-black transition-all duration-300 hover:bg-white/6"
+                    href="#branches"
+                    className="group inline-flex items-center gap-2 rounded-[4px] px-7 py-3.5 text-sm font-black transition-all duration-300 hover:bg-white/6"
                     style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}
                   >
                     가까운 지점 보기
@@ -272,7 +298,7 @@ export default async function HomePage() {
                 </div>
 
                 <p className="mt-4 text-xs leading-5" style={{ color: "#5A5C61" }}>
-                  원데이 클래스 <span style={{ color: "#8A8D91", fontWeight: 700 }}>30,000원</span> 현장결제
+                  원데이 클래스 <span style={{ color: "#8A8D91", fontWeight: 700 }}>30,000원</span>{" "}현장결제
                   &nbsp;·&nbsp; 당일 등록 시 <span style={{ color: "#8A8D91", fontWeight: 700 }}>전액 페이백</span>
                   &nbsp;·&nbsp; 편한 운동복만 챙겨오세요
                 </p>
@@ -288,111 +314,106 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              {/* ── 오른쪽: Magazine 지점 그리드 ── */}
-              <BranchHeroGrid branches={branches} />
-            </div>
-          </div>
-
-          {/* 스크롤 유도 */}
-          <div className="pointer-events-none absolute bottom-7 left-0 right-0 hidden justify-center lg:flex">
-            <div className="flex animate-bounce flex-col items-center gap-1" style={{ color: "#3A3A3E" }}>
-              <span className="text-[9px] font-black tracking-[0.35em]">SCROLL</span>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M7 2v8M2 6.5l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <figure className="relative m-0 overflow-hidden rounded-[4px] border border-white/10 bg-[#141416]">
+                <video className="aspect-[16/10] w-full bg-black object-contain" src="/videos/sinjeong/011.mp4" poster="/images/branches/sinjeong.jpg" controls muted playsInline preload="metadata" aria-label="스트롱복싱 신정점 영상" />
+                <figcaption className="border-t border-white/10 px-4 py-2.5 text-xs text-[#B5B5BC]">스트롱복싱 신정점</figcaption>
+              </figure>
             </div>
           </div>
         </section>
 
-        {/* ══════════════════════════════════════
-            FEATURE STRIP
-        ══════════════════════════════════════ */}
-        <div style={{ background: "#141416", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-0 px-6 md:grid-cols-4">
-
-            <div className="reveal px-8 py-8 transition-all duration-300 hover:bg-white/[0.02]"
-              style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}>
-              <div className="mb-4" style={{ color: "#D01E2E" }}>
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="11" cy="7" r="4"/>
-                </svg>
-              </div>
-              <p className="mb-1.5 text-sm font-black" style={{ color: "#F5F4F1" }}>관장 직접 지도</p>
-              <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>관장·코치가 개인 진도에 맞춰 직접 지도</p>
-            </div>
-
-            <div className="reveal d1 px-8 py-8 transition-all duration-300 hover:bg-white/[0.02]"
-              style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}>
-              <div className="mb-4" style={{ color: "#D01E2E" }}>
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 7 12.5 14.5 7.5 9.5 1 16"/><polyline points="15 7 20 7 20 12"/>
-                </svg>
-              </div>
-              <p className="mb-1.5 text-sm font-black" style={{ color: "#F5F4F1" }}>기본기부터 차근차근</p>
-              <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>자세, 스텝, 미트, 샌드백까지 단계적으로</p>
-            </div>
-
-            <div className="reveal d2 px-8 py-8 transition-all duration-300 hover:bg-white/[0.02]"
-              style={{ borderRight: "1px solid rgba(255,255,255,0.06)" }}>
-              <div className="mb-4" style={{ color: "#D01E2E" }}>
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="12 2 2 13 11 13 10 21 20 10 11 10 12 2"/>
-                </svg>
-              </div>
-              <p className="mb-1.5 text-sm font-black" style={{ color: "#F5F4F1" }}>다이어트 &amp; 체력</p>
-              <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>전신 운동으로 체지방 감량과 체력증진 동시에</p>
-            </div>
-
-            <div className="reveal d3 px-8 py-8 transition-all duration-300 hover:bg-white/[0.02]">
-              <div className="mb-4" style={{ color: "#D01E2E" }}>
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 10v1a8 8 0 1 1-4.88-7.31"/><polyline points="19 4 10 13 7 10"/>
-                </svg>
-              </div>
-              <p className="mb-1.5 text-sm font-black" style={{ color: "#F5F4F1" }}>초보자 환영</p>
-              <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>운동이 처음이어도 기본기부터 편하게 시작</p>
-            </div>
-
-          </div>
-        </div>
-
-
-        <div id="clips" style={{ scrollMarginTop: "120px" }}>
-          <ReelsSection />
-        </div>
-
-        {/* ══════════════════════════════════════
-            NEWS & REVIEW
-        ══════════════════════════════════════ */}
-        <section id="news" className="px-6 py-20 md:px-8" style={{ background: "#0E0E10" }}>
-          <div className="mx-auto max-w-7xl">
-            <NewsReviewClient posts={latestPosts} />
+        <section id="branches" aria-labelledby="branch-title" className="mx-auto max-w-[1440px] scroll-mt-24 px-6 pb-10 pt-4 md:px-10">
+          <h2 id="branch-title" className="mb-5 text-3xl font-black tracking-tight md:text-4xl">가까운 스트롱 찾기</h2>
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+            {branches.map((branch) => (
+              <a
+                key={branch.slug}
+                href={`/branches/${branch.slug}`}
+                className="group overflow-hidden rounded-[4px] border border-white/10 bg-[#151517] transition-colors hover:border-[#D01E2E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D01E2E]"
+              >
+                <img src={branch.image} alt="" loading="lazy" className="aspect-[2.2/1] w-full object-cover" />
+                <div className="px-3.5 py-3">
+                  <span className="flex items-center justify-between gap-2 text-[15px] font-bold">
+                    {branch.name}
+                    <span aria-hidden="true" className="text-sm text-[#A0A0A6] transition-colors group-hover:text-[#D01E2E]">↗</span>
+                  </span>
+                  <p className="mt-1 break-keep text-xs font-semibold leading-5 text-[#E5E5E8]">{branch.badges[0]}</p>
+                  <ul aria-label="운영시간" className="mt-2 border-t border-white/10 pt-2 text-xs leading-5 text-[#B5B5BC]">
+                    {branch.hours.map((hours) => <li key={hours}>{hours}</li>)}
+                  </ul>
+                </div>
+              </a>
+            ))}
           </div>
         </section>
-        {/* /NEWS & REVIEW */}
 
-        <div id="reviews" style={{ scrollMarginTop: "120px" }}>
-          <NaverReviewsSection />
-        </div>
+        <section id="story" aria-labelledby="story-title" className="mx-auto max-w-[1440px] scroll-mt-24 border-t border-white/10 px-6 pb-12 pt-8 md:px-10">
+          <div className="grid gap-6 lg:grid-cols-[210px_minmax(0,1fr)] lg:gap-9">
+            <h2 id="story-title" className="text-2xl font-bold tracking-tight md:text-3xl">스트롱 이야기</h2>
+            <TabSection
+              dark
+              tabs={["클립", "시설", "활동기록", "블로그", "네이버 후기"]}
+              panels={[
+                <ReelsClient key="clips" reels={reels.length ? reels : [{ id: 2, branch_name: "목동점", title: "목동점 클립", aria_label: "목동점 클립", video_url: "/videos/mokdong/002.mp4", is_muted: 0 }]} />,
+                <div key="facility">
+                  <p className="mb-4 text-sm leading-7 text-[#C9C9C9]">복싱 전용 링, 샌드백, 미트 트레이닝 공간. 처음 방문해도 편하게 운동할 수 있는 환경입니다.</p>
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                    {[
+                      ["gallery-1.jpg", "스트롱복싱 신정점 샌드백과 복싱 링"],
+                      ["gallery-2.jpg", "창가 복싱 링과 샌드백"],
+                      ["gallery-3.jpg", "벽면을 따라 배치된 샌드백 훈련 공간"],
+                      ["gallery-4.jpg", "샌드백과 바닥 매트를 갖춘 복싱 훈련 공간"],
+                    ].map(([image, alt]) => (
+                      <img key={image} src={`/images/gallery/${image}`} alt={alt} loading="lazy" className="aspect-[4/3] w-full rounded-[4px] object-cover" />
+                    ))}
+                  </div>
+                </div>,
+                <GallerySection key="moments" compact />,
+                <div key="news">
+                  {posts.length > 0 && (
+                    <ul className="divide-y divide-white/10 border-y border-white/10">
+                      {posts.map((post) => (
+                        <li key={post.id}>
+                          <a href={`/blog/${encodeURIComponent(post.slug)}`} className="block px-1 py-4 hover:text-[#D01E2E]">
+                            <span className="block text-xs font-medium text-[#B5B5BC]">{post.branch_name}{post.category && ` · ${post.category}`}</span>
+                            <strong className="mt-1 block break-keep text-base">{post.title}</strong>
+                            {post.description && <span className="mt-1 line-clamp-2 text-sm text-[#B5B5BC]">{post.description}</span>}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <a href={process.env.DB_HOST ? "/blog" : "https://strongboxing.kr/blog"} className="mt-3 inline-block text-sm font-semibold text-[#C9C9C9] underline">전체 블로그 보기 ↗</a>
+                </div>,
+                <div key="reviews">
+                  {reviews.length > 0 ? <NaverReviewsClient reviews={reviews} /> : (
+                    <div className="flex flex-wrap gap-4 rounded-[4px] border border-white/10 bg-[#141416] p-5 text-sm font-semibold text-[#C9C9C9]">
+                      <a href="https://m.place.naver.com/place/2036376446/review/visitor" className="underline">목동점 네이버 후기 ↗</a>
+                      <a href="https://m.place.naver.com/place/2037244259/review/visitor" className="underline">철산점 네이버 후기 ↗</a>
+                    </div>
+                  )}
+                </div>,
+              ]}
+            />
+          </div>
+        </section>
 
         {/* ══════════════════════════════════════
             HOW WE TRAIN
         ══════════════════════════════════════ */}
         <section id="programs" className="px-6 py-24 md:px-8" style={{ background: "#141416", scrollMarginTop: "120px" }}>
           <div className="mx-auto max-w-7xl">
-            <div className="mb-16">
-              <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>HOW WE TRAIN</p>
-              <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
-                관장이 직접<br />가르칩니다
+            <div className="mb-8">
+              <h2 className="reveal d1 font-black leading-[1.05]" style={{ fontSize: "clamp(34px, 5vw, 62px)", letterSpacing: "-0.05em" }}>
+                스트롱에서 배우는 방식
               </h2>
               <p className="reveal d2 mt-6 max-w-lg text-base leading-8" style={{ color: "#8A8D91" }}>
-                정해진 단체 수업이 아닙니다. 운영시간 내 언제든 방문하면 관장·코치가 개인 진도에 맞춰 직접 지도합니다.
+                운영시간 내 편한 시간에 오면 전 지점이 같은 수업 흐름으로 진행합니다. 일반 회원 운동 중 관장·코치가 한 사람씩 자세를 살피고 각자의 진도에 맞춰 코칭합니다.
               </p>
             </div>
 
             <div className="grid gap-3 md:grid-cols-2">
-              <div className="flex flex-col p-8 transition-all duration-300 hover:-translate-y-0.5" style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
-                <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>MY SCHEDULE</p>
+              <div className="flex flex-col p-8 transition-all duration-300 hover:-translate-y-0.5" style={{ borderRadius: 4, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
                 <h3 className="mb-4 text-2xl font-black" style={{ letterSpacing: "-0.04em" }}>내 시간에 맞게</h3>
                 <p className="mb-6 leading-8 text-sm" style={{ color: "#8A8D91" }}>
                   예약 없이 운영시간 내 방문하면 바로 시작할 수 있어요.
@@ -414,21 +435,19 @@ export default async function HomePage() {
                   ))}
                 </div>
                 <div className="mt-auto flex flex-wrap gap-2">
-                  <span className="rounded-[10px] px-3 py-1.5 text-xs font-bold" style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>BEGINNER FRIENDLY</span>
-                  <span className="rounded-[10px] px-3 py-1.5 text-xs font-bold" style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>개인별 진행</span>
-                  <span className="rounded-[10px] px-3 py-1.5 text-xs font-bold" style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>자유 방문</span>
+                  <span className="rounded-[4px] px-3 py-1.5 text-xs font-bold" style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>개인별 진행</span>
+                  <span className="rounded-[4px] px-3 py-1.5 text-xs font-bold" style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>자유 방문</span>
                 </div>
               </div>
 
-              <div className="p-8 transition-all duration-300 hover:-translate-y-0.5" style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
-                <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>1 SESSION</p>
+              <div className="p-8 transition-all duration-300 hover:-translate-y-0.5" style={{ borderRadius: 4, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
                 <h3 className="mb-6 text-2xl font-black" style={{ letterSpacing: "-0.04em" }}>1회 운동 구성</h3>
                 <div className="space-y-3">
                   {[
                     ["01", "몸풀기", "스트레칭 & 워밍업"],
                     ["02", "줄넘기 3R", "기초 체력 훈련"],
                     ["03", "기초자세 & 스텝", "복싱 기본기"],
-                    ["04", "미트트레이닝", "코치와 1:1 실전"],
+                    ["04", "미트트레이닝", "코치와 타이밍·거리 연습"],
                     ["05", "샌드백", "파워 & 지구력"],
                     ["06", "체력운동", "코어 마무리"],
                   ].map(([num, step, desc], i) => (
@@ -442,18 +461,25 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="mt-3 flex flex-col items-center justify-between gap-4 p-7 sm:flex-row"
-              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
-              <div>
-                <p className="font-black text-lg" style={{ color: "#F5F4F1" }}>원데이 클래스로 먼저 경험해보세요.</p>
-                <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>30,000원 현장결제 · 당일 등록 시 전액 페이백</p>
+
+            <div id="program" className="mt-10 scroll-mt-24">
+              <h3 className="mb-2 text-2xl font-black">운동 목적별 프로그램</h3>
+              <p className="mb-4 text-sm leading-7 text-[#B5B5BC]">입문, 다이어트, 체력증진, 스트레스 해소까지 운동 목적에 맞게 진행합니다.</p>
+              <div className="grid gap-3 md:grid-cols-3">
+                {[
+                  ["01", "복싱 입문", "기본자세, 스텝, 펀치부터 차근차근. 처음 오셔도 바로 시작할 수 있습니다."],
+                  ["02", "다이어트 · 체력", "전신 운동으로 체지방 감량과 체력증진을 동시에."],
+                  ["03", "관장 직접 지도", "개인 수준과 목표에 맞춰 관장·코치가 직접 잡아드립니다."],
+                ].map(([num, title, desc], i) => (
+                  <div key={num} className={`group reveal d${i + 1} p-6 transition-all duration-300 hover:-translate-y-1`}
+                    style={{ borderRadius: 4, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
+                    <h3 className="mb-3 text-2xl font-black" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>{title}</h3>
+                    <p className="text-sm leading-7" style={{ color: "#8A8D91" }}>{desc}</p>
+                  </div>
+                ))}
               </div>
-              <a href="/reservation"
-                className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
-                원데이 클래스 예약하기
-                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </a>
             </div>
+            <a id="calculator" href="/tools/boxing-calorie" className="mt-5 inline-block scroll-mt-24 text-sm text-[#B5B5BC] underline decoration-white/25 underline-offset-4 hover:text-[#F5F4F1]">복싱 칼로리 계산기 ↗</a>
           </div>
         </section>
 
@@ -469,7 +495,7 @@ export default async function HomePage() {
               </h2>
               <p className="reveal d2 mt-6 max-w-lg text-base leading-8" style={{ color: "#8A8D91" }}>
                 선수 출신 관장·코치가 모든 지점에서 직접 지도합니다.<br />
-                단체 수업 없이, 개인 수준에 맞춰 1:1로 진도를 잡아드립니다.
+                일반 운동 중 한 사람씩 자세를 살피고, 각자의 수준에 맞춰 진도를 잡아드립니다.
               </p>
             </div>
 
@@ -479,7 +505,7 @@ export default async function HomePage() {
               target="_blank" rel="noopener noreferrer"
               className="reveal group mb-4 flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-0.5 md:flex-row"
               style={{
-                borderRadius: 16,
+                borderRadius: 4,
                 border: "1px solid rgba(208,30,46,0.45)",
                 boxShadow: "0 0 0 1px rgba(208,30,46,0.08)",
                 background: "#141416",
@@ -515,7 +541,7 @@ export default async function HomePage() {
                 <a key={coach.name}
                   href={`https://www.instagram.com/${coach.instagram}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="p-6 rounded-[14px] border border-[rgba(74,76,80,0.3)] bg-[#141416] transition-all duration-300 hover:-translate-y-0.5 hover:border-[rgba(138,141,145,0.45)] hover:bg-[rgba(74,76,80,0.08)]"
+                  className="p-6 rounded-[4px] border border-[rgba(74,76,80,0.3)] bg-[#141416] transition-all duration-300 hover:-translate-y-0.5 hover:border-[rgba(138,141,145,0.45)] hover:bg-[rgba(74,76,80,0.08)]"
                 >
                   <p className="mb-1 text-[10px] font-black tracking-[0.2em]" style={{ color: "#5A5C61" }}>{coach.branch}</p>
                   <h3 className="mb-1 text-lg font-black" style={{ letterSpacing: "-0.03em", color: "#F5F4F1" }}>
@@ -526,20 +552,7 @@ export default async function HomePage() {
               ))}
             </div>
 
-            <div className="mt-4 flex flex-col items-center justify-between gap-4 p-7 sm:flex-row"
-              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
-              <div>
-                <p className="font-black text-base" style={{ color: "#F5F4F1" }}>직접 만나서 확인해보세요.</p>
-                <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>
-                  원데이 클래스로 부담 없이 코치진과 함께 운동해볼 수 있습니다.
-                </p>
-              </div>
-              <a href="/reservation"
-                className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
-                원데이 클래스 예약하기
-                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </a>
-            </div>
+
           </div>
         </section>
 
@@ -564,7 +577,7 @@ export default async function HomePage() {
               ].map(([step, title, desc], i) => (
                 <div key={step}
                   className={`reveal d${i + 1} p-7 transition-all duration-300 hover:-translate-y-1`}
-                  style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
+                  style={{ borderRadius: 4, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
                   <p className="mb-6 text-2xl font-black" style={{ color: "#3A3A3E" }}>{step}</p>
                   <h3 className="mb-2 text-base font-black" style={{ color: "#F5F4F1" }}>{title}</h3>
                   <p className="text-sm leading-6" style={{ color: "#8A8D91" }}>{desc}</p>
@@ -572,153 +585,16 @@ export default async function HomePage() {
               ))}
             </div>
 
-            <div className="mt-10 flex justify-center">
-              <a href="/reservation"
-                className="group inline-flex items-center gap-2 rounded-[10px] bg-[#D01E2E] px-10 py-4 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
-                지금 바로 시작해보세요
-                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </a>
-            </div>
           </div>
         </section>
 
-        {/* ══════════════════════════════════════
-            PROGRAM
-        ══════════════════════════════════════ */}
-        <section id="program" className="px-6 py-24 md:px-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
-              <div>
-                <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>PROGRAM</p>
-                <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
-                  가능한 만큼부터<br />시작합니다.
-                </h2>
-              </div>
-              <p className="max-w-sm text-sm leading-7" style={{ color: "#8A8D91" }}>
-                입문, 다이어트, 체력증진, 스트레스 해소까지 운동 목적에 맞게 진행합니다.
-              </p>
-            </div>
 
-            <div className="grid gap-3 md:grid-cols-3">
-              {[
-                ["01", "복싱 입문", "기본자세, 스텝, 펀치부터 차근차근. 처음 오셔도 바로 시작할 수 있습니다."],
-                ["02", "다이어트 · 체력", "전신 운동으로 체지방 감량과 체력증진을 동시에."],
-                ["03", "관장 직접 지도", "개인 수준과 목표에 맞춰 관장·코치가 직접 잡아드립니다."],
-              ].map(([num, title, desc], i) => (
-                <div key={num} className={`group reveal d${i + 1} p-10 transition-all duration-300 hover:-translate-y-1`}
-                  style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
-                  <p className="mb-12 text-xs font-black" style={{ color: "rgba(208,30,46,0.25)" }}>{num}</p>
-                  <h3 className="mb-3 text-2xl font-black" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>{title}</h3>
-                  <p className="text-sm leading-7" style={{ color: "#8A8D91" }}>{desc}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-4 flex flex-col items-center justify-between gap-4 p-7 sm:flex-row"
-              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
-              <div>
-                <p className="font-black text-base" style={{ color: "#F5F4F1" }}>어떤 목적이든 시작할 수 있습니다.</p>
-                <p className="mt-1 text-xs" style={{ color: "#5A5C61" }}>
-                  입문·다이어트·체력증진 모두, 원데이 클래스로 먼저 경험해보세요.
-                </p>
-              </div>
-              <a href="/reservation"
-                className="group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-6 py-3 text-sm font-black text-white transition-all duration-300 hover:bg-[#B71C2B]">
-                원데이 클래스 예약하기
-                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </a>
-            </div>
-          </div>
-        </section>
 
         <FaqSection />
 
-        <section id="calculator" style={{ background: "#0E0E10" }}>
-          <BoxingCalculator />
-        </section>
 
-        {/* ══════════════════════════════════════
-            SPACE GALLERY
-        ══════════════════════════════════════ */}
-        <section className="px-6 py-24 md:px-8" style={{ background: "#141416" }}>
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-12">
-              <p className="reveal mb-3 text-xs font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>STRONG SPACE</p>
-              <h2 className="reveal d1 font-black leading-[0.88]" style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.05em" }}>
-                사진으로 먼저 보는<br />스트롱복싱의 공간.
-              </h2>
-              <p className="reveal d2 mt-5 text-sm leading-7" style={{ color: "#8A8D91" }}>
-                복싱 전용 링, 샌드백, 미트 트레이닝 공간. 처음 방문해도 편하게 운동할 수 있는 환경입니다.
-              </p>
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
-                <img src="/images/gallery/gallery-1.jpg" alt="스트롱복싱 신정점 샌드백과 복싱 링"
-                  className="h-full min-h-[500px] w-full object-cover transition duration-700 group-hover:scale-105"
-                  style={{ filter: "brightness(0.85)" }} />
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                  style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(14,14,16,0.35) 100%)" }} />
-              </div>
-              <div className="grid gap-3">
-                <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
-                  <img src="/images/gallery/gallery-2.jpg" alt="창가 복싱 링과 샌드백"
-                    className="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105"
-                    style={{ filter: "brightness(0.85)" }} />
-                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                    style={{ background: "rgba(14,14,16,0.2)" }} />
-                </div>
-                <div className="grid gap-3 md:grid-cols-2">
-                  <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
-                    <img src="/images/gallery/gallery-3.jpg" alt="벽면을 따라 배치된 샌드백 훈련 공간"
-                      className="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105" style={{ filter: "brightness(0.85)" }} />
-                    <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                      style={{ background: "rgba(14,14,16,0.2)" }} />
-                  </div>
-                  <div className="group relative overflow-hidden" style={{ borderRadius: 14 }}>
-                    <img src="/images/gallery/gallery-4.jpg" alt="샌드백과 바닥 매트를 갖춘 복싱 훈련 공간"
-                      className="h-[240px] w-full object-cover transition duration-700 group-hover:scale-105" style={{ filter: "brightness(0.85)" }} />
-                    <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                      style={{ background: "rgba(14,14,16,0.2)" }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        {/* ══════════════════════════════════════
-            CTA — 풀스크린
-        ══════════════════════════════════════ */}
-        <section className="relative overflow-hidden px-6 py-40 text-center md:px-8">
-          <img src="/images/mokdong/mokdong-training.jpg" alt="스트롱복싱 목동점 링에서 미트 훈련하는 모습"
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-            style={{ filter: "brightness(0.18) grayscale(0.3)" }} />
-          <div className="pointer-events-none absolute left-0 top-0 h-[1px] w-full" style={{ background: "rgba(255,255,255,0.08)" }} />
-          <div className="pointer-events-none absolute bottom-0 left-0 h-[1px] w-full" style={{ background: "rgba(255,255,255,0.08)" }} />
 
-          <div className="relative z-10 mx-auto max-w-4xl">
-            <p className="reveal mb-6 text-xs font-black tracking-[0.4em]" style={{ color: "#5A5C61" }}>STRONG BOXING</p>
-            <h2 className="reveal d1 font-black leading-[0.88]"
-              style={{ fontSize: "clamp(44px, 8vw, 96px)", letterSpacing: "-0.05em", color: "#F5F4F1" }}>
-              가까운 지점에서<br />원데이 클래스로 시작해보세요.
-            </h2>
-            <p className="reveal d2 mx-auto mt-8 max-w-lg text-base leading-8" style={{ color: "#8A8D91" }}>
-              30,000원 현장결제 · 당일 등록 시 전액 페이백됩니다.
-            </p>
-            <div className="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
-              <ReservationButton className="btn-primary group rounded-[10px] bg-[#D01E2E] px-10 py-5 text-base font-black text-white hover:bg-[#B71C2B]">
-                원데이 클래스 예약하기
-                <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </ReservationButton>
-              <a href="/blog"
-                className="group inline-flex items-center gap-2 rounded-[10px] px-10 py-5 text-base font-black transition-all duration-300 hover:bg-white/6"
-                style={{ border: "1px solid rgba(255,255,255,0.15)", color: "#F5F4F1" }}>
-                운동 후기 보기
-                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </a>
-            </div>
-          </div>
-        </section>
 
         {/* SEO sr-only */}
         <section className="sr-only">
@@ -776,10 +652,6 @@ export default async function HomePage() {
           </p>
         </section>
 
-        <BranchMap />
-
-        <GallerySection />
-
         {/* ══════════════════════════════════════
             공인 단체
         ══════════════════════════════════════ */}
@@ -810,7 +682,7 @@ export default async function HomePage() {
                 { src: "/images/boxing-orgs/kba.jpg", name: "KBA", full: "한국권투협회" },
               ].map((org, i) => (
                 <div key={org.name} className={`reveal d${i + 1} flex flex-col items-center gap-3 p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.15] hover:bg-[#1A1A1C]`}
-                  style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
+                  style={{ borderRadius: 4, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
                   <img src={org.src} alt={org.full} className="h-16 w-16 rounded-full object-cover" />
                   <div className="text-center">
                     <p className="text-base font-black" style={{ color: "#F5F4F1" }}>{org.name}</p>
@@ -821,7 +693,7 @@ export default async function HomePage() {
             </div>
 
             <div className="flex flex-col items-center gap-6 overflow-hidden p-8 md:flex-row md:justify-between"
-              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
+              style={{ borderRadius: 4, border: "1px solid rgba(255,255,255,0.07)", background: "#141416" }}>
               <div className="flex items-center gap-5">
                 <img src="/images/boxing-orgs/kaba.jpg" alt="대한생활체육복싱협회" className="h-16 w-16 object-contain" />
                 <div>
@@ -829,7 +701,7 @@ export default async function HomePage() {
                   <p className="text-lg font-black" style={{ color: "#F5F4F1" }}>대한생활체육복싱협회</p>
                 </div>
               </div>
-              <span className="rounded-[10px] px-4 py-2 text-sm font-black"
+              <span className="rounded-[4px] px-4 py-2 text-sm font-black"
                 style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}>
                 승단 심사 체육관
               </span>
@@ -847,28 +719,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ══════════════════════════════════════
-            가격 안내
-        ══════════════════════════════════════ */}
-        <section className="px-6 py-16 md:px-8" style={{ background: "#141416" }}>
-          <div className="mx-auto max-w-7xl">
-            <div className="reveal flex flex-col items-center gap-8 p-10 text-center md:flex-row md:text-left"
-              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#1A1A1C" }}>
-              <div className="flex-1">
-                <p className="mb-3 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>PRICING</p>
-                <h2 className="mb-3 text-2xl font-black" style={{ letterSpacing: "-0.04em", color: "#F5F4F1" }}>회원권 가격 문의</h2>
-                <p className="text-sm leading-7" style={{ color: "#8A8D91" }}>
-                  회원권 가격은 이용하실 지점에 직접 문의해 주세요.
-                </p>
-              </div>
-              <a href="#branches"
-                className="btn-primary group inline-flex items-center gap-2 shrink-0 rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black text-white hover:bg-[#B71C2B]">
-                지점 연락처 보기
-                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </a>
-            </div>
-          </div>
-        </section>
 
         <div id="contact" style={{ scrollMarginTop: "120px" }}>
           <ConsultationForm />

@@ -13,8 +13,7 @@ const NAV: NavItem[] = [
   { label: "브랜드 소개", href: "/about" },
   { label: "지점",       id: "branches" },
   { label: "프로그램",   id: "programs" },
-  { label: "클립",       id: "clips" },
-  { label: "네이버 후기", id: "reviews" },
+  { label: "스트롱 이야기", id: "story" },
   { label: "지도진",     id: "coaches" },
   { label: "소식",       href: "/blog" },
   { label: "문의",       id: "contact" },
@@ -88,10 +87,9 @@ export default function SiteHeader() {
         {/* 로고 */}
         <a href="/" className="flex shrink-0 items-center gap-2.5">
           <img src="/icon.png" alt="스트롱복싱" className="h-7 w-7 object-contain" />
-          <div className="flex flex-col leading-none">
-            <span className="text-[15px] font-black tracking-[0.08em]" style={{ color: "#F5F4F1" }}>STRONG</span>
-            <span className="text-[9px] font-black tracking-[0.22em]" style={{ color: "#D01E2E" }}>— BOXING —</span>
-          </div>
+          <span className="whitespace-nowrap text-[16px] font-black leading-none tracking-[0.08em]" style={{ fontFamily: "Arial Black, Arial, sans-serif", color: "#F5F4F1" }}>
+            STRONG <span style={{ color: "#D01E2E" }}>BOXING</span>
+          </span>
         </a>
 
         {/* Desktop nav */}
@@ -133,7 +131,7 @@ export default function SiteHeader() {
 
         {/* Right: CTA + hamburger */}
         <div className="flex items-center gap-3">
-          <ReservationButton className="btn-primary hidden rounded-[10px] bg-[#D01E2E] px-5 py-2.5 text-sm font-black text-white hover:bg-[#B71C2B] lg:block">
+          <ReservationButton className="btn-primary hidden rounded-[4px] bg-[#D01E2E] px-5 py-2.5 text-sm font-black text-white hover:bg-[#B71C2B] lg:block">
             방문 상담 예약
           </ReservationButton>
 
@@ -141,7 +139,7 @@ export default function SiteHeader() {
             type="button"
             aria-label="메뉴 열기"
             onClick={() => setMobileOpen((v) => !v)}
-            className="flex h-9 w-9 items-center justify-center rounded-[8px] lg:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-[4px] lg:hidden"
             style={{ border: "1px solid rgba(255,255,255,0.1)", color: "#8A8D91" }}
           >
             {mobileOpen ? <X size={18} /> : <Menu size={18} />}
@@ -196,7 +194,7 @@ export default function SiteHeader() {
           })}
 
           <div className="pb-4 pt-3">
-            <ReservationButton className="btn-primary w-full rounded-[10px] bg-[#D01E2E] py-3.5 text-sm font-black text-white hover:bg-[#B71C2B]">
+            <ReservationButton className="btn-primary w-full rounded-[4px] bg-[#D01E2E] py-3.5 text-sm font-black text-white hover:bg-[#B71C2B]">
               방문 상담 예약
             </ReservationButton>
           </div>

@@ -9,6 +9,7 @@ type Popup = {
   description: string;
   thumbnail: string | null;
   branch_name: string;
+  category: string;
   popup_start: string;
   popup_end: string;
 };
@@ -37,7 +38,8 @@ export default function PopupBanner() {
           setPopups(filtered);
           setVisible(true);
         }
-      });
+      })
+      .catch(() => {});
   }, []);
 
   if (!visible || popups.length === 0) return null;
@@ -45,7 +47,10 @@ export default function PopupBanner() {
   const popup = popups[current];
 
   function hideToday() {
-    localStorage.setItem(`popup_hide_${popup.id}`, String(Date.now() + 86400000));
+    const day = 24 * 60 * 60 * 1000;
+    const kstOffset = 9 * 60 * 60 * 1000;
+    const nextMidnight = (Math.floor((Date.now() + kstOffset) / day) + 1) * day - kstOffset;
+    localStorage.setItem(`popup_hide_${popup.id}`, String(nextMidnight));
     next();
   }
 
@@ -113,7 +118,7 @@ export default function PopupBanner() {
         <div className="p-6">
           <div className="mb-2 flex items-center gap-2">
             <span className="rounded-full bg-[#D01E2E] px-3 py-0.5 text-[11px] font-black text-white">
-              이벤트
+              {popup.category === "공지" ? "공지" : "이벤트"}
             </span>
             <span className="text-[11px] text-[#5A5C61]">
               {popup.branch_name === "전체" ? "스트롱복싱 전점" : popup.branch_name}

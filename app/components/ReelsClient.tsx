@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { trackClipPlay } from "@/lib/gtag";
+import { uniqueReels } from "@/lib/unique-reels";
 
 const BRANCHES = ["전체", "목동점", "철산점", "신정점", "개봉점", "영등포점"];
 const PAGE_SIZE = 4;
@@ -11,11 +12,12 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
   const [page, setPage] = useState(0);
 
   const filteredReels = (() => {
+    const clips = uniqueReels(reels);
     if (selectedBranch !== "전체") {
-      return reels.filter((r) => r.branch_name === selectedBranch);
+      return uniqueReels(reels.filter((r) => r.branch_name === selectedBranch));
     }
     const groups: Record<string, any[]> = {};
-    for (const r of reels) {
+    for (const r of clips) {
       if (!groups[r.branch_name]) groups[r.branch_name] = [];
       groups[r.branch_name].push(r);
     }
@@ -47,7 +49,7 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
           <button
             key={branch}
             onClick={() => handleBranchChange(branch)}
-            className={`shrink-0 rounded-[10px] border px-4 py-2 text-xs font-black transition ${
+            className={`shrink-0 rounded-[4px] border px-4 py-2 text-xs font-black transition ${
               selectedBranch === branch
                 ? "border-[#D01E2E] bg-[#D01E2E] text-white"
                 : "border-white/10 bg-[#1A1A1C] text-[#8A8D91] hover:border-white/30"
@@ -123,14 +125,13 @@ function ReelCard({ reel }: { reel: any }) {
   const isAutoPlay = Number(reel.is_muted) === 1;
 
   return (
-    <div className="overflow-hidden rounded-[10px] border border-white/10 bg-[#1A1A1C] w-full">
+    <figure className="m-0 w-full overflow-hidden rounded-[4px] border border-white/10 bg-[#171719]">
       {hasError ? (
         <div
           className={`flex flex-col items-center justify-center gap-2 ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
           style={{ background: "#111113" }}
         >
-          <span style={{ fontSize: 28, opacity: 0.3 }}>🎬</span>
-          <p className="text-center text-xs" style={{ color: "#555" }}>영상을 불러올 수 없습니다</p>
+            <p className="text-center text-xs" style={{ color: "#555" }}>영상을 불러올 수 없습니다</p>
         </div>
       ) : (
         <video
@@ -162,10 +163,10 @@ function ReelCard({ reel }: { reel: any }) {
           className={`w-full bg-[#0E0E10] object-cover ${isPortrait ? "aspect-[9/16]" : "aspect-square"}`}
         />
       )}
-      <div className="px-3 py-2">
-        <p className="text-[10px] font-black tracking-[0.2em] text-[#D01E2E]">{reel.branch_name}</p>
-        <p className="truncate text-xs font-bold text-white">{reel.title}</p>
-      </div>
-    </div>
+      <figcaption className="border-t border-white/10 px-3 py-2.5">
+        <p className="text-xs text-[#B5B5BC]">{reel.branch_name}</p>
+        <p className="mt-0.5 break-keep text-sm font-semibold leading-5 text-[#F5F4F1]">{reel.title}</p>
+      </figcaption>
+    </figure>
   );
 }

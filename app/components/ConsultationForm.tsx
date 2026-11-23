@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { trackReservationComplete } from "@/lib/gtag";
 
@@ -114,19 +114,17 @@ const DARK = {
   section:     "bg-[#0E0E10] text-white",
   card:        "border border-[#2C2C30] bg-[#141416]",
   cardHover:   "hover:border-[#4A4C50]",
-  badge:       "border border-[#2C2C30] bg-[#141416]",
-  input:       "w-full rounded-[10px] border border-[#2C2C30] bg-[#0E0E10] px-4 py-3.5 text-[#F5F4F1] placeholder-[#5A5C61] outline-none transition focus:border-[#D01E2E]",
+  input:       "w-full rounded-[6px] border border-[#2C2C30] bg-[#0E0E10] px-4 py-3.5 text-[#F5F4F1] placeholder-[#5A5C61] outline-none transition focus:border-[#D01E2E]",
   label:       "block text-[12px] font-bold tracking-[0.08em] text-[#8A8D91] mb-1.5",
   heading:     "text-[#F5F4F1]",
   sub:         "text-[#8A8D91]",
   muted:       "text-[#5A5C61]",
   goalDefault: "bg-[#1C1C1F] text-[#8A8D91] hover:bg-[#252528] hover:text-[#F5F4F1]",
   resetBtn:    "bg-[#1C1C1F] text-[#F5F4F1] hover:bg-[#252528]",
-  branchBox:   "rounded-xl border border-[#2C2C30] bg-[#141416] px-4 py-3 text-[13px] space-y-1.5",
+  branchBox:   "rounded-[6px] border border-[#2C2C30] bg-[#141416] px-4 py-3 text-[13px] space-y-1.5",
   branchMuted: "text-[#8A8D91]",
   branchLink:  "text-[#8A8D91] hover:text-[#F5F4F1]",
   colorScheme: "dark" as "dark" | "light",
-  imgGrad:     "bg-gradient-to-t from-black/50 to-transparent",
   doneBtn:     "bg-[#1C1C1F] text-[#F5F4F1] hover:bg-[#252528]",
 };
 
@@ -135,30 +133,60 @@ const LIGHT = {
   section:     "bg-[#F9F8F5] text-[#0E0E10]",
   card:        "border border-[#E0DDD6] bg-[#fff]",
   cardHover:   "hover:border-[#C8C5BD]",
-  badge:       "border border-[#E8E6DF] bg-[#F3F1EC]",
-  input:       "w-full rounded-[10px] border border-[#E0DDD6] bg-[#fff] px-4 py-3.5 text-[#0E0E10] placeholder-[#aaa] outline-none transition focus:border-[#D01E2E]",
+  input:       "w-full rounded-[6px] border border-[#E0DDD6] bg-[#fff] px-4 py-3.5 text-[#0E0E10] placeholder-[#aaa] outline-none transition focus:border-[#D01E2E]",
   label:       "block text-[12px] font-bold tracking-[0.08em] text-[#6B6B72] mb-1.5",
   heading:     "text-[#0E0E10]",
   sub:         "text-[#4A4A52]",
   muted:       "text-[#888]",
   goalDefault: "bg-[#F0EEE9] text-[#4A4A52] hover:bg-[#E8E6DF] hover:text-[#0E0E10]",
   resetBtn:    "bg-[#F0EEE9] text-[#0E0E10] hover:bg-[#E8E6DF]",
-  branchBox:   "rounded-xl border border-[#E0DDD6] bg-[#F9F8F5] px-4 py-3 text-[13px] space-y-1.5",
+  branchBox:   "rounded-[6px] border border-[#E0DDD6] bg-[#F9F8F5] px-4 py-3 text-[13px] space-y-1.5",
   branchMuted: "text-[#6B6B72]",
   branchLink:  "text-[#6B6B72] hover:text-[#0E0E10]",
   colorScheme: "light" as "dark" | "light",
-  imgGrad:     "bg-gradient-to-t from-black/30 to-transparent",
   doneBtn:     "bg-[#F0EEE9] text-[#0E0E10] hover:bg-[#E8E6DF]",
 };
 
+const facilityPhotos: Record<string, string> = {
+  목동점: "/images/gallery/gallery-2.jpg",
+  신정점: "/images/branches/sinjeong.jpg",
+  개봉점: "/images/branches/gaebong.jpg",
+  철산점: "/images/branches/cheolsan.jpg",
+  영등포점: "/images/branches/yeongdeungpo.jpg",
+};
+
+const branchCoordinates = [
+  { name: "개봉점", latitude: 37.4950, longitude: 126.8580 },
+  { name: "신정점", latitude: 37.5185, longitude: 126.8560 },
+  { name: "목동점", latitude: 37.5290, longitude: 126.8720 },
+  { name: "철산점", latitude: 37.4895495, longitude: 126.8652713 },
+  { name: "영등포점", latitude: 37.5075, longitude: 126.8990 },
+];
+
+function nearestBranch({ latitude, longitude }: Pick<GeolocationCoordinates, "latitude" | "longitude">) {
+  const radians = Math.PI / 180;
+  let nearest = branchCoordinates[0];
+  let shortest = Infinity;
+  for (const branch of branchCoordinates) {
+    const latDelta = (branch.latitude - latitude) * radians;
+    const lngDelta = (branch.longitude - longitude) * radians;
+    const distance = Math.sin(latDelta / 2) ** 2
+      + Math.cos(latitude * radians) * Math.cos(branch.latitude * radians) * Math.sin(lngDelta / 2) ** 2;
+    if (distance < shortest) { nearest = branch; shortest = distance; }
+  }
+  return nearest.name;
+}
+
 type PreviewBranch = { name: string; address: string; phone: string; naverUrl: string };
 
-export default function ConsultationForm({ theme = "dark", previewBranch }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch }) {
+export default function ConsultationForm({ theme = "dark", previewBranch, suggestNearest = false }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch; suggestNearest?: boolean }) {
   const t = theme === "light" ? LIGHT : DARK;
   const [reservationType, setReservationType] = useState<"방문 상담" | "일일 체험">("방문 상담");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const userChoseBranch = useRef(false);
+  const [locationSuggested, setLocationSuggested] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -170,6 +198,22 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
     message: "",
   });
 
+  useEffect(() => {
+    if (!suggestNearest || previewBranch || !navigator.geolocation) return;
+    let cancelled = false;
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        if (cancelled || userChoseBranch.current) return;
+        const branch = nearestBranch(coords);
+        setLocationSuggested(true);
+        setForm((current) => ({ ...current, branch }));
+      },
+      () => {},
+      { timeout: 6000, maximumAge: 60000 },
+    );
+    return () => { cancelled = true; };
+  }, [suggestNearest, previewBranch]);
+
   const times = useMemo(
     () => getAvailableTimes(form.branch, form.reservation_date),
     [form.branch, form.reservation_date]
@@ -178,6 +222,8 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
   const branchInfo = previewBranch?.name === form.branch ? previewBranch : branchData[form.branch];
 
   function handleBranchChange(branch: string) {
+    userChoseBranch.current = true;
+    setLocationSuggested(false);
     // 지점 변경 시 선택된 날짜·시간이 유효한지 재검증
     const newTimes = getAvailableTimes(branch, form.reservation_date);
     const timeStillValid = newTimes.includes(form.reservation_time);
@@ -189,6 +235,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
   }
 
   function handleDateChange(dateString: string) {
+    userChoseBranch.current = true;
     const available = getAvailableTimes(form.branch, dateString);
     if (available.length === 0) {
       alert("선택한 날짜는 해당 지점의 휴무일이거나 운영하지 않는 요일입니다.");
@@ -245,7 +292,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
           </p>
           <button
             onClick={() => { setDone(false); setForm({ name:"", phone:"", branch:"목동점", reservation_date:"", reservation_time:"", goal:"", message:"" }); }}
-            className={`rounded-[10px] ${t.doneBtn} px-8 py-3.5 text-sm font-bold transition`}
+            className={`rounded-[6px] ${t.doneBtn} px-8 py-3.5 text-sm font-bold transition`}
           >
             다시 예약하기
           </button>
@@ -260,44 +307,24 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
 
         {/* ── 왼쪽: 소개 ── */}
         <div className="mb-10 lg:mb-0 lg:sticky lg:top-24 lg:self-start">
-          <p className="mb-4 text-[11px] font-black tracking-[0.35em] text-[#D01E2E]">
-            STRONG BOXING
-          </p>
-          <h2
-            className={`font-black tracking-[-0.05em] ${t.heading} mb-4`}
-            style={{ fontSize: "clamp(32px, 4.5vw, 52px)", lineHeight: 1.1, wordBreak: "keep-all" }}
-          >
-            복싱이 처음이어도,<br />편하게 시작하세요.
+          <h2 className={`break-keep text-3xl font-black tracking-tight md:text-4xl ${t.heading}`}>
+            방문 상담·원데이 클래스
           </h2>
-          <p className={`text-[15px] leading-7 ${t.sub} mb-8`} style={{ wordBreak: "keep-all" }}>
+          <p className={`mt-3 break-keep text-sm leading-7 ${t.sub}`}>
             시설을 둘러보고 나에게 맞는 운동을 상담받으세요.
           </p>
-
-          {/* 사진 */}
-          <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
-            <Image
-              src="/images/gallery/gallery-2.jpg"
-              alt="스트롱복싱 코칭 사진"
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className={`absolute inset-0 ${t.imgGrad}`} />
-          </div>
-
-          {/* 하단 배지 */}
-          <div className="mt-6 grid grid-cols-3 gap-3">
-            {[
-              { icon: "👊", label: "초보자 환영" },
-              { icon: "🥊", label: "개별 지도" },
-              { icon: "📅", label: "편한 시간 방문" },
-            ].map(({ icon, label }) => (
-              <div key={label} className={`rounded-xl ${t.badge} px-3 py-3 text-center`}>
-                <div className="text-xl mb-1">{icon}</div>
-                <div className={`text-[11px] font-bold ${t.sub}`}>{label}</div>
-              </div>
-            ))}
-          </div>
+          <figure className="m-0 mt-5">
+            <div className="relative aspect-[16/8] max-h-64 overflow-hidden rounded-[6px] lg:aspect-[4/3] lg:max-h-none">
+              <Image
+                src={facilityPhotos[form.branch] ?? facilityPhotos["목동점"]}
+                alt={`스트롱복싱 ${form.branch} 시설 내부`}
+                fill
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <figcaption className={`mt-2 text-xs ${t.sub}`}>스트롱복싱 {form.branch} 시설</figcaption>
+          </figure>
         </div>
 
         {/* ── 오른쪽: 폼 ── */}
@@ -311,9 +338,10 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
                   key={type}
                   type="button"
                   onClick={() => setReservationType(type)}
-                  className={`rounded-2xl border p-4 text-left transition ${
+                  aria-pressed={active}
+                  className={`rounded-[6px] border p-4 text-left transition ${
                     active
-                      ? "border-[#D01E2E] bg-[#D01E2E]/10"
+                      ? `${t.card} border-t-2 border-t-[#D01E2E]`
                       : `${t.card} ${t.cardHover}`
                   }`}
                 >
@@ -330,7 +358,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
                     </span>
                   </div>
                   {type === "방문 상담" ? (
-                    <p className={`ml-6 text-[18px] font-black ${t.heading}`}>시설·수업 안내</p>
+                    <p className={`ml-6 text-sm font-semibold ${t.heading}`}>시설·수업 안내</p>
                   ) : (
                     <>
                       <p className={`ml-6 text-[18px] font-black ${t.heading}`}>30,000원</p>
@@ -356,6 +384,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
                   <option key={b}>{b}</option>
                 ))}
               </select>
+              {locationSuggested && <p className={`mt-2 text-xs ${t.sub}`}>현재 위치에서 가까운 지점을 선택했어요. 다른 지점으로 바꿀 수 있어요.</p>}
               {/* 지점 정보 */}
               <div className={`mt-2 ${t.branchBox}`}>
                 <div className={`flex items-start gap-2 ${t.branchMuted}`}>
@@ -484,7 +513,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
 
             {/* 에러 메시지 */}
             {error && (
-              <p className="rounded-xl bg-[#D01E2E]/10 border border-[#D01E2E]/30 px-4 py-3 text-[13px] text-[#D01E2E]">
+              <p className="rounded-[6px] bg-[#D01E2E]/10 border border-[#D01E2E]/30 px-4 py-3 text-[13px] text-[#D01E2E]">
                 {error}
               </p>
             )}
@@ -500,7 +529,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch }: { th
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-[10px] bg-[#D01E2E] py-4 text-[15px] font-black tracking-tight text-white transition hover:bg-[#B71C2B] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-[6px] bg-[#D01E2E] py-4 text-[15px] font-black tracking-tight text-white transition hover:bg-[#B71C2B] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading
                 ? "접수 중..."

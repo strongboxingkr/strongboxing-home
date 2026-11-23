@@ -2,16 +2,20 @@ import ReservationButton from "./ReservationButton";
 
 const faqs = [
   {
+    q: "원데이 클래스와 회원권 가격은 어떻게 확인하나요?",
+    a: "원데이 클래스는 30,000원 현장결제이며 당일 등록 시 전액 페이백됩니다. 회원권 가격은 이용하실 지점에 직접 문의해 주세요.",
+  },
+  {
     q: "운동이 처음인데 가능할까요?",
     a: "네, 가능합니다. 스트롱복싱 회원님들 중 상당수가 운동을 처음 시작하신 분들입니다. 기초 자세, 스텝, 펀치부터 차근차근 알려드리며 개인의 체력과 운동 경험에 맞춰 진도를 진행하고 있습니다.",
   },
   {
     q: "수업은 어떻게 진행되나요?",
-    a: "정해진 시간에 모두가 같은 운동만 하는 방식이 아닙니다. 회원님이 방문하시는 시간에 맞춰 운동이 시작되며, 현재 수준과 목표에 맞는 운동을 진행합니다. 비슷한 수준의 회원님들이 계시면 함께 운동하기도 하고 개인 운동으로 진행하기도 합니다.",
+    a: "운영시간 내 편한 시간에 방문해 각자 운동을 시작해요. 운동하는 동안 관장·코치가 개인별 진도에 맞춰 다음 동작을 알려드리고, 연습하는 자세를 봐드려요.",
   },
   {
-    q: "여자 혼자 가도 괜찮나요?",
-    a: "물론입니다. 실제로 여성 회원님들도 많이 운동하고 계시며 혼자 등록하시는 분들도 많습니다. 다이어트, 체력 향상, 스트레스 해소를 목적으로 편하게 운동하시는 분들이 많습니다.",
+    q: "여성도 혼자 복싱을 시작할 수 있나요?",
+    a: "네. 혼자 오셔도 첫날에는 서는 자세, 가드, 스텝부터 함께 연습해요. 상대와 겨루는 스파링이 부담스럽다면 미트와 샌드백 위주로 운동할 수 있어요. 체력 관리나 스트레스 해소처럼 운동하는 이유를 알려주시면 강도와 진도를 맞춰드려요.",
   },
   {
     q: "준비물은 무엇이 필요한가요?",
@@ -22,8 +26,8 @@ const faqs = [
     a: "운동을 시작하시면 핸드랩과 글러브가 필요합니다. 글러브는 개인적으로 준비하셔도 되고 체육관에서 구매하실 수도 있습니다. 처음 방문하시면 목적에 맞게 안내해드립니다.",
   },
   {
-    q: "어린 아이도 운동할 수 있나요?",
-    a: "네, 가능합니다. 어린 아이부터 성인, 중장년층까지 다양한 연령대의 회원님들이 운동하고 있습니다. 연령과 체력에 맞춰 운동 강도를 조절하기 때문에 누구나 안전하게 운동하실 수 있습니다.",
+    q: "초등학생도 복싱을 배울 수 있나요?",
+    a: "네. 처음에는 줄넘기, 균형 잡기, 기본 자세와 스텝처럼 아이가 따라 하기 쉬운 동작부터 배워요. 복싱 경험과 체력에 맞춰 운동량을 조절하고, 미트와 샌드백을 활용해 기본기를 익혀요. 방문 전에 아이의 학년과 운동 경험을 말씀해 주시면 지점에서 참여 가능한 시간대를 안내해 드려요.",
   },
   {
     q: "철산복싱, 목동복싱, 개봉복싱 지점별 상담이 가능한가요?",
@@ -79,7 +83,7 @@ export default function FaqSection() {
           {faqs.map((item) => (
             <div
               key={item.q}
-              className="rounded-[14px] border border-[#4A4C50]/30 bg-[#1A1A1C] p-7 transition-all duration-200 hover:border-[#4A4C50]/55"
+              className="rounded-[4px] border border-[#4A4C50]/30 bg-[#1A1A1C] p-7 transition-all duration-200 hover:border-[#4A4C50]/55"
             >
               <h3 className="mb-4 text-2xl font-black tracking-[-0.04em]">
                 {item.q}
@@ -90,7 +94,7 @@ export default function FaqSection() {
           ))}
         </div>
 
-        <div className="mt-10 rounded-[14px] border border-[#4A4C50]/30 bg-[#16171A] p-8 text-center">
+        <div className="mt-10 rounded-[4px] border border-[#4A4C50]/30 bg-[#16171A] p-8 text-center">
           <h3 className="mb-4 text-3xl font-black">
             아직 고민 중이신가요?
           </h3>
@@ -99,7 +103,7 @@ export default function FaqSection() {
             직접 와서 분위기와 운동 방식을 경험해보세요.
           </p>
 
-          <ReservationButton className="inline-flex rounded-[10px] bg-[#D01E2E] px-8 py-4 font-black transition hover:bg-[#B71C2B]">
+          <ReservationButton className="inline-flex rounded-[4px] bg-[#D01E2E] px-8 py-4 font-black transition hover:bg-[#B71C2B]">
             방문상담 신청하기
           </ReservationButton>
         </div>

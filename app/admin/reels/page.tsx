@@ -54,11 +54,33 @@ const DEFAULT_SELECTIONS: SelectionMap = {
   target: [], training: [], contentType: [], difficulty: "", purpose: [], timeSlot: "",
 };
 
+const TRAINING_TITLE: Record<string, { text: string; emoji: string }> = {
+  복싱기초: { text: "복싱 기본기", emoji: "🥊" },
+  기본자세: { text: "복싱 가드와 기본 자세", emoji: "🥊" },
+  자세연습: { text: "자세 하나씩 다듬기", emoji: "🥊" },
+  원투: { text: "잽부터 원투까지", emoji: "🥊" },
+  잽: { text: "잽 타이밍 연습", emoji: "🎯" },
+  스트레이트: { text: "스트레이트 연습", emoji: "🎯" },
+  훅: { text: "훅 연습", emoji: "🥊" },
+  어퍼컷: { text: "어퍼컷 연습", emoji: "🥊" },
+  풋워크: { text: "복싱 풋워크 연습", emoji: "👟" },
+  스텝: { text: "복싱 스텝", emoji: "👟" },
+  미트훈련: { text: "미트 훈련", emoji: "🎯" },
+  샌드백: { text: "샌드백 훈련", emoji: "🥊" },
+  스파링: { text: "스파링 훈련", emoji: "🥊" },
+  체력운동: { text: "복싱 체력 운동", emoji: "⚡" },
+  코어운동: { text: "코어 운동", emoji: "⚡" },
+  인터벌: { text: "인터벌 운동", emoji: "⚡" },
+};
+
 function buildTitle(branchName: string, sel: SelectionMap): string {
-  const branchShort = branchName.replace("점", "");
-  const targets = (sel.target as string[]).slice(0, 2);
-  const trainings = (sel.training as string[]).slice(0, 2);
-  return [`스트롱복싱 ${branchShort}점`, ...targets, ...trainings].filter(Boolean).join(" ");
+  const [target] = sel.target as string[];
+  const [training] = sel.training as string[];
+  const [contentType] = sel.contentType as string[];
+  const scene = TRAINING_TITLE[training] ?? { text: training || contentType || "복싱 훈련", emoji: contentType === "시설" ? "📍" : "" };
+  const lead = target === "직장인" ? "퇴근 후" : target === "초보자" ? "처음 배우는" : target;
+  const caption = [lead, scene.text, scene.emoji].filter(Boolean).join(" ");
+  return `${caption} | 스트롱복싱 ${branchName}`;
 }
 
 function buildAriaLabel(branchName: string, sel: SelectionMap): string {
@@ -89,6 +111,10 @@ function buildKeywords(branchName: string, sel: SelectionMap): string[] {
   return [...new Set(kws)].filter(Boolean);
 }
 
+const BRANCH_FOLDERS: Record<string, string> = {
+  철산점: "cheolsan", 목동점: "mokdong", 신정점: "sinjeong", 개봉점: "gaebong", 영등포점: "yeongdeungpo",
+};
+
 export default function ReelsPage() {
   const [branchName, setBranchName] = useState("철산점");
   const [title, setTitle] = useState("");
@@ -97,16 +123,27 @@ export default function ReelsPage() {
   const [videoUrl, setVideoUrl] = useState("");
   const [reels, setReels] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [pendingVideo, setPendingVideo] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [videoFileName, setVideoFileName] = useState("");
   const [videoFiles, setVideoFiles] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isMuted, setIsMuted] = useState(false);
+  const selectedVideoUrl = videoFileName ? `/videos/${BRANCH_FOLDERS[branchName]}/${encodeURIComponent(videoFileName)}` : "";
+  const playerUrl = previewUrl || videoUrl || selectedVideoUrl;
 
   useEffect(() => {
     loadReels();
     loadVideoFiles(branchName);
   }, []);
+
+  useEffect(() => {
+    if (!pendingVideo) { setPreviewUrl(""); return; }
+    const url = URL.createObjectURL(pendingVideo);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [pendingVideo]);
 
   async function loadReels() {
     const res = await fetch("/api/reels");
@@ -162,7 +199,7 @@ export default function ReelsPage() {
     }
   }
 
-  async function uploadVideo(file: File) {
+  async function uploadVideo(file: File): Promise<string | undefined> {
     setUploading(true);
     try {
       const formData = new FormData();
@@ -190,8 +227,7 @@ export default function ReelsPage() {
         return;
       }
 
-      setVideoUrl(data.url);
-      alert("영상 업로드 완료!");
+      return data.url;
     } catch (err) {
       alert("업로드 중 오류가 발생했습니다. 네트워크 상태를 확인해주세요.");
       console.error("영상 업로드 오류:", err);
@@ -201,59 +237,59 @@ export default function ReelsPage() {
   }
 
   async function saveReel() {
-    const branchFolderMap: any = {
-        철산점: "cheolsan",
-        목동점: "mokdong",
-        신정점: "sinjeong",
-        개봉점: "gaebong",
-        영등포점: "yeongdeungpo",
-    };
-
-    const folder = branchFolderMap[branchName];
-
-    const finalVideoUrl =
-        videoUrl || (videoFileName ? `/videos/${folder}/${videoFileName}` : "");
-
-    if (!title || !finalVideoUrl) {
-        alert("제목과 영상을 넣어줘.");
-        return;
+    if (saving || uploading) return;
+    let finalVideoUrl = videoUrl || selectedVideoUrl;
+    if (!title.trim() || (!finalVideoUrl && !pendingVideo)) {
+      alert("제목과 영상을 선택해 주세요.");
+      return;
     }
 
-    setSaving(true);
+    const action = editingId ? "수정 내용을 저장할까요?" : "이 영상을 홈페이지에 등록할까요?";
+    if (!confirm(`${action}
 
-    const res = await fetch("/api/reels", {
+지점: ${branchName}
+제목: ${title.trim()}
+영상: ${pendingVideo?.name || videoFileName || finalVideoUrl.split("/").pop()}`)) return;
+
+    setSaving(true);
+    try {
+      if (pendingVideo) {
+        const uploadedUrl = await uploadVideo(pendingVideo);
+        if (!uploadedUrl) return;
+        finalVideoUrl = uploadedUrl;
+        setVideoUrl(uploadedUrl);
+        setPendingVideo(null);
+      }
+      const res = await fetch("/api/reels", {
         method: editingId ? "PUT" : "POST",
-        headers: {
-        "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: editingId,
           is_muted: isMuted ? 1 : 0,
           branch_name: branchName,
-          title,
-          aria_label: ariaLabel || title,
+          title: title.trim(),
+          aria_label: ariaLabel.trim() || title.trim(),
           video_url: finalVideoUrl,
         }),
-    });
-
-    const data = await res.json();
-    setSaving(false);
-
-    if (!data.ok) {
-        alert("저장 실패");
-        return;
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) { alert(data.message || "저장 실패"); return; }
+      alert("저장 완료!");
+      setEditingId(null);
+      setIsMuted(false);
+      setTitle("");
+      setAriaLabel("");
+      setSelections(DEFAULT_SELECTIONS);
+      setVideoUrl("");
+      setVideoFileName("");
+      void loadReels();
+    } catch (error) {
+      console.error("클립 저장 오류:", error);
+      alert("저장 중 문제가 발생했습니다. 다시 시도해 주세요.");
+    } finally {
+      setSaving(false);
     }
-
-    alert("저장 완료!");
-    setEditingId(null);
-    setIsMuted(false);
-    setTitle("");
-    setAriaLabel("");
-    setSelections(DEFAULT_SELECTIONS);
-    setVideoUrl("");
-    setVideoFileName("");
-    loadReels();
-    }
+  }
 
   return (
     <main className="min-h-screen bg-[#F5F7FA] px-6 py-16 text-zinc-900">
@@ -280,6 +316,7 @@ export default function ReelsPage() {
             onChange={(e) => {
                 setBranchName(e.target.value);
                 loadVideoFiles(e.target.value);
+                setPendingVideo(null);
                 setVideoFileName("");
                 setVideoUrl("");
             }}
@@ -294,7 +331,7 @@ export default function ReelsPage() {
 
           {/* SEO 자동생성 — 태그(Chip) 선택 방식 */}
           <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 space-y-4">
-            <p className="text-sm font-bold text-blue-700">SEO 정보 자동 생성</p>
+            <p className="text-sm font-bold text-blue-700">선택한 태그로 클립 제목 만들기</p>
             {CATEGORY_GROUPS.map((cat) => (
               <div key={cat.key}>
                 <p className="mb-2 text-xs font-bold text-blue-600">
@@ -368,7 +405,7 @@ export default function ReelsPage() {
               }}
               className="rounded-full bg-blue-600 px-5 py-2 text-sm font-black text-white"
             >
-              title / aria-label 자동 생성
+              추천 제목과 영상 설명 적용
             </button>
           </div>
 
@@ -400,10 +437,14 @@ export default function ReelsPage() {
           <input
             type="file"
             accept="video/*"
-            disabled={uploading}
+            disabled={saving || uploading}
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) uploadVideo(file);
+              if (file) {
+                setPendingVideo(file);
+                setVideoFileName("");
+                setVideoUrl("");
+              }
               e.target.value = "";
             }}
             className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
@@ -413,6 +454,7 @@ export default function ReelsPage() {
             value={videoFileName}
             onChange={(e) => {
                 setVideoFileName(e.target.value);
+                setPendingVideo(null);
                 setVideoUrl("");
             }}
             className="w-full rounded-2xl border border-zinc-200 bg-white p-4"
@@ -442,13 +484,14 @@ export default function ReelsPage() {
             <p className="font-bold text-[#FC5230]">영상 업로드 중...</p>
           )}
 
-          {videoUrl && (
-            <video src={videoUrl} controls className="max-h-[400px] w-full rounded-2xl" />
+          {pendingVideo && <p className="text-sm text-zinc-600">선택한 영상: {pendingVideo.name}. 제목과 영상을 확인한 뒤 등록을 누르면 업로드됩니다.</p>}
+          {playerUrl && (
+            <video src={playerUrl} controls playsInline className="max-h-[400px] w-full rounded-2xl" />
           )}
 
           <button
             onClick={saveReel}
-            disabled={saving}
+            disabled={saving || uploading}
             className="w-full rounded-full bg-[#FC5230] px-8 py-5 text-lg font-black disabled:opacity-50"
           >
             {saving ? "저장 중..." : editingId ? "수정 저장" : "홈페이지에 추가"}
@@ -488,6 +531,7 @@ export default function ReelsPage() {
                       setTitle(reel.title);
                       setAriaLabel(reel.aria_label || "");
                       setSelections(DEFAULT_SELECTIONS);
+                      setPendingVideo(null);
                       setVideoUrl(reel.video_url);
                       setVideoFileName("");
                       setIsMuted(reel.is_muted === 1);
