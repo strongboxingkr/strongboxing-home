@@ -87,9 +87,10 @@ export default function SiteHeader() {
         {/* 로고 */}
         <a href="/" className="flex shrink-0 items-center gap-2.5">
           <img src="/icon.png" alt="스트롱복싱" className="h-7 w-7 object-contain" />
-          <span className="whitespace-nowrap text-[16px] font-black leading-none tracking-[0.08em]" style={{ fontFamily: "Arial Black, Arial, sans-serif", color: "#F5F4F1" }}>
-            STRONG <span style={{ color: "#D01E2E" }}>BOXING</span>
-          </span>
+          <div className="flex flex-col leading-none">
+            <span className="text-[15px] font-black tracking-[0.08em] text-[#F5F4F1]">STRONG</span>
+            <span className="text-[9px] font-black tracking-[0.22em] text-[#D01E2E]">— BOXING —</span>
+          </div>
         </a>
 
         {/* Desktop nav */}
