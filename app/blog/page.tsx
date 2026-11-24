@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import BlogViewClient from "@/app/components/BlogViewClient";
 
 const siteUrl = "https://strongboxing.kr";
-const PAGE_TITLE = "스트롱복싱 소식 | 목동·철산·개봉·신정 복싱 수업 이야기";
+const PAGE_TITLE = "스트롱복싱 소식 | 지점별 복싱 수업 이야기";
 const PAGE_DESC =
-  "목동, 철산, 개봉, 신정 스트롱복싱의 다양한 수업 이야기와 회원 운동 모습, 키즈복싱, 다이어트 복싱, 초보자 복싱 등 실제 운동 현장을 소개합니다.";
+  "개봉·신정·목동·철산·영등포 스트롱복싱의 다양한 수업 이야기와 회원 운동 모습, 키즈복싱, 다이어트 복싱, 초보자 복싱 등 실제 운동 현장을 소개합니다.";
 const OG_IMAGE = `${siteUrl}/og.png`;
 
 export const metadata: Metadata = {
@@ -49,10 +49,38 @@ export default async function BlogPage({
     FROM homepage_posts
     WHERE branch_name IS NOT NULL AND branch_name != ''
       AND NOT (branch_name = '전체' AND category = '복싱정보')
-    ORDER BY created_at DESC
+    ORDER BY created_at DESC, id DESC
   `);
 
-  const posts = rows;
+  const posts = rows.map((post: { title: string }) => {
+    const displayTitles = [
+      ["양천복싱장·목동복싱장 운동추천!", "복싱장이 무서울 줄 알았던 목동점 회원 이야기"],
+      ["철산 운동, 철산 복싱장 40~50대도", "40~50대도 편하게 시작하는 철산점 복싱"],
+      ["신정동 복싱, 신정네거리 복싱", "신정점에서 보낸 복싱 첫날"],
+      ["구로복싱 개봉동복싱 고척동복싱", "운동 의욕이 떨어졌을 때, 개봉점에서 다시 시작한 복싱"],
+    ];
+    const title = displayTitles.find(([prefix]) => post.title.startsWith(prefix))?.[1];
+    return title ? { ...post, title } : post;
+  });
+
+  const isOverview = selectedBranch === "전체" && selectedCategory === "전체";
+  const featured = isOverview
+    ? posts.flatMap((post: any) => {
+        if (post.category !== "소식" || post.branch_name === "전체" ||
+            !/수업|훈련|미트|스텝/.test(post.title + " " + post.description)) return [];
+        const image = post.thumbnail ||
+          String(post.content || "").match(/<img[^>]+src=["']([^"']+)["']/i)?.[1] ||
+          String(post.content || "").match(/!\[.*?\]\((.*?)\)/)?.[1];
+        return image ? [{ post, image }] : [];
+      })[0]
+    : undefined;
+
+  function filterHref(branch: string, category: string) {
+    const filters = new URLSearchParams();
+    if (branch !== "전체") filters.set("branch", branch);
+    if (category !== "전체") filters.set("category", category);
+    return filters.size ? "/blog?" + filters.toString() : "/blog";
+  }
 
   const branches = [
     "전체",
@@ -76,15 +104,14 @@ export default async function BlogPage({
       post.branch_name === selectedBranch;
 
     const categoryMatch =
-      selectedCategory === "전체" ||
-      post.category === selectedCategory;
+      selectedCategory === "전체" ? post.category !== "공지" : post.category === selectedCategory;
 
-    return branchMatch && categoryMatch;
+    return branchMatch && categoryMatch && post.id !== featured?.post.id;
   });
 
-  const pillBase = "rounded-full px-4 py-2 text-[13px] font-bold transition-all duration-200";
+  const pillBase = "rounded-[4px] px-4 py-2 text-[13px] font-bold transition-all duration-200";
   const pillActive = "bg-[#D01E2E] text-white";
-  const pillIdle = "bg-[#1C1C1F] text-[#5A5C61] hover:bg-[#252528] hover:text-[#C9C9C9]";
+  const pillIdle = "bg-[#1C1C1F] text-[#B5B5BC] hover:bg-[#252528] hover:text-[#C9C9C9]";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -116,30 +143,22 @@ export default async function BlogPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ── 히어로 ── */}
-      <section className="relative overflow-hidden px-6 pb-16 pt-20">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_60%_0%,rgba(208,30,46,0.09),transparent_60%)]" />
-        <div className="pointer-events-none absolute left-0 top-0 h-[1px] w-full bg-[#D01E2E]/30" />
+      <section className="px-6 pb-8 pt-10 md:pt-14">
+        <div className="mx-auto max-w-6xl">
+          <a href="/" className="mb-6 inline-flex text-sm font-semibold text-[#B5B5BC] hover:text-white">← 메인으로</a>
+          <h1 className="text-4xl font-black tracking-tight text-[#F5F4F1] md:text-5xl">소식 &amp; 후기</h1>
 
-        <div className="relative z-10 mx-auto max-w-6xl">
-          <a href="/" className="mb-10 inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#5A5C61] transition-colors hover:text-[#F5F4F1]">
-            ← 메인으로
-          </a>
-
-          <p className="mb-4 text-[11px] font-black tracking-[0.4em] text-[#D01E2E]">
-            STRONG BLOG
-          </p>
-
-          <h1 className="mb-5 font-black tracking-[-0.06em] text-[#F5F4F1]" style={{ fontSize: "clamp(48px, 9vw, 100px)", lineHeight: 0.88 }}>
-            소식 & 후기
-          </h1>
-
-          <div className="my-7 h-[2px] w-12 bg-[#D01E2E]" />
-
-          <p className="max-w-lg text-[15px] leading-[1.85] text-[#5A5C61]">
-            스트롱복싱의 다양한 소식과<br />
-            회원들의 생생한 운동 이야기를 만나보세요.
-          </p>
+          {featured && (
+            <a href={`/blog/${featured.post.slug}`} className="group mt-6 grid overflow-hidden rounded-[4px] border border-white/10 bg-[#171719] md:grid-cols-[1.3fr_1fr]">
+              <img src={featured.image} alt="" fetchPriority="high" className="aspect-video w-full object-cover" />
+              <div className="flex flex-col justify-center p-5 md:p-8">
+                <p className="mb-3 text-sm font-semibold text-[#B5B5BC]">{featured.post.branch_name} · 수업 이야기</p>
+                <h2 className="break-keep text-2xl font-black leading-snug tracking-tight group-hover:underline md:text-3xl">{featured.post.title}</h2>
+                {featured.post.description && <p className="mt-3 line-clamp-2 break-keep text-sm leading-relaxed text-[#B5B5BC]">{featured.post.description}</p>}
+                <span className="mt-5 text-sm font-bold">수업 이야기 읽기 →</span>
+              </div>
+            </a>
+          )}
         </div>
       </section>
 
@@ -148,11 +167,12 @@ export default async function BlogPage({
         <div className="mx-auto max-w-6xl space-y-3">
           {/* 지점 */}
           <div className="flex flex-wrap gap-2">
-            <span className="self-center text-[10px] font-black tracking-[0.2em] text-[#3A3A3E] mr-1">지점</span>
+            <span className="self-center text-[10px] font-black tracking-[0.2em] text-[#B5B5BC] mr-1">지점</span>
             {branches.map((branch) => (
               <a
                 key={branch}
-                href={branch === "전체" ? "/blog" : `/blog?branch=${branch}&category=${selectedCategory === "전체" ? "" : selectedCategory}`}
+                href={filterHref(branch, selectedCategory)}
+                aria-current={selectedBranch === branch ? "true" : undefined}
                 className={`${pillBase} ${selectedBranch === branch ? pillActive : pillIdle}`}
               >
                 {branch}
@@ -161,15 +181,12 @@ export default async function BlogPage({
           </div>
           {/* 카테고리 */}
           <div className="flex flex-wrap gap-2">
-            <span className="self-center text-[10px] font-black tracking-[0.2em] text-[#3A3A3E] mr-1">분류</span>
+            <span className="self-center text-[10px] font-black tracking-[0.2em] text-[#B5B5BC] mr-1">분류</span>
             {categories.map((category) => (
               <a
                 key={category}
-                href={
-                  category === "전체"
-                    ? selectedBranch === "전체" ? "/blog" : `/blog?branch=${selectedBranch}`
-                    : `/blog?branch=${selectedBranch}&category=${category}`
-                }
+                href={filterHref(selectedBranch, category)}
+                aria-current={selectedCategory === category ? "true" : undefined}
                 className={`${pillBase} ${selectedCategory === category ? pillActive : pillIdle}`}
               >
                 {category}
@@ -180,8 +197,9 @@ export default async function BlogPage({
       </section>
 
       {/* ── 포스트 목록 ── */}
-      <section className="px-6 py-12 pb-28">
+      <section className="px-6 pt-8 pb-28">
         <div className="mx-auto max-w-6xl">
+          <h2 className="mb-5 text-2xl font-black">{selectedCategory === "전체" ? "최신 글" : selectedCategory}</h2>
           {filteredPosts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 gap-4" style={{ borderRadius: 20, border: "1px solid rgba(255,255,255,0.07)", background: "#1C1C1F" }}>
               <span style={{ fontSize: 48, opacity: 0.2 }}>🥊</span>
