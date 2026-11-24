@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { CalendarDays, MapPin, MessageCircle, Phone } from "lucide-react";
 import type { ReactNode } from "react";
+import VisibleClip from "@/app/components/VisibleClip";
 import ConsultationForm from "@/app/components/ConsultationForm";
 import BranchPreviewTabs, { TabLink } from "./BranchPreviewTabs";
 
@@ -72,7 +73,7 @@ function Clips({ reels, compact = false }: { reels: PreviewReel[]; compact?: boo
     <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
       {reels.map((reel) => (
         <figure key={reel.id} className="min-w-0 overflow-hidden rounded-[4px] border border-[#29292D] bg-[#161618]">
-          <video src={reel.video_url} title={reel.title} poster={reel.poster} controls playsInline preload="metadata" aria-label={reel.aria_label || reel.title} className={`w-full bg-[#242424] object-cover ${compact ? "aspect-[4/3]" : "aspect-[4/5]"}`} />
+          <VisibleClip src={reel.video_url} title={reel.title} poster={reel.poster} aria-label={reel.aria_label || reel.title} className={`w-full bg-[#242424] object-cover ${compact ? "aspect-[4/3]" : "aspect-[4/5]"}`} />
           <figcaption className="border-t border-white/10 px-3 py-2.5 text-xs font-semibold leading-5 [overflow-wrap:anywhere] sm:text-sm">{reel.title}</figcaption>
         </figure>
       ))}
@@ -142,7 +143,7 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
         <BranchPreviewTabs sidebar={sidebar} panels={{
           home: <>
             <Card title={`${branch.name} 클립`} action={<TabLink tab="videos">영상 더보기 →</TabLink>}>
-              <Clips reels={reels.slice(0, 3)} compact />
+              <Clips reels={reels.slice(0, 6)} compact />
             </Card>
 
             <div className="grid gap-5 sm:grid-cols-2">

@@ -2,10 +2,11 @@
 
 import { useState, useRef } from "react";
 import { trackClipPlay } from "@/lib/gtag";
+import VisibleClip from "./VisibleClip";
 import { uniqueReels } from "@/lib/unique-reels";
 
 const BRANCHES = ["전체", "목동점", "철산점", "신정점", "개봉점", "영등포점"];
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 8;
 
 export default function ReelsClient({ reels }: { reels: any[] }) {
   const [selectedBranch, setSelectedBranch] = useState("전체");
@@ -60,7 +61,6 @@ export default function ReelsClient({ reels }: { reels: any[] }) {
         ))}
       </div>
 
-      {/* PC: 4개 그리드 + 페이지네이션 / 모바일: 가로 스냅 스크롤 */}
 
       {/* 모바일 (sm 미만): 가로 스냅 */}
       <div className="sm:hidden overflow-x-auto pb-3" style={{ scrollSnapType: "x mandatory" }}>
@@ -122,7 +122,6 @@ function ReelCard({ reel }: { reel: any }) {
   const [isPortrait, setIsPortrait] = useState(false);
   const [hasError, setHasError] = useState(false);
   const playedRef = useRef(false);
-  const isAutoPlay = Number(reel.is_muted) === 1;
 
   return (
     <figure className="m-0 w-full overflow-hidden rounded-[4px] border border-white/10 bg-[#171719]">
@@ -134,23 +133,18 @@ function ReelCard({ reel }: { reel: any }) {
             <p className="text-center text-xs" style={{ color: "#555" }}>영상을 불러올 수 없습니다</p>
         </div>
       ) : (
-        <video
+        <VisibleClip
           src={reel.video_url}
           title={reel.title}
           aria-label={reel.aria_label || reel.title}
-          controls={!isAutoPlay}
-          muted
-          autoPlay={isAutoPlay}
-          loop={isAutoPlay}
-          playsInline
-          preload="metadata"
+          poster={reel.poster}
           onLoadedMetadata={(e) => {
             const v = e.currentTarget;
             setIsPortrait(v.videoHeight > v.videoWidth);
           }}
           onError={() => setHasError(true)}
           onPlay={() => {
-            if (isAutoPlay || playedRef.current) return;
+            if (playedRef.current) return;
             playedRef.current = true;
             trackClipPlay({
               branch_name: reel.branch_name,

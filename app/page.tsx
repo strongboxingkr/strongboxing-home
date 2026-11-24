@@ -189,7 +189,7 @@ const homeJsonLd = [
 ];
 
 type StoryPost = RowDataPacket & { id: number; title: string; slug: string; description: string | null; branch_name: string; category: string | null };
-type StoryReel = RowDataPacket & { id: number; branch_name: string; title: string; aria_label: string | null; video_url: string; is_muted: number };
+type StoryReel = RowDataPacket & { id: number; branch_name: string; title: string; aria_label: string | null; video_url: string; poster?: string };
 type StoryReview = RowDataPacket & { id: number; branch_name: string; reviewer_name: string | null; content: string; image_url: string | null; review_date: string | null };
 
 async function loadStoryRows<T extends RowDataPacket>(sql: string, legacySql?: string): Promise<T[]> {
@@ -221,7 +221,7 @@ export default async function HomePage() {
       ORDER BY created_at DESC, id DESC LIMIT 6
     `),
     loadStoryRows<StoryReel>(`
-      SELECT id, branch_name, title, aria_label, video_url, is_muted
+      SELECT id, branch_name, title, aria_label, video_url
       FROM homepage_reels WHERE is_active = 1
       ORDER BY sort_order ASC, id DESC
     `),
@@ -353,7 +353,14 @@ export default async function HomePage() {
               dark
               tabs={["클립", "시설", "활동기록", "블로그", "네이버 후기"]}
               panels={[
-                <ReelsClient key="clips" reels={reels.length ? reels : [{ id: 2, branch_name: "목동점", title: "목동점 클립", aria_label: "목동점 클립", video_url: "/videos/mokdong/002.mp4", is_muted: 0 }]} />,
+                <ReelsClient key="clips" reels={reels.length ? reels : branches.flatMap((branch, branchIndex) => [1, 2].map((clip) => ({
+                  id: branchIndex * 2 + clip,
+                  branch_name: branch.name,
+                  title: `${branch.name} 운동 영상 ${clip}`,
+                  aria_label: null,
+                  video_url: `/videos/${branch.slug}/00${clip}.mp4`,
+                  poster: branch.image,
+                })))} />,
                 <div key="facility">
                   <p className="mb-4 text-sm leading-7 text-[#C9C9C9]">복싱 전용 링, 샌드백, 미트 트레이닝 공간. 처음 방문해도 편하게 운동할 수 있는 환경입니다.</p>
                   <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
