@@ -6,7 +6,7 @@ import type { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 
-type Branch = Parameters<typeof BranchPreview>[0]["branch"] & { image: string; searchTitle: string; streetAddr: string; addressLocality: string; addressRegion: string; openingHoursSpec: { "@type": string; dayOfWeek: string[]; opens: string; closes: string }[] };
+type Branch = Parameters<typeof BranchPreview>[0]["branch"] & { image: string; searchImage: string; searchTitle: string; streetAddr: string; addressLocality: string; addressRegion: string; openingHoursSpec: { "@type": string; dayOfWeek: string[]; opens: string; closes: string }[] };
 
 const branches: Record<string, Branch> = {
   gaebong: {
@@ -19,6 +19,7 @@ const branches: Record<string, Branch> = {
     ],
     name: "개봉점", fullName: "스트롱복싱 개봉점", area: "개봉",
     image: "/images/branches/gaebong.jpg",
+    searchImage: "/images/branches/search/gaebong.jpg",
     phone: "02-2060-1279", hours: ["월-금 13:00~23:00"],
     instagram: "https://www.instagram.com/strongboxing_gaebong",
     booking: "https://m.booking.naver.com/booking/13/bizes/1440071?theme=place&entry=pll&lang=ko&area=pll",
@@ -43,6 +44,7 @@ const branches: Record<string, Branch> = {
     ],
     name: "신정점", fullName: "스트롱복싱 신정점", area: "신정",
     image: "/images/branches/sinjeong.jpg",
+    searchImage: "/images/branches/search/sinjeong.jpg",
     phone: "02-2647-3373", hours: ["월-금 10:00~24:00 (14:00~15:00 휴게)", "토 10:00~16:00"],
     instagram: "https://www.instagram.com/strongboxing.sinjeong",
     booking: "https://booking.naver.com/booking/13/bizes/1367177",
@@ -68,6 +70,7 @@ const branches: Record<string, Branch> = {
     reviewUrl: "https://m.place.naver.com/place/2036376446/review/visitor",
     name: "목동점", fullName: "스트롱복싱 목동점", area: "목동",
     image: "/images/branches/mokdong.png",
+    searchImage: "/images/branches/search/mokdong.jpg",
     phone: "02-2643-5971", hours: ["월-금 14:00~24:00", "토 11:00~16:00"],
     instagram: "https://www.instagram.com/strongboxing_mokdong",
     booking: "https://booking.naver.com/booking/13/bizes/1510638",
@@ -92,6 +95,7 @@ const branches: Record<string, Branch> = {
     reviewUrl: "https://m.place.naver.com/place/2037244259/review/visitor",
     name: "철산점", fullName: "스트롱복싱 철산점", area: "철산",
     image: "/images/branches/cheolsan.jpg",
+    searchImage: "/images/branches/search/cheolsan.jpg",
     phone: "02-2066-0406", hours: ["월-금 14:00~23:00", "토·일 14:00~18:00", "공휴일 휴무"],
     instagram: "https://www.instagram.com/strongboxing_cheolsan",
     booking: "https://booking.naver.com/booking/12/bizes/1673598",
@@ -114,6 +118,7 @@ const branches: Record<string, Branch> = {
     ],
     name: "영등포점", fullName: "스트롱복싱 영등포점", area: "영등포",
     image: "/images/branches/yeongdeungpo.jpg",
+    searchImage: "/images/branches/search/yeongdeungpo.jpg",
     phone: "02-831-9312", hours: ["월-금 13:00~23:00"],
     instagram: "https://www.instagram.com/stron_gboxinggym",
     booking: "https://m.booking.naver.com/booking/13/bizes/1440022?theme=place&entry=pll&lang=ko&area=pll",
@@ -135,8 +140,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: branch?.description,
     robots: { index: true, follow: true },
     alternates: branch ? { canonical: `https://strongboxing.kr/branches/${slug}` } : undefined,
-    openGraph: branch ? { title: branch.searchTitle, description: branch.description, url: `https://strongboxing.kr/branches/${slug}`, images: [branch.image] } : undefined,
-    twitter: branch ? { card: "summary_large_image", title: branch.searchTitle, description: branch.description, images: [branch.image] } : undefined,
+    openGraph: branch ? { title: branch.searchTitle, description: branch.description, url: `https://strongboxing.kr/branches/${slug}`, images: [branch.searchImage] } : undefined,
+    twitter: branch ? { card: "summary_large_image", title: branch.searchTitle, description: branch.description, images: [branch.searchImage] } : undefined,
   };
 }
 
@@ -270,7 +275,7 @@ function branchStructuredData(slug: string, branch: Branch, faq: { question: str
         name: branch.fullName,
         url,
         description: branch.description,
-        image: origin + branch.image,
+        image: origin + branch.searchImage,
         telephone: branch.phone,
         hasMap: branch.naverMap,
         address: {

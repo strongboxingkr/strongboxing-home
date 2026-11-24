@@ -315,7 +315,7 @@ export default async function HomePage() {
               </div>
 
               <figure className="m-0 overflow-hidden rounded-[4px]">
-                <video className="block aspect-video w-full bg-black object-contain" src="/videos/brand/home-hero.mp4?v=2" autoPlay controls muted playsInline preload="metadata" aria-label="스트롱복싱 소개 영상" />
+                <video className="block aspect-video w-full bg-black object-contain" src="/videos/brand/home-hero.mp4?v=3" autoPlay controls muted playsInline preload="metadata" aria-label="스트롱복싱 소개 영상" />
               </figure>
             </div>
           </div>
