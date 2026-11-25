@@ -336,16 +336,30 @@ export default async function BranchPage({ params }: { params: Promise<{ slug: s
 
     const mediaRoot = `/images/${slug}`;
     const isMokdong = slug === "mokdong";
+    const trainingPhotos = branchTrainingPhotos[slug] ?? [];
+    const featuredTrainingIndices: Partial<Record<string, number[]>> = {
+      cheolsan: [2, 17],
+      gaebong: [0],
+      mokdong: [7, 0],
+      sinjeong: [1, 3],
+    };
+    const featuredTraining = (featuredTrainingIndices[slug] ?? []).map((index) => ({
+      src: trainingPhotos[index],
+      label: branch.name + " 복싱 훈련 모습",
+    }));
+    const heroPhotos = slug === "yeongdeungpo"
+      ? [{ src: branch.image, label: "영등포점 체육관 내부" }]
+      : [
+          ...featuredTraining,
+          { src: mediaRoot + (isMokdong ? "/mokdong-main.jpg" : "/gym.jpg"), label: branch.name + " 체육관 내부" },
+          { src: branch.image, label: branch.name + " 대표 사진" },
+        ].slice(0, 3);
     return (
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: branchStructuredData(slug, branch, faqItems) }} />
       <BranchPreview
         branch={branch}
-        photos={slug === "yeongdeungpo" ? [{ src: branch.image, label: "영등포점 체육관 내부" }] : [
-          { src: `${mediaRoot}/${isMokdong ? "mokdong-training" : "training"}.jpg`, label: `${branch.name} 운동 모습` },
-          { src: `${mediaRoot}/${isMokdong ? "mokdong-main" : "gym"}.jpg`, label: `${branch.name} 체육관 내부` },
-          { src: branch.image, label: `${branch.name} 대표 사진` },
-        ]}
+        photos={heroPhotos}
         coaches={coaches}
         posts={relatedPosts}
         reels={branchReels.length ? branchReels : getLocalClips(slug, branch.name)}
@@ -353,7 +367,7 @@ export default async function BranchPage({ params }: { params: Promise<{ slug: s
         audience={audience}
         faq={faqItems}
         workout={workout}
-        trainingPhotos={branchTrainingPhotos[slug] ?? []}
+        trainingPhotos={trainingPhotos}
         galleryImages={slug === "yeongdeungpo" ? [branch.image] : isMokdong ? galleryImages : [`${mediaRoot}/facility.jpg`]}
         getThumb={getThumb}
       />
