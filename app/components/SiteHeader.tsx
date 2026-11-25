@@ -12,8 +12,8 @@ type NavItem =
 const NAV: NavItem[] = [
   { label: "브랜드 소개", href: "/about" },
   { label: "지점",       id: "branches" },
-  { label: "프로그램",   id: "programs" },
   { label: "스트롱 이야기", id: "story" },
+  { label: "프로그램",   id: "programs" },
   { label: "지도진",     id: "coaches" },
   { label: "소식",       href: "/blog" },
   { label: "문의",       id: "contact" },
