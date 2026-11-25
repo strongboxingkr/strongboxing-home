@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 
 const originalSrc = "/videos/brand/home-hero-original.mp4";
-const compatibleSrc = "/videos/brand/home-hero.mp4?v=6";
+const compatibleSrc = "/videos/brand/home-hero.mp4?v=7";
 
 export default function HomeHeroVideo() {
   const ref = useRef<HTMLVideoElement>(null);
@@ -41,7 +41,7 @@ export default function HomeHeroVideo() {
       <video
         ref={ref}
         className="block h-full w-full object-cover"
-        poster="/images/home-hero-poster.webp?v=3"
+        poster="/images/home-hero-poster.webp?v=4"
         muted
         playsInline
         preload="metadata"
@@ -61,7 +61,7 @@ export default function HomeHeroVideo() {
         <source src={originalSrc} type='video/mp4; codecs="hvc1, mp4a.40.2"' />
         <source src={compatibleSrc} type="video/mp4" />
       </video>
-      {showPoster && <img src="/images/home-hero-poster.webp?v=3" alt="코치와 회원의 미트 훈련" className="pointer-events-none absolute inset-0 h-full w-full object-cover" />}
+      {showPoster && <img src="/images/home-hero-poster.webp?v=4" alt="코치와 회원의 미트 훈련" className="pointer-events-none absolute inset-0 h-full w-full object-cover" />}
       <button
         type="button"
         onClick={togglePlayback}
