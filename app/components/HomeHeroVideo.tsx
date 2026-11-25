@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 
+const originalSrc = "/videos/brand/home-hero-original.mp4";
+const compatibleSrc = "/videos/brand/home-hero.mp4?v=6";
+
 export default function HomeHeroVideo() {
   const ref = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -13,6 +16,14 @@ export default function HomeHeroVideo() {
       void ref.current?.play().catch(() => {});
     }
   }, []);
+
+  function useCompatibleVideo(video: HTMLVideoElement) {
+    if (video.hasAttribute("src") || video.currentSrc.includes(compatibleSrc)) return;
+    video.src = compatibleSrc;
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      void video.play().catch(() => {});
+    }
+  }
 
   function togglePlayback() {
     const video = ref.current;
@@ -30,7 +41,6 @@ export default function HomeHeroVideo() {
       <video
         ref={ref}
         className="block h-full w-full object-cover"
-        src="/videos/brand/home-hero.mp4?v=6"
         poster="/images/home-hero-poster.webp?v=3"
         muted
         playsInline
@@ -39,8 +49,18 @@ export default function HomeHeroVideo() {
         onPlaying={() => { setPlaying(true); setShowPoster(false); }}
         onPause={() => setPlaying(false)}
         onEnded={() => { setPlaying(false); setShowPoster(true); }}
-        onError={() => { setPlaying(false); setShowPoster(true); }}
-      />
+        onLoadedMetadata={({ currentTarget }) => {
+          if (currentTarget.videoWidth === 0) useCompatibleVideo(currentTarget);
+        }}
+        onError={({ currentTarget }) => {
+          setPlaying(false);
+          setShowPoster(true);
+          useCompatibleVideo(currentTarget);
+        }}
+      >
+        <source src={originalSrc} type='video/mp4; codecs="hvc1, mp4a.40.2"' />
+        <source src={compatibleSrc} type="video/mp4" />
+      </video>
       {showPoster && <img src="/images/home-hero-poster.webp?v=3" alt="코치와 회원의 미트 훈련" className="pointer-events-none absolute inset-0 h-full w-full object-cover" />}
       <button
         type="button"

@@ -314,13 +314,13 @@ export default async function HomePage() {
         </section>
 
         <section id="branches" aria-labelledby="branch-title" className="mx-auto max-w-[1440px] scroll-mt-24 px-6 pb-10 pt-4 md:px-10">
-          <h2 id="branch-title" className="mb-5 text-3xl font-black tracking-tight md:text-4xl">가까운 스트롱 찾기</h2>
+          <h2 id="branch-title" className="reveal mb-5 text-3xl font-black tracking-tight md:text-4xl">가까운 스트롱 찾기</h2>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-            {branches.map((branch) => (
+            {branches.map((branch, index) => (
               <a
                 key={branch.slug}
                 href={`/branches/${branch.slug}`}
-                className="group overflow-hidden rounded-[4px] border border-white/10 bg-[#151517] transition-colors hover:border-[#D01E2E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D01E2E]"
+                className={`reveal d${index + 1} group overflow-hidden rounded-[4px] border border-white/10 bg-[#151517] hover:border-[#D01E2E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D01E2E]`}
               >
                 <img src={branch.image} alt="" loading="lazy" className="aspect-[2.2/1] w-full object-cover" />
                 <div className="px-3.5 py-3">
@@ -340,8 +340,8 @@ export default async function HomePage() {
 
         <section aria-labelledby="first-visit-title" className="mx-auto max-w-[1440px] border-t border-white/10 px-6 py-8 md:px-10">
           <div className="grid gap-5 lg:grid-cols-[210px_minmax(0,1fr)] lg:gap-9">
-            <h2 id="first-visit-title" className="text-2xl font-bold tracking-tight md:text-3xl">복싱 첫날 안내</h2>
-            <div className="max-w-3xl space-y-3 break-keep text-sm leading-7 text-[#C9C9C9] md:text-base">
+            <h2 id="first-visit-title" className="reveal text-2xl font-bold tracking-tight md:text-3xl">복싱 첫날 안내</h2>
+            <div className="reveal d1 max-w-3xl space-y-3 break-keep text-sm leading-7 text-[#C9C9C9] md:text-base">
               <p><strong className="text-[#F5F4F1]">첫날에는 기본 자세와 스텝부터 배웁니다.</strong> 운영시간 내 편한 시간에 방문하면 관장·코치가 개인별 진도를 봐드립니다.</p>
               <p>한솔 대표는 현역 프로 복서입니다. 선수 출신 + 지도자 자격증 보유 코치진이 지도하며, 프로·아마추어 선수를 배출했습니다.</p>
               <a href="#coaches" className="inline-block font-semibold text-[#F5F4F1] underline decoration-[#D01E2E] underline-offset-4">지도진 보기 →</a>
@@ -351,7 +351,7 @@ export default async function HomePage() {
 
         <section id="story" aria-labelledby="story-title" className="mx-auto max-w-[1440px] scroll-mt-24 border-t border-white/10 px-6 pb-12 pt-8 md:px-10">
           <div className="grid gap-6 lg:grid-cols-[210px_minmax(0,1fr)] lg:gap-9">
-            <h2 id="story-title" className="text-2xl font-bold tracking-tight md:text-3xl">스트롱 이야기</h2>
+            <h2 id="story-title" className="reveal text-2xl font-bold tracking-tight md:text-3xl">스트롱 이야기</h2>
             <TabSection
               dark
               tabs={["클립", "시설", "활동기록", "블로그", "네이버 후기"]}
