@@ -30,8 +30,8 @@ export default function HomeHeroVideo() {
       <video
         ref={ref}
         className="block h-full w-full object-cover"
-        src="/videos/brand/home-hero.mp4?v=4"
-        poster="/images/home-hero-poster.webp"
+        src="/videos/brand/home-hero.mp4?v=5"
+        poster="/images/home-hero-poster.webp?v=2"
         muted
         playsInline
         preload="metadata"
@@ -41,7 +41,7 @@ export default function HomeHeroVideo() {
         onEnded={() => { setPlaying(false); setShowPoster(true); }}
         onError={() => { setPlaying(false); setShowPoster(true); }}
       />
-      {showPoster && <img src="/images/home-hero-poster.webp" alt="코치와 회원의 미트 훈련" className="pointer-events-none absolute inset-0 h-full w-full object-cover" />}
+      {showPoster && <img src="/images/home-hero-poster.webp?v=2" alt="코치와 회원의 미트 훈련" className="pointer-events-none absolute inset-0 h-full w-full object-cover" />}
       <button
         type="button"
         onClick={togglePlayback}

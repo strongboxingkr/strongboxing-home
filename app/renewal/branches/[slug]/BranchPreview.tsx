@@ -254,7 +254,7 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
           <summary className="cursor-pointer text-lg font-extrabold tracking-tight">지금, 상담을 받아보세요.</summary>
           <p className="mt-2 text-sm text-[#B5B5BC]">방문 전 상담으로 더 편하게 시작하실 수 있습니다.</p>
           <div className="mt-4 max-sm:[&_.grid-cols-2]:grid-cols-1">
-            <ConsultationForm theme="dark" previewBranch={{ name: branch.name, address: branch.address, phone: branch.phone, naverUrl: branch.naverMap }} />
+            <ConsultationForm theme="dark" previewBranch={{ name: branch.name, address: branch.address, phone: branch.phone }} />
           </div>
         </details>
         <footer className="mt-7 border-t border-[#29292D] pt-5 text-center text-xs font-semibold text-[#B5B5BC]">STRONG BOXING · {branch.fullName}</footer>

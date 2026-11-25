@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { trackReservationComplete } from "@/lib/gtag";
 
@@ -9,14 +9,12 @@ const branchData: Record<string, {
   address: string;
   phone: string;
   hours: string;
-  naverUrl: string;
   times: Record<number, string[]>;
 }> = {
   목동점: {
     address: "서울 양천구 목동 909-6 우방빌딩 4층",
     phone: "02-2643-5971",
-    hours: "평일 14:00–24:00  토 11:00–16:00",
-    naverUrl: "https://naver.me/GII8f9Qv",
+    hours: "평일 14:00–24:00 · 토 11:00–16:00 · 일 휴무",
     times: {
       1: ["14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
       2: ["14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
@@ -29,8 +27,7 @@ const branchData: Record<string, {
   신정점: {
     address: "서울 양천구 신정동 1021-7 태화상가 2층",
     phone: "02-2647-3373",
-    hours: "평일 10:00–14:00, 15:00–24:00  토 10:00–16:00",
-    naverUrl: "https://naver.me/5nhXvzXH",
+    hours: "평일 10:00–24:00 (14:00–15:00 휴게) · 토 10:00–16:00",
     times: {
       1: ["10:00","11:00","12:00","13:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
       2: ["10:00","11:00","12:00","13:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
@@ -43,8 +40,7 @@ const branchData: Record<string, {
   개봉점: {
     address: "서울 구로구 개봉동 166-5 유원빌딩 지하 1층",
     phone: "02-2060-1279",
-    hours: "평일 13:00–23:00",
-    naverUrl: "https://naver.me/5aFquqcz",
+    hours: "평일 13:00–23:00 · 토·일 휴무",
     times: {
       1: ["13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00"],
       2: ["13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00"],
@@ -56,8 +52,7 @@ const branchData: Record<string, {
   철산점: {
     address: "경기 광명시 철산동 56-14 3층",
     phone: "02-2066-0406",
-    hours: "평일 13:00–23:00  토·일 14:00–18:00",
-    naverUrl: "https://naver.me/xxxxxx",
+    hours: "평일 14:00–23:00 · 토·일 14:00–18:00 · 공휴일 휴무",
     times: {
       1: ["14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
       2: ["14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
@@ -71,8 +66,7 @@ const branchData: Record<string, {
   영등포점: {
     address: "서울 영등포구 도림로 313 건영상가 2층",
     phone: "02-831-9312",
-    hours: "평일 13:00–23:00",
-    naverUrl: "https://naver.me/G4yQwkR0",
+    hours: "평일 13:00–23:00 · 주말 운영 여부는 지점 문의",
     times: {
       1: ["13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00"],
       2: ["13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00"],
@@ -177,15 +171,17 @@ function nearestBranch({ latitude, longitude }: Pick<GeolocationCoordinates, "la
   return nearest.name;
 }
 
-type PreviewBranch = { name: string; address: string; phone: string; naverUrl: string };
+type PreviewBranch = { name: string; address: string; phone: string };
 
-export default function ConsultationForm({ theme = "dark", previewBranch, suggestNearest = false, compactDesktop = false, initialOneDay = false }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch; suggestNearest?: boolean; compactDesktop?: boolean; initialOneDay?: boolean }) {
+export default function ConsultationForm({ theme = "dark", previewBranch, suggestNearest = false, compactDesktop = false, initialOneDay = false, backLink }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch; suggestNearest?: boolean; compactDesktop?: boolean; initialOneDay?: boolean; backLink?: ReactNode }) {
   const t = theme === "light" ? LIGHT : DARK;
   const [reservationType, setReservationType] = useState<"방문 상담" | "일일 체험">(initialOneDay ? "일일 체험" : "방문 상담");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const userChoseBranch = useRef(false);
+  const [showHours, setShowHours] = useState(false);
+  const hoursId = useId();
   const [locationSuggested, setLocationSuggested] = useState(false);
 
   const [form, setForm] = useState({
@@ -307,6 +303,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
 
         {/* ── 왼쪽: 소개 ── */}
         <div className="mb-10 lg:mb-0 lg:sticky lg:top-24 lg:self-start">
+          {backLink}
           <h2 className={`break-keep text-3xl font-black tracking-tight md:text-4xl ${t.heading}`}>
             방문 상담·원데이 클래스
           </h2>
@@ -404,10 +401,11 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
                     </svg>
                     전화 문의
                   </a>
-                  <a
-                    href={branchInfo.naverUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    aria-expanded={showHours}
+                    aria-controls={hoursId}
+                    onClick={() => setShowHours((open) => !open)}
                     className={`flex items-center gap-1.5 ${t.branchLink} transition`}
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
@@ -415,9 +413,10 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
                       <path d="M12 8v4l3 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
                     </svg>
                     운영시간 확인
-                  </a>
+                  </button>
                 </div>
               </div>
+              <p id={hoursId} hidden={!showHours} className={`mt-2 break-keep text-xs leading-5 ${t.heading}`}>{form.branch} · {branchData[form.branch].hours}</p>
             </div>
 
             {/* 이름 / 연락처 */}

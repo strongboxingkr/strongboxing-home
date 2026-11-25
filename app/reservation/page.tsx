@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ReservationBackLink from "../components/ReservationBackLink";
 import ConsultationForm from "../components/ConsultationForm";
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export default async function ReservationPage({ searchParams }: { searchParams: 
   const { type } = await searchParams;
   return (
     <main className="min-h-screen bg-[#0E0E10] pt-20 text-white lg:pt-0">
-      <ConsultationForm suggestNearest compactDesktop initialOneDay={type === "one-day"} />
+      <ConsultationForm suggestNearest compactDesktop backLink={<ReservationBackLink />} initialOneDay={type === "one-day"} />
     </main>
   );
 }
