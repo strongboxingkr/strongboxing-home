@@ -35,7 +35,7 @@ export default function FirstBoxingPopup({ onClose, onHideToday }: {
             <span className="mt-1 text-[11px]">— BOXING —</span>
           </div>
         </div>
-        <img src="/images/branches/gaebong.jpg" alt="" className="h-24 w-full object-cover grayscale md:absolute md:inset-y-0 md:h-full md:w-[34%]" />
+        <img src="/images/first-boxing-ring.webp" alt="" className="h-24 w-full object-cover grayscale md:absolute md:inset-y-0 md:h-full md:w-[34%]" />
         <button type="button" aria-label="팝업 닫기" onClick={onClose} className="absolute right-2 top-2 z-10 grid size-11 place-items-center rounded-sm bg-[#191919] text-2xl leading-none hover:bg-[#343434]">×</button>
         <div className="px-5 pb-3 pt-5 min-[360px]:px-6 md:col-start-2 md:px-9 md:pb-5 md:pt-8">
           <div className="mb-7 hidden md:inline-flex flex-col items-center text-[15px] font-semibold leading-none tracking-[.16em]">
