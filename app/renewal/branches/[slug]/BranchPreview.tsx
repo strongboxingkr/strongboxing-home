@@ -27,6 +27,7 @@ type Props = {
   faq: { question: string; answer: string }[];
   workout: { program: string[][]; flow: string[][]; firstVisit: string[][] };
   galleryImages: string[];
+  trainingPhotos?: string[];
   getThumb: (post: PreviewPost) => string | null;
 };
 
@@ -47,10 +48,10 @@ function Card({ title, action, children }: { title: string; action?: ReactNode; 
   );
 }
 
-function Photo({ src, label }: { src: string; label: string }) {
+function Photo({ src, label, lazy = false }: { src: string; label: string; lazy?: boolean }) {
   return (
     <a href={src} target="_blank" rel="noopener noreferrer" aria-label={`${label} 사진 보기 (새 창)`} className="group relative block h-full overflow-hidden rounded-[4px] bg-[#141416] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D01E2E]">
-      <img src={src} alt={label} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none" />
+      <img src={src} alt={label} loading={lazy ? "lazy" : undefined} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none" />
     </a>
   );
 }
@@ -85,7 +86,7 @@ function TrialTerms() {
   return <p className="break-keep text-xs leading-relaxed text-[#C9C9C9]"><strong className="text-[#F5F4F1]">원데이 체험 30,000원</strong> · 당일 등록 시 체험비 전액 차감<br />회원권 가격은 지점에 문의해 주세요.</p>;
 }
 
-export default function BranchPreview({ branch, photos, coaches, posts, reels, reviews, audience, faq, workout, galleryImages, getThumb }: Props) {
+export default function BranchPreview({ branch, photos, coaches, posts, reels, reviews, audience, faq, workout, galleryImages, trainingPhotos = [], getThumb }: Props) {
   const firstPost = posts[0];
   const firstReview = branch.name === "신정점"
     ? reviews.find(({ content }) => /오전|키즈|아이|초등/.test(content || "") && !/휴게|브레이크/.test(content || ""))
@@ -161,6 +162,30 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
             <Card title={`${branch.name} 클립`} action={<TabLink tab="videos">영상 더보기 →</TabLink>}>
               <Clips reels={reels.slice(0, 6)} compact />
             </Card>
+
+            {trainingPhotos.length > 0 && (
+              <Card title={branch.name + " 운동 사진"}>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {trainingPhotos.slice(0, 4).map((src, index) => (
+                    <div className="aspect-[4/3]" key={src}>
+                      <Photo src={src} label={branch.name + " 복싱 훈련 사진 " + (index + 1)} lazy />
+                    </div>
+                  ))}
+                </div>
+                {trainingPhotos.length > 4 && (
+                  <details className="mt-3">
+                    <summary className="cursor-pointer text-sm font-semibold">운동 사진 더 보기 ({trainingPhotos.length}장)</summary>
+                    <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                      {trainingPhotos.slice(4).map((src, index) => (
+                        <div className="aspect-[4/3]" key={src}>
+                          <Photo src={src} label={branch.name + " 복싱 훈련 사진 " + (index + 5)} lazy />
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                )}
+              </Card>
+            )}
 
             <div className="grid gap-5 sm:grid-cols-2">
               <Card title={`${branch.name} 블로그`} action={<TabLink tab="blog">전체 보기 →</TabLink>}>

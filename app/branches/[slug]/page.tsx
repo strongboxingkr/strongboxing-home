@@ -1,3 +1,4 @@
+import { branchTrainingPhotos } from "@/lib/branch-training-photos";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -352,6 +353,7 @@ export default async function BranchPage({ params }: { params: Promise<{ slug: s
         audience={audience}
         faq={faqItems}
         workout={workout}
+        trainingPhotos={branchTrainingPhotos[slug] ?? []}
         galleryImages={slug === "yeongdeungpo" ? [branch.image] : isMokdong ? galleryImages : [`${mediaRoot}/facility.jpg`]}
         getThumb={getThumb}
       />
