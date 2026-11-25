@@ -111,7 +111,13 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
     <main className="min-h-screen bg-[#0E0E10] text-[#F5F4F1]">
       <header className="border-b border-[#29292D] bg-[#141416]">
         <div className="mx-auto flex min-h-14 max-w-[1136px] flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2 sm:px-6">
-          <Link href="/" className="whitespace-nowrap text-[15px] font-black tracking-[0.08em]" style={{ fontFamily: "Arial Black, Arial, sans-serif" }}>STRONG <span className="text-[#D01E2E]">BOXING</span></Link>
+          <Link href="/" aria-label="스트롱복싱 홈" className="flex shrink-0 items-center gap-2.5">
+            <img src="/icon.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" />
+            <span className="flex flex-col leading-none">
+              <span className="text-[15px] font-black tracking-[0.08em] text-[#F5F4F1]">STRONG</span>
+              <span className="text-[9px] font-black tracking-[0.22em] text-[#D01E2E]">— BOXING —</span>
+            </span>
+          </Link>
           <nav aria-label="사이트 메뉴" className="flex flex-wrap items-center gap-4 text-sm font-semibold text-[#B5B5BC]">
             <Link href="/#branches">지점 안내</Link>
             <Link href="/#programs">운동 안내</Link>
