@@ -1,26 +1,36 @@
 import { db } from "@/lib/db";
 import nodemailer from "nodemailer";
 
-// consultations 테이블에 reservation_type 컬럼이 없으면 추가
-async function ensureReservationTypeColumn() {
-  try {
-    await db.query(
-      `ALTER TABLE consultations ADD COLUMN IF NOT EXISTS reservation_type VARCHAR(20) NOT NULL DEFAULT '방문 상담'`
+import type { RowDataPacket } from "mysql2";
+
+let reservationSchema: Promise<void> | undefined;
+
+function ensureReservationTypeColumn() {
+  reservationSchema ??= (async () => {
+    const [columns] = await db.query<RowDataPacket[]>(
+      "SHOW COLUMNS FROM consultations WHERE Field = 'reservation_type'"
     );
-  } catch {
-    // 이미 있거나 지원 안 되는 경우 무시
-  }
+    if (columns.length) return;
+
+    try {
+      await db.query(
+        "ALTER TABLE consultations ADD COLUMN reservation_type VARCHAR(20) NOT NULL DEFAULT '방문 상담'"
+      );
+    } catch (error) {
+      // Two server processes may discover the missing column at the same time.
+      if ((error as { code?: string }).code !== "ER_DUP_FIELDNAME") throw error;
+    }
+  })().catch((error) => {
+    reservationSchema = undefined;
+    throw error;
+  });
+
+  return reservationSchema;
 }
 
-let migrated = false;
-
 export async function POST(req: Request) {
+  let step = "read request";
   try {
-    if (!migrated) {
-      await ensureReservationTypeColumn();
-      migrated = true;
-    }
-
     const {
       name,
       phone,
@@ -40,6 +50,11 @@ export async function POST(req: Request) {
     }
 
     const type = reservation_type || "방문 상담";
+
+    step = "check reservation schema";
+    await ensureReservationTypeColumn();
+
+    step = "check existing reservation";
 
     const [exists]: any = await db.query(
       `SELECT id FROM consultations
@@ -67,6 +82,7 @@ export async function POST(req: Request) {
     const phoneLast4 = phone.replace(/[^0-9]/g, "").slice(-4);
     const reservationNo = `HOME-${branchCode}-${reservation_date.replaceAll("-", "")}-${reservation_time.replace(":", "")}-${phoneLast4}`;
 
+    step = "save reservation";
     await db.query(
       `INSERT INTO consultations (
         reservation_no, name, phone, branch, reservation_date,
@@ -75,12 +91,11 @@ export async function POST(req: Request) {
       [reservationNo, name, phone, branch, reservation_date, reservation_time, goal || "", message || "", type]
     );
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-    });
-
     try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      });
       await transporter.sendMail({
         from: `"스트롱복싱 홈페이지" <${process.env.SMTP_USER}>`,
         to: process.env.CONSULT_EMAIL,
@@ -99,12 +114,12 @@ export async function POST(req: Request) {
         `,
       });
     } catch (mailError) {
-      console.error("메일 발송 실패:", mailError);
+      console.error("Reservation notification failed", { code: (mailError as { code?: string }).code });
     }
 
     return Response.json({ ok: true });
   } catch (error) {
-    console.error(error);
-    return Response.json({ ok: false, message: "예약 접수 중 오류가 발생했습니다." });
+    console.error("Reservation submission failed", { step, code: (error as { code?: string }).code });
+    return Response.json({ ok: false, message: "예약 접수 중 오류가 발생했습니다." }, { status: 500 });
   }
 }
