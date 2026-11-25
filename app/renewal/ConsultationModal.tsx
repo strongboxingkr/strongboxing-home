@@ -1,5 +1,7 @@
 "use client";
 
+import { consultationSlots, type ReservationType } from "@/lib/consultation-slots";
+
 import { useMemo, useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { trackReservationComplete } from "@/lib/gtag";
@@ -89,11 +91,11 @@ function getToday() {
   return new Date().toISOString().split("T")[0];
 }
 
-function getAvailableTimes(branch: string, dateString: string): string[] {
+function getAvailableTimes(branch: string, dateString: string, type: ReservationType): string[] {
   if (!dateString) return [];
   const date = new Date(dateString);
   const day = date.getDay();
-  const allTimes = branchData[branch]?.times[day] ?? [];
+  const allTimes = consultationSlots(branchData[branch]?.times[day] ?? [], type);
   if (dateString === getToday()) {
     const now = new Date();
     return allTimes.filter((t) => {
@@ -121,12 +123,12 @@ function ConsultationFormCompact({ onClose }: { onClose: () => void }) {
   });
 
   const times = useMemo(
-    () => getAvailableTimes(form.branch, form.reservation_date),
-    [form.branch, form.reservation_date]
+    () => getAvailableTimes(form.branch, form.reservation_date, reservationType),
+    [form.branch, form.reservation_date, reservationType]
   );
 
   function handleBranchChange(branch: string) {
-    const newTimes = getAvailableTimes(branch, form.reservation_date);
+    const newTimes = getAvailableTimes(branch, form.reservation_date, reservationType);
     setForm((f) => ({
       ...f,
       branch,
@@ -135,7 +137,7 @@ function ConsultationFormCompact({ onClose }: { onClose: () => void }) {
   }
 
   function handleDateChange(dateString: string) {
-    const available = getAvailableTimes(form.branch, dateString);
+    const available = getAvailableTimes(form.branch, dateString, reservationType);
     if (available.length === 0) {
       alert("선택한 날짜는 해당 지점의 휴무일이거나 운영하지 않는 요일입니다.");
       setForm((f) => ({ ...f, reservation_date: "", reservation_time: "" }));
@@ -207,7 +209,13 @@ function ConsultationFormCompact({ onClose }: { onClose: () => void }) {
             <button
               key={type}
               type="button"
-              onClick={() => setReservationType(type)}
+              onClick={() => {
+                    setReservationType(type);
+                    setForm((f) => ({
+                      ...f,
+                      reservation_time: getAvailableTimes(f.branch, f.reservation_date, type).includes(f.reservation_time) ? f.reservation_time : "",
+                    }));
+                  }}
               className="rounded-[12px] p-3 text-left transition"
               style={{
                 border: active ? "2px solid #D01E2E" : "1.5px solid #E8E6DF",

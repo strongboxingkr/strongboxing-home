@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { createHash } from "node:crypto";
 import nodemailer from "nodemailer";
 
 import type { RowDataPacket } from "mysql2";
@@ -49,26 +50,11 @@ export async function POST(req: Request) {
       });
     }
 
-    const type = reservation_type || "방문 상담";
+    const type = reservation_type === "일일 체험" ? "일일 체험" : "방문 상담";
+    const typeCode = type === "일일 체험" ? "TRIAL" : "CONSULT";
 
     step = "check reservation schema";
     await ensureReservationTypeColumn();
-
-    step = "check existing reservation";
-
-    const [exists]: any = await db.query(
-      `SELECT id FROM consultations
-       WHERE branch = ? AND reservation_date = ? AND reservation_time = ?
-       LIMIT 1`,
-      [branch, reservation_date, reservation_time]
-    );
-
-    if (exists.length > 0) {
-      return Response.json({
-        ok: false,
-        message: "이미 예약이 있는 시간입니다. 다른 시간을 선택해주세요.",
-      });
-    }
 
     const branchMap: any = {
       개봉점: "GAEBONG",
@@ -80,16 +66,53 @@ export async function POST(req: Request) {
 
     const branchCode = branchMap[branch] || "BRANCH";
     const phoneLast4 = phone.replace(/[^0-9]/g, "").slice(-4);
-    const reservationNo = `HOME-${branchCode}-${reservation_date.replaceAll("-", "")}-${reservation_time.replace(":", "")}-${phoneLast4}`;
+    const reservationNo = `HOME-${branchCode}-${reservation_date.replaceAll("-", "")}-${reservation_time.replace(":", "")}-${phoneLast4}-${typeCode}`;
 
-    step = "save reservation";
-    await db.query(
-      `INSERT INTO consultations (
-        reservation_no, name, phone, branch, reservation_date,
-        reservation_time, goal, message, reservation_type
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [reservationNo, name, phone, branch, reservation_date, reservation_time, goal || "", message || "", type]
-    );
+    step = "lock reservation slot";
+    const lockName = "booking:" + createHash("sha256")
+      .update(JSON.stringify([branch, reservation_date, reservation_time, typeCode]))
+      .digest("hex").slice(0, 48);
+    const connection = await db.getConnection();
+    let locked = false;
+    try {
+      const [lock] = await connection.query<RowDataPacket[]>("SELECT GET_LOCK(?, 5) AS acquired", [lockName]);
+      locked = Number(lock[0]?.acquired) === 1;
+      if (!locked) {
+        return Response.json({ ok: false, message: "예약 시간을 확인하는 중입니다. 잠시 후 다시 시도해 주세요." }, { status: 503 });
+      }
+
+      step = "check existing reservation";
+      const [exists] = await connection.query<RowDataPacket[]>(
+        `SELECT id FROM consultations
+         WHERE branch = ? AND reservation_date = ? AND reservation_time = ?
+           AND COALESCE(NULLIF(reservation_type, ''), '방문 상담') = ?
+         LIMIT 1`,
+        [branch, reservation_date, reservation_time, type]
+      );
+      if (exists.length) {
+        return Response.json({ ok: false, message: "이미 같은 유형의 예약이 있는 시간입니다. 다른 시간을 선택해주세요." });
+      }
+
+      step = "save reservation";
+      await connection.query(
+        `INSERT INTO consultations (
+          reservation_no, name, phone, branch, reservation_date,
+          reservation_time, goal, message, reservation_type
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [reservationNo, name, phone, branch, reservation_date, reservation_time, goal || "", message || "", type]
+      );
+    } finally {
+      if (locked) {
+        try {
+          await connection.query("SELECT RELEASE_LOCK(?)", [lockName]);
+          connection.release();
+        } catch {
+          connection.destroy();
+        }
+      } else {
+        connection.release();
+      }
+    }
 
     try {
       const transporter = nodemailer.createTransport({

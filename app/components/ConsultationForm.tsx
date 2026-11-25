@@ -1,5 +1,6 @@
 "use client";
 
+import { consultationSlots, type ReservationType } from "@/lib/consultation-slots";
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { trackReservationComplete } from "@/lib/gtag";
@@ -83,11 +84,11 @@ function getToday() {
   return new Date().toISOString().split("T")[0];
 }
 
-function getAvailableTimes(branch: string, dateString: string): string[] {
+function getAvailableTimes(branch: string, dateString: string, type: ReservationType): string[] {
   if (!dateString) return [];
   const date = new Date(dateString);
   const day = date.getDay();
-  const allTimes = branchData[branch]?.times[day] ?? [];
+  const allTimes = consultationSlots(branchData[branch]?.times[day] ?? [], type);
 
   // 오늘 날짜면 이미 지난 시간 제외
   if (dateString === getToday()) {
@@ -211,8 +212,8 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
   }, [suggestNearest, previewBranch]);
 
   const times = useMemo(
-    () => getAvailableTimes(form.branch, form.reservation_date),
-    [form.branch, form.reservation_date]
+    () => getAvailableTimes(form.branch, form.reservation_date, reservationType),
+    [form.branch, form.reservation_date, reservationType]
   );
 
   const branchInfo = previewBranch?.name === form.branch ? previewBranch : branchData[form.branch];
@@ -221,7 +222,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
     userChoseBranch.current = true;
     setLocationSuggested(false);
     // 지점 변경 시 선택된 날짜·시간이 유효한지 재검증
-    const newTimes = getAvailableTimes(branch, form.reservation_date);
+    const newTimes = getAvailableTimes(branch, form.reservation_date, reservationType);
     const timeStillValid = newTimes.includes(form.reservation_time);
     setForm((f) => ({
       ...f,
@@ -232,7 +233,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
 
   function handleDateChange(dateString: string) {
     userChoseBranch.current = true;
-    const available = getAvailableTimes(form.branch, dateString);
+    const available = getAvailableTimes(form.branch, dateString, reservationType);
     if (available.length === 0) {
       alert("선택한 날짜는 해당 지점의 휴무일이거나 운영하지 않는 요일입니다.");
       setForm((f) => ({ ...f, reservation_date: "", reservation_time: "" }));
@@ -334,7 +335,13 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
                 <button
                   key={type}
                   type="button"
-                  onClick={() => setReservationType(type)}
+                  onClick={() => {
+                    setReservationType(type);
+                    setForm((f) => ({
+                      ...f,
+                      reservation_time: getAvailableTimes(f.branch, f.reservation_date, type).includes(f.reservation_time) ? f.reservation_time : "",
+                    }));
+                  }}
                   aria-pressed={active}
                   className={`rounded-[6px] border p-4 text-left transition ${
                     active
