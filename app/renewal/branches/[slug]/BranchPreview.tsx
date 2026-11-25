@@ -8,7 +8,7 @@ import BranchPreviewTabs, { TabLink } from "./BranchPreviewTabs";
 
 type Branch = {
   name: string; fullName: string; area: string; region: string; intro: string; description: string; highlights: string[];
-  phone: string; address: string; hours: string[]; booking: string;
+  phone: string; address: string; landmark?: string; hours: string[]; booking: string;
   naverMap: string; directions: string; reviewUrl?: string; googleMap?: string; kakaoMap?: string; kakaoChat: string | null; instagram: string;
 };
 
@@ -82,17 +82,19 @@ function Clips({ reels, compact = false }: { reels: PreviewReel[]; compact?: boo
 }
 
 function TrialTerms() {
-  return <p className="rounded-[4px] bg-[#211719] p-3 text-sm leading-relaxed text-[#E8E8EA]">원데이 클래스 30,000원은 현장에서 결제합니다. 당일 등록 시 전액 페이백됩니다. 회원권 가격은 지점에 직접 문의해 주세요.</p>;
+  return <p className="break-keep text-xs leading-relaxed text-[#C9C9C9]"><strong className="text-[#F5F4F1]">원데이 체험 30,000원</strong> · 당일 등록 시 체험비 전액 차감<br />회원권 가격은 지점에 문의해 주세요.</p>;
 }
 
 export default function BranchPreview({ branch, photos, coaches, posts, reels, reviews, audience, faq, workout, galleryImages, getThumb }: Props) {
   const firstPost = posts[0];
-  const firstReview = reviews[0];
+  const firstReview = branch.name === "신정점"
+    ? reviews.find(({ content }) => /오전|키즈|아이|초등/.test(content || "") && !/휴게|브레이크/.test(content || ""))
+    : reviews[0];
   const sidebar = (
     <>
       <Card title="원데이 클래스">
         <div className="mb-3"><TrialTerms /></div>
-        <a className={`${primary} w-full`} href={branch.booking} target="_blank" rel="noopener noreferrer">네이버 예약 ↗</a>
+        <a className={`${primary} w-full`} href={branch.booking} target="_blank" rel="noopener noreferrer">예약 종류 보기 ↗</a>
       </Card>
       <Card title={`${branch.name} 이용 정보`}>
         <dl className="space-y-3 text-sm leading-relaxed">
@@ -127,11 +129,16 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
           <div className="min-w-0">
             <p className="text-xs font-bold text-[#D01E2E]">{branch.region} 복싱장</p>
             <h1 className="mt-1 break-keep text-3xl font-black leading-tight tracking-tight sm:text-[38px]">{branch.fullName}</h1>
+            <div className="mt-3 space-y-1 break-keep text-sm leading-relaxed text-[#E8E8EA]">
+              <p>{branch.hours.join(" · ")}</p>
+              <p>{branch.landmark || branch.address}</p>
+            </div>
             <p className="mt-2 max-w-[62ch] break-keep text-sm leading-7 text-[#B5B5BC]">{branch.intro}</p>
             <ul className="mt-3 flex flex-wrap gap-1.5">{branch.highlights.map((tag) => <li key={tag} className="rounded border border-white/10 px-2 py-1 text-xs font-semibold">{tag}</li>)}</ul>
           </div>
           <div className="grid gap-2">
-            <a href={branch.booking} target="_blank" rel="noopener noreferrer" className={primary}><CalendarDays size={17} aria-hidden="true" /> 네이버 예약</a>
+            <TrialTerms />
+            <a href={branch.booking} target="_blank" rel="noopener noreferrer" className={primary}><CalendarDays size={17} aria-hidden="true" /> 예약 종류 보기</a>
             <div className="flex gap-1.5 [&>a]:flex-1">
               <a href={`tel:${branch.phone}`} className={secondary}><Phone size={15} aria-hidden="true" /> 전화</a>
               {branch.kakaoChat && <a href={branch.kakaoChat} target="_blank" rel="noopener noreferrer" className={secondary}><MessageCircle size={15} aria-hidden="true" /> 카카오</a>}
@@ -142,6 +149,9 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
 
         <BranchPreviewTabs sidebar={sidebar} panels={{
           home: <>
+            <Card title="처음 방문하실 때" action={<TabLink tab="workout">운동 안내 →</TabLink>}>
+              <p className="break-keep text-sm leading-7 text-[#C9C9C9]">첫날에는 기본 자세와 스텝부터 배워요. 운영시간에 편하게 방문하면 관장·코치가 개인별 진도를 살펴드립니다.</p>
+            </Card>
             <Card title={`${branch.name} 클립`} action={<TabLink tab="videos">영상 더보기 →</TabLink>}>
               <Clips reels={reels.slice(0, 6)} compact />
             </Card>
@@ -174,7 +184,7 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
                   <p className="mt-2 max-w-[62ch] break-keep text-sm leading-7 text-[#C9C9C9]">{answer}</p>
                   {question === "네이버로 예약할 수 있나요?" && (
                     <a href={branch.booking} target="_blank" rel="noopener noreferrer" className={`${primary} mt-3`}>
-                      {branch.name} 네이버 예약 ↗
+                      {branch.name} 예약 종류 보기 ↗
                     </a>
                   )}
                 </details>
@@ -189,7 +199,7 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
           </Card>,
           videos: <Card title={`${branch.name} 클립`}><Clips reels={reels} /></Card>,
           workout: <Card title={`${branch.area} 복싱 운동 안내`}>
-            <p className="mb-4 break-keep text-sm leading-6 text-[#B5B5BC]">전 지점이 같은 수업 흐름으로 진행해요. 관장·코치는 일반 운동 중 자세와 진도를 살피며, 별도 개인 PT와는 방식이 달라요.</p>
+            <p className="mb-4 break-keep text-sm leading-6 text-[#B5B5BC]">운영시간에 방문해 각자 운동하는 동안 관장·코치가 필요한 동작을 짚어주고 다음에 연습할 내용을 안내해요.</p>
             <div className="grid gap-2 sm:grid-cols-3">
               {workout.program.map(([title, description]) => (
                 <div key={title} className="rounded-[4px] bg-[#1A1A1C] p-3">
@@ -222,7 +232,7 @@ export default function BranchPreview({ branch, photos, coaches, posts, reels, r
           </Card>,
           location: <Card title="시설·위치">
             <p className="mb-2 break-keep text-sm leading-7 text-[#C9C9C9]">{branch.directions}</p>
-            <p className="mb-4 break-keep text-sm text-[#B5B5BC]">{branch.address}</p>
+            <p className="mb-4 break-keep text-sm text-[#B5B5BC]">{branch.address}{branch.landmark && !branch.address.includes(branch.landmark) ? ` · ${branch.landmark}` : ""}</p>
             <div className={galleryImages.length === 1 ? "h-52 sm:h-72" : "grid auto-rows-[120px] grid-cols-2 gap-2 sm:auto-rows-[155px]"}>
               {galleryImages.map((src, index) => <Photo key={src} src={src} label={galleryImages.length === 1 ? `${branch.name} 시설` : `스트롱복싱 갤러리 사진 ${index + 1}`} />)}
             </div>

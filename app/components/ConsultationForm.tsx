@@ -179,9 +179,9 @@ function nearestBranch({ latitude, longitude }: Pick<GeolocationCoordinates, "la
 
 type PreviewBranch = { name: string; address: string; phone: string; naverUrl: string };
 
-export default function ConsultationForm({ theme = "dark", previewBranch, suggestNearest = false, compactDesktop = false }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch; suggestNearest?: boolean; compactDesktop?: boolean }) {
+export default function ConsultationForm({ theme = "dark", previewBranch, suggestNearest = false, compactDesktop = false, initialOneDay = false }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch; suggestNearest?: boolean; compactDesktop?: boolean; initialOneDay?: boolean }) {
   const t = theme === "light" ? LIGHT : DARK;
-  const [reservationType, setReservationType] = useState<"방문 상담" | "일일 체험">("방문 상담");
+  const [reservationType, setReservationType] = useState<"방문 상담" | "일일 체험">(initialOneDay ? "일일 체험" : "방문 상담");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -362,7 +362,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
                   ) : (
                     <>
                       <p className={`ml-6 text-[18px] font-black ${t.heading}`}>30,000원</p>
-                      <p className="ml-6 text-[11px] font-semibold text-[#D01E2E]">당일 등록 시 전액 페이백</p>
+                      <p className="ml-6 text-[11px] font-semibold text-[#D01E2E]">당일 등록 시 체험비 전액 차감</p>
                     </>
                   )}
                 </button>
@@ -521,7 +521,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
             {/* 체험 결제 안내 */}
             {reservationType === "일일 체험" && (
               <p className={`text-[12px] ${t.muted} leading-5`}>
-                원데이 클래스 30,000원은 현장에서 결제합니다. 당일 등록 시 전액 페이백됩니다.
+                원데이 클래스 30,000원은 현장에서 결제합니다. 당일 등록 시 체험비 전액 차감.
               </p>
             )}
 

@@ -48,10 +48,10 @@ export default function FirstBoxingPopup({ onClose, onHideToday }: {
           </h2>
           <p className="mt-3 break-keep text-[15px] leading-relaxed md:text-lg">{FIRST_BOXING_DESCRIPTION}</p>
           <div className="mt-4 space-y-1.5 border-t border-white/25 pt-3 text-[13px] leading-relaxed text-[#dedad2] md:mt-6 md:pt-4 md:text-[15px]">
-            <p>선수 경력 또는 복싱 지도 자격을 갖춘 코치</p>
-            <p className="hidden md:block">프로·아마추어 선수 배출 · 운동기구 · 인바디</p>
+            <p>선수 출신 + 지도자 자격증 보유 코치진</p>
+            <p>시간표 없이, 운영시간 내 원하는 시간에 와서 시작</p>
           </div>
-          <a href="/reservation" className="mt-5 flex min-h-12 items-center justify-center gap-2 rounded-[4px] bg-[#f4f0e8] px-2 py-2 text-center text-[13px] font-extrabold tracking-tight text-[#191919] hover:bg-white md:mt-7 md:text-base">
+          <a href="/reservation" className="mt-5 flex min-h-12 items-center justify-center gap-2 rounded-[4px] bg-[#D01E2E] px-2 py-2 text-center text-[13px] font-extrabold tracking-tight text-white hover:bg-[#B71C2B] md:mt-7 md:text-base">
             가까운 지점에서 복싱 시작해보기 <span aria-hidden="true">→</span>
           </a>
           <button type="button" onClick={onHideToday} className="mx-auto mt-1 block min-h-11 px-3 text-xs text-[#dedad2] underline underline-offset-4 hover:text-white">오늘 하루 보지 않기</button>

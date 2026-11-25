@@ -7,18 +7,20 @@ export default function ReservationButton({
   children,
   location = "header",
   branchName,
+  oneDay = false,
 }: {
   className?: string;
   children: React.ReactNode;
   location?: string;
   branchName?: string;
+  oneDay?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={() => {
         trackReservationClick({ branch_name: branchName, location });
-        window.location.href = "/reservation";
+        window.location.href = oneDay ? "/reservation?type=one-day" : "/reservation";
       }}
       className={className}
     >

@@ -1,6 +1,5 @@
 "use client";
 
-import FirstBoxingPopup from "./FirstBoxingPopup";
 import { FIRST_BOXING_POPUP_SLUG } from "@/lib/first-boxing-popup";
 import { useEffect, useState } from "react";
 
@@ -30,6 +29,7 @@ export default function PopupBanner() {
         // localStorage에서 숨긴 팝업 제거
         const now = Date.now();
         const filtered = data.popups.filter((p: Popup) => {
+          if (p.slug === FIRST_BOXING_POPUP_SLUG) return false;
           const hiddenUntil = localStorage.getItem(`popup_hide_${p.id}`);
           if (!hiddenUntil) return true;
           if (hiddenUntil === "forever") return false;
@@ -67,10 +67,6 @@ export default function PopupBanner() {
     } else {
       setVisible(false);
     }
-  }
-
-  if (popup.slug === FIRST_BOXING_POPUP_SLUG) {
-    return <FirstBoxingPopup onClose={next} onHideToday={hideToday} />;
   }
 
   return (

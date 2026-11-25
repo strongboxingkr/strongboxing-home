@@ -8,10 +8,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://strongboxing.kr/reservation" },
 };
 
-export default function ReservationPage() {
+export default async function ReservationPage({ searchParams }: { searchParams: Promise<{ type?: string | string[] }> }) {
+  const { type } = await searchParams;
   return (
     <main className="min-h-screen bg-[#0E0E10] pt-20 text-white lg:pt-0">
-      <ConsultationForm suggestNearest compactDesktop />
+      <ConsultationForm suggestNearest compactDesktop initialOneDay={type === "one-day"} />
     </main>
   );
 }

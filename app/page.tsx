@@ -12,6 +12,7 @@ import GallerySection from "./components/GallerySection";
 import RevealObserver from "./components/RevealObserver";
 import SiteHeader from "./components/SiteHeader";
 import FloatingCTA from "./components/FloatingCTA";
+import HomeHeroVideo from "./components/HomeHeroVideo";
 import PopupBanner from "./components/PopupBanner";
 import type { Metadata } from "next";
 
@@ -53,6 +54,7 @@ const branches = [
     image: "/images/branches/gaebong.jpg",
     phone: "02-2060-1279",
     address: "서울시 구로구 개봉동 166-5번지 유원빌딩 지하 1층",
+    landmark: "유원빌딩 지하 1층",
     hours: ["평일 13:00–23:00", "토·일 휴무"],
     review: "관장 직접 지도 · 고척동에서도 가까운 개봉동 복싱장",
     score: "4.9",
@@ -68,6 +70,7 @@ const branches = [
     image: "/images/branches/sinjeong.jpg",
     phone: "02-2647-3373",
     address: "서울시 양천구 신정동 1021-7 태화상가 2층",
+    landmark: "신정네거리 · 태화상가 2층",
     hours: ["평일 10:00–24:00 (14:00–15:00 휴게)", "토 10:00–16:00"],
     review: "초보자 · 다이어트 · 꾸준히 다니기 좋은 신정동 복싱장",
     score: "4.9",
@@ -83,6 +86,7 @@ const branches = [
     image: "/images/branches/mokdong.png",
     phone: "02-2643-5971",
     address: "서울시 양천구 목동 909-6 우방빌딩 4층",
+    landmark: "우방빌딩 4층",
     hours: ["평일 14:00–24:00 (밤 12시까지)", "토 11:00–16:00", "일 휴무"],
     review: "학생 · 키즈 · 방학특강 · 목동 복싱장",
     score: "4.9",
@@ -98,7 +102,8 @@ const branches = [
     image: "/images/branches/cheolsan.jpg",
     phone: "02-2066-0406",
     address: "경기도 광명시 철산동 56-14 3층",
-    hours: ["월-금 14:00~23:00", "토일 14:00~18:00"],
+    landmark: "메가커피 광명위브점 건물 3층",
+    hours: ["평일 14:00–23:00", "토·일 14:00–18:00", "공휴일 휴무"],
     review: "직장인 · 여성 · 퇴근 후 운동하기 좋은 광명 복싱장",
     score: "4.9",
     reviewCount: 32,
@@ -113,7 +118,8 @@ const branches = [
     image: "/images/branches/yeongdeungpo.jpg",
     phone: "02-831-9312",
     address: "서울시 영등포구 도림로 313 건영상가 2층",
-    hours: ["월-금 13:00~23:00"],
+    landmark: "건영상가 2층",
+    hours: ["평일 13:00–23:00", "주말 운영 여부는 지점 문의"],
     review: "학생 · 초보자 · 직장인 복싱 · 영등포 복싱장",
     score: "4.8",
     reviewCount: 77,
@@ -263,15 +269,12 @@ export default async function HomePage() {
               {/* ── 왼쪽: 카피 ── */}
               <div className="flex flex-col justify-center">
                 <p className="mb-4 text-xs font-semibold tracking-wide" style={{ color: "#8A8D91" }}>
-                  서울·경기 5개 지점 직영
+                  서울·경기 5개 지점
                 </p>
 
-                <h1 style={{ fontSize: "clamp(46px, 6.5vw, 88px)", lineHeight: 1.04, letterSpacing: "-0.05em", fontWeight: 900 }}>
-                  <span style={{ color: "#F5F4F1" }}>처음이어도</span>
-                  <br />
-                  <span style={{ color: "#F5F4F1" }}>
-                    괜찮습니다
-                  </span>
+                <h1 className="break-keep text-[clamp(30px,5.2vw,58px)] font-black leading-[1.12] tracking-[-.05em]">
+                  운동을 또 그만둘까 봐<br />
+                  등록부터 망설여진다면
                 </h1>
 
                 <div className="my-7 h-[2px] w-14" style={{ background: "#D01E2E" }} />
@@ -283,25 +286,14 @@ export default async function HomePage() {
                 <p className="mt-3 text-sm font-semibold text-[#C9C9C9] md:text-base">어느 스트롱에 가도, 같은 기준으로 배웁니다.</p>
                 <a href="/about" className="mt-2 w-fit text-sm font-semibold text-[#F5F4F1] underline decoration-[#D01E2E] underline-offset-4">스트롱복싱이 가르치는 방식 ↗</a>
                 <div className="mt-9 flex flex-wrap gap-3">
-                  <ReservationButton className="btn-primary group rounded-[4px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white hover:bg-[#B71C2B]">
-                    원데이 클래스 예약하기
-                    <span className="ml-1.5 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-                  </ReservationButton>
-                  <a
-                    href="#branches"
-                    className="group inline-flex items-center gap-2 rounded-[4px] px-7 py-3.5 text-sm font-black transition-all duration-300 hover:bg-white/6"
-                    style={{ border: "1px solid rgba(255,255,255,0.12)", color: "#8A8D91" }}
-                  >
-                    가까운 지점 보기
-                    <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  <a href="#branches" className="btn-primary inline-flex items-center gap-2 rounded-[4px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white hover:bg-[#B71C2B]">
+                    가까운 지점 보기 <span aria-hidden="true">→</span>
                   </a>
+                  <ReservationButton oneDay location="hero" className="rounded-[4px] border border-white/20 px-7 py-3.5 text-sm font-bold text-[#F5F4F1] hover:bg-white/10">
+                    원데이 체험 예약 <span aria-hidden="true">→</span>
+                  </ReservationButton>
                 </div>
-
-                <p className="mt-4 text-xs leading-5" style={{ color: "#5A5C61" }}>
-                  원데이 클래스 <span style={{ color: "#8A8D91", fontWeight: 700 }}>30,000원</span>{" "}현장결제
-                  &nbsp;·&nbsp; 당일 등록 시 <span style={{ color: "#8A8D91", fontWeight: 700 }}>전액 페이백</span>
-                  &nbsp;·&nbsp; 편한 운동복만 챙겨오세요
-                </p>
+                <p className="mt-4 text-xs leading-5 text-[#B5B5BC]"><strong>원데이 체험 30,000원</strong> · 당일 등록 시 체험비 전액 차감<br />회원권 가격은 지점에 문의해 주세요.</p>
 
                 {/* 스탯 */}
                 <div className="mt-14 flex gap-8" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 24 }}>
@@ -315,7 +307,7 @@ export default async function HomePage() {
               </div>
 
               <figure className="m-0 overflow-hidden rounded-[4px]">
-                <video className="block aspect-video w-full bg-black object-contain" src="/videos/brand/home-hero.mp4?v=3" autoPlay controls muted playsInline preload="metadata" aria-label="스트롱복싱 소개 영상" />
+                <HomeHeroVideo />
               </figure>
             </div>
           </div>
@@ -336,13 +328,24 @@ export default async function HomePage() {
                     {branch.name}
                     <span aria-hidden="true" className="text-sm text-[#A0A0A6] transition-colors group-hover:text-[#D01E2E]">↗</span>
                   </span>
-                  <p className="mt-1 break-keep text-xs font-semibold leading-5 text-[#E5E5E8]">{branch.badges[0]}</p>
+                  <p className="mt-1 break-keep text-xs font-semibold leading-5 text-[#E5E5E8]">{branch.landmark}</p>
                   <ul aria-label="운영시간" className="mt-2 border-t border-white/10 pt-2 text-xs leading-5 text-[#B5B5BC]">
                     {branch.hours.map((hours) => <li key={hours}>{hours}</li>)}
                   </ul>
                 </div>
               </a>
             ))}
+          </div>
+        </section>
+
+        <section aria-labelledby="first-visit-title" className="mx-auto max-w-[1440px] border-t border-white/10 px-6 py-8 md:px-10">
+          <div className="grid gap-5 lg:grid-cols-[210px_minmax(0,1fr)] lg:gap-9">
+            <h2 id="first-visit-title" className="text-2xl font-bold tracking-tight md:text-3xl">복싱 첫날 안내</h2>
+            <div className="max-w-3xl space-y-3 break-keep text-sm leading-7 text-[#C9C9C9] md:text-base">
+              <p><strong className="text-[#F5F4F1]">첫날에는 기본 자세와 스텝부터 배웁니다.</strong> 운영시간 내 편한 시간에 방문하면 관장·코치가 개인별 진도를 봐드립니다.</p>
+              <p>한솔 대표는 현역 프로 복서입니다. 선수 출신 + 지도자 자격증 보유 코치진이 지도하며, 프로·아마추어 선수를 배출했습니다.</p>
+              <a href="#coaches" className="inline-block font-semibold text-[#F5F4F1] underline decoration-[#D01E2E] underline-offset-4">지도진 보기 →</a>
+            </div>
           </div>
         </section>
 
@@ -530,7 +533,7 @@ export default async function HomePage() {
                   <span className="rounded-[6px] px-2 py-0.5 text-[10px] font-black" style={{ border: "1px solid rgba(208,30,46,0.35)", color: "#D01E2E" }}>DIRECTOR</span>
                 </div>
                 <h3 className="font-black" style={{ fontSize: "clamp(32px, 4vw, 48px)", letterSpacing: "-0.04em", color: "#F5F4F1" }}>한솔 대표</h3>
-                <p className="text-sm" style={{ color: "#8A8D91" }}>스트롱복싱 대표 · 전 지점 총괄</p>
+                <p className="text-sm" style={{ color: "#8A8D91" }}>스트롱복싱 대표 · 현역 프로 복서</p>
               </div>
             </a>
 
@@ -609,7 +612,7 @@ export default async function HomePage() {
             스트롱복싱은 목동점, 개봉점, 철산점, 신정점, 영등포점으로 운영되는 복싱 체육관입니다.
             관장이 직접 지도하는 정통 복싱장으로, 초보자도 기본기부터 편하게 시작할 수 있습니다.
             운동이 처음이어도 자유롭게 방문할 수 있고, 시간을 맞출 필요 없이 운영시간 내 언제든 이용 가능합니다.
-            원데이 클래스 30,000원 현장결제, 당일 등록 시 전액 페이백됩니다.
+            원데이 체험 30,000원 현장결제. 당일 등록 시 체험비 전액 차감.
           </p>
 
           <h3>목동점 — 목동 복싱 · 오목교 복싱 · 양천구 복싱</h3>

@@ -1,5 +1,6 @@
 "use client";
 
+import { browserCompatibleClip } from "@/lib/browser-compatible-clip";
 import { useEffect, useRef, type ComponentPropsWithoutRef } from "react";
 
 export default function VisibleClip({ src, onPlay, ...props }: ComponentPropsWithoutRef<"video">) {
@@ -27,7 +28,7 @@ export default function VisibleClip({ src, onPlay, ...props }: ComponentPropsWit
     return () => observer.disconnect();
   }, [src]);
 
-  return <video {...props} ref={ref} src={src} muted playsInline controls loop preload="none" onPlay={(event) => {
+  return <video {...props} ref={ref} src={typeof src === "string" ? browserCompatibleClip(src) : src} muted playsInline controls loop preload="none" onPlay={(event) => {
     if (!automaticPlay.current) onPlay?.(event);
     automaticPlay.current = false;
   }} />;

@@ -227,7 +227,7 @@ function ConsultationFormCompact({ onClose }: { onClose: () => void }) {
                 {type === "방문 상담" ? "무료" : "30,000원"}
               </p>
               {type === "일일 체험" && (
-                <p className="ml-5 text-[10px] font-semibold" style={{ color: "#D01E2E" }}>당일 등록 시 전액 페이백</p>
+                <p className="ml-5 text-[10px] font-semibold" style={{ color: "#D01E2E" }}>당일 등록 시 체험비 전액 차감</p>
               )}
             </button>
           );

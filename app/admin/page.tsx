@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import RichTextEditor, { RichTextEditorHandle } from "@/app/components/RichTextEditor";
-import { FIRST_BOXING_DESCRIPTION, FIRST_BOXING_POPUP_SLUG, FIRST_BOXING_TITLE_LINES } from "@/lib/first-boxing-popup";
+import { FIRST_BOXING_POPUP_SLUG } from "@/lib/first-boxing-popup";
+import FirstBoxingPopup from "@/app/components/FirstBoxingPopup";
 import MosaicEditor from "@/app/components/MosaicEditor";
 
 function generateAlt(branch: string, target: string, training: string, contentType: string) {
@@ -59,6 +60,7 @@ export default function AdminPage() {
   const [content, setContent] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [uploadingThumb, setUploadingThumb] = useState(false);
+  const [showFirstBoxingPreview, setShowFirstBoxingPreview] = useState(false);
   const [popupStart, setPopupStart] = useState("");
   const [popupEnd, setPopupEnd] = useState("");
 
@@ -753,28 +755,10 @@ export default function AdminPage() {
                 🎉 홈페이지 팝업 설정
                 <span className="ml-2 text-sm font-normal text-orange-500">(기간 설정 시 홈페이지에 팝업으로 노출)</span>
               </label>
-              {category === "공지" && !editingId && (
-                <button
-                  type="button"
-                  className="rounded-md border border-orange-200 bg-white px-3 py-2 text-sm font-bold text-orange-700"
-                  onClick={() => {
-                    slugManuallyEdited.current = true;
-                    setSlug(FIRST_BOXING_POPUP_SLUG);
-                    setTitle(FIRST_BOXING_TITLE_LINES.join(" "));
-                    setDescription(FIRST_BOXING_DESCRIPTION);
-                    setBranchName("전체");
-                    if (!content.trim()) {
-                      const body = `<p>${FIRST_BOXING_DESCRIPTION}</p><p>선수 경력 또는 복싱 지도 자격을 갖춘 코치와 기본 동작을 배워보세요.</p><p><a href="/reservation">가까운 지점에서 복싱 시작해보기</a></p>`;
-                      setContent(body);
-                      editorRef.current?.setContent(body);
-                    }
-                  }}
-                >
-                  복싱 시작 팝업 양식 불러오기
-                </button>
-              )}
+              <button type="button" className="rounded-md border border-orange-200 bg-white px-3 py-2 text-sm font-bold text-orange-700" onClick={() => setShowFirstBoxingPreview(true)}>복싱 시작 팝업 미리보기</button>
+              {showFirstBoxingPreview && <FirstBoxingPopup onClose={() => setShowFirstBoxingPreview(false)} onHideToday={() => setShowFirstBoxingPreview(false)} />}
               {slug === FIRST_BOXING_POPUP_SLUG && (
-                <p className="text-sm text-orange-800">PC·모바일 전용 디자인과 예약 버튼이 적용됩니다. 노출 날짜를 입력해 주세요.</p>
+                <p className="text-sm text-orange-800">복싱 시작 안내는 홈페이지 첫 화면에 표시됩니다.</p>
               )}
               <div className="flex gap-3">
                 <div className="flex-1">

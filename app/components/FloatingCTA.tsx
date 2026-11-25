@@ -32,7 +32,7 @@ export default function FloatingCTA() {
         <span>→</span>
       </a>
       <p className="mt-2 text-center text-[11px]" style={{ color: "#5A5C61" }}>
-        30,000원 현장결제 · 당일 등록 시 전액 페이백
+        30,000원 현장결제 · 당일 등록 시 체험비 전액 차감
       </p>
     </div>
   );
