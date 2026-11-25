@@ -122,11 +122,10 @@ export async function POST(req: Request) {
       await transporter.sendMail({
         from: `"스트롱복싱 홈페이지" <${process.env.SMTP_USER}>`,
         to: process.env.CONSULT_EMAIL,
-        subject: `[홈페이지예약][${type}][${reservationNo}][${branch}] ${name} / ${reservation_date} ${reservation_time}`,
+        subject: `[홈페이지예약][${reservationNo}][${branch}] ${name} / ${reservation_date} ${reservation_time}`,
         html: `
           <h2>새 홈페이지 방문 예약</h2>
           <p><b>예약번호:</b> ${reservationNo}</p>
-          <p><b>예약 유형:</b> ${type}</p>
           <p><b>이름:</b> ${name}</p>
           <p><b>전화번호:</b> ${phone}</p>
           <p><b>지점:</b> ${branch}</p>
