@@ -3,16 +3,19 @@
 import { consultationSlots, type ReservationType } from "@/lib/consultation-slots";
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { trackReservationComplete } from "@/lib/gtag";
 
 /* ── 지점 데이터 ─────────────────────────────────────────── */
 const branchData: Record<string, {
+  slug: string;
   address: string;
   phone: string;
   hours: string;
   times: Record<number, string[]>;
 }> = {
   목동점: {
+    slug: "mokdong",
     address: "서울 양천구 목동 909-6 우방빌딩 4층",
     phone: "02-2643-5971",
     hours: "평일 14:00–24:00 · 토 11:00–16:00 · 일 휴무",
@@ -26,6 +29,7 @@ const branchData: Record<string, {
     },
   },
   신정점: {
+    slug: "sinjeong",
     address: "서울 양천구 신정동 1021-7 태화상가 2층",
     phone: "02-2647-3373",
     hours: "평일 10:00–24:00 (14:00–15:00 휴게) · 토 10:00–16:00",
@@ -39,6 +43,7 @@ const branchData: Record<string, {
     },
   },
   개봉점: {
+    slug: "gaebong",
     address: "서울 구로구 개봉동 166-5 유원빌딩 지하 1층",
     phone: "02-2060-1279",
     hours: "평일 13:00–23:00 · 토·일 휴무",
@@ -51,6 +56,7 @@ const branchData: Record<string, {
     },
   },
   철산점: {
+    slug: "cheolsan",
     address: "경기 광명시 철산동 56-14 3층",
     phone: "02-2066-0406",
     hours: "평일 14:00–23:00 · 토·일 14:00–18:00 · 공휴일 휴무",
@@ -65,6 +71,7 @@ const branchData: Record<string, {
     },
   },
   영등포점: {
+    slug: "yeongdeungpo",
     address: "서울 영등포구 도림로 313 건영상가 2층",
     phone: "02-831-9312",
     hours: "평일 13:00–23:00 · 주말 운영 여부는 지점 문의",
@@ -287,12 +294,19 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
           <p className={`text-[15px] leading-7 ${t.sub} mb-8`}>
             {form.branch} 담당자가 확인 후<br />연락처로 안내드립니다.
           </p>
-          <button
-            onClick={() => { setDone(false); setForm({ name:"", phone:"", branch:"목동점", reservation_date:"", reservation_time:"", goal:"", message:"" }); }}
-            className={`rounded-[6px] ${t.doneBtn} px-8 py-3.5 text-sm font-bold transition`}
-          >
-            다시 예약하기
-          </button>
+          <div className="flex flex-wrap justify-center gap-3">
+            {branchData[form.branch] && (
+              <Link
+                href={"/branches/" + branchData[form.branch].slug}
+                className="rounded-[6px] bg-[#D01E2E] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#B71928]"
+              >
+                {form.branch} 보기
+              </Link>
+            )}
+            <Link href="/" className={t.doneBtn + " rounded-[6px] px-6 py-3.5 text-sm font-bold transition"}>
+              메인으로
+            </Link>
+          </div>
         </div>
       </section>
     );
