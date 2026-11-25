@@ -148,7 +148,7 @@ export default function AboutPage() {
             <div className="max-w-2xl pt-32 pb-24">
               <p
                 className="reveal mb-7 text-[10px] font-black tracking-[0.45em]"
-                style={{ color: "#8A8D91" }}
+                style={{ color: "#BFC0C5" }}
               >
                 ABOUT STRONG BOXING
               </p>
@@ -156,8 +156,8 @@ export default function AboutPage() {
               <h1
                 className="reveal d1 font-black"
                 style={{
-                  fontSize: "clamp(48px, 7.5vw, 104px)",
-                  lineHeight: 0.88,
+                  fontSize: "clamp(38px, 6.2vw, 82px)",
+                  lineHeight: 1.08,
                   letterSpacing: "-0.05em",
                   color: "#F5F4F1",
                   wordBreak: "keep-all",
@@ -165,15 +165,7 @@ export default function AboutPage() {
               >
                 복싱을 배우는
                 <br />
-                <span
-                  style={{
-                    WebkitTextStroke: "1.5px #F5F4F1",
-                    WebkitTextFillColor: "transparent",
-                    color: "transparent",
-                  }}
-                >
-                  모든 순간을
-                </span>
+                모든 순간을
                 <br />
                 제대로.
               </h1>
@@ -192,7 +184,7 @@ export default function AboutPage() {
               </p>
 
               <p className="mt-5 max-w-[60ch] break-keep text-sm leading-7 text-[#E5E5E8]">
-                서울·경기 5개 지점을 모두 직영합니다. 어느 지점에서든 몸풀기, 기본 자세와 스텝, 미트, 샌드백, 체력 운동으로 이어지는 공통 흐름을 따라 배웁니다. 관장과 코치는 같은 공간에서 운동하는 회원을 한 명씩 살피며, 자세와 운동 강도는 각자의 진도와 체력에 맞춥니다.
+                서울·경기 5개 지점에서 기본 자세와 스텝부터 미트, 샌드백, 체력 운동까지 배웁니다. 관장·코치가 운동 중 한 명씩 살피고, 자세와 강도는 각자의 진도에 맞춰 조절합니다.
               </p>
 
               <div className="reveal d4 mt-10 flex flex-wrap gap-3">
@@ -215,19 +207,26 @@ export default function AboutPage() {
           </div>
         </section>
 
+        <nav aria-label="브랜드 소개 목차" className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 border-b border-white/10 px-5 py-3 text-sm font-semibold text-[#E5E5E8] md:px-8">
+          <a href="#training-time" className="inline-flex min-h-11 items-center hover:underline">운동 시간</a>
+          <a href="#coaching" className="inline-flex min-h-11 items-center hover:underline">개인별 코칭</a>
+          <a href="#first-day" className="inline-flex min-h-11 items-center hover:underline">6단계 운동 루틴</a>
+          <a href="#locations" className="inline-flex min-h-11 items-center hover:underline">지점 찾기</a>
+        </nav>
+
         {/* ════════════════════════════════════════
             SECTION 2 · BRAND INTRO
         ════════════════════════════════════════ */}
         <section
-          className="px-6 py-28 md:px-8"
+          className="scroll-mt-24 px-5 py-14 md:px-8 md:py-20"
           style={{ background: "#141416", borderTop: "1px solid rgba(255,255,255,0.06)" }}
         >
           <div className="mx-auto max-w-7xl">
-            <p className="reveal mb-4 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>
+            <p className="reveal mb-4 text-[10px] font-black tracking-[0.3em]" style={{ color: "#A4A6AD" }}>
               OUR STANDARD
             </p>
             <h2
-              className="reveal d1 mb-16 font-black leading-[0.88]"
+              className="reveal d1 mb-8 font-black md:mb-12 leading-[1.12]"
               style={{
                 fontSize: "clamp(36px, 5.5vw, 72px)",
                 letterSpacing: "-0.05em",
@@ -239,7 +238,7 @@ export default function AboutPage() {
               어떤 곳이어야 할까요?
             </h2>
 
-            <div className="grid gap-16 lg:grid-cols-[1fr_1.1fr] lg:gap-24">
+            <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-24">
               {/* 강조 문장 */}
               <div className="reveal d2">
                 <div
@@ -250,24 +249,13 @@ export default function AboutPage() {
                   className="text-xl font-black leading-[1.55] md:text-2xl"
                   style={{ color: "#F5F4F1", wordBreak: "keep-all" }}
                 >
-                  단순히 땀만 빼고 돌아가는 복싱장이 아닙니다.
-                  <br />
-                  <br />
-                  복싱을 처음 시작하는 분도
-                  <br />
-                  기본부터 제대로 배우고,
-                  <br />
-                  운동하는 동안 방치되지 않으며,
-                  <br />
-                  각자의 체력과 목적에 맞게
-                  <br />
-                  운동할 수 있는 공간을 만들고 있습니다.
+                  처음 시작하는 분도 기본부터 배우고, 자신의 체력과 목적에 맞게 운동할 수 있는 공간을 만듭니다.
                 </p>
               </div>
 
               {/* 본문 */}
-              <div className="reveal d3 space-y-6 text-sm leading-8 md:text-base md:leading-9"
-                style={{ color: "#8A8D91" }}>
+              <div className="reveal d3 space-y-6 max-w-[58ch] break-keep text-[15px] leading-7 md:text-base md:leading-8"
+                style={{ color: "#BFC0C5" }}>
                 <p>
                   시간표에 사람을 맞추는 대신 회원의 일정에 운동을 맞추고,
                   모두에게 같은 운동을 시키는 대신 한 사람씩 다른 진도를 지도합니다.
@@ -298,13 +286,13 @@ export default function AboutPage() {
         {/* ════════════════════════════════════════
             SECTION 3 · FLEXIBLE SCHEDULE
         ════════════════════════════════════════ */}
-        <section className="px-6 py-28 md:px-8" style={{ background: "#0E0E10" }}>
+        <section id="training-time" className="scroll-mt-24 px-5 py-14 md:px-8 md:py-20" style={{ background: "#0E0E10" }}>
           <div className="mx-auto max-w-7xl">
-            <p className="reveal mb-4 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>
+            <p className="reveal mb-4 text-[10px] font-black tracking-[0.3em]" style={{ color: "#A4A6AD" }}>
               MY TIME, MY TRAINING
             </p>
             <h2
-              className="reveal d1 mb-16 font-black leading-[0.88]"
+              className="reveal d1 mb-8 font-black md:mb-12 leading-[1.12]"
               style={{
                 fontSize: "clamp(36px, 5.5vw, 72px)",
                 letterSpacing: "-0.05em",
@@ -316,9 +304,9 @@ export default function AboutPage() {
               나를 맞추지 않습니다.
             </h2>
 
-            <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
-              <div className="reveal d2 space-y-5 text-sm leading-8 md:text-base md:leading-9"
-                style={{ color: "#8A8D91" }}>
+            <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+              <div className="reveal d2 space-y-5 max-w-[58ch] break-keep text-[15px] leading-7 md:text-base md:leading-8"
+                style={{ color: "#BFC0C5" }}>
                 <p>
                   스트롱복싱에는 정해진 단체 수업시간이 없습니다.
                 </p>
@@ -327,8 +315,7 @@ export default function AboutPage() {
                   운영시간 내 편한 시간에 방문하면 됩니다.
                 </p>
                 <p>
-                  예약된 수업시간을 놓쳐 운동하지 못하는 방식이 아니라,
-                  체육관에 도착하는 순간 각자의 운동이 시작됩니다.
+                  체육관에 도착하면 그날의 운동을 바로 시작할 수 있습니다.
                 </p>
               </div>
 
@@ -360,7 +347,7 @@ export default function AboutPage() {
                     <br />
                     운영시간 내 자유롭게.
                   </p>
-                  <div className="mt-6 space-y-3 text-sm" style={{ color: "#5A5C61" }}>
+                  <div className="mt-6 space-y-3 text-sm" style={{ color: "#A4A6AD" }}>
                     {[
                       "직장인 — 퇴근 후 편한 시간에",
                       "학생 — 수업·학원 일정에 맞춰",
@@ -381,7 +368,7 @@ export default function AboutPage() {
         {/* ════════════════════════════════════════
             SECTION 4 · PERSONAL COACHING
         ════════════════════════════════════════ */}
-        <section className="px-6 py-28 md:px-8"
+        <section id="coaching" className="scroll-mt-24 px-5 py-14 md:px-8 md:py-20"
           style={{ background: "#141416", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-14 lg:grid-cols-[1fr_1fr] lg:gap-16">
@@ -407,11 +394,11 @@ export default function AboutPage() {
               {/* 텍스트 */}
               <div className="order-1 flex flex-col justify-center lg:order-2">
                 <p className="reveal mb-4 text-[10px] font-black tracking-[0.3em]"
-                  style={{ color: "#5A5C61" }}>
+                  style={{ color: "#A4A6AD" }}>
                   NO ONE LEFT BEHIND
                 </p>
                 <h2
-                  className="reveal d1 mb-8 font-black leading-[0.9]"
+                  className="reveal d1 mb-8 font-black leading-[1.12]"
                   style={{
                     fontSize: "clamp(32px, 4.5vw, 60px)",
                     letterSpacing: "-0.05em",
@@ -423,11 +410,10 @@ export default function AboutPage() {
                   코칭은 한 사람씩.
                 </h2>
 
-                <div className="reveal d2 space-y-5 text-sm leading-8 md:text-base md:leading-9"
-                  style={{ color: "#8A8D91" }}>
+                <div className="reveal d2 space-y-5 max-w-[58ch] break-keep text-[15px] leading-7 md:text-base md:leading-8"
+                  style={{ color: "#BFC0C5" }}>
                   <p>
-                    같은 공간에서 함께 운동하더라도 배우는 내용과 운동 강도는
-                    한 사람씩 다르게 진행됩니다. 일반 회원 운동 중에 받는 자세 교정과 피드백으로, 별도로 시간을 잡아 진행하는 개인 PT와 구분됩니다.
+                    운영시간에 방문해 각자 운동하는 동안 코치가 자세와 강도를 한 사람씩 살피고, 다음에 연습할 동작을 안내합니다.
                   </p>
                   <p>
                     선수 출신 지도진이 상주하며 자세와 거리, 타이밍, 힘 전달을 확인하고,
@@ -459,14 +445,14 @@ export default function AboutPage() {
         {/* ════════════════════════════════════════
             SECTION 5 · 6-STEP SIGNATURE ROUTINE
         ════════════════════════════════════════ */}
-        <section className="px-6 py-28 md:px-8" style={{ background: "#0E0E10" }}>
+        <section id="first-day" className="scroll-mt-24 px-5 py-14 md:px-8 md:py-20" style={{ background: "#0E0E10" }}>
           <div className="mx-auto max-w-7xl">
             <p className="reveal mb-4 text-[10px] font-black tracking-[0.3em]"
-              style={{ color: "#5A5C61" }}>
+              style={{ color: "#A4A6AD" }}>
               6-STEP SIGNATURE ROUTINE
             </p>
             <h2
-              className="reveal d1 mb-4 font-black leading-[0.88]"
+              className="reveal d1 mb-4 font-black leading-[1.12]"
               style={{
                 fontSize: "clamp(36px, 5.5vw, 72px)",
                 letterSpacing: "-0.05em",
@@ -478,7 +464,7 @@ export default function AboutPage() {
               제대로 운동할 수 있도록.
             </h2>
             <p className="reveal d2 mb-16 max-w-lg text-sm leading-7 md:text-base"
-              style={{ color: "#8A8D91" }}>
+              style={{ color: "#BFC0C5" }}>
               매 방문마다 동일한 6단계 루틴이 진행됩니다.
               기초 체력부터 실전 타격, 마무리까지 하나의 완성된 운동 과정입니다.
             </p>
@@ -527,7 +513,7 @@ export default function AboutPage() {
                     >
                       {step.name}
                     </p>
-                    <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>
+                    <p className="text-xs leading-5" style={{ color: "#A4A6AD" }}>
                       {step.desc}
                     </p>
                   </div>
@@ -560,7 +546,7 @@ export default function AboutPage() {
                     >
                       {step.name}
                     </p>
-                    <p className="text-xs leading-5" style={{ color: "#5A5C61" }}>
+                    <p className="text-xs leading-5" style={{ color: "#A4A6AD" }}>
                       {step.desc}
                     </p>
                   </div>
@@ -574,7 +560,7 @@ export default function AboutPage() {
             SECTION 6 · FREEDOM AFTER ROUTINE
         ════════════════════════════════════════ */}
         <section
-          className="px-6 py-28 md:px-8"
+          className="scroll-mt-24 px-5 py-14 md:px-8 md:py-20"
           style={{
             background: "#141416",
             borderTop: "1px solid rgba(255,255,255,0.06)",
@@ -584,11 +570,11 @@ export default function AboutPage() {
             <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
               <div>
                 <p className="reveal mb-4 text-[10px] font-black tracking-[0.3em]"
-                  style={{ color: "#5A5C61" }}>
+                  style={{ color: "#A4A6AD" }}>
                   MORE THAN THE ROUTINE
                 </p>
                 <h2
-                  className="reveal d1 mb-8 font-black leading-[0.88]"
+                  className="reveal d1 mb-8 font-black leading-[1.12]"
                   style={{
                     fontSize: "clamp(32px, 4.5vw, 60px)",
                     letterSpacing: "-0.05em",
@@ -599,8 +585,8 @@ export default function AboutPage() {
                   <br />
                   내 운동은 계속됩니다.
                 </h2>
-                <div className="reveal d2 space-y-5 text-sm leading-8 md:text-base md:leading-9"
-                  style={{ color: "#8A8D91" }}>
+                <div className="reveal d2 space-y-5 max-w-[58ch] break-keep text-[15px] leading-7 md:text-base md:leading-8"
+                  style={{ color: "#BFC0C5" }}>
                   <p>
                     정해진 운동을 마친 뒤에는 그날 배운 자세와 스텝을 거울 앞에서
                     복습하거나, 샌드백 운동을 추가로 이어갈 수 있습니다.
@@ -627,7 +613,7 @@ export default function AboutPage() {
                 >
                   <p
                     className="mb-6 text-[10px] font-black tracking-[0.2em]"
-                    style={{ color: "#5A5C61" }}
+                    style={{ color: "#A4A6AD" }}
                   >
                     FACILITY EXAMPLES
                   </p>
@@ -658,7 +644,7 @@ export default function AboutPage() {
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-6 text-xs leading-5" style={{ color: "#3A3A3E" }}>
+                  <p className="mt-6 text-xs leading-5" style={{ color: "#A4A6AD" }}>
                     ※ 운동기구 및 시설 구성은 지점별로 다를 수 있습니다.
                   </p>
                 </div>
@@ -692,12 +678,12 @@ export default function AboutPage() {
                 <div className="flex-1">
                   <p
                     className="mb-4 text-[10px] font-black tracking-[0.3em]"
-                    style={{ color: "#5A5C61" }}
+                    style={{ color: "#A4A6AD" }}
                   >
                     TRACK YOUR CHANGE
                   </p>
                   <h2
-                    className="mb-6 font-black leading-[0.9]"
+                    className="mb-6 font-black leading-[1.12]"
                     style={{
                       fontSize: "clamp(30px, 4.5vw, 60px)",
                       letterSpacing: "-0.05em",
@@ -710,7 +696,7 @@ export default function AboutPage() {
                   </h2>
                   <p
                     className="mb-6 max-w-lg text-sm leading-7 md:text-base md:leading-8"
-                    style={{ color: "#8A8D91" }}
+                    style={{ color: "#BFC0C5" }}
                   >
                     스트롱복싱은 개봉·신정·목동·철산·영등포 전 지점에서 인바디 측정이 가능합니다.
                     현재 몸 상태를 확인하고, 운동을 통해 달라지는 과정을 수치로 비교하며
@@ -747,7 +733,7 @@ export default function AboutPage() {
                 >
                   <p
                     className="mb-4 text-[10px] font-black tracking-[0.2em]"
-                    style={{ color: "#5A5C61" }}
+                    style={{ color: "#A4A6AD" }}
                   >
                     5 BRANCHES
                   </p>
@@ -787,7 +773,7 @@ export default function AboutPage() {
             SECTION 8 · SAFE SPARRING
         ════════════════════════════════════════ */}
         <section
-          className="px-6 py-28 md:px-8"
+          className="scroll-mt-24 px-5 py-14 md:px-8 md:py-20"
           style={{
             background: "#141416",
             borderTop: "1px solid rgba(255,255,255,0.06)",
@@ -798,11 +784,11 @@ export default function AboutPage() {
               {/* 텍스트 */}
               <div>
                 <p className="reveal mb-4 text-[10px] font-black tracking-[0.3em]"
-                  style={{ color: "#5A5C61" }}>
+                  style={{ color: "#A4A6AD" }}>
                   SAFE, REAL BOXING
                 </p>
                 <h2
-                  className="reveal d1 mb-8 font-black leading-[0.88]"
+                  className="reveal d1 mb-8 font-black leading-[1.12]"
                   style={{
                     fontSize: "clamp(32px, 4.5vw, 60px)",
                     letterSpacing: "-0.05em",
@@ -813,8 +799,8 @@ export default function AboutPage() {
                   <br />
                   부상 걱정은 줄이고.
                 </h2>
-                <div className="reveal d2 space-y-5 text-sm leading-8 md:text-base md:leading-9"
-                  style={{ color: "#8A8D91" }}>
+                <div className="reveal d2 space-y-5 max-w-[58ch] break-keep text-[15px] leading-7 md:text-base md:leading-8"
+                  style={{ color: "#BFC0C5" }}>
                   <p>
                     스파링은 무조건 강하게 진행하지 않습니다.
                   </p>
@@ -875,14 +861,14 @@ export default function AboutPage() {
         {/* ════════════════════════════════════════
             SECTION 9 · WHO IT IS FOR
         ════════════════════════════════════════ */}
-        <section className="px-6 py-28 md:px-8" style={{ background: "#0E0E10" }}>
+        <section className="scroll-mt-24 px-5 py-14 md:px-8 md:py-20" style={{ background: "#0E0E10" }}>
           <div className="mx-auto max-w-7xl">
             <p className="reveal mb-4 text-[10px] font-black tracking-[0.3em]"
-              style={{ color: "#5A5C61" }}>
+              style={{ color: "#A4A6AD" }}>
               START WHERE YOU ARE
             </p>
             <h2
-              className="reveal d1 mb-14 font-black leading-[0.88]"
+              className="reveal d1 mb-8 font-black md:mb-10 leading-[1.12]"
               style={{
                 fontSize: "clamp(36px, 5.5vw, 72px)",
                 letterSpacing: "-0.05em",
@@ -946,7 +932,7 @@ export default function AboutPage() {
                 <br />
                 아직 체력이 부족해도 괜찮습니다.
               </p>
-              <p className="mt-3 text-sm leading-7" style={{ color: "#8A8D91" }}>
+              <p className="mt-3 text-sm leading-7" style={{ color: "#BFC0C5" }}>
                 각자의 시작점에 맞춰 운동을 시작합니다.
               </p>
             </div>
@@ -958,7 +944,7 @@ export default function AboutPage() {
         ════════════════════════════════════════ */}
         <section
           id="locations"
-          className="px-6 py-28 md:px-8"
+          className="scroll-mt-24 px-5 py-14 md:px-8 md:py-20"
           style={{
             background: "#141416",
             borderTop: "1px solid rgba(255,255,255,0.06)",
@@ -967,11 +953,11 @@ export default function AboutPage() {
         >
           <div className="mx-auto max-w-7xl">
             <p className="reveal mb-4 text-[10px] font-black tracking-[0.3em]"
-              style={{ color: "#5A5C61" }}>
+              style={{ color: "#A4A6AD" }}>
               FIND YOUR STRONG
             </p>
             <h2
-              className="reveal d1 mb-14 font-black leading-[0.88]"
+              className="reveal d1 mb-8 font-black md:mb-10 leading-[1.12]"
               style={{
                 fontSize: "clamp(36px, 5.5vw, 72px)",
                 letterSpacing: "-0.05em",
@@ -1011,7 +997,7 @@ export default function AboutPage() {
                     />
                     <span
                       className="absolute bottom-4 left-4 text-xs font-black"
-                      style={{ color: "#5A5C61" }}
+                      style={{ color: "#A4A6AD" }}
                     >
                       {b.area}
                     </span>
@@ -1025,13 +1011,13 @@ export default function AboutPage() {
                     >
                       {b.name}
                     </h3>
-                    <p className="mb-1 text-xs" style={{ color: "#5A5C61" }}>
+                    <p className="mb-1 text-xs" style={{ color: "#A4A6AD" }}>
                       {b.hours.join(" / ")}
                     </p>
                     <a
                       href={`tel:${b.phone.replace(/-/g, "")}`}
                       className="mb-5 text-xs transition-colors hover:text-white"
-                      style={{ color: "#5A5C61" }}
+                      style={{ color: "#A4A6AD" }}
                     >
                       {b.phone}
                     </a>
@@ -1042,7 +1028,7 @@ export default function AboutPage() {
                         className="flex-1 rounded-[4px] py-2.5 text-center text-xs font-black transition-all duration-200 hover:bg-white/5"
                         style={{
                           border: "1px solid rgba(255,255,255,0.1)",
-                          color: "#8A8D91",
+                          color: "#BFC0C5",
                         }}
                       >
                         지점 상세
@@ -1094,12 +1080,12 @@ export default function AboutPage() {
           <div className="relative z-10 mx-auto max-w-3xl">
             <p
               className="reveal mb-6 text-[10px] font-black tracking-[0.4em]"
-              style={{ color: "#5A5C61" }}
+              style={{ color: "#A4A6AD" }}
             >
               STRONG BOXING
             </p>
             <h2
-              className="reveal d1 mb-4 font-black leading-[0.88]"
+              className="reveal d1 mb-4 font-black leading-[1.12]"
               style={{
                 fontSize: "clamp(40px, 7vw, 88px)",
                 letterSpacing: "-0.05em",
@@ -1113,13 +1099,13 @@ export default function AboutPage() {
             </h2>
             <p
               className="reveal d2 mx-auto mb-3 max-w-md text-base leading-8"
-              style={{ color: "#8A8D91" }}
+              style={{ color: "#BFC0C5" }}
             >
               복싱을 시작하는 순간부터 내 운동을 완성하는 시간까지 함께합니다.
             </p>
             <p
               className="reveal d3 mb-12 text-xs font-black tracking-[0.2em]"
-              style={{ color: "#3A3A3E" }}
+              style={{ color: "#A4A6AD" }}
             >
               조용한 공간. 진짜 복싱. STRONG BOXING.
             </p>
@@ -1163,7 +1149,7 @@ export default function AboutPage() {
                 <span className="text-base font-black" style={{ color: "#F5F4F1" }}>
                   STRONG
                 </span>
-                <span className="text-base font-black" style={{ color: "#3A3A3E" }}>
+                <span className="text-base font-black" style={{ color: "#A4A6AD" }}>
                   BOXING
                 </span>
               </div>
@@ -1175,21 +1161,21 @@ export default function AboutPage() {
                   <a
                     href={`/branches/${b.slug}`}
                     className="mb-2 block text-xs font-black transition-colors duration-200 hover:text-[#F5F4F1]"
-                    style={{ color: "#8A8D91" }}
+                    style={{ color: "#BFC0C5" }}
                   >
                     {b.name}
                   </a>
-                  <p className="text-xs leading-5" style={{ color: "#3A3A3E" }}>
+                  <p className="text-xs leading-5" style={{ color: "#A4A6AD" }}>
                     {b.address}
                   </p>
                   <a
                     href={`tel:${b.phone.replace(/-/g, "")}`}
                     className="mt-1 block text-xs transition-colors duration-200 hover:text-[#8A8D91]"
-                    style={{ color: "#5A5C61" }}
+                    style={{ color: "#A4A6AD" }}
                   >
                     {b.phone}
                   </a>
-                  <p className="text-xs" style={{ color: "#5A5C61" }}>
+                  <p className="text-xs" style={{ color: "#A4A6AD" }}>
                     {b.hours.join(" / ")}
                   </p>
                 </div>
@@ -1200,7 +1186,7 @@ export default function AboutPage() {
               className="mt-10 pt-8 text-xs"
               style={{
                 borderTop: "1px solid rgba(255,255,255,0.05)",
-                color: "#3A3A3E",
+                color: "#A4A6AD",
               }}
             >
               © 2026 STRONG BOXING. All rights reserved.
