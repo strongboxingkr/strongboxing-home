@@ -179,7 +179,7 @@ function nearestBranch({ latitude, longitude }: Pick<GeolocationCoordinates, "la
 
 type PreviewBranch = { name: string; address: string; phone: string; naverUrl: string };
 
-export default function ConsultationForm({ theme = "dark", previewBranch, suggestNearest = false }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch; suggestNearest?: boolean }) {
+export default function ConsultationForm({ theme = "dark", previewBranch, suggestNearest = false, compactDesktop = false }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch; suggestNearest?: boolean; compactDesktop?: boolean }) {
   const t = theme === "light" ? LIGHT : DARK;
   const [reservationType, setReservationType] = useState<"방문 상담" | "일일 체험">("방문 상담");
   const [loading, setLoading] = useState(false);
@@ -303,7 +303,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
 
   return (
     <section className={t.section}>
-      <div className="mx-auto max-w-6xl px-5 py-16 md:py-24 lg:grid lg:grid-cols-[1fr_480px] lg:gap-16 xl:gap-24">
+      <div className={`mx-auto max-w-6xl px-5 py-16 md:py-24 lg:grid ${compactDesktop ? "lg:grid-cols-[minmax(0,1fr)_minmax(0,36rem)] lg:gap-10 lg:py-8 xl:gap-14" : "lg:grid-cols-[1fr_480px] lg:gap-16 xl:gap-24"}`}>
 
         {/* ── 왼쪽: 소개 ── */}
         <div className="mb-10 lg:mb-0 lg:sticky lg:top-24 lg:self-start">
@@ -330,7 +330,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
         {/* ── 오른쪽: 폼 ── */}
         <div>
           {/* 예약 유형 선택 */}
-          <div className="mb-6 grid grid-cols-2 gap-3">
+          <div className={`mb-6 grid grid-cols-2 gap-3 ${compactDesktop ? "lg:mb-3 lg:[&>button]:py-2.5" : ""}`}>
             {(["방문 상담", "일일 체험"] as const).map((type) => {
               const active = reservationType === type;
               return (
@@ -370,7 +370,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
             })}
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className={`space-y-5 ${compactDesktop ? "lg:space-y-2.5 lg:[&_input]:min-h-10 lg:[&_input]:py-2 lg:[&_select]:min-h-10 lg:[&_select]:py-2 lg:[&_textarea]:h-12 lg:[&_textarea]:py-2 lg:[&_label]:mb-1" : ""}`}>
             {/* 방문 지점 */}
             <div>
               <label className={t.label}>방문 지점</label>
@@ -386,7 +386,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
               </select>
               {locationSuggested && <p className={`mt-2 text-xs ${t.sub}`}>현재 위치에서 가까운 지점을 선택했어요. 다른 지점으로 바꿀 수 있어요.</p>}
               {/* 지점 정보 */}
-              <div className={`mt-2 ${t.branchBox}`}>
+              <div className={`mt-2 ${t.branchBox} ${compactDesktop ? "lg:flex lg:flex-wrap lg:items-center lg:justify-between lg:gap-x-3 lg:gap-y-1 lg:space-y-0 lg:py-1.5" : ""}`}>
                 <div className={`flex items-start gap-2 ${t.branchMuted}`}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="shrink-0 mt-0.5">
                     <path d="M12 21s-7-6.2-7-11.5a7 7 0 1 1 14 0C19 14.8 12 21 12 21Z" stroke="currentColor" strokeWidth="1.8"/>
@@ -488,7 +488,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
                       key={g}
                       type="button"
                       onClick={() => setForm({ ...form, goal: active ? "" : g })}
-                      className={`rounded-full px-4 py-2 text-[13px] font-bold transition ${
+                      className={`rounded-full px-4 py-2 text-[13px] font-bold transition ${compactDesktop ? "lg:px-3 lg:py-1.5" : ""} ${
                         active ? "bg-[#D01E2E] text-white" : t.goalDefault
                       }`}
                     >
@@ -529,7 +529,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-[6px] bg-[#D01E2E] py-4 text-[15px] font-black tracking-tight text-white transition hover:bg-[#B71C2B] disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`w-full rounded-[6px] bg-[#D01E2E] py-4 text-[15px] font-black tracking-tight text-white transition hover:bg-[#B71C2B] disabled:opacity-50 disabled:cursor-not-allowed ${compactDesktop ? "lg:py-3" : ""}`}
             >
               {loading
                 ? "접수 중..."
