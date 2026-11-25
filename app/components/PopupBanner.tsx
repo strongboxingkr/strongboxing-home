@@ -1,5 +1,7 @@
 "use client";
 
+import FirstBoxingPopup from "./FirstBoxingPopup";
+import { FIRST_BOXING_POPUP_SLUG } from "@/lib/first-boxing-popup";
 import { useEffect, useState } from "react";
 
 type Popup = {
@@ -65,6 +67,10 @@ export default function PopupBanner() {
     } else {
       setVisible(false);
     }
+  }
+
+  if (popup.slug === FIRST_BOXING_POPUP_SLUG) {
+    return <FirstBoxingPopup onClose={next} onHideToday={hideToday} />;
   }
 
   return (
