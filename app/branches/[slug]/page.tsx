@@ -1,3 +1,4 @@
+import { getBranchNaverBlog } from "@/lib/naver-branch-blog";
 import { branchLanding, branchSlugs } from "@/lib/branch-landing";
 import { branchTrainingPhotos } from "@/lib/branch-training-photos";
 import { db } from "@/lib/db";
@@ -285,7 +286,7 @@ export default async function BranchPage({ params, searchParams }: { params: Pro
   const coaches = branchCoaches[slug] ?? [];
   const faqItems = branchFaqs[slug] ?? [];
 
-  const [relatedPosts, branchReels, reviews] = await Promise.all([
+  const [relatedPosts, branchReels, reviews, naverBlog] = await Promise.all([
     db.query<(PreviewPost & RowDataPacket)[]>(`SELECT id, title, slug, description, content, branch_name, thumbnail, created_at
       FROM homepage_posts WHERE branch_name = ? ORDER BY created_at DESC LIMIT 5`, [branch.name])
       .then(([rows]) => rows).catch(() => []),
@@ -294,8 +295,8 @@ export default async function BranchPage({ params, searchParams }: { params: Pro
       .then(([rows]) => rows).catch(() => []),
     db.query<(PreviewReview & RowDataPacket)[]>(`SELECT id, reviewer_name, content, image_url, review_date
         FROM homepage_naver_reviews WHERE is_active = 1 AND branch_name = ? ORDER BY review_date DESC, id DESC`, [branch.name])
-        .then(([rows]) => rows).catch(() => [])
-
+        .then(([rows]) => rows).catch(() => []),
+    getBranchNaverBlog(slug),
   ]);
 
   function getThumb(post: PreviewPost): string | null {
@@ -335,6 +336,7 @@ export default async function BranchPage({ params, searchParams }: { params: Pro
         photos={heroPhotos}
         coaches={coaches}
         posts={relatedPosts}
+        naverBlog={naverBlog}
         reels={branchReels.length ? [...new Map(branchReels.map((reel) => [reel.video_url, { ...reel, poster: branch.image }])).values()] : getLocalClips(slug, branch.name).map((reel) => ({ ...reel, poster: branch.image }))}
         reviews={reviews}
         faq={faqItems}

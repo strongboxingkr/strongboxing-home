@@ -1,3 +1,4 @@
+import type { getBranchNaverBlog } from "@/lib/naver-branch-blog";
 /* eslint-disable @next/next/no-img-element -- Keep original branch and CMS media URLs. */
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
@@ -24,6 +25,7 @@ type Props = {
   photos: { src: string; label: string }[];
   coaches: { name: string; role: string; instagram: string }[];
   posts: PreviewPost[];
+  naverBlog: Awaited<ReturnType<typeof getBranchNaverBlog>>;
   reels: PreviewReel[];
   reviews: PreviewReview[];
   faq: { question: string; answer: string }[];
@@ -56,7 +58,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   return <section className={card}><h2 className="mb-4 text-xl font-black">{title}</h2>{children}</section>;
 }
 
-export default function BranchPreview({ branch, slug, query, photos, coaches, posts, reels, reviews, faq, galleryImages, getThumb }: Props) {
+export default function BranchPreview({ branch, slug, query, photos, coaches, posts, naverBlog, reels, reviews, faq, galleryImages, getThumb }: Props) {
   const copy = branchLanding[slug];
   const attribution = reservationAttribution({ ...query, branch: slug });
   const oneDay = query.reserve === "trial";
@@ -160,6 +162,22 @@ export default function BranchPreview({ branch, slug, query, photos, coaches, po
             {posts.map((post) => { const thumbnail = getThumb(post); return <li key={post.id}><Link href={"/blog/" + post.slug} className="flex items-center gap-3 text-sm hover:underline">{thumbnail && <img src={thumbnail} alt="" loading="lazy" className="size-12 rounded object-cover" />}{post.title}</Link></li>; })}
           </ul></details>}
         </Section>
+
+        {naverBlog && <Section title={branch.name + " 네이버 블로그"}>
+          {naverBlog.posts.length > 0 && <ul className="divide-y divide-white/10">
+            {naverBlog.posts.map(({ title, url, publishedAt }) => (
+              <li key={url}>
+                <a href={url} target="_blank" rel="noopener noreferrer" className="flex min-h-12 items-baseline justify-between gap-3 py-3 text-sm hover:underline">
+                  <span className="break-keep font-semibold">{title}</span>
+                  {publishedAt && <time dateTime={publishedAt} className="shrink-0 text-xs text-zinc-400">
+                    {new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", dateStyle: "medium" }).format(new Date(publishedAt))}
+                  </time>}
+                </a>
+              </li>
+            ))}
+          </ul>}
+          <a className={secondary + " mt-3"} href={naverBlog.url} target="_blank" rel="noopener noreferrer">네이버 블로그에서 더 보기 ↗</a>
+        </Section>}
 
         <Section title="원데이 체험 50분">
           <ol className="grid grid-cols-2 gap-2 sm:grid-cols-4">
