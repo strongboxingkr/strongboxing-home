@@ -1,9 +1,13 @@
+import { branchSlugs } from "./lib/branch-landing";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
     // middleware가 /api/*를 인터셉트할 때 body 복사 버퍼 한도 (기본 10MB → 영상 업로드 실패 원인)
     proxyClientMaxBodySize: "500mb",
+  },
+  async rewrites() {
+    return branchSlugs.map((slug) => ({ source: "/" + slug, destination: "/branches/" + slug }));
   },
   async redirects() {
     return [
@@ -18,6 +22,7 @@ const nextConfig: NextConfig = {
         destination: "/blog/quick-change-with-strongboxing-sinjeong-kids-boxing",
         permanent: true,
       },
+      ...branchSlugs.map((slug) => ({ source: "/branches/" + slug, destination: "/" + slug, permanent: true })),
       // 워드프레스 잔재 URL → 현재 페이지로 301
       {
         source: "/2026/:year/:month/:slug/",

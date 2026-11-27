@@ -1,8 +1,29 @@
+import { reservationAttribution } from "@/lib/reservation-attribution";
 import { db } from "@/lib/db";
 import { createHash } from "node:crypto";
 import nodemailer from "nodemailer";
 
 import type { RowDataPacket } from "mysql2";
+
+let attributionSchema: Promise<boolean> | undefined;
+
+function hasAttributionColumn() {
+  attributionSchema ??= (async () => {
+    const [columns] = await db.query<RowDataPacket[]>("SHOW COLUMNS FROM consultations WHERE Field = 'attribution'");
+    if (columns.length) return true;
+    try {
+      await db.query("ALTER TABLE consultations ADD COLUMN attribution JSON NULL");
+    } catch (error) {
+      if ((error as { code?: string }).code !== "ER_DUP_FIELDNAME") throw error;
+    }
+    return true;
+  })().catch((error) => {
+    console.error("Reservation attribution unavailable", error instanceof Error ? error.message : error);
+    attributionSchema = undefined;
+    return false;
+  });
+  return attributionSchema;
+}
 
 let reservationSchema: Promise<void> | undefined;
 
@@ -41,6 +62,7 @@ export async function POST(req: Request) {
       goal,
       message,
       reservation_type,
+      attribution,
     } = await req.json();
 
     if (!name || !phone || !branch || !reservation_date || !reservation_time) {
@@ -55,6 +77,11 @@ export async function POST(req: Request) {
 
     step = "check reservation schema";
     await ensureReservationTypeColumn();
+    const channel = attribution?.source;
+    const source = channel === "branch" || channel === "home" || channel === "reservation" ? channel : undefined;
+    const campaign = reservationAttribution(attribution);
+    const tracking = source || Object.keys(campaign).length ? JSON.stringify({ ...campaign, source }) : null;
+    const storeTracking = tracking !== null && await hasAttributionColumn();
 
     const branchMap: any = {
       개봉점: "GAEBONG",
@@ -97,9 +124,9 @@ export async function POST(req: Request) {
       await connection.query(
         `INSERT INTO consultations (
           reservation_no, name, phone, branch, reservation_date,
-          reservation_time, goal, message, reservation_type
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [reservationNo, name, phone, branch, reservation_date, reservation_time, goal || "", message || "", type]
+          reservation_time, goal, message, reservation_type${storeTracking ? ", attribution" : ""}
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?${storeTracking ? ", ?" : ""})`,
+        [reservationNo, name, phone, branch, reservation_date, reservation_time, goal || "", message || "", type, ...(storeTracking ? [tracking] : [])]
       );
     } finally {
       if (locked) {

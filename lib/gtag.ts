@@ -79,6 +79,14 @@ export function trackNaverReservationClick(params: {
 /** 홈페이지 예약 폼 제출 성공 */
 export function trackReservationComplete(params: {
   branch_name: string;
+  booking_source?: "branch" | "home" | "reservation";
+  reservation_type?: string;
+  branch?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
 }): void {
   trackEvent("reservation_complete", params);
 }

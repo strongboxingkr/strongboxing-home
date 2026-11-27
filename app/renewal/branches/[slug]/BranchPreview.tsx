@@ -1,289 +1,182 @@
-/* eslint-disable @next/next/no-img-element -- Branch photos and CMS media retain their original URLs. */
+/* eslint-disable @next/next/no-img-element -- Keep original branch and CMS media URLs. */
 import Link from "next/link";
-import { CalendarDays, MapPin, MessageCircle, Phone } from "lucide-react";
-import type { ReactNode } from "react";
-import VisibleClip from "@/app/components/VisibleClip";
 import ConsultationForm from "@/app/components/ConsultationForm";
-import BranchPreviewTabs, { TabLink } from "./BranchPreviewTabs";
+import VisibleClip from "@/app/components/VisibleClip";
+import { branchLanding, branchSlugs } from "@/lib/branch-landing";
+import { reservationAttribution } from "@/lib/reservation-attribution";
+import type { ReactNode } from "react";
 
 type Branch = {
   name: string; fullName: string; area: string; region: string; intro: string; description: string; highlights: string[];
   phone: string; address: string; landmark?: string; hours: string[]; booking: string;
   naverMap: string; directions: string; reviewUrl?: string; googleMap?: string; kakaoMap?: string; kakaoChat: string | null; instagram: string;
 };
-
+type Slug = keyof typeof branchLanding;
 export type PreviewPost = { id: number; title: string; slug: string; description: string | null; thumbnail: string | null; content: string | null };
 export type PreviewReel = { id: number; title: string; aria_label: string | null; video_url: string; poster?: string };
 export type PreviewReview = { id: number; reviewer_name: string | null; content: string; image_url: string | null; review_date: string | Date | null };
 
 type Props = {
   branch: Branch;
+  slug: Slug;
+  query: Record<string, string | string[] | undefined>;
   photos: { src: string; label: string }[];
   coaches: { name: string; role: string; instagram: string }[];
   posts: PreviewPost[];
   reels: PreviewReel[];
   reviews: PreviewReview[];
-  audience: string[];
   faq: { question: string; answer: string }[];
-  workout: { program: string[][]; flow: string[][]; firstVisit: string[][] };
   galleryImages: string[];
-  trainingPhotos?: string[];
   getThumb: (post: PreviewPost) => string | null;
 };
 
-const primary = "inline-flex min-h-11 items-center justify-center gap-2 rounded-[4px] bg-[#D01E2E] px-4 py-2.5 text-center text-sm font-bold text-white hover:bg-[#B71C2B]";
-const secondary = "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-[4px] border border-[#303035] bg-[#141416] px-2 py-2 text-sm font-semibold hover:bg-[#242428]";
-const detailsClass = "rounded-[4px] border border-[#29292D] bg-[#161618] p-3.5";
-const summaryClass = "cursor-pointer text-sm font-bold";
+const button = "inline-flex min-h-11 items-center justify-center rounded-md px-3 py-2 text-center text-sm font-bold";
+const primary = button + " bg-[#D01E2E] text-white hover:bg-[#B71C2B]";
+const secondary = button + " border border-white/20 bg-[#222224] text-white hover:bg-[#303034]";
+const card = "rounded-lg border border-white/10 bg-[#161618] p-4 sm:p-6";
+const body = "break-keep text-sm leading-6 text-zinc-300";
+const coachDescriptions: Record<string, string> = {
+  nan_yong_: "학생과 성인 입문자의 자세를 살피고 각자의 진도에 맞춰 기본기를 지도합니다.",
+  "chan.__2": "미트 트레이닝을 통해 체력과 운동 루틴을 기르는 데 도움을 줍니다.",
+  robuste_hyeok: "회원의 체력에 맞춰 강도를 조절하며 복싱 스텝부터 지도합니다.",
+  jdj_00_: "복싱이 처음인 회원에게 미트 운동과 유산소 루틴을 안내합니다.",
+  dkswkd3: "운동이 처음인 회원이 적응할 수 있도록 기본 자세부터 직접 지도합니다.",
+  strongboxing_andy: "선수 경험을 바탕으로 자세를 살피며 단계별로 지도합니다.",
+  ws_nakmuay: "초보자의 타격 균형과 체력에 맞춰 미트 운동을 지도합니다.",
+};
+const timeline = [
+  ["0~10분", "스트레칭과 준비 운동"],
+  ["10~25분", "기본 자세와 스텝"],
+  ["25~40분", "미트 트레이닝"],
+  ["40~50분", "샌드백과 마무리"],
+];
 
-function Card({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
-  return (
-    <section className="min-w-0 rounded-[4px] border border-[#29292D] bg-[#141416] p-4 sm:p-5">
-      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-lg font-extrabold tracking-tight">{title}</h2>
-        {action}
-      </div>
-      {children}
-    </section>
-  );
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return <section className={card}><h2 className="mb-4 text-xl font-black">{title}</h2>{children}</section>;
 }
 
-function Photo({ src, label, lazy = false }: { src: string; label: string; lazy?: boolean }) {
-  return (
-    <a href={src} target="_blank" rel="noopener noreferrer" aria-label={`${label} 사진 보기 (새 창)`} className="group relative block h-full overflow-hidden rounded-[4px] bg-[#141416] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D01E2E]">
-      <img src={src} alt={label} loading={lazy ? "lazy" : undefined} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none" />
-    </a>
-  );
-}
-
-function BlogPostCard({ post, thumb, compact = false }: { post: PreviewPost; thumb: string | null; compact?: boolean }) {
-  return (
-    <Link href={`/blog/${post.slug}`} className="flex items-start gap-3 rounded-[4px] border border-[#29292D] p-3 hover:border-[#D01E2E]">
-      {thumb && <img src={thumb} alt="" loading="lazy" className="h-16 w-16 shrink-0 rounded object-cover sm:h-20 sm:w-20" />}
-      <div className="min-w-0 break-words">
-        <h3 className="text-sm font-bold">{post.title}</h3>
-        {post.description && <p className={`mt-1 text-sm leading-relaxed text-[#B5B5BC] ${compact ? "line-clamp-2" : ""}`}>{post.description}</p>}
-      </div>
-    </Link>
-  );
-}
-
-function Clips({ reels, compact = false }: { reels: PreviewReel[]; compact?: boolean }) {
-  if (!reels.length) return <p className="text-sm text-[#B5B5BC]">등록된 영상이 없습니다.</p>;
-  return (
-    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-      {reels.map((reel) => (
-        <figure key={reel.id} className="min-w-0 overflow-hidden rounded-[4px] border border-[#29292D] bg-[#161618]">
-          <VisibleClip src={reel.video_url} title={reel.title} poster={reel.poster} aria-label={reel.aria_label || reel.title} className={`w-full bg-[#242424] object-cover ${compact ? "aspect-[4/3]" : "aspect-[4/5]"}`} />
-          <figcaption className="border-t border-white/10 px-3 py-2.5 text-xs font-semibold leading-5 [overflow-wrap:anywhere] sm:text-sm">{reel.title}</figcaption>
-        </figure>
-      ))}
-    </div>
-  );
-}
-
-function TrialTerms() {
-  return <p className="break-keep text-xs leading-relaxed text-[#C9C9C9]"><strong className="text-[#F5F4F1]">원데이 체험 30,000원</strong> · 당일 등록 시 체험비 전액 차감<br />회원권 가격은 지점에 문의해 주세요.</p>;
-}
-
-export default function BranchPreview({ branch, photos, coaches, posts, reels, reviews, audience, faq, workout, galleryImages, trainingPhotos = [], getThumb }: Props) {
-  const firstPost = posts[0];
-  const firstReview = branch.name === "신정점"
-    ? reviews.find(({ content }) => /오전|키즈|아이|초등/.test(content || "") && !/휴게|브레이크/.test(content || ""))
-    : reviews[0];
-  const sidebar = (
-    <>
-      <Card title="원데이 클래스">
-        <div className="mb-3"><TrialTerms /></div>
-        <a className={`${primary} w-full`} href={branch.booking} target="_blank" rel="noopener noreferrer">예약 종류 보기 ↗</a>
-      </Card>
-      <Card title={`${branch.name} 이용 정보`}>
-        <dl className="space-y-3 text-sm leading-relaxed">
-          <div><dt className="font-bold">운영시간</dt>{branch.hours.map((hour) => <dd key={hour}>{hour}</dd>)}</div>
-          <div><dt className="font-bold">주소</dt><dd>{branch.address}</dd></div>
-          <div><dt className="font-bold">전화</dt><dd>{branch.phone}</dd></div>
-        </dl>
-        <a className={`${secondary} mt-4 w-full`} href={branch.instagram} target="_blank" rel="noopener noreferrer">인스타그램 ↗</a>
-      </Card>
-    </>
-  );
+export default function BranchPreview({ branch, slug, query, photos, coaches, posts, reels, reviews, faq, galleryImages, getThumb }: Props) {
+  const copy = branchLanding[slug];
+  const attribution = reservationAttribution({ ...query, branch: slug });
+  const oneDay = query.reserve === "trial";
+  const phone = "tel:" + branch.phone;
+  const bookingLink = (kind: "trial" | "consultation") =>
+    "/" + slug + "?" + new URLSearchParams({ ...attribution, reserve: kind }) + "#contact";
+  const representative = photos[0];
 
   return (
-    <main className="min-h-screen bg-[#0E0E10] text-[#F5F4F1]">
-      <header className="border-b border-[#29292D] bg-[#141416]">
-        <div className="mx-auto flex min-h-14 max-w-[1136px] flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2 sm:px-6">
-          <Link href="/" aria-label="스트롱복싱 홈" className="flex shrink-0 items-center gap-2.5">
-            <img src="/icon.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" />
-            <span className="flex flex-col leading-none">
-              <span className="text-[15px] font-black tracking-[0.08em] text-[#F5F4F1]">STRONG</span>
-              <span className="text-[9px] font-black tracking-[0.22em] text-[#D01E2E]">— BOXING —</span>
-            </span>
-          </Link>
-          <nav aria-label="사이트 메뉴" className="flex flex-wrap items-center gap-4 text-sm font-semibold text-[#B5B5BC]">
-            <Link href="/#branches">지점 안내</Link>
-            <Link href="/#programs">운동 안내</Link>
-            <Link href="/blog">블로그</Link>
-          </nav>
-        </div>
+    <main className="min-h-screen bg-[#101012] pb-24 text-white md:pb-8">
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#101012]">
+        <nav aria-label="지점 메뉴" className="mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-2 px-4">
+          <Link href="/" className="shrink-0 text-sm font-black">스트롱복싱</Link>
+          <div className="flex items-center gap-2">
+            <details className="relative">
+              <summary className="cursor-pointer text-sm font-bold">지점 변경</summary>
+              <ul className="absolute right-0 mt-3 min-w-32 rounded-md border border-white/15 bg-[#19191c] p-1 shadow-xl">
+                {branchSlugs.map((item) => <li key={item}><Link href={"/" + item + "?" + new URLSearchParams({ ...attribution, branch: item })} aria-current={item === slug ? "page" : undefined} className="block rounded px-3 py-2 text-sm hover:bg-white/10">{branchLanding[item].title.split(" 복싱장")[0]}점</Link></li>)}
+              </ul>
+            </details>
+            <a href="#contact" className={primary}>예약하기</a>
+          </div>
+        </nav>
       </header>
 
-      <div className="mx-auto max-w-[1136px] px-4 pb-8 pt-4 sm:px-6 md:pt-6">
-        <div className="grid h-[clamp(150px,27vw,328px)] gap-1.5 sm:gap-2" style={{ gridTemplateColumns: photos.length === 1 ? "1fr" : "1.45fr 1fr 1fr" }}>
-          {photos.map((photo) => <Photo key={photo.src} {...photo} />)}
-        </div>
-
-        <section className="mt-6 grid gap-4 border-b border-white/10 px-0 pb-6 md:grid-cols-[minmax(0,1fr)_minmax(245px,0.43fr)] md:items-center md:gap-6">
-          <div className="min-w-0">
-            <p className="text-xs font-bold text-[#D01E2E]">{branch.region} 복싱장</p>
-            <h1 className="mt-1 break-keep text-3xl font-black leading-tight tracking-tight sm:text-[38px]">{branch.fullName}</h1>
-            <div className="mt-3 space-y-1 break-keep text-sm leading-relaxed text-[#E8E8EA]">
-              <p>{branch.hours.join(" · ")}</p>
-              <p>{branch.landmark || branch.address}</p>
+      <div className="mx-auto max-w-6xl space-y-4 px-4 pt-6 md:space-y-6 md:px-6">
+        <section className="grid items-center gap-5 pb-2 md:grid-cols-[1.1fr_0.9fr] md:py-7">
+          <div>
+            <p className="text-sm font-bold text-[#FF868F]">{branch.region}</p>
+            <h1 className="mt-2 break-keep text-[clamp(1.7rem,4vw,3rem)] font-black leading-tight tracking-tight">{copy.heading}</h1>
+            <p className={"mt-3 " + body}>{copy.intro}</p>
+            <ul className="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+              {["초보 입문", slug === "mokdong" || slug === "sinjeong" ? "밤 12시까지" : "퇴근 후 복싱", slug === "mokdong" || slug === "sinjeong" ? "키즈·학생" : "학생 복싱"].map((tag) => <li key={tag} className="rounded bg-white/10 px-2 py-1">{tag}</li>)}
+            </ul>
+            <p className={"mt-3 " + body}>{branch.hours.join(" · ")}<br />{copy.landmark} · <a href={phone} className="underline">주차 문의</a><br />운영시간 내 자유 방문 · 1개월 단위 등록</p>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <Link href={bookingLink("trial")} className={primary} prefetch={false}>{branch.name} 원데이 체험</Link>
+              <Link href={bookingLink("consultation")} className={secondary} prefetch={false}>{branch.name} 방문 상담</Link>
             </div>
-            <p className="mt-2 max-w-[62ch] break-keep text-sm leading-7 text-[#B5B5BC]">{branch.intro}</p>
-            <ul className="mt-3 flex flex-wrap gap-1.5">{branch.highlights.map((tag) => <li key={tag} className="rounded border border-white/10 px-2 py-1 text-xs font-semibold">{tag}</li>)}</ul>
+            <p className="mt-2 text-xs leading-5 text-zinc-300">체험비 30,000원 현장결제 · 당일 등록 시 전액 차감<br />체험만 하고 돌아가셔도 괜찮습니다.</p>
           </div>
-          <div className="grid gap-2">
-            <TrialTerms />
-            <a href={branch.booking} target="_blank" rel="noopener noreferrer" className={primary}><CalendarDays size={17} aria-hidden="true" /> 예약 종류 보기</a>
-            <div className="flex gap-1.5 [&>a]:flex-1">
-              <a href={`tel:${branch.phone}`} className={secondary}><Phone size={15} aria-hidden="true" /> 전화</a>
-              {branch.kakaoChat && <a href={branch.kakaoChat} target="_blank" rel="noopener noreferrer" className={secondary}><MessageCircle size={15} aria-hidden="true" /> 카카오</a>}
-              <a href={branch.naverMap} target="_blank" rel="noopener noreferrer" className={secondary}><MapPin size={15} aria-hidden="true" /> 길찾기</a>
-            </div>
-          </div>
+          {representative && <img src={representative.src} alt={representative.label} fetchPriority="high" className="hidden aspect-[4/3] w-full rounded-lg object-cover md:block" />}
         </section>
 
-        <BranchPreviewTabs sidebar={sidebar} panels={{
-          home: <>
-            <Card title="처음 방문하실 때" action={<TabLink tab="workout">운동 안내 →</TabLink>}>
-              <p className="break-keep text-sm leading-7 text-[#C9C9C9]">첫날에는 기본 자세와 스텝부터 배워요. 운영시간에 편하게 방문하면 관장·코치가 개인별 진도를 살펴드립니다.</p>
-            </Card>
-            <Card title={`${branch.name} 클립`} action={<TabLink tab="videos">영상 더보기 →</TabLink>}>
-              <Clips reels={reels.slice(0, 6)} compact />
-            </Card>
-
-            {trainingPhotos.length > 0 && (
-              <Card title={branch.name + " 운동 사진"}>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {trainingPhotos.slice(0, 4).map((src, index) => (
-                    <div className="aspect-[4/3]" key={src}>
-                      <Photo src={src} label={branch.name + " 복싱 훈련 사진 " + (index + 1)} lazy />
-                    </div>
-                  ))}
-                </div>
-                {trainingPhotos.length > 4 && (
-                  <details className="mt-3">
-                    <summary className="cursor-pointer text-sm font-semibold">운동 사진 더 보기 ({trainingPhotos.length}장)</summary>
-                    <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                      {trainingPhotos.slice(4).map((src, index) => (
-                        <div className="aspect-[4/3]" key={src}>
-                          <Photo src={src} label={branch.name + " 복싱 훈련 사진 " + (index + 5)} lazy />
-                        </div>
-                      ))}
-                    </div>
-                  </details>
-                )}
-              </Card>
-            )}
-
-            <div className="grid gap-5 sm:grid-cols-2">
-              <Card title={`${branch.name} 블로그`} action={<TabLink tab="blog">전체 보기 →</TabLink>}>
-                {firstPost ? <BlogPostCard post={firstPost} thumb={getThumb(firstPost)} compact /> : <p className="text-sm text-[#B5B5BC]">지점 소식은 스트롱복싱 블로그에서 확인할 수 있습니다.</p>}
-              </Card>
-              <Card title="직접 남긴 회원 후기" action={<TabLink tab="reviews">리뷰 보기 →</TabLink>}>
-                {firstReview ? <><p className="line-clamp-3 whitespace-pre-wrap break-words text-sm leading-relaxed">{firstReview.content}</p><p className="mt-2 text-xs text-[#B5B5BC]">{firstReview.reviewer_name || "네이버 리뷰"}</p></> : <p className="text-sm text-[#B5B5BC]">리뷰는 네이버 플레이스에서 확인할 수 있습니다.</p>}
-              </Card>
-            </div>
-
-            {coaches.length > 0 && <Card title={`${branch.name} 지도진`}>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {coaches.map((coach) => <a key={coach.name} href={`https://www.instagram.com/${coach.instagram}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-[4px] bg-[#1A1A1C] p-3">
-                  <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#141416] font-bold">{coach.name[0]}</span>
-                  <span className="min-w-0 break-words text-sm"><strong>{coach.name} {coach.role}</strong><br /><span className="text-xs text-[#B5B5BC]">@{coach.instagram}</span></span>
-                </a>)}
+        <Section title={branch.name + " 오시는 길과 운영시간"}>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className={body}>
+              <p className="font-bold text-white">{branch.address}</p>
+              <p className="mt-1">{branch.directions}</p>
+              <p className="mt-1">출구별 도보 경로는 지도에서, 주차 가능 여부는 <a href={phone} className="underline">지점에 문의</a>해 주세요.</p>
+              <ul className="mt-3 list-inside list-disc">{branch.hours.map((hours) => <li key={hours}>{hours}</li>)}</ul>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <a className={secondary} href={branch.naverMap} target="_blank" rel="noreferrer">네이버 지도</a>
+                {branch.kakaoMap && <a className={secondary} href={branch.kakaoMap} target="_blank" rel="noreferrer">카카오맵</a>}
               </div>
-            </Card>}
-
-            <Card title="이런 분들이 많이 찾아요">
-              <ul className="flex flex-wrap gap-2">{audience.map((item) => <li key={item} className="rounded bg-[#1A1A1C] px-2 py-1 text-sm">{item}</li>)}</ul>
-            </Card>
-            <Card title="자주 묻는 질문">
-              <div className="divide-y divide-white/10">{faq.map(({ question, answer }) => (
-                <details className="py-3 first:pt-0 last:pb-0" key={question}>
-                  <summary className={summaryClass}>{question}</summary>
-                  <p className="mt-2 max-w-[62ch] break-keep text-sm leading-7 text-[#C9C9C9]">{answer}</p>
-                  {question === "네이버로 예약할 수 있나요?" && (
-                    <a href={branch.booking} target="_blank" rel="noopener noreferrer" className={`${primary} mt-3`}>
-                      {branch.name} 예약 종류 보기 ↗
-                    </a>
-                  )}
-                </details>
-              ))}</div>
-            </Card>
-          </>,
-          blog: <Card title={`${branch.name} 블로그`}>
-            {posts.length > 0 ? <div className="space-y-2">{posts.map((post) => <BlogPostCard key={post.id} post={post} thumb={getThumb(post)} />)}</div> : <p className="text-sm text-[#B5B5BC]">지점 소식은 스트롱복싱 블로그에서 확인할 수 있습니다.</p>}
-            <div className="mt-4 flex flex-wrap gap-4 text-sm font-bold text-[#D01E2E]">
-              <Link href={`${process.env.DB_HOST ? "" : "https://strongboxing.kr"}/blog?branch=${encodeURIComponent(branch.name)}`}>{branch.name} 블로그 더 보기 →</Link>
             </div>
-          </Card>,
-          videos: <Card title={`${branch.name} 클립`}><Clips reels={reels} /></Card>,
-          workout: <Card title={`${branch.area} 복싱 운동 안내`}>
-            <p className="mb-4 break-keep text-sm leading-6 text-[#B5B5BC]">운영시간에 방문해 각자 운동하는 동안 관장·코치가 필요한 동작을 짚어주고 다음에 연습할 내용을 안내해요.</p>
-            <div className="grid gap-2 sm:grid-cols-3">
-              {workout.program.map(([title, description]) => (
-                <div key={title} className="rounded-[4px] bg-[#1A1A1C] p-3">
-                  <h3 className="mb-1 text-sm font-bold">{title}</h3>
-                  <p className="break-keep text-sm leading-relaxed text-[#B5B5BC]">{description}</p>
-                </div>
-              ))}
+            <div className="grid grid-cols-2 gap-2">
+              {[...new Set(galleryImages)].slice(0, 2).map((src) => <img key={src} src={src} alt={branch.name + " 복싱장 시설"} loading="lazy" className="aspect-[4/3] w-full rounded object-cover only:col-span-2" />)}
             </div>
-            <div className="mt-3 space-y-2">
-              <details className={detailsClass}>
-                <summary className={summaryClass}>1회 수업 흐름</summary>
-                <ol className="mt-3 grid grid-cols-2 gap-2 text-sm sm:grid-cols-3">{workout.flow.map(([step, title]) => <li key={step}><span className="mr-1 font-bold text-[#D01E2E]">{step}</span>{title}</li>)}</ol>
-              </details>
-              <details className={detailsClass}>
-                <summary className={summaryClass}>첫 방문</summary>
-                <ol className="mt-3 space-y-2 text-sm">{workout.firstVisit.map(([step, title, description]) => <li key={step}><strong>{step} {title}</strong><p>{description}</p></li>)}</ol>
-              </details>
-            </div>
-          </Card>,
-          reviews: <Card title={`${branch.name} 회원들이 직접 남긴 네이버 리뷰`}>
-            {reviews.length === 0 && <p className="text-sm text-[#B5B5BC]">네이버 플레이스에서 {branch.name} 방문자 후기를 볼 수 있습니다.</p>}
-            <div className="space-y-2">{reviews.map((review) => (
-              <details key={review.id} className={detailsClass}>
-                <summary className={summaryClass}>{review.reviewer_name || "네이버 리뷰"} {review.review_date && <span className="ml-2 text-xs font-normal text-[#B5B5BC]">{typeof review.review_date === "string" ? review.review_date : review.review_date.toISOString().slice(0, 10)}</span>}</summary>
-                <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed">{review.content}</p>
-                {review.image_url && <img src={review.image_url} alt="네이버 리뷰 캡처" loading="lazy" className="mt-2 max-h-80 max-w-full rounded object-contain" />}
-              </details>
-            ))}</div>
-            <a href={branch.reviewUrl || branch.naverMap} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-sm font-bold text-[#D01E2E]">네이버 플레이스 리뷰 보기 ↗</a>
-          </Card>,
-          location: <Card title="시설·위치">
-            <p className="mb-2 break-keep text-sm leading-7 text-[#C9C9C9]">{branch.directions}</p>
-            <p className="mb-4 break-keep text-sm text-[#B5B5BC]">{branch.address}{branch.landmark && !branch.address.includes(branch.landmark) ? ` · ${branch.landmark}` : ""}</p>
-            <div className={galleryImages.length === 1 ? "h-52 sm:h-72" : "grid auto-rows-[120px] grid-cols-2 gap-2 sm:auto-rows-[155px]"}>
-              {galleryImages.map((src, index) => <Photo key={src} src={src} label={galleryImages.length === 1 ? `${branch.name} 시설` : `스트롱복싱 갤러리 사진 ${index + 1}`} />)}
-            </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <a href={branch.naverMap} target="_blank" rel="noopener noreferrer" className={`${secondary} px-4`}>네이버 지도 ↗</a>
-              {branch.kakaoMap && <a href={branch.kakaoMap} target="_blank" rel="noopener noreferrer" className={`${secondary} px-4`}>카카오맵 ↗</a>}
-              {branch.googleMap && <a href={branch.googleMap} target="_blank" rel="noopener noreferrer" className={`${secondary} px-4`}>구글 지도 ↗</a>}
-            </div>
-          </Card>,
-        }} />
-
-        <details id="contact" className="scroll-mt-4 rounded-[4px] border border-[#29292D] bg-[#141416] p-4 target:ring-2 target:ring-[#D01E2E] sm:p-5">
-          <summary className="cursor-pointer text-lg font-extrabold tracking-tight">지금, 상담을 받아보세요.</summary>
-          <p className="mt-2 text-sm text-[#B5B5BC]">방문 전 상담으로 더 편하게 시작하실 수 있습니다.</p>
-          <div className="mt-4 max-sm:[&_.grid-cols-2]:grid-cols-1">
-            <ConsultationForm theme="dark" previewBranch={{ name: branch.name, address: branch.address, phone: branch.phone }} />
           </div>
-        </details>
-        <footer className="mt-7 border-t border-[#29292D] pt-5 text-center text-xs font-semibold text-[#B5B5BC]">STRONG BOXING · {branch.fullName}</footer>
+        </Section>
+
+        <Section title="추천 방문 시간">
+          <table className="w-full border-collapse text-left text-sm">
+            <thead><tr className="border-b border-white/15"><th scope="col" className="p-2">운동하기 좋은 때</th><th scope="col" className="p-2">추천 시간</th></tr></thead>
+            <tbody>
+              <tr className="border-b border-white/10"><th scope="row" className="p-2 font-medium">기초 코칭을 받고 싶을 때</th><td className="p-2">{copy.daytime}</td></tr>
+              <tr><th scope="row" className="p-2 font-medium">퇴근 후 활기찬 분위기</th><td className="p-2">평일 오후 7~10시</td></tr>
+            </tbody>
+          </table>
+          <p className={"mt-3 " + body}>운영시간을 기준으로 추천하는 시간입니다. 당일 혼잡도나 코칭 가능 시간은 지점에 확인해 주세요.</p>
+        </Section>
+
+        <Section title={branch.name + " 지도진"}>
+          <p className={body}>{copy.coaching}</p>
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+            {coaches.map(({ name, role, instagram }) => <li key={instagram} className="rounded bg-white/5 p-3"><a className="font-bold underline-offset-4 hover:underline" href={"https://www.instagram.com/" + instagram + "/"} target="_blank" rel="noreferrer">{name} {role}</a>{coachDescriptions[instagram] && <p className={"mt-1 " + body}>{coachDescriptions[instagram]}</p>}</li>)}
+            {coaches.length === 0 && <li><a className={secondary} href={branch.instagram} target="_blank" rel="noreferrer">{branch.name} 인스타그램</a></li>}
+          </ul>
+          <p className="mt-3 text-xs text-zinc-300">스트롱복싱 체육관 가입 단체 · KBF · KBM · KBC · KBA · KABA</p>
+          <Link href="/#coaches" className="mt-3 inline-block text-xs text-zinc-300 underline">스트롱복싱 지도진 보기</Link>
+        </Section>
+
+        <Section title={branch.name + " 운동 영상과 회원 후기"}>
+          <ul className="flex snap-x gap-3 overflow-x-auto pb-2">
+            {reels.slice(0, 4).map((reel) => <li key={reel.id} className="w-40 shrink-0 snap-start sm:w-52">
+              <VisibleClip src={reel.video_url} poster={reel.poster} fallbackSrc={"/videos/" + slug + "/001.mp4"} className="aspect-[4/5] w-full rounded bg-black object-cover" aria-label={reel.aria_label || reel.title} />
+              <p className="mt-2 text-xs text-zinc-300">{reel.title}</p>
+            </li>)}
+          </ul>
+          {reviews.length > 0 && <ul className="mt-3 grid gap-2 sm:grid-cols-3">
+            {reviews.slice(0, 3).map((review) => <li key={review.id} className="rounded bg-white/5 p-3"><blockquote className={"line-clamp-4 " + body}>{review.content}</blockquote><p className="mt-2 text-xs text-zinc-400">{review.reviewer_name || "네이버 회원"}</p></li>)}
+          </ul>}
+          <a className={secondary + " mt-3"} href={branch.reviewUrl || branch.naverMap} target="_blank" rel="noreferrer">네이버 플레이스 후기</a>
+          {posts.length > 0 && <details className="mt-4"><summary className="cursor-pointer font-semibold">{branch.name} 활동기록과 블로그</summary><ul className="mt-3 space-y-3">
+            {posts.map((post) => { const thumbnail = getThumb(post); return <li key={post.id}><Link href={"/blog/" + post.slug} className="flex items-center gap-3 text-sm hover:underline">{thumbnail && <img src={thumbnail} alt="" loading="lazy" className="size-12 rounded object-cover" />}{post.title}</Link></li>; })}
+          </ul></details>}
+        </Section>
+
+        <Section title="원데이 체험 50분">
+          <ol className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {timeline.map(([time, step]) => <li key={time} className="rounded bg-white/5 p-3 text-sm"><span className="block text-xs font-bold text-[#FF868F]">{time}</span>{step}</li>)}
+          </ol>
+          <p className={"mt-3 " + body}>진행 시간은 운동 경험과 체력에 따라 조정될 수 있습니다. 체험은 30,000원 현장결제이며 당일 등록 시 체험비가 전액 차감됩니다.</p>
+          <p className={"mt-2 " + body}>체험만 하고 돌아가셔도 괜찮습니다. 등록을 원하시면 장기 약정 없이 1개월 단위로 시작할 수 있습니다.</p>
+          <h3 className="mb-2 mt-5 font-bold">자주 묻는 질문</h3>
+          {faq.map(({ question, answer }) => <details key={question} className="border-t border-white/10 py-3"><summary className="cursor-pointer text-sm font-bold">{question}</summary><p className={"mt-2 " + body}>{answer}</p></details>)}
+        </Section>
+
+        <div id="contact" className="scroll-mt-16 overflow-hidden rounded-lg border border-white/10">
+          <ConsultationForm key={oneDay ? "trial" : "consultation"} compactDesktop lockBranch initialOneDay={oneDay} attribution={attribution}
+            previewBranch={{ name: branch.name, address: branch.address, phone: branch.phone }} />
+          <div className="px-4 pb-4 text-center"><a className="text-sm text-zinc-300 underline" href={branch.booking} target="_blank" rel="noreferrer">네이버로 예약하기</a></div>
+        </div>
+        <footer className="py-4 text-center text-xs text-zinc-400">스트롱복싱 · {branch.name}</footer>
       </div>
+
+      <nav aria-label="빠른 문의 및 예약" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 gap-2 border-t border-white/15 bg-[#101012] px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] md:hidden">
+        <a href={phone} className={secondary}>전화 문의</a>
+        <a href="#contact" className={primary}>{branch.name} 원데이·상담 예약</a>
+      </nav>
     </main>
   );
 }

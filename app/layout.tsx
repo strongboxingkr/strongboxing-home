@@ -1,3 +1,4 @@
+import { branchSlugs } from "@/lib/branch-landing";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
@@ -29,102 +30,7 @@ const localBusinessJsonLd = {
     "https://www.instagram.com/strongboxing_cheolsan",
     "https://www.instagram.com/stron_gboxinggym",
   ],
-  department: [
-    {
-      "@type": "SportsActivityLocation",
-      name: "스트롱복싱 개봉점",
-      telephone: "02-2060-1279",
-      url: "https://strongboxing.kr/branches/gaebong",
-      sameAs: [
-        "https://www.instagram.com/strongboxing_gaebong",
-        "https://naver.me/5aFquqcz",
-        "https://kko.to/RmPQ1W8t8g",
-      ],
-      address: {
-        "@type": "PostalAddress",
-        postalCode: "08274",
-        addressRegion: "서울특별시",
-        addressLocality: "구로구",
-        streetAddress: "개봉동 166-5 유원빌딩 지하 1층",
-        addressCountry: "KR",
-      },
-      openingHours: "Mo-Fr 13:00-23:00",
-    },
-    {
-      "@type": "SportsActivityLocation",
-      name: "스트롱복싱 신정점",
-      telephone: "02-2647-3373",
-      url: "https://strongboxing.kr/branches/sinjeong",
-      sameAs: [
-        "https://www.instagram.com/strongboxing_sinjeong",
-        "https://naver.me/5nhXvzXH",
-        "https://kko.to/NlN6yV0aK3",
-      ],
-      address: {
-        "@type": "PostalAddress",
-        postalCode: "08087",
-        addressRegion: "서울특별시",
-        addressLocality: "양천구",
-        streetAddress: "신정동 1021-7 태화상가 2층",
-        addressCountry: "KR",
-      },
-      openingHours: ["Mo-Fr 10:00-14:00", "Mo-Fr 15:00-24:00", "Sa 10:00-16:00"],
-    },
-    {
-      "@type": "SportsActivityLocation",
-      name: "스트롱복싱 목동점",
-      telephone: "02-2643-5971",
-      url: "https://strongboxing.kr/branches/mokdong",
-      sameAs: [
-        "https://www.instagram.com/strongboxing_mokdong",
-        "https://naver.me/GII8f9Qv",
-      ],
-      address: {
-        "@type": "PostalAddress",
-        postalCode: "07984",
-        addressRegion: "서울특별시",
-        addressLocality: "양천구",
-        streetAddress: "목동 909-6 우방빌딩 4층",
-        addressCountry: "KR",
-      },
-      openingHours: ["Mo-Fr 14:00-24:00", "Sa 11:00-16:00"],
-    },
-    {
-      "@type": "SportsActivityLocation",
-      name: "스트롱복싱 철산점",
-      telephone: "02-2066-0406",
-      url: "https://strongboxing.kr/branches/cheolsan",
-      sameAs: ["https://www.instagram.com/strongboxing_cheolsan"],
-      address: {
-        "@type": "PostalAddress",
-        postalCode: "14209",
-        addressRegion: "경기도",
-        addressLocality: "광명시",
-        streetAddress: "철산동 56-14 3층",
-        addressCountry: "KR",
-      },
-      openingHours: ["Mo-Fr 13:00-23:00", "Sa 11:00-16:00"],
-    },
-    {
-      "@type": "SportsActivityLocation",
-      name: "스트롱복싱 영등포점",
-      telephone: "02-831-9312",
-      url: "https://strongboxing.kr/branches/yeongdeungpo",
-      sameAs: [
-        "https://www.instagram.com/stron_gboxinggym",
-        "https://naver.me/G4yQwkR0",
-      ],
-      address: {
-        "@type": "PostalAddress",
-        postalCode: "07380",
-        addressRegion: "서울특별시",
-        addressLocality: "영등포구",
-        streetAddress: "도림로 313 건영상가 2층",
-        addressCountry: "KR",
-      },
-      openingHours: "Mo-Fr 13:00-23:00",
-    },
-  ],
+  department: branchSlugs.map((slug) => ({ "@id": "https://strongboxing.kr/" + slug + "#localbusiness" })),
 };
 
 export const metadata: Metadata = {

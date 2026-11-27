@@ -4,6 +4,7 @@ import { consultationSlots, type ReservationType } from "@/lib/consultation-slot
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { reservationAttribution, type ReservationAttribution } from "@/lib/reservation-attribution";
 import { trackReservationComplete } from "@/lib/gtag";
 
 /* ── 지점 데이터 ─────────────────────────────────────────── */
@@ -181,7 +182,7 @@ function nearestBranch({ latitude, longitude }: Pick<GeolocationCoordinates, "la
 
 type PreviewBranch = { name: string; address: string; phone: string };
 
-export default function ConsultationForm({ theme = "dark", previewBranch, suggestNearest = false, compactDesktop = false, initialOneDay = false, backLink }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch; suggestNearest?: boolean; compactDesktop?: boolean; initialOneDay?: boolean; backLink?: ReactNode }) {
+export default function ConsultationForm({ theme = "dark", previewBranch, suggestNearest = false, compactDesktop = false, initialOneDay = false, lockBranch = false, attribution, backLink }: { theme?: "dark" | "light"; previewBranch?: PreviewBranch; suggestNearest?: boolean; compactDesktop?: boolean; initialOneDay?: boolean; lockBranch?: boolean; attribution?: ReservationAttribution; backLink?: ReactNode }) {
   const t = theme === "light" ? LIGHT : DARK;
   const [reservationType, setReservationType] = useState<"방문 상담" | "일일 체험">(initialOneDay ? "일일 체험" : "방문 상담");
   const [loading, setLoading] = useState(false);
@@ -256,19 +257,21 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
       return;
     }
     setError("");
+    const source = previewBranch && attribution ? "branch" : window.location.pathname === "/" ? "home" : "reservation";
+    const campaign = reservationAttribution({ ...Object.fromEntries(new URLSearchParams(window.location.search)), ...attribution });
     setLoading(true);
     try {
       const res = await fetch("/api/consultation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, reservation_type: reservationType }),
+        body: JSON.stringify({ ...form, reservation_type: reservationType, attribution: { ...campaign, source } }),
       });
       const data = await res.json();
       if (!data.ok) {
         setError(data.message || "예약 접수에 실패했습니다. 다시 시도해주세요.");
         return;
       }
-      trackReservationComplete({ branch_name: form.branch });
+      trackReservationComplete({ branch_name: form.branch, booking_source: source, reservation_type: reservationType, ...campaign });
       setDone(true);
     } catch {
       setError("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
@@ -297,7 +300,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
           <div className="flex flex-wrap justify-center gap-3">
             {branchData[form.branch] && (
               <Link
-                href={"/branches/" + branchData[form.branch].slug}
+                href={"/" + branchData[form.branch].slug}
                 className="rounded-[6px] bg-[#D01E2E] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#B71928]"
               >
                 {form.branch} 보기
@@ -389,10 +392,12 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
           </div>
 
           <form onSubmit={handleSubmit} className={`space-y-5 ${compactDesktop ? "lg:space-y-2.5 lg:[&_input]:min-h-10 lg:[&_input]:py-2 lg:[&_select]:min-h-10 lg:[&_select]:py-2 lg:[&_textarea]:h-12 lg:[&_textarea]:py-2 lg:[&_label]:mb-1" : ""}`}>
+            {Object.entries(attribution ?? {}).map(([key, value]) => <input key={key} type="hidden" name={key} value={value} />)}
             {/* 방문 지점 */}
             <div>
               <label className={t.label}>방문 지점</label>
-              <select
+              {lockBranch ? <p className={t.input}>{form.branch}</p> : <select
+                aria-label="방문 지점"
                 value={form.branch}
                 onChange={(e) => handleBranchChange(e.target.value)}
                 className={t.input}
@@ -401,7 +406,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
                 {Object.keys(branchData).map((b) => (
                   <option key={b}>{b}</option>
                 ))}
-              </select>
+              </select>}
               {locationSuggested && <p className={`mt-2 text-xs ${t.sub}`}>현재 위치에서 가까운 지점을 선택했어요. 다른 지점으로 바꿀 수 있어요.</p>}
               {/* 지점 정보 */}
               <div className={`mt-2 ${t.branchBox} ${compactDesktop ? "lg:flex lg:flex-wrap lg:items-center lg:justify-between lg:gap-x-3 lg:gap-y-1 lg:space-y-0 lg:py-1.5" : ""}`}>
@@ -541,7 +546,7 @@ export default function ConsultationForm({ theme = "dark", previewBranch, sugges
             {/* 체험 결제 안내 */}
             {reservationType === "일일 체험" && (
               <p className={`text-[12px] ${t.muted} leading-5`}>
-                원데이 클래스 30,000원은 현장에서 결제합니다. 당일 등록 시 체험비 전액 차감.
+                원데이 클래스 30,000원은 현장에서 결제합니다. 당일 등록 시 체험비가 전액 차감됩니다. 체험만 하고 돌아가셔도 괜찮습니다.
               </p>
             )}
 

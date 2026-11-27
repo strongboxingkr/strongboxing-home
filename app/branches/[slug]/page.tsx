@@ -1,3 +1,4 @@
+import { branchLanding, branchSlugs } from "@/lib/branch-landing";
 import { branchTrainingPhotos } from "@/lib/branch-training-photos";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
@@ -141,13 +142,14 @@ const branches: Record<string, Branch> = {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const branch = branches[slug];
+  const copy = branchLanding[slug as keyof typeof branchLanding];
   return {
-    title: { absolute: branch?.searchTitle ?? "스트롱복싱 지점 안내" },
-    description: branch?.description,
+    title: { absolute: copy?.title ?? "스트롱복싱 지점 안내" },
+    description: copy?.description,
     robots: { index: true, follow: true },
-    alternates: branch ? { canonical: `https://strongboxing.kr/branches/${slug}` } : undefined,
-    openGraph: branch ? { title: branch.searchTitle, description: branch.description, url: `https://strongboxing.kr/branches/${slug}`, images: [branch.searchImage] } : undefined,
-    twitter: branch ? { card: "summary_large_image", title: branch.searchTitle, description: branch.description, images: [branch.searchImage] } : undefined,
+    alternates: branch ? { canonical: `https://strongboxing.kr/${slug}` } : undefined,
+    openGraph: branch ? { title: copy?.title, description: copy?.description, url: `https://strongboxing.kr/${slug}`, images: [branch.searchImage] } : undefined,
+    twitter: branch ? { card: "summary_large_image", title: copy?.title, description: copy?.description, images: [branch.searchImage] } : undefined,
   };
 }
 
@@ -157,14 +159,6 @@ const branchCoaches: Record<string, { name: string; role: string; instagram: str
   mokdong:      [{ name: "송재용", role: "관장", instagram: "nan_yong_" }, { name: "김민찬", role: "코치", instagram: "chan.__2" }],
   cheolsan:     [{ name: "안도연", role: "관장", instagram: "strongboxing_andy" }, { name: "신우수", role: "코치", instagram: "ws_nakmuay" }],
   yeongdeungpo: [],
-};
-
-const branchTargetAudience: Record<string, string[]> = {
-  gaebong:      ["개봉·고척동 복싱장 찾는 분", "다이어트 복싱 시작하려는 분", "복싱이 처음인 초보자", "여성 혼자 다니기 편한 곳 찾는 분", "직장인 퇴근 후 운동 찾는 분"],
-  sinjeong:     ["신정네거리 복싱장 찾는 분", "오전 운동 찾는 분", "양천구 초보자", "직장인 저녁 운동 찾는 분", "여성 회원"],
-  mokdong:      ["목동·오목교 복싱장 찾는 분", "다이어트 복싱 하고 싶은 분", "목동 학생·키즈", "직장인", "초보자"],
-  cheolsan:     ["철산동·광명 복싱장 찾는 분", "광명 다이어트 운동 찾는 분", "직장인 퇴근 후 운동", "광명 여성 회원", "주말 운동 찾는 분"],
-  yeongdeungpo: ["영등포 복싱장 찾는 분", "다이어트 복싱 하고 싶은 분", "영등포 직장인", "초보자", "여성 회원"],
 };
 
 const branchFaqs: Record<string, { question: string; answer: string }[]> = {
@@ -230,28 +224,6 @@ const branchFaqs: Record<string, { question: string; answer: string }[]> = {
   ],
 };
 
-const workout = {
-  program: [
-    ["복싱 입문", "처음 배우는 분도 스텝과 기본 자세부터 차근차근 익힙니다."],
-    ["다이어트 복싱", "지루하지 않게 땀 흘리는 복싱 트레이닝으로 운동량을 높입니다."],
-    ["체력 향상", "운동 목적과 체력에 맞춰 무리 없이 꾸준히 운동할 수 있습니다."],
-  ],
-  flow: [
-    ["01", "몸풀기"],
-    ["02", "줄넘기"],
-    ["03", "자세 & 스텝"],
-    ["04", "미트 트레이닝"],
-    ["05", "샌드백"],
-    ["06", "체력 운동"],
-  ],
-  firstVisit: [
-    ["01", "예약 또는 방문", "네이버·홈페이지로 예약하거나 바로 방문해도 됩니다"],
-    ["02", "편한 복장으로", "편한 운동복과 실내용 운동화만 준비해주세요"],
-    ["03", "관장과 상담", "운동 목적·체력에 맞춰 맞춤 안내해드립니다"],
-    ["04", "바로 운동 시작", "처음 오셔도 기본 자세부터 천천히 알려드립니다"],
-  ],
-};
-
 function getLocalClips(slug: string, branchName: string): PreviewReel[] {
   return (slug === "yeongdeungpo" ? [1, 2] : [1, 2, 3]).map((id) => ({
     id,
@@ -262,27 +234,26 @@ function getLocalClips(slug: string, branchName: string): PreviewReel[] {
   }));
 }
 
-const galleryImages = [
-  "/images/gallery/moments/story1.jpg",
-  "/images/gallery/moments/story2.jpg",
-  "/images/gallery/moments/story3.jpg",
-  "/images/gallery/moments/story4.jpg",
-];
-
 function branchStructuredData(slug: string, branch: Branch, faq: { question: string; answer: string }[]) {
   const origin = "https://strongboxing.kr";
-  const url = origin + "/branches/" + slug;
+  const url = origin + "/" + slug;
+  const coordinates = { gaebong: [37.4950, 126.8580], sinjeong: [37.5185, 126.8560], mokdong: [37.5290, 126.8720], cheolsan: [37.4895495, 126.8652713], yeongdeungpo: [37.5075, 126.8990] };
+  const [latitude, longitude] = coordinates[slug as keyof typeof coordinates];
   return JSON.stringify({
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "ExerciseGym",
+        "@type": ["ExerciseGym", "SportsActivityLocation"],
         "@id": url + "#localbusiness",
         name: branch.fullName,
         url,
-        description: branch.description,
+        description: branchLanding[slug as keyof typeof branchLanding].description,
         image: origin + branch.searchImage,
-        telephone: branch.phone,
+        telephone: branch.phone.replace(/^0/, "+82-"),
+        geo: { "@type": "GeoCoordinates", latitude, longitude },
+        parentOrganization: { "@type": "Organization", name: "스트롱복싱", url: origin + "/" },
+        priceRange: "원데이 30,000원",
+        makesOffer: { "@type": "Offer", price: 30000, priceCurrency: "KRW", itemOffered: { "@type": "Service", name: "원데이 복싱 체험" } },
         hasMap: branch.naverMap,
         address: {
           "@type": "PostalAddress",
@@ -291,7 +262,7 @@ function branchStructuredData(slug: string, branch: Branch, faq: { question: str
           addressRegion: branch.addressRegion,
           addressCountry: "KR",
         },
-        openingHoursSpecification: branch.openingHoursSpec,
+        openingHoursSpecification: branch.openingHoursSpec.map((hours) => ({ ...hours, closes: hours.closes === "24:00" ? "00:00" : hours.closes })),
       },
       {
         "@type": "FAQPage",
@@ -302,16 +273,16 @@ function branchStructuredData(slug: string, branch: Branch, faq: { question: str
         })),
       },
     ],
-  }).replace(/</g, "\u003c");
+  }).replace(/</g, "\\u003c");
 }
 
-export default async function BranchPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BranchPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { slug } = await params;
   const branch = branches[slug];
-  if (!branch) return notFound();
+  if (!branch || !branchSlugs.some((item) => item === slug)) return notFound();
+  const query = await searchParams;
 
   const coaches = branchCoaches[slug] ?? [];
-  const audience = branchTargetAudience[slug] ?? [];
   const faqItems = branchFaqs[slug] ?? [];
 
   const [relatedPosts, branchReels, reviews] = await Promise.all([
@@ -359,16 +330,15 @@ export default async function BranchPage({ params }: { params: Promise<{ slug: s
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: branchStructuredData(slug, branch, faqItems) }} />
       <BranchPreview
         branch={branch}
+        slug={slug as keyof typeof branchLanding}
+        query={query}
         photos={heroPhotos}
         coaches={coaches}
         posts={relatedPosts}
-        reels={branchReels.length ? branchReels : getLocalClips(slug, branch.name)}
+        reels={branchReels.length ? [...new Map(branchReels.map((reel) => [reel.video_url, { ...reel, poster: branch.image }])).values()] : getLocalClips(slug, branch.name).map((reel) => ({ ...reel, poster: branch.image }))}
         reviews={reviews}
-        audience={audience}
         faq={faqItems}
-        workout={workout}
-        trainingPhotos={trainingPhotos}
-        galleryImages={slug === "yeongdeungpo" ? [branch.image] : isMokdong ? galleryImages : [`${mediaRoot}/facility.jpg`]}
+        galleryImages={slug === "yeongdeungpo" ? [branch.image] : isMokdong ? [branch.image, ...trainingPhotos.slice(0, 3)] : [`${mediaRoot}/facility.jpg`]}
         getThumb={getThumb}
       />
       </>

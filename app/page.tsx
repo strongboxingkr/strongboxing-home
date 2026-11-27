@@ -319,7 +319,7 @@ export default async function HomePage() {
             {branches.map((branch, index) => (
               <a
                 key={branch.slug}
-                href={`/branches/${branch.slug}`}
+                href={`/${branch.slug}`}
                 className={`reveal d${index + 1} group overflow-hidden rounded-[4px] border border-white/10 bg-[#151517] hover:border-[#D01E2E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D01E2E]`}
               >
                 <img src={branch.image} alt="" loading="lazy" className="aspect-[2.2/1] w-full object-cover" />
@@ -754,7 +754,7 @@ export default async function HomePage() {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
               {branches.map((b) => (
                 <div key={b.slug}>
-                  <a href={`/branches/${b.slug}`}
+                  <a href={`/${b.slug}`}
                     className="mb-2 block text-xs font-black transition-colors duration-200 hover:text-[#F5F4F1]"
                     style={{ color: "#8A8D91" }}>스트롱복싱 {b.name}</a>
                   <p className="text-xs leading-5" style={{ color: "#3A3A3E" }}>{b.address}</p>

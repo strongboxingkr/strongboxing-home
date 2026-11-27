@@ -389,7 +389,7 @@ export default async function BlogDetailPage({
                 <section data-placement="branch_card" className="mt-16 border-t border-[#4A4C50]/30 pt-12">
                   <p className="mb-2 text-[10px] font-black tracking-[0.3em]" style={{ color: "#5A5C61" }}>THIS BRANCH</p>
                   <a
-                    href={`/branches/${bl.slug}`}
+                    href={`/${bl.slug}`}
                     className="group flex items-center justify-between gap-4 rounded-[14px] border border-[#4A4C50]/30 bg-[#141416] px-7 py-6 transition duration-200 hover:border-[#D01E2E]/50 hover:bg-[#1A1212]"
                   >
                     <div>
@@ -410,11 +410,11 @@ export default async function BlogDetailPage({
 
               <div className="grid gap-2 sm:grid-cols-2">
                 {[
-                  ["철산복싱 · 철산동복싱 · 광명복싱", "/branches/cheolsan"],
-                  ["개봉복싱 · 고척복싱 · 구로구복싱", "/branches/gaebong"],
-                  ["목동복싱 · 오목교복싱 · 양천구복싱", "/branches/mokdong"],
-                  ["신정복싱 · 신정동복싱 · 양천구복싱", "/branches/sinjeong"],
-                  ["영등포복싱 · 신길동복싱", "/branches/yeongdeungpo"],
+                  ["철산복싱 · 철산동복싱 · 광명복싱", "/cheolsan"],
+                  ["개봉복싱 · 고척복싱 · 구로구복싱", "/gaebong"],
+                  ["목동복싱 · 오목교복싱 · 양천구복싱", "/mokdong"],
+                  ["신정복싱 · 신정동복싱 · 양천구복싱", "/sinjeong"],
+                  ["영등포복싱 · 신길동복싱", "/yeongdeungpo"],
                 ].map(([label, href]) => (
                   <a
                     key={href}
