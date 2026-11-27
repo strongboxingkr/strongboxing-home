@@ -295,16 +295,22 @@ export default async function HomePage() {
                 </div>
                 <p className="mt-4 text-xs leading-5 text-[#B5B5BC]"><strong>원데이 체험 30,000원</strong> · 당일 등록 시 체험비 전액 차감<br />회원권 가격은 지점에 문의해 주세요.</p>
 
-                <dl className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/10 pt-5">
-                  <div>
-                    <dt className="text-xs text-zinc-300">네이버 방문자 리뷰</dt>
-                    <dd><a href="#naver-reviews" className="text-2xl font-black text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">735건<span className="sr-only"> 후기 보기</span></a></dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs text-zinc-300">누적 회원</dt>
-                    <dd className="text-2xl font-black text-white">2,335명</dd>
-                  </div>
-                </dl>
+                <div className="mt-8 border-t border-white/15 pt-5">
+                  <dl className="grid grid-cols-2 divide-x divide-white/15">
+                    <div className="min-w-0 pr-3 sm:pr-6">
+                      <dt className="text-xs font-semibold text-zinc-300 sm:text-sm">네이버 방문자 리뷰</dt>
+                      <dd className="mt-1">
+                        <a href="#naver-reviews" className="inline-flex items-center gap-2 whitespace-nowrap text-[clamp(1.65rem,4vw,2.5rem)] font-black leading-none tracking-tight text-white hover:underline hover:underline-offset-4">
+                          735건 <span className="text-sm text-[#FF868F]" aria-hidden="true">↗</span><span className="sr-only"> 후기 보기</span>
+                        </a>
+                      </dd>
+                    </div>
+                    <div className="min-w-0 pl-4 sm:pl-6">
+                      <dt className="text-xs font-semibold text-zinc-300 sm:text-sm">누적 회원</dt>
+                      <dd className="mt-1 whitespace-nowrap text-[clamp(1.65rem,4vw,2.5rem)] font-black leading-none tracking-tight text-white">2,335명</dd>
+                    </div>
+                  </dl>
+                </div>
               </div>
 
               <figure className="m-0 overflow-hidden rounded-[4px]">
