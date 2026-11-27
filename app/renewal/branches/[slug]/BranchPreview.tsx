@@ -187,7 +187,7 @@ export default function BranchPreview({ branch, slug, query, photos, coaches, po
             {timeline.map(([time, step]) => <li key={time} className="rounded bg-white/5 p-3 text-sm"><span className="block text-xs font-bold text-[#FF868F]">{time}</span>{step}</li>)}
           </ol>
           <p className={"mt-3 " + body}>진행 시간은 운동 경험과 체력에 따라 조정될 수 있습니다. 체험은 30,000원 현장결제이며 당일 등록 시 체험비가 전액 차감됩니다.</p>
-          <p className={"mt-2 " + body}>체험만 하고 돌아가셔도 괜찮습니다. 등록을 원하시면 장기 약정 없이 1개월 단위로 시작할 수 있습니다.</p>
+          <p className={"mt-2 " + body}>체험만 하고 돌아가셔도 괜찮습니다.</p>
           <h3 className="mb-2 mt-5 font-bold">자주 묻는 질문</h3>
           {faq.map(({ question, answer }) => <details key={question} className="border-t border-white/10 py-3"><summary className="cursor-pointer text-sm font-bold">{question}</summary><p className={"mt-2 " + body}>{answer}</p></details>)}
         </Section>
