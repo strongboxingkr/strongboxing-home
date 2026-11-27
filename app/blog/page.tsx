@@ -1,4 +1,4 @@
-﻿import { db } from "@/lib/db";
+import { db } from "@/lib/db";
 import type { Metadata } from "next";
 import BlogViewClient from "@/app/components/BlogViewClient";
 
@@ -150,7 +150,7 @@ export default async function BlogPage({
 
           {featured && (
             <a href={`/blog/${featured.post.slug}`} className="group mt-6 grid overflow-hidden rounded-[4px] border border-white/10 bg-[#171719] md:grid-cols-[1.3fr_1fr]">
-              <img src={featured.image} alt="" fetchPriority="high" className="aspect-video w-full object-cover" />
+              <img src={featured.image} alt="" fetchPriority="high" className={"aspect-video w-full object-cover" + (featured.post.slug === "before-choosing-cheolsan-boxing-gym-check-class-atmosphere" ? " object-top" : "")} />
               <div className="flex flex-col justify-center p-5 md:p-8">
                 <p className="mb-3 text-sm font-semibold text-[#B5B5BC]">{featured.post.branch_name} · 수업 이야기</p>
                 <h2 className="break-keep text-2xl font-black leading-snug tracking-tight group-hover:underline md:text-3xl">{featured.post.title}</h2>
