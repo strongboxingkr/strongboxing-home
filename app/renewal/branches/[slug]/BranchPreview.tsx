@@ -93,17 +93,17 @@ export default function BranchPreview({ branch, slug, query, photos, coaches, po
         <section className="grid items-center gap-5 pb-2 md:grid-cols-[1.1fr_0.9fr] md:pb-7 md:pt-5">
           <div>
             <p className="text-sm font-bold text-[#FF868F]">{branch.region}</p>
-            <h1 className="mt-2 break-keep text-[clamp(1.7rem,4vw,3rem)] font-black leading-tight tracking-tight">{copy.heading}</h1>
-            <p className={"mt-3 " + body}>{copy.intro}</p>
-            <ul className="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+            <h1 className="mt-2 break-keep max-w-[24ch] text-[clamp(1.7rem,3.5vw,2.75rem)] font-black leading-[1.18] tracking-tight">{copy.heading}</h1>
+            <p className="mt-4 max-w-prose break-keep text-[15px] leading-relaxed text-zinc-100 sm:text-base">{copy.intro}</p>
+            <ul className="mt-4 flex flex-wrap gap-2 text-[13px] font-semibold">
               {["초보 입문", slug === "mokdong" || slug === "sinjeong" ? "밤 12시까지" : "퇴근 후 복싱", slug === "mokdong" || slug === "sinjeong" ? "키즈·학생" : "학생 복싱"].map((tag) => <li key={tag} className="rounded bg-white/10 px-2 py-1">{tag}</li>)}
             </ul>
-            <p className={"mt-3 " + body}>{branch.hours.join(" · ")}<br />{copy.landmark} · <a href={phone} className="underline">주차 문의</a><br />운영시간 내 자유 방문 · 1개월 단위 등록</p>
+            <p className="mt-4 break-keep text-[15px] leading-relaxed text-zinc-200">{branch.hours.join(" · ")}<br />{copy.landmark} · <a href={phone} className="underline">주차 문의</a><br />운영시간 내 자유 방문 · 1개월 단위 등록</p>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <Link href={bookingLink("trial")} className={primary} prefetch={false}>{branch.name} 원데이 체험</Link>
               <Link href={bookingLink("consultation")} className={secondary} prefetch={false}>{branch.name} 방문 상담</Link>
             </div>
-            <p className="mt-2 text-xs leading-5 text-zinc-300">체험비 30,000원 현장결제 · 당일 등록 시 전액 차감<br />체험만 하고 돌아가셔도 괜찮습니다.</p>
+            <p className="mt-3 text-sm leading-6 text-zinc-200">체험비 30,000원 현장결제 · 당일 등록 시 전액 차감<br />체험만 하고 돌아가셔도 괜찮습니다.</p>
           </div>
           {representative && <img src={representative.src} alt={representative.label} fetchPriority="high" className="hidden aspect-[4/3] w-full rounded-lg object-cover md:block" />}
         </section>
