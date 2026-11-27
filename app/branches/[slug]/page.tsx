@@ -232,6 +232,11 @@ const mokdongFacilityPhotos = [
   { src: "/images/mokdong/facility-gallery/strength-area.webp", alt: "스트롱복싱 목동점 덤벨과 바벨을 갖춘 웨이트 구역", focusBottom: true },
 ];
 
+const cheolsanFacilityPhotos = [
+  { src: "/images/cheolsan/facility-gallery/heavy-bags.webp", alt: "스트롱복싱 철산점 샌드백 훈련 공간" },
+  { src: "/images/cheolsan/facility-gallery/reception.webp", alt: "스트롱복싱 철산점 로고와 안내 데스크" },
+];
+
 function getLocalClips(slug: string, branchName: string): PreviewReel[] {
   return (slug === "yeongdeungpo" ? [1, 2] : [1, 2, 3]).map((id) => ({
     id,
@@ -347,7 +352,7 @@ export default async function BranchPage({ params, searchParams }: { params: Pro
         reels={branchReels.length ? [...new Map(branchReels.map((reel) => [reel.video_url, { ...reel, poster: branch.image }])).values()] : getLocalClips(slug, branch.name).map((reel) => ({ ...reel, poster: branch.image }))}
         reviews={reviews}
         faq={faqItems}
-        galleryImages={isMokdong ? mokdongFacilityPhotos : [{ src: slug === "yeongdeungpo" ? branch.image : mediaRoot + "/facility.jpg", alt: branch.name + " 복싱장 시설" }]}
+        galleryImages={isMokdong ? mokdongFacilityPhotos : slug === "cheolsan" ? cheolsanFacilityPhotos : [{ src: slug === "yeongdeungpo" ? branch.image : mediaRoot + "/facility.jpg", alt: branch.name + " 복싱장 시설" }]}
         getThumb={getThumb}
       />
       </>

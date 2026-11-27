@@ -123,7 +123,7 @@ export default function BranchPreview({ branch, slug, query, photos, coaches, po
             <div className="grid grid-cols-2 gap-2">
               {galleryImages.map(({ src, alt, focusBottom }) => (
                 <img key={src} src={src} alt={alt} loading="lazy" decoding="async"
-                  className={"aspect-[4/3] w-full rounded object-cover only:col-span-2" + (focusBottom ? " object-bottom" : "")} />
+                  className={(slug === "cheolsan" ? "aspect-[4/5]" : "aspect-[4/3]") + " w-full rounded object-cover only:col-span-2" + (focusBottom ? " object-bottom" : "")} />
               ))}
             </div>
           </div>
