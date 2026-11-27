@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element -- Keep original branch and CMS media URLs. */
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import ConsultationForm from "@/app/components/ConsultationForm";
 import VisibleClip from "@/app/components/VisibleClip";
@@ -67,22 +68,27 @@ export default function BranchPreview({ branch, slug, query, photos, coaches, po
   return (
     <main className="min-h-screen bg-[#101012] pb-24 text-white md:pb-8">
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#101012]">
-        <nav aria-label="지점 메뉴" className="mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-2 px-4">
-          <Link href="/" className="shrink-0 text-sm font-black">스트롱복싱</Link>
-          <div className="flex items-center gap-2">
-            <details className="relative">
-              <summary className="cursor-pointer text-sm font-bold">지점 변경</summary>
-              <ul className="absolute right-0 mt-3 min-w-32 rounded-md border border-white/15 bg-[#19191c] p-1 shadow-xl">
+        <nav aria-label="지점 메뉴" className="mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-3 px-4 md:min-h-[60px] md:px-6">
+          <Link href="/" className="inline-flex shrink-0 items-center gap-2 font-black tracking-tight">
+            <img src="/icon.png" width={26} height={26} alt="" className="size-[26px] object-contain" />
+            <span>스트롱복싱</span>
+          </Link>
+          <div className="flex shrink-0 items-center gap-3 sm:gap-7">
+            <details className="group relative">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-zinc-300 transition hover:text-white [&::-webkit-details-marker]:hidden">
+                지점 안내 <ChevronDown size={14} aria-hidden="true" className="group-open:rotate-180" />
+              </summary>
+              <ul className="absolute right-0 top-full mt-1 min-w-32 rounded-md border border-white/15 bg-[#19191c] p-1 shadow-xl">
                 {branchSlugs.map((item) => <li key={item}><Link href={"/" + item + "?" + new URLSearchParams({ ...attribution, branch: item })} aria-current={item === slug ? "page" : undefined} className="block rounded px-3 py-2 text-sm hover:bg-white/10">{branchLanding[item].title.split(" 복싱장")[0]}점</Link></li>)}
               </ul>
             </details>
-            <a href="#contact" className={primary}>예약하기</a>
+            <a href="#contact" className={primary + " whitespace-nowrap sm:px-5"}>예약하기</a>
           </div>
         </nav>
       </header>
 
-      <div className="mx-auto max-w-6xl space-y-4 px-4 pt-6 md:space-y-6 md:px-6">
-        <section className="grid items-center gap-5 pb-2 md:grid-cols-[1.1fr_0.9fr] md:py-7">
+      <div className="mx-auto max-w-6xl space-y-4 px-4 pt-5 md:space-y-6 md:px-6 md:pt-4">
+        <section className="grid items-center gap-5 pb-2 md:grid-cols-[1.1fr_0.9fr] md:pb-7 md:pt-5">
           <div>
             <p className="text-sm font-bold text-[#FF868F]">{branch.region}</p>
             <h1 className="mt-2 break-keep text-[clamp(1.7rem,4vw,3rem)] font-black leading-tight tracking-tight">{copy.heading}</h1>
