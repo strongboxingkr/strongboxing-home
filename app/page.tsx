@@ -1,3 +1,4 @@
+import MemberCount from "./components/MemberCount";
 import { db } from "@/lib/db";
 import type { RowDataPacket } from "mysql2";
 import NaverReviewsClient from "./components/NaverReviewsClient";
@@ -307,7 +308,7 @@ export default async function HomePage() {
                     </div>
                     <div className="min-w-0 pl-4 sm:pl-6">
                       <dt className="text-xs font-semibold text-zinc-300 sm:text-sm">누적 회원</dt>
-                      <dd className="mt-1 whitespace-nowrap text-[clamp(1.65rem,4vw,2.5rem)] font-black leading-none tracking-tight text-white">2,335명</dd>
+                      <dd className="mt-1 whitespace-nowrap text-[clamp(1.65rem,4vw,2.5rem)] font-black leading-none tracking-tight text-white"><MemberCount total={2335} /></dd>
                     </div>
                   </dl>
                 </div>
