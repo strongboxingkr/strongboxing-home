@@ -296,8 +296,8 @@ export default async function HomePage() {
                 </div>
                 <p className="mt-4 text-xs leading-5 text-[#B5B5BC]"><strong>원데이 체험 30,000원</strong> · 당일 등록 시 체험비 전액 차감<br />회원권 가격은 지점에 문의해 주세요.</p>
 
-                <div className="mt-8 border-t border-white/15 pt-5">
-                  <dl className="grid grid-cols-2 divide-x divide-white/15">
+                <div className="mt-8 grid gap-4 border-t border-white/15 pt-5 xl:grid-cols-3 xl:gap-0">
+                  <dl className="grid grid-cols-2 divide-x divide-white/15 xl:col-span-2">
                     <div className="min-w-0 pr-3 sm:pr-6">
                       <dt className="text-xs font-semibold text-zinc-300 sm:text-sm">네이버 방문자 리뷰</dt>
                       <dd className="mt-1">
@@ -311,6 +311,9 @@ export default async function HomePage() {
                       <dd className="mt-1 whitespace-nowrap text-[clamp(1.65rem,4vw,2.5rem)] font-black leading-none tracking-tight text-white"><MemberCount total={2335} /></dd>
                     </div>
                   </dl>
+                  <p className="flex flex-wrap gap-x-1.5 border-t border-white/15 pt-3 text-sm font-semibold text-zinc-300 xl:block xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
+                    <span className="xl:block">운영시간 내 </span><strong className="text-white xl:mt-1 xl:block xl:text-2xl xl:font-black">자유 방문</strong>
+                  </p>
                 </div>
               </div>
 
