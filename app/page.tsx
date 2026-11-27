@@ -295,15 +295,16 @@ export default async function HomePage() {
                 </div>
                 <p className="mt-4 text-xs leading-5 text-[#B5B5BC]"><strong>원데이 체험 30,000원</strong> · 당일 등록 시 체험비 전액 차감<br />회원권 가격은 지점에 문의해 주세요.</p>
 
-                {/* 스탯 */}
-                <div className="mt-14 flex gap-8" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 24 }}>
-                  {[["4.9★", "네이버 평균 리뷰"], ["5개", "서울·경기 지점"], ["초보자", "언제나 환영"]].map(([n, t]) => (
-                    <div key={n}>
-                      <p className="text-2xl font-black" style={{ color: "#F5F4F1" }}>{n}</p>
-                      <p className="mt-0.5 text-[11px]" style={{ color: "#5A5C61" }}>{t}</p>
-                    </div>
-                  ))}
-                </div>
+                <dl className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/10 pt-5">
+                  <div>
+                    <dt className="text-xs text-zinc-300">네이버 방문자 리뷰</dt>
+                    <dd><a href="#naver-reviews" className="text-2xl font-black text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">735건<span className="sr-only"> 후기 보기</span></a></dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-zinc-300">누적 회원</dt>
+                    <dd className="text-2xl font-black text-white">2,335명</dd>
+                  </div>
+                </dl>
               </div>
 
               <figure className="m-0 overflow-hidden rounded-[4px]">
@@ -351,10 +352,12 @@ export default async function HomePage() {
 
         <section id="story" aria-labelledby="story-title" className="mx-auto max-w-[1440px] scroll-mt-24 border-t border-white/10 px-6 pb-12 pt-8 md:px-10">
           <div className="grid gap-6 lg:grid-cols-[210px_minmax(0,1fr)] lg:gap-9">
+            <span id="naver-reviews" className="block absolute -mt-2 scroll-mt-24" />
             <h2 id="story-title" className="reveal text-2xl font-bold tracking-tight md:text-3xl">스트롱 이야기</h2>
             <TabSection
               dark
               tabs={["클립", "시설", "활동기록", "블로그", "네이버 후기"]}
+              linkedTab={{ hash: "#naver-reviews", name: "네이버 후기" }}
               panels={[
                 <ReelsClient key="clips" reels={reels.length ? reels : branches.flatMap((branch, branchIndex) => [1, 2].map((clip) => ({
                   id: branchIndex * 2 + clip,

@@ -231,12 +231,25 @@ export function TabSection({
   tabs,
   panels,
   dark = false,
+  linkedTab,
 }: {
   tabs: string[];
   panels: React.ReactNode[];
   dark?: boolean;
+  linkedTab?: { hash: string; name: string };
 }) {
   const [active, setActive] = useState(0);
+  const hash = linkedTab?.hash;
+  const linkedIndex = linkedTab ? tabs.indexOf(linkedTab.name) : -1;
+  useEffect(() => {
+    if (!hash || linkedIndex < 0) return;
+    const selectLinkedTab = () => {
+      if (window.location.hash === hash) setActive(linkedIndex);
+    };
+    selectLinkedTab();
+    window.addEventListener("hashchange", selectLinkedTab);
+    return () => window.removeEventListener("hashchange", selectLinkedTab);
+  }, [hash, linkedIndex]);
   return (
     <div>
       <div
@@ -246,7 +259,12 @@ export function TabSection({
         {tabs.map((tab, i) => (
           <button
             key={tab}
-            onClick={() => setActive(i)}
+            onClick={() => {
+              if (hash && window.location.hash === hash && i !== linkedIndex) {
+                window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+              }
+              setActive(i);
+            }}
             className="relative shrink-0 pb-3 text-sm font-black transition-colors duration-200"
             style={{ color: active === i ? (dark ? "#F5F4F1" : "#0E0E10") : dark ? "#6B6B72" : "#aaa" }}
           >
