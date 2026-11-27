@@ -39,7 +39,7 @@ const secondary = button + " border border-white/20 bg-[#222224] text-white hove
 const card = "rounded-lg border border-white/10 bg-[#161618] p-4 sm:p-6";
 const body = "break-keep text-sm leading-6 text-zinc-300";
 const coachDescriptions: Record<string, string> = {
-  nan_yong_: "학생과 성인 입문자의 자세를 살피고 각자의 진도에 맞춰 기본기를 지도합니다.",
+  nan_yong_: "오랜 복싱 지도 경력과 생활체육 지도자 자격을 갖췄습니다. 학생과 성인 입문자에게 각자의 진도에 맞춰 기본기를 지도합니다.",
   "chan.__2": "미트 트레이닝을 통해 체력과 운동 루틴을 기르는 데 도움을 줍니다.",
   robuste_hyeok: "회원의 체력에 맞춰 강도를 조절하며 복싱 스텝부터 지도합니다.",
   jdj_00_: "복싱이 처음인 회원에게 미트 운동과 유산소 루틴을 안내합니다.",
