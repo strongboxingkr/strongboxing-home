@@ -280,10 +280,10 @@ export default async function HomePage() {
                 <div className="my-7 h-[2px] w-14" style={{ background: "#D01E2E" }} />
 
                 <p className="max-w-md text-sm leading-[2] md:text-base md:leading-[2.1]" style={{ color: "#C9C9C9", wordBreak: "keep-all" }}>
-                  <span style={{ color: "#F5F4F1", fontWeight: 700 }}>초보부터 실력자까지, 수준에 맞춘 맞춤형 복싱</span>
+                  <span style={{ color: "#F5F4F1", fontWeight: 700 }}>편한 시간에 와서, 내 진도대로 복싱을 배워요.</span>
                 </p>
 
-                <p className="mt-3 text-sm font-semibold text-[#C9C9C9] md:text-base">어느 스트롱에 가도, 같은 기준으로 배웁니다.</p>
+                <p className="mt-3 text-sm font-semibold text-[#C9C9C9] md:text-base">처음이라면 관장·코치가 기본 자세와 스텝부터 봐드립니다.</p>
                 <a href="/about" className="mt-2 w-fit text-sm font-semibold text-[#F5F4F1] underline decoration-[#D01E2E] underline-offset-4">스트롱복싱이 가르치는 방식 ↗</a>
                 <div className="mt-9 flex flex-wrap gap-3">
                   <a href="#branches" className="btn-primary inline-flex items-center gap-2 rounded-[4px] bg-[#D01E2E] px-7 py-3.5 text-sm font-black text-white hover:bg-[#B71C2B]">
@@ -350,7 +350,7 @@ export default async function HomePage() {
             <h2 id="first-visit-title" className="reveal text-2xl font-bold tracking-tight md:text-3xl">복싱 첫날 안내</h2>
             <div className="reveal d1 max-w-3xl space-y-3 break-keep text-sm leading-7 text-[#C9C9C9] md:text-base">
               <p><strong className="text-[#F5F4F1]">첫날에는 기본 자세와 스텝부터 배웁니다.</strong> 운영시간 내 편한 시간에 방문하면 관장·코치가 개인별 진도를 봐드립니다.</p>
-              <p>한솔 대표는 현역 프로 복서입니다. 선수 출신 + 지도자 자격증 보유 코치진이 지도하며, 프로·아마추어 선수를 배출했습니다.</p>
+              <p>한솔 대표는 현역 프로 복서입니다. 지도진의 경력과 자격은 각 지점 소개에서 확인할 수 있습니다.</p>
               <a href="#coaches" className="inline-block font-semibold text-[#F5F4F1] underline decoration-[#D01E2E] underline-offset-4">지도진 보기 →</a>
             </div>
           </div>
@@ -512,8 +512,8 @@ export default async function HomePage() {
                 직접 가르치는<br />전문 코치진.
               </h2>
               <p className="reveal d2 mt-6 max-w-lg text-base leading-8" style={{ color: "#8A8D91" }}>
-                선수 출신 관장·코치가 모든 지점에서 직접 지도합니다.<br />
-                일반 운동 중 한 사람씩 자세를 살피고, 각자의 수준에 맞춰 진도를 잡아드립니다.
+                관장·코치가 회원별 진도를 직접 봅니다.<br />
+                운동 중 한 사람씩 자세를 살피고, 다음에 연습할 동작을 알려드립니다.
               </p>
             </div>
 
@@ -645,7 +645,7 @@ export default async function HomePage() {
           <p>
             경기도 광명시 철산동 56-14 3층. 전화 02-2066-0406. 운영 평일 14~23시, 토일 14~18시.
             철산 복싱, 철산동 복싱, 광명 복싱, 철산역 복싱, 광명시 복싱장을 찾는 분들이 방문합니다.
-            선수 출신 지도진이 안전하게 가르치는 복싱장입니다.
+            관장과 코치가 회원의 수준에 맞춰 기본 자세부터 지도합니다.
             초보자 환영, 개인 맞춤 지도, 직장인 복싱, 여성 복싱, 퇴근 후 운동하기 좋은 광명 복싱장입니다.
             지도 잘하는 복싱장으로 안전하게 배우는 복싱을 원하는 분께 추천합니다.
           </p>
