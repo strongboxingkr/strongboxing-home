@@ -225,6 +225,13 @@ const branchFaqs: Record<string, { question: string; answer: string }[]> = {
   ],
 };
 
+const mokdongFacilityPhotos = [
+  { src: "/images/mokdong/facility-gallery/training-floor.webp", alt: "스트롱복싱 목동점 훈련 공간 전경과 샌드백" },
+  { src: "/images/mokdong/facility-gallery/boxing-ring.webp", alt: "스트롱복싱 목동점 복싱 링과 샌드백" },
+  { src: "/images/mokdong/facility-gallery/treadmills.webp", alt: "스트롱복싱 목동점 러닝머신", focusBottom: true },
+  { src: "/images/mokdong/facility-gallery/strength-area.webp", alt: "스트롱복싱 목동점 덤벨과 바벨을 갖춘 웨이트 구역", focusBottom: true },
+];
+
 function getLocalClips(slug: string, branchName: string): PreviewReel[] {
   return (slug === "yeongdeungpo" ? [1, 2] : [1, 2, 3]).map((id) => ({
     id,
@@ -340,7 +347,7 @@ export default async function BranchPage({ params, searchParams }: { params: Pro
         reels={branchReels.length ? [...new Map(branchReels.map((reel) => [reel.video_url, { ...reel, poster: branch.image }])).values()] : getLocalClips(slug, branch.name).map((reel) => ({ ...reel, poster: branch.image }))}
         reviews={reviews}
         faq={faqItems}
-        galleryImages={slug === "yeongdeungpo" ? [branch.image] : isMokdong ? [branch.image, ...trainingPhotos.slice(0, 3)] : [`${mediaRoot}/facility.jpg`]}
+        galleryImages={isMokdong ? mokdongFacilityPhotos : [{ src: slug === "yeongdeungpo" ? branch.image : mediaRoot + "/facility.jpg", alt: branch.name + " 복싱장 시설" }]}
         getThumb={getThumb}
       />
       </>

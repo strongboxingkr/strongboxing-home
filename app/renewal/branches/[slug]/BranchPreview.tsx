@@ -29,7 +29,7 @@ type Props = {
   reels: PreviewReel[];
   reviews: PreviewReview[];
   faq: { question: string; answer: string }[];
-  galleryImages: string[];
+  galleryImages: { src: string; alt: string; focusBottom?: boolean }[];
   getThumb: (post: PreviewPost) => string | null;
 };
 
@@ -121,7 +121,10 @@ export default function BranchPreview({ branch, slug, query, photos, coaches, po
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {[...new Set(galleryImages)].slice(0, 2).map((src) => <img key={src} src={src} alt={branch.name + " 복싱장 시설"} loading="lazy" className="aspect-[4/3] w-full rounded object-cover only:col-span-2" />)}
+              {galleryImages.map(({ src, alt, focusBottom }) => (
+                <img key={src} src={src} alt={alt} loading="lazy" decoding="async"
+                  className={"aspect-[4/3] w-full rounded object-cover only:col-span-2" + (focusBottom ? " object-bottom" : "")} />
+              ))}
             </div>
           </div>
         </Section>
